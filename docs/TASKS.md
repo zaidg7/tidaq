@@ -15,7 +15,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 |---|---|---|---|---|---|
 | **Phase 0: Setup** (week 42, target Sun 18 Oct) |||||
 | C-001 | Monorepo scaffold (Next.js + OpenNext + collector + core) | CLOUD | M | Z-01 | DONE |
-| C-002 | CI pipeline (lint, typecheck, test, build, e2e smoke) | CLOUD | M | C-001 | TODO |
+| C-002 | CI pipeline (lint, typecheck, test, build, e2e smoke) | CLOUD | M | C-001 | IN PROGRESS |
 | C-003 | Session tooling (SessionStart hook, permissions allowlist) | CLOUD | S | C-001 | TODO |
 | C-007 | i18n setup (de default, en) and formatting helpers | CLOUD | S | C-001 | TODO |
 | C-004 | Supabase schema v1, RLS, seed providers and cities | CLOUD | M | C-001, Z-04 | TODO |
