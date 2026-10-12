@@ -206,6 +206,7 @@ export type Database = {
           dfs_hotel_identifier: string | null
           id: number
           image_credit: string | null
+          image_source_url: string | null
           image_url: string | null
           lat: number | null
           lng: number | null
@@ -221,6 +222,7 @@ export type Database = {
           dfs_hotel_identifier?: string | null
           id?: never
           image_credit?: string | null
+          image_source_url?: string | null
           image_url?: string | null
           lat?: number | null
           lng?: number | null
@@ -236,6 +238,7 @@ export type Database = {
           dfs_hotel_identifier?: string | null
           id?: never
           image_credit?: string | null
+          image_source_url?: string | null
           image_url?: string | null
           lat?: number | null
           lng?: number | null

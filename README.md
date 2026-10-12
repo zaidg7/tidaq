@@ -67,6 +67,7 @@ The tracked hotels live in `public.hotels` (source: `scripts/catalog/`). To add 
 3. Check `scripts/catalog/resolved.json` (match score, distance to the city centre, Google's title).
 4. `node scripts/catalog/to-sql.ts` prints an idempotent upsert. Apply it as a migration (see Database) and save it under the recorded version.
 5. New hotels start active unless listed in `INACTIVE` in `to-sql.ts`. Budget: 36 active hotels × 8 stays ≈ 290 tasks/day (D-13).
+6. Photos: push a change to `scripts/catalog/photos.ts` (or run Actions → **Catalog photos**). It looks up licensed Wikimedia Commons images on a GitHub runner (Wikimedia blocks the cloud sessions' IP) and prints `photos.json` in the job log. Save it to `scripts/catalog/photos.json`, run `node scripts/catalog/photos-sql.ts` and apply the output as a migration. Reject a bad photo by adding the hotel to `REJECTED` in `photos.ts`.
 
 ### Collector (prices)
 

@@ -14,6 +14,7 @@ interface Photo {
   slug: string;
   imageUrl: string | null;
   credit: string | null;
+  pageUrl: string | null;
 }
 
 const sqlString = (v: string): string => `'${v.replace(/'/g, "''")}'`;
@@ -30,18 +31,27 @@ console.log(
 console.log(
   '-- Licensed Wikimedia Commons images (CC BY, CC BY-SA, CC0, public domain) with credits.',
 );
+console.log(
+  '-- image_source_url: the Commons file page, linked from the credit (CC BY/BY-SA attribution).',
+);
+console.log('alter table public.hotels add column if not exists image_source_url text;');
 if (found.length === 0) {
   console.log('select 1; -- no photos found');
 } else {
   console.log('update public.hotels h');
-  console.log('set image_url = v.image_url, image_credit = v.image_credit');
+  console.log(
+    'set image_url = v.image_url, image_credit = v.image_credit, image_source_url = v.image_source_url',
+  );
   console.log('from (values');
   console.log(
     found
-      .map((p) => `  (${sqlString(p.slug)}, ${sqlString(p.imageUrl)}, ${sqlString(p.credit)})`)
+      .map(
+        (p) =>
+          `  (${sqlString(p.slug)}, ${sqlString(p.imageUrl)}, ${sqlString(p.credit)}, ${p.pageUrl ? sqlString(p.pageUrl) : 'null'})`,
+      )
       .join(',\n'),
   );
-  console.log(') as v (slug, image_url, image_credit)');
+  console.log(') as v (slug, image_url, image_credit, image_source_url)');
   console.log('where h.slug = v.slug;');
 }
 console.error(`${found.length} of ${photos.length} hotels get a photo.`);

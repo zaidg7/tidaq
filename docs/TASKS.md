@@ -30,7 +30,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-013b | Collector: collect results, store snapshots, daily prices, stats | CLOUD | M | C-013a, C-015 | DONE |
 | C-013c | Collector: admin emails, daily check, raw-data prune | CLOUD | S | C-013b | DONE |
 | C-013d | Collector: live check on staging, first production deploy, 2-day data check | CLOUD | S | C-013c, B-005, B-003 | BLOCKED (B-005) |
-| C-011b | Hotel photos: licensed Wikimedia Commons images with credits | CLOUD | S | C-011 | TODO |
+| C-011b | Hotel photos: licensed Wikimedia Commons images with credits | CLOUD | S | C-011 | DONE |
 | **Phase 2: MVP website** (weeks 44–47, target Sun 22 Nov) |||||
 | C-006 | Design tokens and base UI components (Soft Modern) | CLOUD | L | C-001 | TODO |
 | C-020a | App shell: layout, navbar, footer, locale switch, admin auth | CLOUD | M | C-006, C-007 | TODO |
@@ -267,7 +267,8 @@ Notes: 40 hotels with Google identifiers in all 12 cities; **36 active** (D-13 b
 - [x] Uncertain matches listed in the PR and resolved
 
 ### C-011b · Hotel photos
-Owner: CLOUD (or LOCAL, if the cloud IP stays rate-limited) · Size: S · Depends on: C-011 · Status: TODO · PR: –
+Owner: CLOUD (or LOCAL, if the cloud IP stays rate-limited) · Size: S · Depends on: C-011 · Status: DONE · PR: [#19](https://github.com/zaidg7/tidaq/pull/19)
+Notes: `scripts/catalog/photos.ts` matches each hotel to its Wikidata item (name + within 1 km of our coordinates) and takes its curated image (P18) if Commons lists CC BY, CC BY-SA, CC0 or public domain; credit "Foto: <author>, <license>, via Wikimedia Commons". It runs in GitHub Actions (workflow **Catalog photos**, also on PRs that change the script) because Wikimedia answers 429 to the cloud sessions' IP. Result: `scripts/catalog/photos.json` (26 of 40 hotels, 23 of the 36 active ones; Sofitel Frankfurt rejected by hand: pre-opening photo), applied with `photos-sql.ts` as migration `20261012211009_hotel_photos` (also adds `hotels.image_source_url`, the Commons file page). Hotels without a photo keep `image_url` null (gradient placeholder). Images are hotlinked from `thumb.wikimedia.org`/`upload.wikimedia.org` (1280 px): C-022/C-023 must allow that host for `next/image` (or plain `<img>`), show `image_credit` next to the photo and link it to `image_source_url`. Not checked visually from the cloud (Wikimedia blocked): Zaid or LOCAL should glance at the photos once on the hotel pages; reject one by adding it to `REJECTED` in photos.ts.
 For each active hotel, find a freely licensed photo on Wikimedia Commons (CC BY / CC BY-SA / public domain), store `image_url` (Commons thumbnail URL) and `image_credit` ("Foto: <author>, <license>, via Wikimedia Commons"). No photo → leave null (gradient placeholder). Never Google, Booking or hotel press photos without permission. The Commons API answered 429 from the cloud session on 12 Oct; use a descriptive User-Agent without personal data and retry with backoff, or run from LOCAL.
 
 ### C-012 · Stay grid generator
