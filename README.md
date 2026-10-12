@@ -27,4 +27,24 @@ Next.js (App Router) on Cloudflare Workers via OpenNext · Cloudflare Worker + C
 
 ## Development
 
-_Filled in by task C-001._
+Requirements: Node 22 (`.nvmrc`) and pnpm 10 (`corepack enable` picks the version from `package.json`).
+
+```
+pnpm install            # install all workspaces
+pnpm lint               # ESLint in every package + Prettier check
+pnpm typecheck          # tsc --noEmit in every package
+pnpm test               # Vitest (packages/core with coverage, collector)
+pnpm build              # next build (web) + wrangler dry-run bundle (collector)
+pnpm e2e                # Playwright smoke tests against `next start` (run `pnpm build` first)
+pnpm format             # Prettier write
+```
+
+Run the apps:
+
+```
+pnpm --filter web dev           # Next.js dev server on http://localhost:3000
+pnpm --filter web preview       # OpenNext build + local Cloudflare Worker (the real runtime)
+pnpm --filter collector dev     # collector worker on http://localhost:8787 (GET /health)
+```
+
+Layout: `apps/web` (Next.js on Cloudflare Workers via OpenNext), `apps/collector` (Cloudflare Worker with cron triggers), `packages/core` (shared TypeScript: formatting, dates, zod schemas, later stats and trust score). `@tidaq/core` is consumed as TypeScript source; no separate build step.

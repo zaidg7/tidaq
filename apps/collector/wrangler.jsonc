@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tidaq-collector",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+  "triggers": {
+    // 05:00 UTC morning run; 17:00 UTC evening run (off until EVENING_RUN=true, D-13).
+    "crons": ["0 5 * * *", "0 17 * * *"],
+  },
+  "vars": {
+    "DAILY_TASK_CAP": "300",
+    "MONTHLY_BUDGET_USD": "12",
+    "EVENING_RUN": "false",
+    "GRID_WEEKENDS": "6",
+    "GRID_MIDWEEK": "2",
+    "ALERTS_DRY_RUN": "true",
+  },
+}
