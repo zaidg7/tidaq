@@ -75,33 +75,107 @@ export type Database = {
       }
       collector_runs: {
         Row: {
+          budget_reason: string | null
+          env: string
           errors: Json
           est_cost_usd: number
           finished_at: string | null
           id: number
+          kind: string
           started_at: string
           tasks_done: number
           tasks_posted: number
+          tasks_skipped: number
         }
         Insert: {
+          budget_reason?: string | null
+          env?: string
           errors?: Json
           est_cost_usd?: number
           finished_at?: string | null
           id?: never
+          kind?: string
           started_at?: string
           tasks_done?: number
           tasks_posted?: number
+          tasks_skipped?: number
         }
         Update: {
+          budget_reason?: string | null
+          env?: string
           errors?: Json
           est_cost_usd?: number
           finished_at?: string | null
           id?: never
+          kind?: string
           started_at?: string
           tasks_done?: number
           tasks_posted?: number
+          tasks_skipped?: number
         }
         Relationships: []
+      }
+      collector_tasks: {
+        Row: {
+          collected_at: string | null
+          cost_usd: number
+          error: string | null
+          id: string
+          posted_at: string
+          run_id: number
+          status: string
+          stay_id: number
+        }
+        Insert: {
+          collected_at?: string | null
+          cost_usd?: number
+          error?: string | null
+          id: string
+          posted_at?: string
+          run_id: number
+          status?: string
+          stay_id: number
+        }
+        Update: {
+          collected_at?: string | null
+          cost_usd?: number
+          error?: string | null
+          id?: string
+          posted_at?: string
+          run_id?: number
+          status?: string
+          stay_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collector_tasks_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "collector_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collector_tasks_stay_id_fkey"
+            columns: ["stay_id"]
+            isOneToOne: false
+            referencedRelation: "tracked_stays"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collector_tasks_stay_id_fkey"
+            columns: ["stay_id"]
+            isOneToOne: false
+            referencedRelation: "v_hotel_calendar"
+            referencedColumns: ["stay_id"]
+          },
+          {
+            foreignKeyName: "collector_tasks_stay_id_fkey"
+            columns: ["stay_id"]
+            isOneToOne: false
+            referencedRelation: "v_stay_public"
+            referencedColumns: ["stay_id"]
+          },
+        ]
       }
       events: {
         Row: {
@@ -191,6 +265,7 @@ export type Database = {
           raw: Json | null
           room_name: string | null
           stay_id: number
+          task_id: string | null
           total_cents: number
         }
         Insert: {
@@ -203,6 +278,7 @@ export type Database = {
           raw?: Json | null
           room_name?: string | null
           stay_id: number
+          task_id?: string | null
           total_cents: number
         }
         Update: {
@@ -215,6 +291,7 @@ export type Database = {
           raw?: Json | null
           room_name?: string | null
           stay_id?: number
+          task_id?: string | null
           total_cents?: number
         }
         Relationships: [
@@ -245,6 +322,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_stay_public"
             referencedColumns: ["stay_id"]
+          },
+          {
+            foreignKeyName: "price_snapshots_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "collector_tasks"
+            referencedColumns: ["id"]
           },
         ]
       }

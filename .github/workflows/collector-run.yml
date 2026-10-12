@@ -1,0 +1,52 @@
+# Manual collector run (C-013): POST /run on the deployed collector.
+# The token is HMAC-SHA256(SUPABASE_SERVICE_ROLE_KEY, "tidaq-collector-run") in hex,
+# so no extra secret is needed. The run goes through the budget guard like a cron run.
+name: Collector run
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Which collector to run
+        type: choice
+        options: [staging, production]
+        default: staging
+
+permissions:
+  contents: read
+
+concurrency:
+  group: collector-run-${{ inputs.target }}
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: POST /run
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          URL: ${{ inputs.target == 'production' && 'https://tidaq-collector.tidaq.workers.dev/run' || 'https://tidaq-collector-staging.tidaq.workers.dev/run' }}
+        run: |
+          if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "::error::SUPABASE_SERVICE_ROLE_KEY secret is missing"
+            exit 1
+          fi
+          token=$(printf '%s' tidaq-collector-run | openssl dgst -sha256 -hmac "$SUPABASE_SERVICE_ROLE_KEY" -r | cut -d' ' -f1)
+          echo "::add-mask::$token"
+          status=$(curl -sS -o body.json -w '%{http_code}' -X POST -H "authorization: Bearer $token" "$URL")
+          echo "HTTP $status"
+          cat body.json
+          {
+            echo "### Collector run (${{ inputs.target }})"
+            echo
+            echo '```json'
+            cat body.json
+            echo
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          [ "$status" = "200" ]
