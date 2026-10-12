@@ -10,6 +10,9 @@ import { z } from './zod';
 export const DFS_OK = 20000;
 export const DFS_TASK_CREATED = 20100;
 export const DFS_NO_RESULTS = 40102;
+/** `task_get` before the result is ready: "Task Handed." / "Task in Queue." (keep polling). */
+export const DFS_TASK_HANDED = 40601;
+export const DFS_TASK_IN_QUEUE = 40602;
 
 const nullableString = z.string().nullable().optional();
 const nullableNumber = z.number().nullable().optional();
@@ -70,6 +73,10 @@ export const dfsHotelInfoResultSchema = z.object({
   check_url: nullableString,
   address: nullableString,
   location: locationSchema,
+  /** `about.url` is the hotel's official website (with tracking parameters). */
+  about: z.object({ url: nullableString, domain: nullableString }).nullable().optional(),
+  /** When Google was queried, e.g. `2026-10-12 16:06:07 +00:00`. */
+  datetime: nullableString,
   prices: dfsHotelPricesSchema.nullable(),
 });
 
@@ -123,6 +130,21 @@ function envelope<T extends z.ZodType>(result: T) {
 
 export const dfsHotelInfoResponseSchema = envelope(dfsHotelInfoResultSchema);
 export const dfsHotelSearchResponseSchema = envelope(dfsHotelSearchResultSchema);
+
+/** `tasks_ready`: tasks whose results can be fetched (free). Each appears until fetched. */
+export const dfsTasksReadyResponseSchema = z.object({
+  status_code: z.number(),
+  status_message: z.string(),
+  tasks: z
+    .array(
+      z.object({
+        status_code: z.number(),
+        status_message: z.string(),
+        result: z.array(z.object({ id: z.string(), tag: nullableString })).nullable(),
+      }),
+    )
+    .nullable(),
+});
 
 export type DfsPriceItem = z.infer<typeof dfsPriceItemSchema>;
 export type DfsHotelInfoResult = z.infer<typeof dfsHotelInfoResultSchema>;

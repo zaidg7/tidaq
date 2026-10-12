@@ -1,4 +1,5 @@
 import { safeEqual, runToken } from './auth';
+import { runCollect } from './collect';
 import type { FetchFn } from './dataforseo';
 import type { Env } from './env';
 import { runPosting } from './morning';
@@ -14,6 +15,11 @@ const json = (body: unknown, status = 200): Response =>
 /** Cron schedule (wrangler.jsonc): 05:00 morning run, 17:00 evening run (off until EVENING_RUN). */
 export const CRON_MORNING = '0 5 * * *';
 export const CRON_EVENING = '0 17 * * *';
+/**
+ * Collect runs every 10 minutes after each posting window (D-39, C-013b). Each run fetches at
+ * most COLLECT_BATCH results, so ~300 tasks need ~10 runs. Without open tasks a run costs one query.
+ */
+export const CRON_COLLECT = '*/10 5-7,17-18 * * *';
 
 /** Seams for tests: the real worker uses Supabase and global fetch. */
 export interface Deps {
@@ -46,25 +52,24 @@ export function createWorker(deps: Deps = {}) {
         return json({ ok: false, error: 'not_implemented' }, 501);
       }
 
-      if (pathname === '/run') {
+      if (pathname === '/run' || pathname === '/collect') {
         if (request.method !== 'POST') return json({ ok: false, error: 'method_not_allowed' }, 405);
         const secret = env.SUPABASE_SERVICE_ROLE_KEY;
         const given = (request.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '');
         if (!secret || !given || !safeEqual(given, await runToken(secret))) {
           return json({ ok: false, error: 'unauthorized' }, 401);
         }
+        const kind = pathname === '/run' ? 'manual run' : 'manual collect';
         try {
-          const summary = await runPosting({
-            store: storeFor(env, deps),
-            env,
-            now: now(),
-            kind: 'manual',
-            fetchFn: deps.fetchFn,
-          });
-          log('manual run done', { ...summary });
+          const store = storeFor(env, deps);
+          const summary =
+            pathname === '/run'
+              ? await runPosting({ store, env, now: now(), kind: 'manual', fetchFn: deps.fetchFn })
+              : await runCollect({ store, env, now: now(), fetchFn: deps.fetchFn });
+          log(`${kind} done`, { ...summary });
           return json({ ok: true, summary });
         } catch (err) {
-          log('manual run failed', { error: String(err) });
+          log(`${kind} failed`, { error: String(err) });
           return json({ ok: false, error: 'run_failed', message: String(err) }, 500);
         }
       }
@@ -78,8 +83,17 @@ export function createWorker(deps: Deps = {}) {
         log('evening run disabled', { cron: controller.cron });
         return;
       }
+      if (controller.cron === CRON_COLLECT) {
+        const summary = await runCollect({
+          store: storeFor(env, deps),
+          env,
+          now: now(),
+          fetchFn: deps.fetchFn,
+        });
+        if (summary.runId !== null) log('collect run done', { ...summary });
+        return;
+      }
       if (controller.cron !== CRON_MORNING && !evening) {
-        // Collect runs (05:30, 06:30) arrive with C-013b.
         log('no handler for cron', { cron: controller.cron });
         return;
       }

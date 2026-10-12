@@ -819,6 +819,7 @@ export type Database = {
       }
     }
     Functions: {
+      collector_ingest: { Args: { payload: Json }; Returns: Json }
       prune_raw_snapshots: { Args: { older_than?: string }; Returns: number }
     }
     Enums: {

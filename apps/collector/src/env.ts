@@ -7,6 +7,8 @@ export interface Env {
   GRID_WEEKENDS: string;
   GRID_MIDWEEK: string;
   ALERTS_DRY_RUN: string;
+  /** Results fetched per collect invocation (default 30, see COLLECT in collect.ts). */
+  COLLECT_BATCH?: string;
   // Secrets (wrangler secret bulk from GitHub secrets in deploy.yml). Optional until C-013 uses them.
   DATAFORSEO_LOGIN?: string;
   DATAFORSEO_PASSWORD?: string;

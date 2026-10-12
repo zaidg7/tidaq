@@ -6,6 +6,7 @@ import {
   DFS_OK,
   dfsHotelInfoResponseSchema,
   dfsHotelSearchResponseSchema,
+  dfsTasksReadyResponseSchema,
 } from './dataforseo';
 
 const FIXTURES = join(__dirname, '..', '..', '..', 'tests', 'fixtures', 'dataforseo');
@@ -27,6 +28,13 @@ describe('DataForSEO Hotel Info schema', () => {
     expect(items.length).toBeGreaterThanOrEqual(20);
     expect(items.some((i) => i.official_site)).toBe(true);
     expect(items.every((i) => i.price === null || i.price > 0)).toBe(true);
+  });
+
+  it('reads the official website and query time', () => {
+    const result = dfsHotelInfoResponseSchema.parse(load('hotel_info-info-adlon-dec-id.json'))
+      .tasks[0]?.result?.[0];
+    expect(result?.about?.url).toMatch(/^https:\/\/www\.kempinski\.com\//);
+    expect(result?.datetime).toBe('2026-10-12 16:06:07 +00:00');
   });
 
   it('reads the price calendar', () => {
@@ -80,5 +88,31 @@ describe('DataForSEO Hotel Searches schema', () => {
         'Waldorf Astoria Berlin',
       ]),
     );
+  });
+});
+
+describe('DataForSEO tasks_ready schema', () => {
+  it('parses a recorded empty response', () => {
+    const parsed = dfsTasksReadyResponseSchema.parse(load('tasks_ready-empty.json'));
+    expect(parsed.status_code).toBe(DFS_OK);
+    expect(parsed.tasks?.[0]?.result).toBeNull();
+  });
+
+  it('parses ready task ids and tags', () => {
+    const parsed = dfsTasksReadyResponseSchema.parse({
+      status_code: 20000,
+      status_message: 'Ok.',
+      tasks: [
+        {
+          status_code: 20000,
+          status_message: 'Ok.',
+          result: [
+            { id: 'a', tag: '12', se: 'google', endpoint_advanced: '/v3/x' },
+            { id: 'b', tag: null },
+          ],
+        },
+      ],
+    });
+    expect(parsed.tasks?.[0]?.result?.map((r) => r.id)).toEqual(['a', 'b']);
   });
 });

@@ -1,5 +1,13 @@
 import type { GridStay } from '@tidaq/core';
-import type { CatalogHotel, CollectorStore, RunKind, RunPatch, StayJob } from '../store';
+import type { IngestPayload, OpenTask } from '../ingest';
+import type {
+  CatalogHotel,
+  CollectorStore,
+  RunKind,
+  RunPatch,
+  StayJob,
+  StayStatsRow,
+} from '../store';
 
 interface StayRow {
   id: number;
@@ -12,7 +20,10 @@ interface StayRow {
 }
 
 /** In-memory CollectorStore for tests. Mirrors the Supabase behaviour the run logic relies on. */
-export function memoryStore(hotels: CatalogHotel[], opts: { watchedStayIds?: number[] } = {}) {
+export function memoryStore(
+  hotels: CatalogHotel[],
+  opts: { watchedStayIds?: number[]; aliases?: Record<string, string> } = {},
+) {
   const stays: StayRow[] = [];
   const runs: ({
     id: number;
@@ -20,7 +31,24 @@ export function memoryStore(hotels: CatalogHotel[], opts: { watchedStayIds?: num
     env: string;
     startedAt: string;
   } & Partial<RunPatch>)[] = [];
-  const tasks: { id: string; runId: number; stayId: number; costUsd: number }[] = [];
+  const tasks: {
+    id: string;
+    runId: number;
+    stayId: number;
+    costUsd: number;
+    postedAt: string;
+    status: string;
+    error: string | null;
+  }[] = [];
+  const aliases = new Map(Object.entries(opts.aliases ?? {}));
+  const providers = new Map<string, { pending: boolean; name: string }>(
+    [...new Set(aliases.values())].map((slug) => [slug, { pending: false, name: slug }]),
+  );
+  const snapshots: (IngestPayload['snapshots'][number] & { day: string })[] = [];
+  const daily = new Map<string, { stayId: number; day: string; bestCents: number; best: string }>();
+  const stats = new Map<number, StayStatsRow>();
+  const officialUrls = new Map<number, string>();
+  let clock = '2026-10-12T05:00:00.000Z';
   const watched = new Set(opts.watchedStayIds ?? []);
   const hotelById = new Map(hotels.map((h) => [h.id, h]));
 
@@ -85,10 +113,100 @@ export function memoryStore(hotels: CatalogHotel[], opts: { watchedStayIds?: num
       Object.assign(runs[runId - 1] ?? {}, patch);
     },
     async recordTasks(runId, posted) {
-      tasks.push(...posted.map((t) => ({ ...t, runId })));
+      tasks.push(
+        ...posted.map((t) => ({ ...t, runId, postedAt: clock, status: 'posted', error: null })),
+      );
+    },
+    async openTasks(limit) {
+      return tasks
+        .filter((t) => t.status === 'posted')
+        .sort((a, b) => a.postedAt.localeCompare(b.postedAt))
+        .slice(0, limit)
+        .map((t): OpenTask => {
+          const stay = stays.find((s) => s.id === t.stayId);
+          if (!stay) throw new Error(`no stay ${t.stayId}`);
+          return {
+            id: t.id,
+            stayId: t.stayId,
+            hotelId: stay.hotelId,
+            checkIn: stay.checkIn,
+            checkOut: stay.checkOut,
+            postedAt: t.postedAt,
+          };
+        });
+    },
+    async providerAliases() {
+      return new Map(aliases);
+    },
+    // Mirrors the SQL function collector_ingest (supabase/migrations/*_collector_ingest.sql).
+    async ingest(payload) {
+      for (const p of payload.providers) {
+        if (!providers.has(p.slug))
+          providers.set(p.slug, { pending: true, name: p.name || p.slug });
+        if (p.alias && !aliases.has(p.alias)) aliases.set(p.alias, p.slug);
+      }
+      let inserted = 0;
+      const touched = new Set<string>();
+      for (const s of payload.snapshots) {
+        if (!providers.has(s.provider_slug)) continue;
+        const dup = snapshots.some(
+          (x) => x.task_id === s.task_id && x.provider_slug === s.provider_slug,
+        );
+        const day = s.captured_at.slice(0, 10);
+        touched.add(`${s.stay_id}|${day}`);
+        if (dup) continue;
+        snapshots.push({ ...s, day });
+        inserted++;
+      }
+      for (const key of touched) {
+        const [stayId, day] = key.split('|') as [string, string];
+        const rows = snapshots.filter((x) => x.stay_id === Number(stayId) && x.day === day);
+        const best = rows.reduce((a, b) =>
+          b.total_cents < a.total_cents ||
+          (b.total_cents === a.total_cents && b.provider_slug < a.provider_slug)
+            ? b
+            : a,
+        );
+        daily.set(key, {
+          stayId: Number(stayId),
+          day,
+          bestCents: best.total_cents,
+          best: best.provider_slug,
+        });
+      }
+      for (const t of payload.tasks) {
+        const row = tasks.find((x) => x.id === t.id && x.status === 'posted');
+        if (row) Object.assign(row, { status: t.status, error: t.error });
+      }
+      for (const u of payload.official_urls) {
+        if (!officialUrls.has(u.hotel_id)) officialUrls.set(u.hotel_id, u.url);
+      }
+      return { snapshots: inserted, dailyRows: touched.size };
+    },
+    async dailySeries(stayIds, fromDay) {
+      return [...daily.values()]
+        .filter((d) => stayIds.includes(d.stayId) && d.day >= fromDay)
+        .map(({ stayId, day, bestCents }) => ({ stayId, day, bestCents }));
+    },
+    async upsertStats(rows) {
+      for (const r of rows) stats.set(r.stay_id, r);
     },
   };
-  return { store, stays, runs, tasks };
+  return {
+    store,
+    stays,
+    runs,
+    tasks,
+    snapshots,
+    daily,
+    stats,
+    providers,
+    officialUrls,
+    /** Sets the `posted_at` time for tasks recorded from now on. */
+    setClock(iso: string) {
+      clock = iso;
+    },
+  };
 }
 
 /** Fake DataForSEO task_post: accepts every task unless its stay id is in `failStayIds`. */

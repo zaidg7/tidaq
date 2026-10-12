@@ -1,4 +1,5 @@
-import type { BudgetReason, GridHotel, GridStay } from '@tidaq/core';
+import type { BudgetReason, DailyPrice, GridHotel, GridStay, StayState } from '@tidaq/core';
+import type { IngestPayload, OpenTask } from './ingest';
 
 /** A hotel the collector may price. */
 export interface CatalogHotel extends GridHotel {
@@ -27,6 +28,20 @@ export interface RunPatch {
   errors?: unknown[];
 }
 
+/** One `stay_stats` row. */
+export interface StayStatsRow {
+  stay_id: number;
+  updated_at: string;
+  days_tracked: number;
+  now_cents: number | null;
+  low_cents: number | null;
+  high_cents: number | null;
+  avg30_cents: number | null;
+  percentile: number | null;
+  trend_7d: number | null;
+  state: StayState;
+}
+
 /**
  * Everything the collector reads and writes. `supabaseStore` implements it against Postgres;
  * tests use an in-memory version. Keeps the run logic free of SQL.
@@ -47,4 +62,19 @@ export interface CollectorStore {
     runId: number,
     tasks: readonly { id: string; stayId: number; costUsd: number }[],
   ): Promise<void>;
+  /** Tasks still waiting for results (`status = 'posted'`), oldest first, at most `limit`. */
+  openTasks(limit: number): Promise<OpenTask[]>;
+  /** Alias → provider slug (`provider_aliases`), for `normalizeHotelInfo`. */
+  providerAliases(): Promise<Map<string, string>>;
+  /**
+   * Writes snapshots, pending providers, task statuses and official URLs, then rebuilds
+   * `stay_daily` for the touched stay days, in one transaction (SQL `collector_ingest`).
+   */
+  ingest(payload: IngestPayload): Promise<{ snapshots: number; dailyRows: number }>;
+  /** `stay_daily` best prices of these stays from `fromDay` on. */
+  dailySeries(
+    stayIds: readonly number[],
+    fromDay: string,
+  ): Promise<(DailyPrice & { stayId: number })[]>;
+  upsertStats(rows: readonly StayStatsRow[]): Promise<void>;
 }

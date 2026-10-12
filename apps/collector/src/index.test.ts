@@ -1,8 +1,12 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { runToken, safeEqual } from './auth';
-import { createWorker, CRON_EVENING, CRON_MORNING } from './index';
+import type { FetchFn } from './dataforseo';
+import { createWorker, CRON_COLLECT, CRON_EVENING, CRON_MORNING } from './index';
 import { testEnv } from './test/env';
 import { fakeDataForSeo, memoryStore } from './test/memoryStore';
+import { fakeResults, hotelInfoFixture, SEED_ALIASES } from './test/results';
 
 const hotels = [{ id: 1, citySlug: 'berlin', dfsHotelIdentifier: 'id-adlon' }];
 const now = () => new Date('2026-10-12T05:00:00Z');
@@ -75,7 +79,67 @@ describe('collector fetch', () => {
   });
 });
 
+/** Posting goes to the task_post fake, everything else to a results fake with all tasks ready. */
+function setupWithResults() {
+  const mem = memoryStore(hotels, { aliases: SEED_ALIASES });
+  const post = fakeDataForSeo();
+  const fetchFn: FetchFn = async (url, init) => {
+    if (url.endsWith('/task_post')) return post.fetchFn(url, init);
+    const ids = mem.tasks.map((t) => t.id);
+    const results = fakeResults({
+      ready: ids,
+      responses: Object.fromEntries(
+        ids.map((id) => [id, hotelInfoFixture('hotel_info-info-adlon-dec-id.json', id)]),
+      ),
+    });
+    return results.fetchFn(url);
+  };
+  const worker = createWorker({ store: mem.store, fetchFn, now });
+  return { worker, mem };
+}
+
+describe('collector /collect', () => {
+  it('rejects /collect without the token', async () => {
+    const { worker } = setupWithResults();
+    expect((await worker.fetch(req('/collect', { method: 'POST' }), testEnv())).status).toBe(401);
+  });
+
+  it('collects ready results after a manual run', async () => {
+    const { worker, mem } = setupWithResults();
+    const auth = { authorization: `Bearer ${await runToken('test-service-key')}` };
+    await worker.fetch(req('/run', { method: 'POST', headers: auth }), testEnv());
+    const res = await worker.fetch(req('/collect', { method: 'POST', headers: auth }), testEnv());
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { summary: { done: number; snapshots: number } };
+    expect(body.summary.done).toBe(mem.tasks.length);
+    expect(body.summary.snapshots).toBeGreaterThan(0);
+  });
+});
+
 describe('collector scheduled', () => {
+  it('runs a collect run on the collect cron', async () => {
+    const { worker, mem } = setupWithResults();
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+    await worker.scheduled(controller(CRON_MORNING), testEnv());
+    await worker.scheduled(controller(CRON_COLLECT), testEnv());
+    expect(mem.runs.map((r) => r.kind)).toEqual(['morning', 'collect']);
+    expect(mem.tasks.every((t) => t.status === 'done')).toBe(true);
+    // Nothing open any more: the next collect run writes no run row.
+    await worker.scheduled(controller(CRON_COLLECT), testEnv());
+    expect(mem.runs).toHaveLength(2);
+    log.mockRestore();
+  });
+
+  it('uses the same crons as wrangler.jsonc', () => {
+    const config = readFileSync(join(__dirname, '..', 'wrangler.jsonc'), 'utf8');
+    const crons = /"crons":\s*\[([^\]]*)\]/.exec(config)?.[1] ?? '';
+    expect([...crons.matchAll(/"([^"]+)"/g)].map((m) => m[1])).toEqual([
+      CRON_MORNING,
+      CRON_EVENING,
+      CRON_COLLECT,
+    ]);
+  });
+
   it('runs the morning posting run', async () => {
     const { worker, mem } = setup();
     const log = vi.spyOn(console, 'log').mockImplementation(() => {});

@@ -1,5 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
-import { fetchWithRetry, postHotelInfoTasks, type HotelInfoTask } from './dataforseo';
+import {
+  fetchWithRetry,
+  postHotelInfoTasks,
+  taskGet,
+  tasksReady,
+  type HotelInfoTask,
+} from './dataforseo';
 import { fakeDataForSeo } from './test/memoryStore';
 
 const task = (stayId: number): HotelInfoTask => ({
@@ -71,5 +77,41 @@ describe('fetchWithRetry', () => {
     await expect(fetchWithRetry(fetchFn, 'https://x', {}, { attempts: 2, sleep })).rejects.toThrow(
       'failed after 2 attempts',
     );
+  });
+});
+
+describe('tasksReady and taskGet', () => {
+  const json = (body: unknown) => async () => Response.json(body);
+
+  it('returns the ready ids', async () => {
+    const ids = await tasksReady(
+      {},
+      json({
+        status_code: 20000,
+        status_message: 'Ok.',
+        tasks: [{ status_code: 20000, status_message: 'Ok.', result: [{ id: 'a' }, { id: 'b' }] }],
+      }),
+    );
+    expect([...ids]).toEqual(['a', 'b']);
+  });
+
+  it('throws on an envelope error (e.g. a paused account)', async () => {
+    const paused = { status_code: 40201, status_message: 'Paused.', tasks: null };
+    await expect(tasksReady({}, json(paused))).rejects.toThrow('40201 Paused.');
+    await expect(taskGet('a', {}, json({ ...paused, cost: 0, tasks: [] }))).rejects.toThrow(
+      '40201 Paused.',
+    );
+  });
+
+  it('requests the advanced result by encoded id with basic auth when given', async () => {
+    const urls: string[] = [];
+    const auth: string[] = [];
+    await taskGet('a/b', { login: 'l', password: 'p' }, async (url, init) => {
+      urls.push(url);
+      auth.push((init?.headers as Record<string, string>).authorization ?? '');
+      return Response.json({ status_code: 20000, status_message: 'Ok.', cost: 0, tasks: [] });
+    });
+    expect(urls[0]).toMatch(/\/hotel_info\/task_get\/advanced\/a%2Fb$/);
+    expect(auth[0]).toBe(`Basic ${btoa('l:p')}`);
   });
 });
