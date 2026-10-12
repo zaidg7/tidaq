@@ -264,7 +264,7 @@ All for 2 adults (the most common luxury booking). About 8 grid stays per hotel 
 - Hotel Info, standard queue: ~$0.0008 per task (one hotel entity per task).
 - **Lean start (D-13):** 36 hotels × 8 stays = ~290 tasks/day, one run per day: about $0.23/day ≈ **$7/month**.
 - Later options, only when worth it: a second evening run for stays checking in within 21 days (~+$2/month), more stays per hotel, more hotels (50 hotels × 14 stays ≈ $17/month).
-- User watches: inside `DAILY_TASK_CAP` (300 at the start).
+- User watches: inside `DAILY_TASK_CAP` (400 since 12 Oct, D-13).
 - **Total ≈ $17–22/month:** data ~$7 + Supabase project in the Pro organization $10 + Cloudflare $0–5 (try the free Workers plan first). Domain is a yearly cost.
 - DataForSEO: $1 free credit on sign-up (≈ 1,250 tasks) covers the C-010 spike; minimum deposit afterwards is $50, which lasts about 7 months at the lean rate. Balance doesn't expire.
 - **Storage:** ~2,300 snapshot rows a day at the lean start (~11,000 at full scale). With raw JSON that is ~10 MB/day, so raw JSON is pruned after 30 days (D-19). Without raw, the database grows about 1 GB a year, well inside the Pro plan's 8 GB.

@@ -17,7 +17,7 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 ---
 
 ## B-006 · Decision: raise the daily task cap from 300 to 400
-Status: OPEN · Opened: 2026-10-12 by CLOUD · Blocks: nothing today (the guard keeps spending safe); affects data for the December special dates
+Status: DONE – yes (12 Oct 2026, cap 400 in `wrangler.jsonc`, D-13 updated) · Opened: 2026-10-12 by CLOUD · Blocks: nothing today (the guard keeps spending safe); affects data for the December special dates
 What I need: a yes or no. D-13 assumed 8 stays per hotel (36 × 8 ≈ 290 tasks/day, cap 300). The grid also tracks the special dates (first two December weekends, New Year's Eve), so today it's **11 stays per hotel = 396 tasks/day**. With cap 300 the budget guard drops the stays furthest away, and those are exactly the December specials. They would only start collecting history in late November.
 My recommendation: **yes, cap 400.** Cost: max 400 × $0.0008 × 31 days ≈ **$9.90/month** instead of ~$7. That is still under the existing monthly limit (`MONTHLY_BUDGET_USD` = $12), which stays as the hard stop, and well inside the €50 budget.
 Steps for Zaid (≈ 1 min):
@@ -25,7 +25,7 @@ Steps for Zaid (≈ 1 min):
 Where to put the result: nothing. The session changes `DAILY_TASK_CAP` in `apps/collector/wrangler.jsonc` and updates D-13.
 
 ## B-005 · DataForSEO paused the account ("unusual activity")
-Status: OPEN · Opened: 2026-10-12 by CLOUD · Blocks: C-013b live check, all daily price collection
+Status: DONE (12 Oct 2026: Zaid wrote to support; the account worked again at 21:11 UTC, staging posted 50 tasks) · Opened: 2026-10-12 by CLOUD · Blocks: C-013b live check, all daily price collection
 What I need: DataForSEO support to re-enable the account. On 12 Oct 2026 at 20:48 UTC the first staging collector run got error `40201`: "We noticed some unusual activity in your DataForSEO account, so we've temporarily paused access as a precaution. Please reach out to support@dataforseo.com." Nothing was charged; the balance is still $0.9256. Reading results still works, only new price requests are blocked. Probably triggered because requests now come from Cloudflare's servers (our collector) in addition to the development environment.
 Steps for Zaid (≈ 5 min):
 1. From the email address you used for DataForSEO, write to **support@dataforseo.com** (or use the live chat on app.dataforseo.com).
@@ -35,7 +35,7 @@ Steps for Zaid (≈ 5 min):
 Where to put the result: nothing.
 
 ## B-004 · Delete two old DNS records so tidaq.com can show the site
-Status: OPEN · Opened: 2026-10-12 by CLOUD · Blocks: C-005 (production on tidaq.com), later C-044 (go live)
+Status: DONE (12 Oct 2026: Zaid deleted the A and www CNAME records; production deploy 21:14 UTC; tidaq.com and /en answer 200, www → 308) · Opened: 2026-10-12 by CLOUD · Blocks: C-005 (production on tidaq.com), later C-044 (go live)
 What I need: the old placeholder records for `tidaq.com` and `www` removed in Cloudflare DNS. They point to a dead server (tidaq.com shows "Error 522"), and Cloudflare won't connect our website to a name that already has such a record. Staging works already: https://tidaq-web-staging.tidaq.workers.dev
 Steps for Zaid (≈ 3 min):
 1. Open dash.cloudflare.com and choose the account **tidaq**, then the domain **tidaq.com**.
@@ -47,7 +47,7 @@ Where to put the result: nothing.
 
 ## B-003 · Top up DataForSEO with $50
 Status: OPEN · Opened: 2026-10-12 by CLOUD · Blocks: C-013 (daily data collection)
-What I need: the $50 minimum top-up at DataForSEO. The spike worked (report: `docs/research/dataforseo.md`, cost $0.0136). The $0.98 left lasts only ~4 days of daily collection.
+What I need: the $50 minimum top-up at DataForSEO. The data works end to end (12 Oct: staging stored 756 prices for 28 hotels). About $0.88 is left: that's **~2 days** of daily collection at 400 tasks/day. When it runs out, the morning run fails and you get an error email.
 Steps for Zaid (≈ 3 min):
 1. Open app.dataforseo.com and log in.
 2. Click **Billing** (or "Add funds") → amount **$50** → pay with your card or PayPal.

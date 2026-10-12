@@ -14,7 +14,7 @@
   },
   "vars": {
     "APP_ENV": "production",
-    "DAILY_TASK_CAP": "300",
+    "DAILY_TASK_CAP": "400",
     "MONTHLY_BUDGET_USD": "12",
     "EVENING_RUN": "false",
     "GRID_WEEKENDS": "6",

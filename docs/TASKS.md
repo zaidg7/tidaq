@@ -19,7 +19,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-003 | Session tooling (SessionStart hook, permissions allowlist) | CLOUD | S | C-001 | DONE |
 | C-007 | i18n setup (de default, en) and formatting helpers | CLOUD | S | C-001 | DONE |
 | C-004 | Supabase schema v1, RLS, seed providers and cities | CLOUD | M | C-001, Z-04 | DONE |
-| C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03b, Z-04 | BLOCKED (B-004) |
+| C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03b, Z-04 | DONE |
 | **Phase 1: Data** (weeks 42–44, target Sun 1 Nov: data flowing) |||||
 | C-010 | DataForSEO spike: real response shape, cost, feasibility report | CLOUD | M | C-001, Z-04, Z-06 | DONE |
 | C-012 | Stay grid generator | CLOUD | S | C-004 | DONE |
@@ -29,7 +29,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-013a | Collector: grid refresh, budget guard, task posting | CLOUD | M | C-005, C-010, C-011, C-012, C-014 | DONE |
 | C-013b | Collector: collect results, store snapshots, daily prices, stats | CLOUD | M | C-013a, C-015 | DONE |
 | C-013c | Collector: admin emails, daily check, raw-data prune | CLOUD | S | C-013b | DONE |
-| C-013d | Collector: live check on staging, first production deploy, 2-day data check | CLOUD | S | C-013c, B-005, B-003 | BLOCKED (B-005) |
+| C-013d | Collector: live check on staging, first production deploy, 2-day data check | CLOUD | S | C-013c, B-005, B-003 | IN PROGRESS |
 | C-011b | Hotel photos: licensed Wikimedia Commons images with credits | CLOUD | S | C-011 | DONE |
 | **Phase 2: MVP website** (weeks 44–47, target Sun 22 Nov) |||||
 | C-006 | Design tokens and base UI components (Soft Modern) | CLOUD | L | C-001 | TODO |
@@ -161,7 +161,7 @@ Notes: applied to the hosted project with the Supabase MCP (`apply_migration`); 
 - [x] Types are generated and used by `packages/core`
 
 ### C-005 · Deploy pipeline
-Owner: CLOUD · Size: M · Depends on: C-002, Z-03b, Z-04 · Status: BLOCKED (B-004, production only) · PR: [#9](https://github.com/zaidg7/tidaq/pull/9), [#13](https://github.com/zaidg7/tidaq/pull/13)
+Owner: CLOUD · Size: M · Depends on: C-002, Z-03b, Z-04 · Status: DONE (production live on tidaq.com since 12 Oct, after B-004) · PR: [#9](https://github.com/zaidg7/tidaq/pull/9), [#13](https://github.com/zaidg7/tidaq/pull/13)
 Notes: staging works since 12 Oct: https://tidaq-web-staging.tidaq.workers.dev (collector: https://tidaq-collector-staging.tidaq.workers.dev/health). The first production run deployed both workers, but tidaq.com still answers 522: old parking DNS records for `tidaq.com`/`www` block the Worker custom domains. Zaid deletes them (B-004), then re-run Actions → Deploy → `production` and tick the second box. #13 also makes deploy steps fail properly (`shell: bash` = pipefail; before, `deploy | tee` hid errors).
 
 **Goal:** merging to `main` deploys automatically. Two environments.
@@ -295,7 +295,9 @@ Owner: CLOUD · Size: L (split: a = posting + guard, b = results + storage) · D
 
 **C-013c notes (DONE):** `notify.ts`: plain-text admin emails via Resend from `collector@tidaq.com` (domain verified) to `ADMIN_EMAILS` (collector var, both environments; admin emails are not user emails, so `ALERTS_DRY_RUN` doesn't apply). Sent when a posting run has errors or crashes, when a posting run moves the month past 80 % of `MONTHLY_BUDGET_USD` (once, at the crossing), and from the **daily check** (`report.ts`, cron `55 7 * * *`, production only): it calls `prune_raw_snapshots()` (D-19) and emails once if today had run errors, unfinished runs, tasks without results or failed tasks, or no morning run. Collect runs don't email (every 10 min would spam); the daily check covers them. A missing `RESEND_API_KEY` or `ADMIN_EMAILS` skips email (logged) and never breaks a run. Addresses are never logged.
 
-**C-013d (BLOCKED, B-005 then B-003):** (1) Staging: Actions → Collector run → `staging`/`post`, wait 5 min, then `staging`/`collect` (repeat until no tasks are open). `price_snapshots` must have rows for ≥ 3 hotels; check `stay_daily`/`stay_stats` look sane. (2) Production: Actions → Deploy → `production` (also finishes C-005 once B-004 is done; the collector deploys even if the web domain still fails). (3) After 2 days: `stay_daily` has 2 rows per active stay, daily check quiet. (4) Apply B-006 if Zaid says yes. Also: `supabaseStore` selects are capped at 1000 rows by PostgREST (fine for ~400 active stays and the seed aliases today); page `stayJobs`, `watches` and `providerAliases` once they grow. C-022 must show pending providers by name without an affiliate link.
+**C-013d progress (12 Oct):** (1) staging done: 50 tasks posted, 2 collect runs → 34 done, 5 no results (Villa Kennedy Frankfurt both weekends, George V, Mandarin Oriental Barcelona, Park Hyatt Vienna 23 Oct; watch Villa Kennedy, replace it if it stays empty), 756 snapshots for 28 hotels, `stay_daily`/`stay_stats` filled, 16+ official URLs, 52 pending providers (long-tail resellers; the big sites all map). **Finding for C-022/C-016:** in 18 of 18 stays the cheapest price came from a pending reseller (Super.com, Traveluro, Luxury Escapes …), so the stay page should also show the best price from a known provider. (2) Production deployed 12 Oct 21:17 UTC (tidaq.com live, collector crons active from 13 Oct 05:00 UTC); redeploy after this PR so production gets cap 400. (4) B-006 applied (cap 400). Open: (3) 2-day check after the first production mornings; B-003 top-up.
+
+**C-013d (original steps):** (1) Staging: Actions → Collector run → `staging`/`post`, wait 5 min, then `staging`/`collect` (repeat until no tasks are open). `price_snapshots` must have rows for ≥ 3 hotels; check `stay_daily`/`stay_stats` look sane. (2) Production: Actions → Deploy → `production` (also finishes C-005 once B-004 is done; the collector deploys even if the web domain still fails). (3) After 2 days: `stay_daily` has 2 rows per active stay, daily check quiet. (4) Apply B-006 if Zaid says yes. Also: `supabaseStore` selects are capped at 1000 rows by PostgREST (fine for ~400 active stays and the seed aliases today); page `stayJobs`, `watches` and `providerAliases` once they grow. C-022 must show pending providers by name without an affiliate link.
 
 **Goal:** prices flow into the database every day, within budget. **The most important task of the project.**
 
