@@ -273,10 +273,14 @@ All for 2 adults (the most common luxury booking). About 8 grid stays per hotel 
 **Budget guard (C-013):** before posting, count today's tasks in `collector_runs`. If adding the batch would exceed `DAILY_TASK_CAP` or the month-to-date estimate would exceed `MONTHLY_BUDGET_USD`, post only the highest-priority tasks (watches first, then stays closest to check-in, then the rest) and log the skip. Unit-tested.
 
 ### 7.3 Normalization
-- Request `currency=EUR`, `language_code=de`, location Germany.
-- Store the **total for the stay** as shown by the provider, in cents. If the API returns a nightly price, multiply by nights and mark it in `raw`.
-- Map raw source names to `providers` via `provider_aliases`. Unknown sources are auto-created as providers with `slug` from the domain and logged for review.
+Verified in the C-010 spike (`docs/research/dataforseo.md`).
+- Request by **`hotel_identifier`** (from `hotels.dfs_hotel_identifier`), `currency=EUR`, `language_code=de`, location Germany (2276). Lookups by hotel name fail (`40102`) and are still billed.
+- The API returns **per-night prices** (integer EUR). Store the **total for the stay**: `total_cents = price × nights × 100`, and mark `nightly: true` in `raw`.
+- Some sites report the stay total instead: if an entry is ≈ `nights ×` the stay's median that day (±25 %), flag it as a suspected total and exclude it from best price and provider tables (keep it in `raw`).
+- Google ads (`is_paid`) duplicate organic entries: keep one entry per provider per stay (the cheapest; prefer the organic URL).
+- Map sources to `providers` by **domain** (e.g. `www.booking.com`, `de.hotels.com`) via `provider_aliases`, with the title as a fallback. Unknown sources are auto-created as pending providers with `slug` from the domain and logged for review.
 - Drop offers with price ≤ 0, wrong currency or missing source. Keep everything else in `raw` for re-processing.
+- No board/breakfast data exists in the source; `board` stays null. Room names exist only on ad entries.
 
 ## 8. Methods
 

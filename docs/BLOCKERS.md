@@ -16,6 +16,15 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-003 · Top up DataForSEO with $50
+Status: OPEN · Opened: 2026-10-12 by CLOUD · Blocks: C-013 (daily data collection)
+What I need: the $50 minimum top-up at DataForSEO. The spike worked (report: `docs/research/dataforseo.md`, cost $0.0136). The $0.98 left lasts only ~4 days of daily collection.
+Steps for Zaid (≈ 3 min):
+1. Open app.dataforseo.com and log in.
+2. Click **Billing** (or "Add funds") → amount **$50** → pay with your card or PayPal.
+3. Done. Nothing to paste anywhere; the keys stay the same.
+Where to put the result: nothing. Change this Status to DONE (or tell the session "topped up").
+
 ## B-001 · Create the repo and give Claude access
 Status: DONE · Opened: 2026-10-11 by kickoff · Blocks: everything
 What I need: an empty private repo `zaidg7/tidaq` with the Claude GitHub App installed.

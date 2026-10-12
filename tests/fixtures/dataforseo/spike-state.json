@@ -1,0 +1,95 @@
+{
+  "posted": [
+    {
+      "id": "10121602-2784-0290-0000-703747d7e1f3",
+      "endpoint": "hotel_searches",
+      "tag": "search-luxushotel-berlin",
+      "postedAt": "2026-10-12T16:02:11.634Z"
+    },
+    {
+      "id": "10121602-2784-0282-0000-40c27241c258",
+      "endpoint": "hotel_info",
+      "tag": "info-adlon-weekend",
+      "postedAt": "2026-10-12T16:02:11.966Z"
+    },
+    {
+      "id": "10121602-2784-0282-0000-2b25ea7a5815",
+      "endpoint": "hotel_info",
+      "tag": "info-adlon-dec",
+      "postedAt": "2026-10-12T16:02:11.966Z"
+    },
+    {
+      "id": "10121602-2784-0282-0000-404d912cdc57",
+      "endpoint": "hotel_info",
+      "tag": "info-ritz-carlton-weekend",
+      "postedAt": "2026-10-12T16:02:11.966Z"
+    },
+    {
+      "id": "10121602-2784-0282-0000-42ad4f86d9bf",
+      "endpoint": "hotel_info",
+      "tag": "info-ritz-carlton-dec",
+      "postedAt": "2026-10-12T16:02:11.966Z"
+    },
+    {
+      "id": "10121602-2784-0282-0000-8bca28075d33",
+      "endpoint": "hotel_info",
+      "tag": "info-waldorf-weekend",
+      "postedAt": "2026-10-12T16:02:11.966Z"
+    },
+    {
+      "id": "10121602-2784-0282-0000-a7f98526d0eb",
+      "endpoint": "hotel_info",
+      "tag": "info-waldorf-dec",
+      "postedAt": "2026-10-12T16:02:11.966Z"
+    },
+    {
+      "id": "10121602-2784-0282-0000-e0d51da20ac4",
+      "endpoint": "hotel_info",
+      "tag": "info-adlon-dec-calendar",
+      "postedAt": "2026-10-12T16:02:11.966Z"
+    },
+    {
+      "id": "10121606-2784-0282-0000-dfa454d51ab6",
+      "endpoint": "hotel_info",
+      "tag": "info-adlon-weekend-id",
+      "postedAt": "2026-10-12T16:06:04.665Z"
+    },
+    {
+      "id": "10121606-2784-0282-0000-fc92861bb8d2",
+      "endpoint": "hotel_info",
+      "tag": "info-adlon-dec-id",
+      "postedAt": "2026-10-12T16:06:04.665Z"
+    },
+    {
+      "id": "10121606-2784-0282-0000-0fdcf5986824",
+      "endpoint": "hotel_info",
+      "tag": "info-ritz-carlton-weekend-id",
+      "postedAt": "2026-10-12T16:06:04.665Z"
+    },
+    {
+      "id": "10121606-2784-0282-0000-fcb2aa283694",
+      "endpoint": "hotel_info",
+      "tag": "info-ritz-carlton-dec-id",
+      "postedAt": "2026-10-12T16:06:04.665Z"
+    },
+    {
+      "id": "10121606-2784-0282-0000-cca0b499dc32",
+      "endpoint": "hotel_info",
+      "tag": "info-waldorf-weekend-id",
+      "postedAt": "2026-10-12T16:06:04.665Z"
+    },
+    {
+      "id": "10121606-2784-0282-0000-8e69413a04c7",
+      "endpoint": "hotel_info",
+      "tag": "info-waldorf-dec-id",
+      "postedAt": "2026-10-12T16:06:04.665Z"
+    },
+    {
+      "id": "10121606-2784-0282-0000-bd8c2f4181f8",
+      "endpoint": "hotel_info",
+      "tag": "info-adlon-dec-calendar-id",
+      "postedAt": "2026-10-12T16:06:04.665Z"
+    }
+  ],
+  "balanceBefore": 1
+}
