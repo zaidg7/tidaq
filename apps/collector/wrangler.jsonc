@@ -1,5 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  // Top level = production. Staging lives under env.staging and has no crons:
+  // it only runs when triggered manually (C-005, C-013).
   "name": "tidaq-collector",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
@@ -9,11 +11,28 @@
     "crons": ["0 5 * * *", "0 17 * * *"],
   },
   "vars": {
+    "APP_ENV": "production",
     "DAILY_TASK_CAP": "300",
     "MONTHLY_BUDGET_USD": "12",
     "EVENING_RUN": "false",
     "GRID_WEEKENDS": "6",
     "GRID_MIDWEEK": "2",
+    // Stays true until the alert engine (C-031) is tested end to end.
     "ALERTS_DRY_RUN": "true",
+  },
+  "env": {
+    "staging": {
+      "name": "tidaq-collector-staging",
+      "triggers": { "crons": [] },
+      "vars": {
+        "APP_ENV": "staging",
+        "DAILY_TASK_CAP": "50",
+        "MONTHLY_BUDGET_USD": "12",
+        "EVENING_RUN": "false",
+        "GRID_WEEKENDS": "6",
+        "GRID_MIDWEEK": "2",
+        "ALERTS_DRY_RUN": "true",
+      },
+    },
   },
 }

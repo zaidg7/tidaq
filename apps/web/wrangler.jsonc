@@ -1,5 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  // Top level = production (tidaq.com). Staging lives under env.staging (workers.dev).
+  // Deploys run only from CI (.github/workflows/deploy.yml), never from a laptop.
   "name": "tidaq-web",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-10-01",
@@ -8,11 +10,21 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS",
   },
-  "services": [
-    {
-      "binding": "WORKER_SELF_REFERENCE",
-      "service": "tidaq-web",
-    },
-  ],
+  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "tidaq-web" }],
   "observability": { "enabled": true },
+  "workers_dev": false,
+  "routes": [
+    { "pattern": "tidaq.com", "custom_domain": true },
+    { "pattern": "www.tidaq.com", "custom_domain": true },
+  ],
+  "vars": { "APP_ENV": "production" },
+  "env": {
+    "staging": {
+      "name": "tidaq-web-staging",
+      "workers_dev": true,
+      "routes": [],
+      "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "tidaq-web-staging" }],
+      "vars": { "APP_ENV": "staging" },
+    },
+  },
 }

@@ -52,8 +52,10 @@ Last updated: 11 Oct 2026 (kickoff with Zaid).
 | D-35 | **Impressum/Datenschutz: reuse AheadSignal details** (Zaid Ghazal, Kleinunternehmer § 19 UStG), cite **§ 5 DDG** (not TMG; TMG was replaced on 14 May 2024). | Same business owner. |
 | D-36 | **Domain `tidaq.com` registered at Namecheap**, DNS managed by **Cloudflare** (Namecheap nameservers point to Cloudflare). `.com` only. | Bought by Zaid on 12 Oct 2026. Cloudflare DNS is needed for Workers custom domains, Resend records and Search Console. |
 | D-37 | **Trademark check for "Tidaq" is clean** (EUIPO, DPMA, WIPO, checked by Zaid on 12 Oct 2026). | Name is safe to use. |
+| D-38 | **Deploys: staging on every green `main` push; production (tidaq.com) only on a `v*` tag or a manual "Deploy → production" run** until launch. Revisit at C-044 (likely: production on every green `main` push after launch). | C-005 had to choose. Before launch the public domain should only change on purpose; staging gives every merge a live URL. |
 
 ## Changelog
 
 - **12 Oct 2026:** D-11 Supabase moved to Zaid's Pro organization (+$10/month, storage and reliability); D-13 cost estimate updated; D-19 added (raw data retention); D-36 domain bought at Namecheap with Cloudflare DNS; D-37 trademark clean.
 - **12 Oct 2026 (2):** D-13 lean start: 36 hotels × 8 stays, one daily run, cap 300 tasks/day; $50 top-up only after the spike.
+- **12 Oct 2026 (3):** D-38 added (deploy flow, C-005).

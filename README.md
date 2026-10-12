@@ -56,6 +56,17 @@ pnpm --filter collector dev     # collector worker on http://localhost:8787 (GET
 
 Layout: `apps/web` (Next.js on Cloudflare Workers via OpenNext), `apps/collector` (Cloudflare Worker with cron triggers), `packages/core` (shared TypeScript: formatting, dates, zod schemas, later stats and trust score). `@tidaq/core` is consumed as TypeScript source; no separate build step.
 
+### Deploys (Cloudflare Workers)
+
+| Environment | Web | Collector | When |
+|---|---|---|---|
+| Staging | `tidaq-web-staging` on workers.dev (URL in the job summary) | `tidaq-collector-staging`, **no crons** (manual runs only) | Automatically after CI is green on every push to `main` (job "Deploy staging" in `ci.yml`) |
+| Production | `tidaq-web` on **tidaq.com** (+ `www.tidaq.com` → 308 to `tidaq.com`) | `tidaq-collector` with the 05:00/17:00 UTC crons | Push a tag `v*`, or Actions → Deploy → Run workflow → target `production` |
+
+- Everything runs in `.github/workflows/deploy.yml`: deploy collector, push its secrets, OpenNext build, deploy web, push its secrets, smoke test (`/` and `/en` must answer).
+- Worker secrets come from GitHub secrets through `wrangler secret bulk` (`scripts/deploy/secrets-json.mjs` skips unset ones). Never deploy from a laptop: there is no `deploy` script on purpose.
+- Config per environment lives in each app's `wrangler.jsonc` (top level = production, `env.staging` = staging). Staging uses `DAILY_TASK_CAP=50` and `ALERTS_DRY_RUN=true`; production keeps `ALERTS_DRY_RUN=true` until C-031.
+
 ### Database (Supabase)
 
 - Hosted project `tidaq` (ref `kaxcnrfpgpktzrfibpzg`, Frankfurt) in Zaid's Pro organization. The schema lives in `supabase/migrations/` and nowhere else.

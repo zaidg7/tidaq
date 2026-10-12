@@ -3,6 +3,7 @@ import worker from './index';
 import type { Env } from './env';
 
 const env: Env = {
+  APP_ENV: 'staging',
   DAILY_TASK_CAP: '300',
   MONTHLY_BUDGET_USD: '12',
   EVENING_RUN: 'false',
