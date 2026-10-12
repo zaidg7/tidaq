@@ -1,0 +1,37 @@
+# C-011b: looks up licensed hotel photos on Wikidata/Wikimedia Commons from a GitHub runner
+# (Wikimedia rate-limits the Claude cloud sessions' IP). Prints photos.json to the log and the
+# job summary; a session copies it to scripts/catalog/photos.json and turns it into a migration.
+name: Catalog photos
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/catalog/photos.ts
+
+permissions:
+  contents: read
+
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Find photos
+        run: |
+          node scripts/catalog/photos.ts > photos.json
+          echo "----- photos.json -----"
+          cat photos.json
+          {
+            echo '### Catalog photos'
+            echo
+            echo '```json'
+            cat photos.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
