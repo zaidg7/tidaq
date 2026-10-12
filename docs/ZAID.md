@@ -4,13 +4,13 @@ Only things the sessions can't do for you: your identity, money, logins, decisio
 
 **Golden rule:** never paste a key, token or password into a chat, issue or PR. Put keys only where a step says (GitHub secrets, Cloudflare, the Claude environment settings).
 
-Total for week 1: **about 2.5 hours.** After that: about 1–3 hours a week, mostly the checkout audit and content.
+Total for week 1: **about 2 hours** (Z-01 to Z-03 are already done). After that: about 1–3 hours a week, mostly the checkout audit and content.
 
 ---
 
 ## Week 1 (Mon 12 – Sun 18 Oct 2026)
 
-### Z-01 · Create the GitHub repo and give Claude access (5 min). Do this first, everything waits for it.
+### Z-01 · Create the GitHub repo and give Claude access ✅ DONE (12 Oct)
 1. Open github.com/new
 2. Owner `zaidg7`, name `tidaq`, **Private**. Leave "Add a README" **unticked** (the repo must be empty).
 3. Create repository.
@@ -19,28 +19,28 @@ Total for week 1: **about 2.5 hours.** After that: about 1–3 hours a week, mos
 5. Repo → Settings → General → Pull Requests: tick **Allow squash merging** and **Automatically delete head branches**.
 6. Write "repo ready" in the chat. Claude pushes the plan into it.
 
-### Z-02 · Trademark check for "Tidaq" (10 min)
-1. EUIPO: euipo.europa.eu → eSearch plus → search `TIDAQ` (also try `TIDAK`, `TIDAX`).
-2. DPMA: register.dpma.de → DPMAregister → Marken → Einsteigerrecherche → `Tidaq`.
-3. WIPO: branddb.wipo.int → search `TIDAQ`.
-4. What matters: an identical or very similar name in classes **35, 39, 42 or 43** (advertising/comparison, travel, software, hotels). If you find one, write it in the chat before buying the domain. If nothing comes up, continue.
-- Registering your own EU trademark (about €850) can wait until there's revenue.
+### Z-02 · Trademark check ✅ DONE (12 Oct): clean in EUIPO, DPMA and WIPO.
 
-### Z-03 · Buy tidaq.com (10 min, ~$10/year)
-1. Create a Cloudflare account at dash.cloudflare.com (use a strong password + 2FA).
-2. Domain Registration → Register Domains → `tidaq.com` → buy (1 year, auto-renew on).
-3. Done. DNS stays in Cloudflare; the sessions configure it through the deploy pipeline.
+### Z-03 · Domain ✅ DONE (12 Oct): tidaq.com bought at Namecheap.
 
-### Z-04 · Accounts and keys (45 min)
-**Cloudflare (already created in Z-03)**
+### Z-03b · Point tidaq.com to Cloudflare (10 min + up to 24 h waiting)
+The domain stays at Namecheap; only the DNS moves to Cloudflare (needed for the website, emails and Google).
+1. Namecheap → Domain List → `tidaq.com` → Manage → **Advanced DNS**: if **DNSSEC** is on, turn it off first.
+2. Cloudflare dashboard → **Add a domain** (or "Add site") → `tidaq.com` → choose the **Free** plan → continue. Cloudflare shows **two nameservers** (like `xxx.ns.cloudflare.com`).
+3. Namecheap → `tidaq.com` → Manage → **Nameservers** → choose **Custom DNS** → paste both Cloudflare nameservers → save (green check).
+4. Wait. Cloudflare emails you when the domain is **Active** (usually under 1 hour, at most 24 h). Nothing else to do; the sessions add the DNS records.
+5. Optional, later: turn DNSSEC on again inside Cloudflare (DNS → Settings) and add the DS record it shows at Namecheap.
+
+### Z-04 · Accounts and keys (40 min)
+**Cloudflare (account already created ✅)**
 1. Workers & Pages → open it once so Workers is activated (free plan for now).
 2. My Profile → API Tokens → Create Token → template **Edit Cloudflare Workers** → All accounts / your account, zone `tidaq.com` → Create. Copy the token.
 3. Copy your **Account ID** (Workers & Pages overview, right sidebar).
 4. Later, only if a session asks in BLOCKERS: Workers Paid plan ($5/month).
 
-**Supabase**
-1. supabase.com → New project → name `tidaq`, region **Frankfurt (eu-central-1)**, free plan. Save the database password in your password manager.
-   (If the cloud session already created it through the Supabase connector, skip this.)
+**Supabase** (decided 12 Oct: use your existing **Pro organization**, about +$10/month for the extra project)
+1. supabase.com → your **Pro organization** → New project → name `tidaq`, region **Frankfurt (eu-central-1)**, compute **Micro**. Save the database password in your password manager.
+   (Don't create a new free organization: the free plan's 500 MB fills within weeks and free projects pause.)
 2. Project Settings → API: copy **Project URL**, **anon/publishable key** and **service_role/secret key**.
 
 **DataForSEO**
@@ -79,6 +79,12 @@ In a claude.ai Code session for `tidaq`: environment menu in the session title b
 4. Install **Google Chrome** and the **Claude in Chrome** extension (Chrome Web Store), sign in.
 5. Clone the repo: in PowerShell `cd $HOME\Documents` then `git clone https://github.com/zaidg7/tidaq.git`.
 6. Open the `tidaq` folder in Claude Code and paste the LOCAL start prompt (PLAN §14). The LOCAL session can help with anything that fails.
+
+### How to "link" the accounts to Claude
+There are three places, and each has a different job. Never paste keys into a chat.
+1. **GitHub secrets** (Z-04/Z-05): the deploy pipeline uses them. That's the main one.
+2. **Claude cloud environment** (Z-06): allowed domains + a few variables so cloud sessions can test against the real services.
+3. **claude.ai connectors** (Settings → Connectors): the **Supabase** connector is already connected to your account. Make sure it can see your **Pro organization**, so sessions can apply database changes and check data directly. GitHub is connected too. Nothing else is needed.
 
 ### Z-08 · Every Sunday: 15-minute review
 Open the newest **Weekly summary** issue on GitHub (you'll get a notification), do the listed steps, close it.
@@ -126,7 +132,7 @@ Keep invoices from Cloudflare, DataForSEO, Resend and later affiliate payouts fo
 
 | Week | What | Time |
 |---|---|---|
-| 12–18 Oct | Z-01 to Z-07, Z-10 | ~2.5 h |
+| 12–18 Oct | Z-03b to Z-07, Z-10 (Z-01 to Z-03 done ✅) | ~2 h |
 | 19 Oct – 29 Nov | audit sessions, Sunday review, Z-09, Z-12 | ~1.5–2.5 h/week |
 | Launch week (30 Nov) | Z-13 videos, posting | ~3 h |
 | Dec onward | Sunday review, content, Z-11 | ~2–3 h/week |

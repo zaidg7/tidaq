@@ -14,8 +14,8 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../.
 const read = (p) => fs.readFileSync(path.join(root, p), "utf8");
 marked.setOptions({ gfm: true });
 
-const VERSION = "1.0";
-const DATE = "11 October 2026";
+const VERSION = "1.1";
+const DATE = "12 October 2026";
 
 // strip the first H1 of each doc (we render our own part titles)
 const body = (md) => marked.parse(md.replace(/^# .*\n/, ""));
@@ -147,15 +147,14 @@ const start = `
 <section class="page">
   <h1>Start here</h1>
   <p class="sub">What happens next, and the only things you need to do this week.</p>
-  <h3>Your first steps (about 2.5 hours this week)</h3>
+  <h3>Your steps this week (about 2 hours left)</h3>
   <div class="steps">
-    <div class="step"><b>Create the empty repo and give Claude access (5 min)</b><span>github.com/new → zaidg7/tidaq, private, no README → add it to the Claude GitHub App. Then write "repo ready" in the chat. (Z-01)</span></div>
-    <div class="step"><b>Trademark check for "Tidaq" (10 min)</b><span>EUIPO eSearch plus, DPMAregister, WIPO. Look at classes 35, 39, 42, 43. (Z-02)</span></div>
-    <div class="step"><b>Buy tidaq.com at Cloudflare (10 min)</b><span>About $10/year, auto-renew on. (Z-03)</span></div>
-    <div class="step"><b>Accounts and keys (45 min)</b><span>Cloudflare token + account ID, Supabase project in Frankfurt, DataForSEO top-up. Keys go into GitHub secrets with the exact names in Part A, never into a chat. (Z-04, Z-05)</span></div>
+    <div class="step"><b>✓ Repo, trademark check, domain: done (12 Oct)</b><span>zaidg7/tidaq exists with Claude access, "Tidaq" is clean in EUIPO/DPMA/WIPO, tidaq.com is bought at Namecheap. (Z-01 to Z-03)</span></div>
+    <div class="step"><b>Point tidaq.com to Cloudflare (10 min)</b><span>Add the domain in Cloudflare (Free plan), paste its two nameservers into Namecheap → Custom DNS. (Z-03b)</span></div>
+    <div class="step"><b>Accounts and keys (40 min)</b><span>Cloudflare token + account ID, Supabase project in your Pro organization (Frankfurt, Micro), DataForSEO top-up. Keys go into GitHub secrets with the exact names in Part A, never into a chat. (Z-04, Z-05)</span></div>
     <div class="step"><b>Claude environment settings (10 min)</b><span>Allow the listed domains and add the DataForSEO + Supabase variables, so cloud sessions can reach the services. (Z-06)</span></div>
     <div class="step"><b>Set up your PC (30 min)</b><span>Git, Node 22, Claude desktop app, Chrome + Claude in Chrome, clone the repo. (Z-07)</span></div>
-    <div class="step"><b>Start the CLOUD session</b><span>New claude.ai Code session with the tidaq repo, paste the CLOUD start prompt (Part B §14). It works the backlog by itself from there.</span></div>
+    <div class="step"><b>Start the CLOUD session</b><span>New claude.ai Code session with the tidaq repo, paste the CLOUD start prompt (Part B §14). It can start C-001 to C-003 right away; data tasks wait for the accounts.</span></div>
   </div>
   <h3>How the machine runs</h3>
   <div class="loop">

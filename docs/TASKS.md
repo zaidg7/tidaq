@@ -19,7 +19,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-003 | Session tooling (SessionStart hook, permissions allowlist) | CLOUD | S | C-001 | TODO |
 | C-007 | i18n setup (de default, en) and formatting helpers | CLOUD | S | C-001 | TODO |
 | C-004 | Supabase schema v1, RLS, seed providers and cities | CLOUD | M | C-001, Z-04 | TODO |
-| C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03, Z-04 | TODO |
+| C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03b, Z-04 | TODO |
 | **Phase 1: Data** (weeks 42–44, target Sun 1 Nov: data flowing) |||||
 | C-010 | DataForSEO spike: real response shape, cost, feasibility report | CLOUD | M | C-001, Z-04, Z-06 | TODO |
 | C-012 | Stay grid generator | CLOUD | S | C-004 | TODO |
@@ -67,8 +67,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | ID | What | Status |
 |---|---|---|
 | Z-01 | GitHub repo + Claude app access | DONE |
-| Z-02 | Trademark check | TODO |
-| Z-03 | Buy tidaq.com (Cloudflare) | TODO |
+| Z-02 | Trademark check | DONE (clean) |
+| Z-03 | Buy tidaq.com | DONE (Namecheap) |
+| Z-03b | Point tidaq.com nameservers to Cloudflare | TODO |
 | Z-04 | Cloudflare, Supabase, DataForSEO accounts + GitHub secrets | TODO |
 | Z-05 | Resend + `RESEND_API_KEY` | TODO |
 | Z-06 | Claude cloud environment: allowed domains + env vars | TODO |
@@ -142,8 +143,9 @@ Owner: CLOUD · Size: M · Depends on: C-001, Z-04 · Status: TODO · PR: –
 2. RLS on every table. Public read only on `cities`, `hotels`, `providers`, `stay_daily`, `stay_stats`, `provider_scores` and on views `v_stay_public`, `v_hotel_calendar`. No public access to `watchers`, `watches`, `alerts_sent`, `trust_tests`, `collector_runs`, `events`.
 3. Seed migration: the 12 cities (D-04) and core providers (Booking.com, Expedia, Hotels.com, Trip.com, Agoda, HRS, Hotel direkt / official site, Check24) with aliases.
 4. Generate TypeScript types into `packages/core/src/db.types.ts`.
-5. Apply to the Supabase project via the Supabase MCP tools (`apply_migration`) or the CLI in CI. Document which in README.
-6. Write SQL tests for RLS (pgTAP or a Vitest script that uses the anon key against a local Supabase) or at minimum a documented manual check in the PR.
+5. The project lives in Zaid's **Pro organization** (D-11). Apply to the Supabase project via the Supabase MCP tools (`apply_migration`) or the CLI in CI. Document which in README.
+6. Daily cleanup (D-19): a SQL function `prune_raw_snapshots()` that sets `raw = null` where `captured_at < now() - interval '30 days'`; the collector calls it once a day. Test it.
+7. Write SQL tests for RLS (pgTAP or a Vitest script that uses the anon key against a local Supabase) or at minimum a documented manual check in the PR.
 
 **Done when**
 - [ ] Migrations apply cleanly on a fresh database
@@ -151,7 +153,7 @@ Owner: CLOUD · Size: M · Depends on: C-001, Z-04 · Status: TODO · PR: –
 - [ ] Types are generated and used by `packages/core`
 
 ### C-005 · Deploy pipeline
-Owner: CLOUD · Size: M · Depends on: C-002, Z-03, Z-04 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-002, Z-03b, Z-04 · Status: TODO · PR: –
 
 **Goal:** merging to `main` deploys automatically. Two environments.
 
@@ -160,7 +162,7 @@ Owner: CLOUD · Size: M · Depends on: C-002, Z-03, Z-04 · Status: TODO · PR: 
 2. Wrangler deploy steps in a `deploy.yml` workflow using `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. Push Worker secrets from GitHub secrets with `wrangler secret put` (only if changed) or `wrangler secret bulk`.
 3. Staging uses `ALERTS_DRY_RUN=true` and a lower `DAILY_TASK_CAP` (50).
 4. Supabase: one project for now. Staging and prod share the database but staging writes to nothing user-facing. Collector staging runs only on manual trigger (`workflow_dispatch`).
-5. Custom domain `tidaq.com` and `www` redirect on the prod web worker (DNS in Cloudflare).
+5. Custom domain `tidaq.com` and `www` redirect on the prod web worker. The domain is registered at Namecheap; DNS is the Cloudflare zone (Z-03b). Check the zone is active before adding the custom domain.
 
 **Done when**
 - [ ] Merge to main → staging URL updated within ~5 minutes

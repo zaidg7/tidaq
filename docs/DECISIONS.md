@@ -22,13 +22,14 @@ Last updated: 11 Oct 2026 (kickoff with Zaid).
 | # | Decision | Why |
 |---|---|---|
 | D-10 | **Hosting: Cloudflare.** Web app = Next.js (App Router) on Cloudflare Workers via `@opennextjs/cloudflare`. Data collector = separate Cloudflare Worker with Cron Triggers. **No Vercel.** | Zaid's choice. Cheap, fast, EU-friendly, cron built in. |
-| D-11 | **Database: Supabase Postgres, region Frankfurt (eu-central-1).** Supabase Auth for magic-link emails if needed. | Zaid already knows Supabase (AheadSignal). Postgres is right for time series and stats. EU data residency. |
+| D-11 | **Database: Supabase Postgres, new project `tidaq` in Zaid's existing Supabase Pro organization**, Micro compute (about +$10/month), region Frankfurt (eu-central-1). Supabase Auth for magic-link emails if needed. | Postgres fits time series and stats; EU data residency. Pro instead of free: 8 GB instead of 500 MB (price snapshots would fill 500 MB within weeks), no auto-pause, daily backups. |
 | D-12 | **Price data: DataForSEO Google Hotels API** (Hotel Info + Hotel Searches, standard queue). About $0.0008 per hotel entity per task (Oct 2026 pricing page). SerpApi is the fallback. | Licensed data access instead of scraping provider sites ourselves. Cheap enough to track ~50 hotels daily. |
-| D-13 | **Budget: under €50/month** for data + hosting in the first 3 months. Hard daily cap in code (`DAILY_TASK_CAP`). | Zaid's budget. |
+| D-13 | **Budget: under €50/month** for data + hosting in the first 3 months. Hard daily cap in code (`DAILY_TASK_CAP`). Expected: DataForSEO ~$20–25, Supabase project ~$10, Cloudflare Workers ~$5 = **~$37/month**. Domain is a yearly cost. | Zaid's budget. |
 | D-14 | **Email: Resend** (free tier, 3,000 emails/month), domain `tidaq.com`. Templates with React Email. | Simple API, good deliverability, works from Workers. |
 | D-15 | **Analytics: Cloudflare Web Analytics (cookieless)** + our own event table. **No tracking cookies, so no cookie banner.** | DSGVO-simple and good UX. |
 | D-16 | **Language/tooling:** TypeScript strict, pnpm, Tailwind CSS, next-intl, Vitest, Playwright, ESLint + Prettier, Zod for all external data. | Mainstream, AI-friendly, well-tested. |
 | D-17 | **Charts: own SVG components** (d3-scale/d3-shape only for math). No heavy chart library. | Full design control, tiny bundle, matches the reference design. |
+| D-19 | **Raw API offers are kept 30 days**, then `price_snapshots.raw` is set to null by a daily cleanup. Normalized prices, `stay_daily`, stats and scores are kept forever. | Keeps the database small (about 1 GB per year instead of several GB) while still allowing re-processing of recent data. |
 | D-18 | **Repo: `zaidg7/tidaq`, private.** Default branch `main`. | Keeps data pipeline and trust method private. |
 
 ## Design
@@ -49,4 +50,9 @@ Last updated: 11 Oct 2026 (kickoff with Zaid).
 | D-33 | **Progress updates: weekly summary** every Sunday as a GitHub issue assigned to `zaidg7` plus `docs/progress/YYYY-Www.md`. Blockers go to `docs/BLOCKERS.md` immediately. | Zaid gets a phone notification once a week. |
 | D-34 | **Baseline hotels: Claude picks** (seed list in `docs/TASKS.md`, C-011). | Zaid's choice. |
 | D-35 | **Impressum/Datenschutz: reuse AheadSignal details** (Zaid Ghazal, Kleinunternehmer § 19 UStG), cite **§ 5 DDG** (not TMG; TMG was replaced on 14 May 2024). | Same business owner. |
-| D-36 | **Domain registrar: Cloudflare Registrar** (at-cost). `.com` only for now. | Zaid's choice. He doesn't need .de. |
+| D-36 | **Domain `tidaq.com` registered at Namecheap**, DNS managed by **Cloudflare** (Namecheap nameservers point to Cloudflare). `.com` only. | Bought by Zaid on 12 Oct 2026. Cloudflare DNS is needed for Workers custom domains, Resend records and Search Console. |
+| D-37 | **Trademark check for "Tidaq" is clean** (EUIPO, DPMA, WIPO, checked by Zaid on 12 Oct 2026). | Name is safe to use. |
+
+## Changelog
+
+- **12 Oct 2026:** D-11 Supabase moved to Zaid's Pro organization (+$10/month, storage and reliability); D-13 cost estimate updated; D-19 added (raw data retention); D-36 domain bought at Namecheap with Cloudflare DNS; D-37 trademark clean.

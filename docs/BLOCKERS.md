@@ -23,7 +23,8 @@ Steps for Zaid (≈ 5 min): see `docs/ZAID.md` → Z-01.
 Where to put the result: write "repo ready" in the chat.
 
 ## B-002 · Week-1 accounts and settings
-Status: OPEN · Opened: 2026-10-11 by kickoff · Blocks: C-004, C-005, C-010, C-030
-What I need: domain, Cloudflare, Supabase, DataForSEO, Resend, GitHub secrets, Claude environment settings.
-Steps for Zaid (≈ 90 min): `docs/ZAID.md` → Z-02 to Z-06.
+Status: OPEN · Opened: 2026-10-11 by kickoff, updated 2026-10-12 · Blocks: C-004, C-005, C-010, C-030
+Done already: repo (Z-01), trademark check clean (Z-02), tidaq.com bought at Namecheap (Z-03), Cloudflare account created.
+What I still need: nameservers to Cloudflare (Z-03b), Supabase project in the Pro org + keys, DataForSEO, Resend, GitHub secrets, Claude environment settings.
+Steps for Zaid (≈ 70 min): `docs/ZAID.md` → Z-03b, Z-04, Z-05, Z-06.
 Where to put the result: GitHub secrets with the exact names in Z-04/Z-05; Claude environment per Z-06.

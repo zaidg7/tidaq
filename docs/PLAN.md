@@ -1,6 +1,6 @@
 # Tidaq build plan
 
-Version 1.0 · 11 Oct 2026 · Owner: Zaid Ghazal · Builders: Claude CLOUD + LOCAL sessions
+Version 1.1 · 12 Oct 2026 · Owner: Zaid Ghazal · Builders: Claude CLOUD + LOCAL sessions
 
 This is the master plan. `docs/TASKS.md` is the work queue, `docs/DECISIONS.md` the locked decisions, `docs/DESIGN.md` the design system, `docs/ZAID.md` Zaid's own to-do list.
 
@@ -156,7 +156,7 @@ create table price_snapshots (
   currency char(3) not null default 'EUR',
   room_name text, board text,           -- if the API returns them
   free_cancellation boolean,
-  raw jsonb not null                    -- the original offer item for re-processing
+  raw jsonb                             -- the original offer item; pruned to null after 30 days (D-19)
 );
 create index on price_snapshots (stay_id, captured_at desc);
 
@@ -265,7 +265,8 @@ All for 2 adults (the most common luxury booking). About 14 grid stays per hotel
 - 50 hotels × 14 stays = 700 tasks/day. Daily run: $0.56/day ≈ **$17/month**.
 - A second evening run only for stays checking in within 21 days (prices move faster then): ~150 tasks/day ≈ $3.6/month.
 - User watches: capped by `DAILY_TASK_CAP`.
-- **Total data ≈ $20–25/month**, plus Cloudflare Workers paid $5, domain ~$1/month. Inside €50.
+- **Total ≈ $37/month:** data $20–25 + Supabase project in the Pro organization $10 + Cloudflare Workers paid $5. Domain is a yearly cost. Inside €50.
+- **Storage:** ~11,000 snapshot rows a day (50 hotels × 14 stays × ~8 providers × up to 2 runs). With raw JSON that is ~10 MB/day, so raw JSON is pruned after 30 days (D-19). Without raw, the database grows about 1 GB a year, well inside the Pro plan's 8 GB.
 - DataForSEO needs a prepaid balance. The first top-up lasts 2+ months.
 
 **Budget guard (C-013):** before posting, count today's tasks in `collector_runs`. If adding the batch would exceed `DAILY_TASK_CAP` or the month-to-date estimate would exceed `MONTHLY_BUDGET_USD`, post only the highest-priority tasks (watches first, then stays closest to check-in, then the rest) and log the skip. Unit-tested.
@@ -371,7 +372,7 @@ Not legal advice. Before launch, Zaid reads the final texts once (task Z-12).
 | Legal complaint from a provider | Stress, cost | Facts only, screenshots, neutral wording, quick correction process |
 | Pro plan usage limits slow the build | Delays | Small tasks, one session at a time, upgrade to Max 5x if milestones slip > 1 week |
 | Zaid has little time | Blocked tasks | All Zaid tasks batched, with exact steps, in `docs/ZAID.md` |
-| Supabase free project pauses | Downtime | Daily collector keeps it active; upgrade if needed |
+| Supabase cost or limits | Budget | Project in the Pro organization (no pause, 8 GB); raw-data pruning keeps growth around 1 GB/year |
 | Next.js on Workers limits (bundle size, CPU) | Deploy problems | Workers paid plan; keep pages server-light; ISR |
 
 ## 14. Operating model

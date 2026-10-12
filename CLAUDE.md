@@ -114,4 +114,6 @@ CI injects secrets into deploys. Sessions do not need raw keys for normal work: 
 - Today's plan start: Mon 12 Oct 2026. Soft launch target: **Mon 30 Nov 2026**.
 - DataForSEO Hotel Info: `check_in`/`check_out` (max 30 nights), `adults` (default 2), `currency` (use `EUR`), `language_code` `de`, location Germany. Billed per hotel entity, around $0.0008 in the standard queue. Results can be fetched free for 30 days. **Verify the real response shape in C-010 before building on it.**
 - Cloudflare Workers paid plan ($5/month) is expected: the Next.js bundle likely exceeds the free 3 MB limit. It's included in the €50 budget plan; Zaid activates it in Z-04 if the free plan fails (try free first).
-- Supabase free projects pause after a week without activity; the daily collector keeps the project active.
+- Supabase: project `tidaq` in Zaid's **Pro organization** (no auto-pause, 8 GB, daily backups). Raw API JSON is pruned after 30 days (D-19).
+- Domain: `tidaq.com` registered at **Namecheap**, DNS in **Cloudflare** (nameservers switched in Z-03b). Don't try to change registrar settings; DNS records are managed in Cloudflare.
+- Trademark check for "Tidaq" is clean (D-37).
