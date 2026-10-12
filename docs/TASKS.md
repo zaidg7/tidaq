@@ -72,8 +72,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | Z-03b | Point tidaq.com nameservers to Cloudflare | DONE (zone active) |
 | Z-04 | Cloudflare, Supabase, DataForSEO accounts + GitHub secrets (DataForSEO top-up waits for C-010) | DONE |
 | Z-05 | Resend + `RESEND_API_KEY` secret | DONE |
-| Z-06 | Claude cloud environment: full network access ✅, DataForSEO network secret | IN PROGRESS |
-| Z-07 | PC setup for LOCAL session + Claude in Chrome | TODO |
+| Z-06 | Claude cloud environment: full network access, DataForSEO network secret | DONE |
+| Z-07 | PC setup for LOCAL session + Claude in Chrome | DONE |
 | Z-09 | Google Search Console | TODO |
 | Z-10 | Social handles | TODO |
 | Z-11 | Affiliate program applications (after launch) | TODO |
