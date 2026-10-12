@@ -68,6 +68,13 @@ The tracked hotels live in `public.hotels` (source: `scripts/catalog/`). To add 
 4. `node scripts/catalog/to-sql.ts` prints an idempotent upsert. Apply it as a migration (see Database) and save it under the recorded version.
 5. New hotels start active unless listed in `INACTIVE` in `to-sql.ts`. Budget: 36 active hotels × 8 stays ≈ 290 tasks/day (D-13).
 
+### Collector (prices)
+
+- **Morning run** (05:00 UTC cron in production): refresh the stay grid for active hotels → deactivate past stays → budget guard → post one DataForSEO Hotel Info task per stay (by `hotel_identifier`, `tag` = stay id) → log the run in `collector_runs` and each task in `collector_tasks`.
+- **Budget guard** (`packages/core/src/budget.ts`): at most `DAILY_TASK_CAP` tasks per UTC day and `MONTHLY_BUDGET_USD` per month at $0.0008 per task. Staging and production share the database, so both count against the same cap. When the cap cuts, watched stays go first, then the nearest check-in. The reason is stored in `collector_runs.budget_reason`.
+- **Manual run:** Actions → **Collector run** → Run workflow → target `staging` (cap 50) or `production`. It calls `POST /run` with a token derived from `SUPABASE_SERVICE_ROLE_KEY`; the job summary shows the run summary. Every manual run spends real money (up to the cap × $0.0008).
+- **Results** (polling `tasks_ready`, snapshots, stats) come in C-013b.
+
 ### Deploys (Cloudflare Workers)
 
 | Environment | Web | Collector | When |

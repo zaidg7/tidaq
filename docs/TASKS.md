@@ -26,17 +26,18 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-014 | Normalization and provider mapping | CLOUD | M | C-010 | DONE |
 | C-015 | Price stats engine (state, percentile, trend, advice) | CLOUD | M | C-001 | DONE |
 | C-011 | Hotel catalog: resolve seed hotels, identifiers, images | CLOUD | M | C-004, C-010 | DONE |
-| C-013 | Collector worker: cron, posting, results, budget guard | CLOUD | L | C-005, C-010, C-011, C-012, C-014 | TODO |
+| C-013a | Collector: grid refresh, budget guard, task posting | CLOUD | M | C-005, C-010, C-011, C-012, C-014 | DONE |
+| C-013b | Collector: collect results, store snapshots, stats, failure email | CLOUD | M | C-013a, C-015 | TODO |
 | C-011b | Hotel photos: licensed Wikimedia Commons images with credits | CLOUD | S | C-011 | TODO |
 | **Phase 2: MVP website** (weeks 44–47, target Sun 22 Nov) |||||
 | C-006 | Design tokens and base UI components (Soft Modern) | CLOUD | L | C-001 | TODO |
 | C-020a | App shell: layout, navbar, footer, locale switch, admin auth | CLOUD | M | C-006, C-007 | TODO |
-| C-016 | Admin: data health and budget dashboard | CLOUD | M | C-013, C-020a | TODO |
+| C-016 | Admin: data health and budget dashboard | CLOUD | M | C-013b, C-020a | TODO |
 | C-032 | Trust audit tool and provider scores (early, so the audit starts in week 45) | CLOUD | M | C-020a, C-004 | TODO |
 | L-033 | Checkout audit with Claude in Chrome (150 tests, recurring until launch) | LOCAL | L (recurring) | C-032, Z-07 | TODO |
 | C-020b | Homepage (reference design, real live example) | CLOUD | L | C-020a, C-015 | TODO |
 | C-021 | Search: autocomplete, date range picker, guests | CLOUD | M | C-020a, C-011 | TODO |
-| C-022 | Stay page with chart, stats, advice, provider table | CLOUD | L | C-020a, C-015, C-013 | TODO |
+| C-022 | Stay page with chart, stats, advice, provider table | CLOUD | L | C-020a, C-015, C-013b | TODO |
 | C-023 | Hotel page with price calendar | CLOUD | M | C-022 | TODO |
 | C-026 | Outbound link service `/go/*` with click logging | CLOUD | S | C-022 | TODO |
 | C-027 | Legal and transparency pages | CLOUD | M | C-020a | TODO |
@@ -46,7 +47,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-029 | Analytics events (cookieless) | CLOUD | S | C-020a | TODO |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov) |||||
 | C-030 | Watch flow with double opt-in and manage/unsubscribe | CLOUD | M | C-022, Z-05 | TODO |
-| C-031 | Alert engine and emails | CLOUD | M | C-030, C-013 | TODO |
+| C-031 | Alert engine and emails | CLOUD | M | C-030, C-013b | TODO |
 | C-034 | Provider pages and methodology page with live data | CLOUD | S | C-032 | TODO |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov) |||||
 | L-040 | Real-device QA on PC and iPhone, fix list | LOCAL | M | C-031, C-034 | TODO |
@@ -283,7 +284,11 @@ Notes: `packages/core/src/grid.ts` + `specialDates.ts`. Weekends = the next N Fr
 - [x] Tests cover weekday edge cases and year boundaries
 
 ### C-013 · Collector worker
-Owner: CLOUD · Size: L (split: a = posting + guard, b = results + storage) · Depends on: C-005, C-010, C-011, C-012, C-014 · Status: TODO · PR: –
+Owner: CLOUD · Size: L (split: a = posting + guard, b = results + storage) · Depends on: C-005, C-010, C-011, C-012, C-014 · Status: a DONE, b TODO · PR: a = [#16](https://github.com/zaidg7/tidaq/pull/16)
+
+**C-013a notes (DONE):** steps 1, 3, 6 and the posting half of 5. `packages/core/src/budget.ts` (`applyBudget`: watched stays first, then nearest check-in, then hotel/check-in order; daily cap counts tasks already posted today by *both* environments, they share one database; monthly estimate at $0.0008/task; `monthlyAlert` at 80 %). Collector: `morning.ts` (`runPosting`), `dataforseo.ts` (batches of 100, `tag` = stay id, retries 5xx/network with backoff), `store.ts` + `supabaseStore.ts`, `POST /run` (token = HMAC-SHA256(service key, `tidaq-collector-run`), workflow **Actions → Collector run**). Migration `20261012200019_collector_tasks`: `collector_tasks` (one row per posted task, status `posted` → `done`/`no_results`/`failed`), `collector_runs.kind/env/tasks_skipped/budget_reason`, `price_snapshots.task_id` with a unique index on (task_id, provider_id) for idempotent inserts. Runs that never got to post are still recorded with their error.
+
+**C-013b (TODO):** step 2 (poll `tasks_ready` / `task_get` for `collector_tasks` with status `posted`; crons 05:30 and 06:30 UTC; validate → `normalizeHotelInfo` → `price_snapshots` with `task_id` → `stay_daily` → `stay_stats`; create pending providers from `unknownSources`; fill `hotels.official_url`), step 4 is covered by the unique index, step 5 email (Resend, `ADMIN_EMAILS`, failed run or `monthlyAlert`), step 7 integration test with fixtures, prune raw JSON after 30 days (D-19). Mark tasks older than 30 days still `posted` as `failed` (results expire). Also: `supabaseStore` selects are capped at 1000 rows by PostgREST (fine for ~330 active stays today); page `stayJobs` and `watches` once user watches grow.
 
 **Goal:** prices flow into the database every day, within budget. **The most important task of the project.**
 

@@ -62,6 +62,18 @@ export {
   type StayStatsResult,
   type Trend,
 } from './stats';
+export {
+  applyBudget,
+  COST_PER_TASK_USD,
+  eveningJobs,
+  EVENING_WINDOW_DAYS,
+  MONTHLY_ALERT_SHARE,
+  prioritizeJobs,
+  type BudgetLimits,
+  type BudgetReason,
+  type BudgetResult,
+  type CollectJob,
+} from './budget';
 export { z, isoDateSchema } from './zod';
 export {
   stayOrigins,
