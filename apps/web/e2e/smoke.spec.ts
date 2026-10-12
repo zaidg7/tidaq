@@ -37,3 +37,12 @@ test('sets no cookies', async ({ page, context }) => {
   await page.goto('/en');
   expect(await context.cookies()).toEqual([]);
 });
+
+test('www.tidaq.com redirects permanently to tidaq.com', async ({ request }) => {
+  const res = await request.get('/en?x=1', {
+    headers: { host: 'www.tidaq.com' },
+    maxRedirects: 0,
+  });
+  expect(res.status()).toBe(308);
+  expect(res.headers()['location']).toBe('https://tidaq.com/en?x=1');
+});

@@ -19,7 +19,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-003 | Session tooling (SessionStart hook, permissions allowlist) | CLOUD | S | C-001 | DONE |
 | C-007 | i18n setup (de default, en) and formatting helpers | CLOUD | S | C-001 | DONE |
 | C-004 | Supabase schema v1, RLS, seed providers and cities | CLOUD | M | C-001, Z-04 | DONE |
-| C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03b, Z-04 | TODO |
+| C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03b, Z-04 | IN PROGRESS |
 | **Phase 1: Data** (weeks 42–44, target Sun 1 Nov: data flowing) |||||
 | C-010 | DataForSEO spike: real response shape, cost, feasibility report | CLOUD | M | C-001, Z-04, Z-06 | TODO |
 | C-012 | Stay grid generator | CLOUD | S | C-004 | TODO |

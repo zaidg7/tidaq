@@ -1,0 +1,111 @@
+name: Deploy
+
+# Staging: called by ci.yml after CI is green on every push to main.
+# Production (tidaq.com): a `v*` tag or a manual run with target=production.
+on:
+  workflow_call:
+    inputs:
+      target:
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Where to deploy
+        type: choice
+        options: [staging, production]
+        default: staging
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: deploy-${{ inputs.target || 'production' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy (${{ inputs.target || 'production' }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ inputs.target || 'production' }}
+    env:
+      TARGET: ${{ inputs.target || 'production' }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      NEXT_TELEMETRY_DISABLED: '1'
+      WRANGLER_SEND_METRICS: 'false'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Wrangler environment flag
+        run: |
+          if [ "$TARGET" = "staging" ]; then echo "ENV_FLAG=--env staging" >> "$GITHUB_ENV"; else echo "ENV_FLAG=" >> "$GITHUB_ENV"; fi
+
+      - name: Deploy collector
+        working-directory: apps/collector
+        run: pnpm exec wrangler deploy $ENV_FLAG
+
+      - name: Collector secrets
+        working-directory: apps/collector
+        env:
+          DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
+          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          node ../../scripts/deploy/secrets-json.mjs DATAFORSEO_LOGIN DATAFORSEO_PASSWORD SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY RESEND_API_KEY > "$RUNNER_TEMP/collector-secrets.json"
+          pnpm exec wrangler secret bulk "$RUNNER_TEMP/collector-secrets.json" $ENV_FLAG
+          rm "$RUNNER_TEMP/collector-secrets.json"
+
+      - name: Build web Worker (OpenNext)
+        working-directory: apps/web
+        run: pnpm exec opennextjs-cloudflare build
+
+      - name: Deploy web
+        working-directory: apps/web
+        run: pnpm exec opennextjs-cloudflare deploy $ENV_FLAG 2>&1 | tee "$RUNNER_TEMP/web-deploy.log"
+
+      - name: Web secrets
+        working-directory: apps/web
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          node ../../scripts/deploy/secrets-json.mjs SUPABASE_URL SUPABASE_ANON_KEY SUPABASE_SERVICE_ROLE_KEY > "$RUNNER_TEMP/web-secrets.json"
+          pnpm exec wrangler secret bulk "$RUNNER_TEMP/web-secrets.json" $ENV_FLAG
+          rm "$RUNNER_TEMP/web-secrets.json"
+
+      - name: Smoke test
+        run: |
+          if [ "$TARGET" = "staging" ]; then
+            URL=$(grep -oE 'https://tidaq-web-staging\.[a-z0-9-]+\.workers\.dev' "$RUNNER_TEMP/web-deploy.log" | head -1)
+          else
+            URL=https://tidaq.com
+          fi
+          echo "Checking $URL"
+          # A new custom domain needs a few minutes for DNS and the certificate.
+          for i in $(seq 1 18); do
+            if curl -fsS "$URL/" | grep -q 'Tidaq' && curl -fsS "$URL/en" | grep -q 'Tidaq'; then
+              echo "Web is up: $URL"
+              echo "### Deployed $TARGET: $URL" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "Smoke test failed for $URL"
+          exit 1
