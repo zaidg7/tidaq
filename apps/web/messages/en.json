@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "title": "Tidaq",
+    "description": "Price history for luxury hotels: is today a low or a high?"
+  },
+  "home": {
+    "title": "Tidaq is coming soon",
+    "intro": "Soon you'll see how the price of your luxury hotel stay is moving."
+  },
+  "localeSwitch": {
+    "label": "Language",
+    "de": "Deutsch",
+    "en": "English"
+  }
+}

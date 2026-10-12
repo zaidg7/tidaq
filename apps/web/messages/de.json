@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "title": "Tidaq",
+    "description": "Preisverlauf für Luxushotels: Siehst du gerade einen Tiefpunkt oder einen Höchststand?"
+  },
+  "home": {
+    "title": "Tidaq kommt bald",
+    "intro": "Wir zeigen dir bald, wie sich der Preis deines Luxushotels entwickelt."
+  },
+  "localeSwitch": {
+    "label": "Sprache",
+    "de": "Deutsch",
+    "en": "English"
+  }
+}
