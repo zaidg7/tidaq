@@ -35,7 +35,7 @@ Steps for Zaid (≈ 5 min):
 Where to put the result: nothing.
 
 ## B-004 · Delete two old DNS records so tidaq.com can show the site
-Status: OPEN · Opened: 2026-10-12 by CLOUD · Blocks: C-005 (production on tidaq.com), later C-044 (go live)
+Status: DONE (12 Oct 2026: Zaid deleted the A and www CNAME records; production deploy 21:14 UTC; tidaq.com and /en answer 200, www → 308) · Opened: 2026-10-12 by CLOUD · Blocks: C-005 (production on tidaq.com), later C-044 (go live)
 What I need: the old placeholder records for `tidaq.com` and `www` removed in Cloudflare DNS. They point to a dead server (tidaq.com shows "Error 522"), and Cloudflare won't connect our website to a name that already has such a record. Staging works already: https://tidaq-web-staging.tidaq.workers.dev
 Steps for Zaid (≈ 3 min):
 1. Open dash.cloudflare.com and choose the account **tidaq**, then the domain **tidaq.com**.
