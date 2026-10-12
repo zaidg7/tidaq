@@ -1,0 +1,775 @@
+{
+  "version": "0.1.20260917",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "time": "0.0208 sec.",
+  "cost": 0,
+  "tasks_count": 1,
+  "tasks_error": 0,
+  "tasks": [
+    {
+      "id": "10121602-2784-0290-0000-703747d7e1f3",
+      "status_code": 20000,
+      "status_message": "Ok.",
+      "time": "0.0158 sec.",
+      "cost": 0,
+      "result_count": 1,
+      "path": [
+        "v3",
+        "business_data",
+        "google",
+        "hotel_searches",
+        "task_get",
+        "10121602-2784-0290-0000-703747d7e1f3"
+      ],
+      "data": {
+        "se_type": "hotel_searches",
+        "se": "google",
+        "api": "business_data",
+        "function": "hotel_searches",
+        "location_code": 2276,
+        "language_code": "de",
+        "currency": "EUR",
+        "adults": 2,
+        "keyword": "Luxushotel Berlin",
+        "check_in": "2026-12-01",
+        "check_out": "2026-12-03",
+        "tag": "search-luxushotel-berlin",
+        "device": "desktop",
+        "os": "windows"
+      },
+      "result": [
+        {
+          "keyword": "Luxushotel Berlin, Germany",
+          "location_code": 2276,
+          "language_code": "de",
+          "check_url": "https://www.google.de/travel/search?q=Luxushotel+Berlin%2c+Germany&hl=de&gl=DE&ap=KigKEgnNSjwkAbNEQBHiR8NIGZ0QwBISCQnzdZVpd05AEVhop7x0DjlAMAA&ts=CAESCAoCCAMKAggDGmYKSBIcOhpMdXh1c2hvdGVsIEJlcmxpbiwgR2VybWFueRooChIJzUo8JAGzREAR4kfDSBmdEMASEgkJ83WVaXdOQBFYaKe8dA45QBIaEhQKBwjqDxAMGAESBwjqDxAMGAMYAjICEAAqCQoFOgNFVVIaAA",
+          "datetime": "2026-10-12 16:02:26 +00:00",
+          "items_count": 18,
+          "items": [
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChgIveLHqY3365ykARoLL2cvMTIzMjYwN3gQAQ",
+              "title": "The Ritz-Carlton",
+              "stars": 5,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.5103836,
+                "longitude": 13.3752744
+              },
+              "reviews": {
+                "value": 4.6,
+                "votes_count": 3297,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TaEwhw3bnCirEkU0oD-BsZ7O_Y9YtGKTpFD8ZqIQKxTNAj6IwyihVaYYrhRlw653nflLmIEX4JebGtVpnPaKXto6KRrvBJF8yY2UHqmTEqEoAs2E9W7YvH_au0G3qZLPHpUy0=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QZ92Ig-yhJDT0Nkl6vUV1Yo0G5HvBMKTfKc35czvr2jr_ivPpXhcz8HOePrD6TlnXV_zDLf8bc8jYgiwwqqzSnFMu54J8okJ1T2ov7IsiDKGdwop904B9uhtQZA2NCjjDqZuKqC1bZ8v1Y=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SoPZyaNutnvp3gxsYO1WjOe8HVoNgCyFMCsK-5f58YHkyTC5mqPovNt6DCcXIgTbUc7Fw44KawY57sf90vO5zMW9VhjFz1GP2VnWRv6q-Sp_CC52dImKbe0poHQpEEVvBNRSgz=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QtYirMRnJ9bBjDzYFJNK-nkQ7aDN35Ba_3425YRezPfr9mB3RWFDAF1ic37G8RoQDec8UM-NUzR-Mxh3DzzGvBegvxn8aYx3hpHCofCyJELLoAHWCIpae7ARp5m0OmDgMwROOF=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TQvF_ShUrB7fB7MGaskQV0nOOEtpT4o7NzmiCxWQwjYtiSjBLSrRbA7wQyEB3ylmwkWulEkh5uDY2f8oIDWL1rqtlY9ZLbGl9Z5f0ipyrmpyUaZz5VEODkCRrdJnSuCtiPmgkPgTPCkrst=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhFhCJzHf2y-LCL4brxC3g0EHvRVZrseysHkHg_F0qvQGVNXPA9DmBGuf6x8S72Wq5gZ0qgB8smCQ-fsQ44MlU8j9-w9jB4p_JxoHfmtsuNM2nlVp4XTJLM2jjCk_wf7av809YdgoYKKt6E9iOG61nxNNGBrpSvQKzRU36Ee0aZtAk8Zo8p3Np3r=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhHSWcYyghvlaZxlPnG91-dyw4TgTztqTk-ZNrPby3Tf1d-a1EA-n-qG2xzbMcuHb8Y2Uo1fglAtzQbTJL1Mpof6CZAAvn5HPcdEZk1kvUDl0mZWjJrAYQZkBhqXOl5vJ6lyrVMZrwF1h7tWOlbhfcpUDitLm6ObTv7c1JaMmARYl3h0jXEWsg3vEA=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhGajUulXCE9rtsmKH79bmfelercymMIEPfK9QkMgYSuvJPJzrzt-8FjgjP-qKVrPkCiUPsK9B7YUeGGmatL7mcvsbnMiiIhbAkmkbUfglZa8RG_mL-LQGBboHYm0lFGuZvKbEgz7CdOONSmx1E3915ttk0tu9XrrNDV5TogtuqShHompVX3dwgQ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Qwo99lj6L9A0XPUB1Jr6DG1vxNbL1JJw8iyhiovfIJUewMZ8UgiIYi8OiHRhSyJwYBg2lIyedLyS94jmiRn6TErr5XYT_7DfbrTAKRinqtbuluBoXUDVYmcnAhAXoithmSovTwqvhCBaAb=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 300,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChkIhOHzpdH5nuewARoML2cvMWhjN2M1bmxoEAE",
+              "title": "Grand Hyatt Berlin",
+              "stars": 5,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.5082844,
+                "longitude": 13.3724007
+              },
+              "reviews": {
+                "value": 4.6,
+                "votes_count": 3625,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9R_OnDaYO950YDJyTZxLk1sfwVyYLhMwWgX9q8q6bwYbJ4ed3TkqywUX3lbWftFT0t9zzsKJvWSi3s6xBMbdAoesC5J8qu9IHAEyBHG2YTKgCmQc9aADpuXMf6ZXbeVy3LKK9QLXA=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9RyRZE1CMlczdaev2vt6oQ_etV3JPNPfnlbNQWkpUtkh0dv9CM6GWnlccW7AdFCM13g65CNXeOfVXQlrbTOTA4IvV6GfVQDgHPMEanpZJapwpBp-AxV67ckOGhEXDLzCvYkEFjzirkzzsVx=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9S-CQGjd6miW0Xwc7g-oaIa85OV2fWCB1zQ86Ug03nIHdrE2nRRVXphlSv8byWY4hlJWC1EoyWDD0H_y9N0pb9Qu1CAqpEW5rjJDnTG7-9euxwrGM-yf7XIqt8W6gCtRZ9Z67Iy-qVaQyI=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9R4pUpoAoSk9cqYQ7sqQ_9xgwGxgIODeq_azTQnJhfZBcDFIY1ddVj6MAX8OyyPp4p_m2-vlJoYTvJRSlV-usJ3GrKKMDGY_QaD9CP-_563Qe9TIUBcKi6-RncnqnjNrtYdHY3iY8Y9oYPG=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9S3HDdDMT6KXlvlEFbfN2SfckXlbJgR_V5Zcci7zFRSdb8LSnRefr6c734Z3P2DES-DxRpCdC7btNJ0mI-cV4US8v7gS7M_JCjXHkkhp_u6NEjyggxGk6on1TjYBMFW-yWhwvL1q6cPqPPV=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QwzVi8FQcOsfL50CHN3BlHJ95kYIl61ynLFypzRXrNMZ5V6QRwXnY8lgPpnujAPm-PwxB9M9V8AJlVwrvO8IEwxLyswoffDwWq5L-LP7w-9ERwjsn-R1KX4N28sG_36sLT9-2AaOHoM6o=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9S-IzjYXbEdRt70Eq2V_cObVBkBpJVu3htjWankdZrYmVDY14igbFmlaParcsQP9t42GEXD4HAH4ZRB5E4KPEeHSBRLowLsPRdHfT0mXemP3MA7cix0jxvMj-Kq2KxDp6AtepmR=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SXkrPzQXQqz6_4Yh-NmI6kfOVAwCJ6vPq0ti3lj7mdDSAb16u784w8YTHPRUmBdp0aYOrR7Nur-PBZHNzTdB0hFZmDRcE9yADYl8i2a_AMZU3y0E_X8icK_Pwu7VRDyhXRE20D=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Sf920W597khRFAEEuwkqq2SnGuJdUvBSXAH2BDkMPvcwqWBJNbKyaloRK-PBxG2jNjwmuM51H7hWf2zC2_09UBnLNrvXs93u1VM_gs7nTuupLZRcXBKBvk_IfN6Tg7xRUXDaCCoHTC1qTm=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 164,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChkI3YeIu7ii_fNsGg0vZy8xMWdmazUzbjE3EAE",
+              "title": "Hotel de Rome",
+              "stars": 5,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.5157859,
+                "longitude": 13.3940599
+              },
+              "reviews": {
+                "value": 4.5,
+                "votes_count": 2067,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhHkP8RyYPssSgD2ax54WWfpDjZHv2TriSan9jIxztHEtusxyqL8TqVPtsxd6I79f_ChS63linXALG1lxg2bk4q2_NBqCPTM5U1bMw_gxfO2Th0BOjBPnG8t763C4WBuqR1zbeYEW_uzJWEofZJCjsLTrweWO95BbxDgYeDvMRzfDsrIwWst3r0H=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QWq8GpFNj_9RYE9BELy9UhKwUWoRVvbuqs2FlWpOL_sUhSqJnv7q8yMLXzYe_hbUSA8_0oST5lXMKAtyr-fJ0dmoK8V2DRh09K0edNaROZ_S1VKozoj_C5XZ4qbmJiG2dgFj5WLlnyXfK7=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9S4xNdtFAbN0U6P0D8JNOKdavTth_ihsLO2IyyJuKAOInZBezmhik786Am9CGZWfE_4SjO1gTKZoj2uQ_ZvQvyG0D2--UbIZBfein3bAu5-yv_W29X27eiZIJ6eh8wG90_n6Q9F=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SqZqkuhi9brlDBZyXZIW823H9Mf6CNJE2bp5KrsNfAfEul_S1OCInJNmqxMnuLIQy30pSrMNoxzgX5JReoouV7WJ7OK015OuI9EMYGjX1xBHGrNq5RqSxS5Hp0T71aiSjcjryyd1w86yXd=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhHlYknBtE6lF4lojI0tfwa7KDJy7PfmXW87Q_7dF3nLbxQm7bNNMobhHCktLBfRy0gmS6Xjt0D_1xt9AGsj5TBI8HTPc1Rjztyp0vWZpTv3SgvBsRCv-vqI47fGOfS26XAizHK_q0ALqBQu-JL1GbE5bCYM96eBvjEYLHgYkj6SqY0a7mqPakAZ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SlkJs3kt8H3PochtrfBQwIY1vXay4y2OY0r35hr_cNZF8w5VRQFqm6_qKiDXVQR7s1XBkFdE0bCFR3_jW_IpMav8hUgEG2Msq-I80cvR9A3Lm3P7hXr6JXoCA18PCcCgpR1A5W=s287-w287-h192-n-k-no-v1",
+                "https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=9xsgLRV4V_gAAAQup4LNPw&cb_client=search.gws-prod.gps&yaw=20&pitch=-10&thumbfov=100&w=287&h=192&scale=2",
+                "https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=6VzC29emZqcAAAQuq1JySg&cb_client=search.gws-prod.gps&yaw=200&pitch=-20&thumbfov=100&w=287&h=192&scale=2",
+                "https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=sPX7ZgrXTl0AAAQup4LNRQ&cb_client=search.gws-prod.gps&yaw=260&pitch=-10&thumbfov=100&w=287&h=192&scale=2"
+              ],
+              "prices": {
+                "price": 243,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChoIpaeyk66-8OesARoNL2cvMTFjczZjYzQxdxAB",
+              "title": "Mercure Hotel Wittenbergplatz",
+              "stars": 4,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.50095460000001,
+                "longitude": 13.3426007
+              },
+              "reviews": {
+                "value": 4.6,
+                "votes_count": 2390,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QxgBciAy94TQux6w-oS1AwzAmjtBKq0u1xHMiGQHH2T5vnXy_JMVY7nrlQP3liVvsT4brl_Q02-fPTSPx3Fp291aiK675fjg1Agu1JkGmSenTHu4P7uMMiRsTldEs9HSlgpi8n=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Ry_Ew4XeKLxHnO2BcKeIUeqsxqXf-McG6GMSFzJB340BX7A5_P9e4YWjWWhlJCpNqCRa61Lfq0ZvoXcEdv4_qWr6u7mJmFCUQS2hMvrhDPb87u03gf-ml0mhYsRETmDPeclz6w=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9T2wP6cjUMJUMaT_jbq4frPhJ_y5NmKwYjgp4n_wdu5nEY0wLKDq_7KjGWi0u2NakR3LzVcncf1XsK_1Hl17ID6sLBEwRO5TfLW3NLNBg0Jm11vtGaep0cy5ad36GOQGMxbZxve2w=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SG07uMjKWB-nLe57STDfKFlMNxvsrP-y-im9HdeEx6W12YDzsvyPKsN1yEKuEuRk38egnDv9A5ekvXi1S9Vtm7IwBfgMQ8ptXqPikmsG0-cxDGNVVzyepR-IoNQbHYsEYywxZMP52oDkM=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QLo3MpORdJdxgIMvJTerGJj8V-BUDX5NqjSFMUwDwZTit_jhxJZvkEDwr6PN2eKcqhglqA-XTkmf2BFD72KmrsNkALgDeYMm0Ar9BH_IkFLx2KmusOFynxkoxMBiVulRysw8meH1t1Oqvo=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SwSX8L9iOmbeO40kzqnB0JI8STO6sja5tKoSn8OLtGfB6SvnWECCPb0b96IXuyaUfuSYiVukUE7P3aHv_-PQ7P_s037vK5kHI3IwpkhwDkur-OXfzeD7XNEeBI3d2k0NisHVeGXw=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9RAd9jdd_U73GA2roCfTV7YusDRSYw9Snn1JrLanP_CBMke4xF6ujgX4ZVnxcJBee3kAZCn424fVxE-2Hm96ikuxRuFsDA0vRaBb0icoO9r01BZVcXX1GddKVe7DtsIXNklgHQy=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SW4YikqHWEaD9zxwlVLQ-40p0Hbim_XOUFt6FBkk2o0u8FZnNMzalMsWpgwkFQRU-2U8aY7lplzvgKklYtWNtcurlERE46ASpMYdRmxeSXqmh6mAlZ4684e6uKKcmIFuHc4bQ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9T4Wyns79kMxo-EqqACq9Tt9vPv9dxZMv6RrvmzQVfqharVlA2Fro1IrxmaQu23ZIC0QtOvUtPVNx24SiKfevQwSXGPhoSkOQMjxZwpuwYewfQUf-6kVUB11_YHXxU_oMi46_i9=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 102,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChcI_dCAyorngL9FGgsvZy8xMjJjbmt6bhAB",
+              "title": "InterContinental Berlin",
+              "stars": 0,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.5068868,
+                "longitude": 13.345492799999999
+              },
+              "reviews": {
+                "value": 4.5,
+                "votes_count": 5196,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QP7SZib0szvw8m-5Vrv6Mt3jT0KZ6FI9nCbV9WF14LLFds_dEBfZChQ4y9P2TmCnelHMd9e7XHXma6zJpAEu39cwvPtUl22-o-9NevspuoZAsSD-J4r44Wqc_Bh6WUttYalbmD=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9T1cIYqrCmUxDJ3uri6F2-0yYRlpsN7PGAXUC5SHs8DXkhoh4EssSww1_nrq222OpVeGSeVqHr_znFO0EXvHu6Ow4WOnd4ADQILzCHP_GTSubHcGJPfJpI8eyng4W_C5bTmNeiN=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9RJtmk7QSRhKfzdHXh6eNrqcz9nC_C8c7AH0MNR2GvLjfleKH8LvhHAR0N6Pvj-CzrdG5pMu5MagroxTrlL0BSpAP2ImoAH0v0ozXr3ab0KRor454f4oTp4fjcrIrVWaRUkaCtadKcuNpIx=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TKoROa7xgAeO0WEDxKMWtRyS0BrdL14cCz-HV9DcYDsTlHF7jOruPyYVnAu95_s-fmwqYb_U-FWi3GQB6OQgqOq4ANJVrha_uVLgoLKOyNkzYIkkv5zOFDT3nK-KwEHyzMAaw_=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SCAhuTol2-5S0AV9xbiNkp5YC7npHsbcvufXemUFEcb-9_4ePxODIeCK_kCZIq2jgjHpUlFL1Vhp352fZxBu_4mXiUEUDVzgNrCYq1XiAJzoO5KM-Ym4ar8CS9mwEZDDWEAbqvJcPFjno=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SdbSRsFNaFxK7t-cSk9Gqp12KmDJAvgdEEIT1tcDB79LElrzUL_hyq46YpfLiXzJOhKXpHEp6rIgm7EhwcS9b77C9jY79blWuaosaJQM_SYGeGlQEawry36UdRpR8kSjxZh9N2=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9T86hpmcp9yI_Ie4qKF6ULqSjSAAdmN--OqSsZ0HdnANcqIs2evYa7a3036nly_PcfaAStyIbpzFaHFrVhbClJ0A3KocXkfYssX6gpPVZB0SzkToLHepA57Ey_rsrBUPba-SB8qjA=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QZLyYvZKUwTxPzBkYtNukDBoiJL6m0LfsL-zQ6n7SEHLTKKXtN-WCCVMLGr3gW5ujbnpOVbLk87ODURpcLvvlG-OmQRVDesvIVDknlxGYuQNa3qFCe2mKmH4IVtECIaByv_Nc1=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QorC-VXx4akga7FFTLDWHj2XzV3_TZ9vW9nbHGgufx51pYsSKflDZeiaxmehUgKvKQgb4YhcNOZtTT1V5ld7MeA_rpbyuFh5BPnMEjFsad0fOvI2BBKVDKPIYPT59auwV68XboDL-UiDhf=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 192,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChUI2f3tmL_9t_IZGgkvbS8wOG1mdzIQAQ",
+              "title": "Hotel Adlon Kempinski Berlin",
+              "stars": 5,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.516074200000006,
+                "longitude": 13.380426799999999
+              },
+              "reviews": {
+                "value": 4.6,
+                "votes_count": 2371,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QYmY_imK4JTGJPzypmMqz9GU3yz_iwisjRu47vSHR5gp-n3f7IrxAoii4awlpJSmXsbWrIVKm_g6gAU0g5O_q_Hg2ET1Wv0YYUrlu6x4n_mTRbnMgsgkEcz-k2u4pID6mwd1i1cQ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TrvquEqm0IFIiw61XRicDZoImXSpCEUrz0skf-fYMNF1dGIO9HfLQpLoRsfzgORaJGn35nvknTtNQfus5OoT_ci9hvSOFW-PJcU-9PD-LMOztqn4lJaCCqMbhhXCB6ku1dF0w=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Tezi0bfJca7K39zjb3k1UkdyNBs6ztYLuqig49u-H2ifXt8BNzTVZSjma5HGU1E95uf88tpQ9XBvW-QWTkY9ns0m9LHnOHFZmEOTGhf_fEOJEPKQ3m1PTVuQCTGVnerWF0QQ6J=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QL_3tJnAb6sfo8cttA4NxVFGmNoPDtzaAEa4A1bKLbQgz0aRmuScd6sguKqu07M5ZDGE1vBInXBEv6EXzZ7OAdE1E5DrivW3ZABkRp0aeMaVqVmSbGf38m_dMox5a0p1MH=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Rew3pq5BjU-en15eAALDVpbIlptRH6ndh5M0HEy53IjsaQUriRYWbc5-LJ_8FImlgbAvRV5vE7N-E_9cZTRe4_kkvnKdeltKEd-U4y0C3zul9zPe0QcCRjBMBV1QUQs2sWT5k9=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9R9Wlg2ick_DYDvb_5cO2nO3nqNYOXVEnHgtQvCCZ93vNcAPD5TRCy7Bj2Myhf-N74urWodqH86_MnxG2Ubs8jqTOQj_MqWICwF31pwwj32NtOlFNxxj2Fr2GqkPBA5OUJ3ivclKQ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QluPB94MwqSK3uEPX_tcaCYSjH344dFBnfQ4ZujIJpVVUDcsxysxC5DiRf4posaqBhf13Qqmaiyuuhd0vi4d-HqhGemPB6whinUMB1IgRDD8CJYP4MSRTE_RM6ayFPZMGlBeZC=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhEccRR2tX1A-ZWPPUjPBVmYNRsVqoX2oGpF-nzhSVNg5BHZCR4V0xkF9VHfyWsgZOOrkYFccexxTsY5FBxs_-7c-lXw7SvvDznWm0YHa2SzQv_JzSqFq0prTWbITdo6iKaxq78W-A9eidclBLSE_TOYIMPjzFGmRrCbX1Hq8U2FTXkZwa2vVGLA=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SRIw9shVvGhgCyU85AryPSEycQV5XjGY1F7j1XHj5HpLb1jIznzDv4ZBeqiAfYY6yKt70JetcCdIcmpojWPk9dJA1Kon8vHt_aO_ZC2Jus0n44WEfIUes2iDYKYyeyzz2NSYL6pA=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 284,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChkI4Jynt_W738S8ARoML2cvMWhkX3d6ZGd3EAE",
+              "title": "Hilton Berlin",
+              "stars": 0,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.512197099999995,
+                "longitude": 13.392925199999999
+              },
+              "reviews": {
+                "value": 4.3,
+                "votes_count": 6824,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9T2nhO6YiKvkPQAPSkXvODfJ_Sgp_5_yWmQSQiyaitDSfgUiSBH_hrkJlSSwZT23Cj8mLAJlenHkj9GtqK-VS0HywXx2v3kSeu1H5EHH9DcEACe5UT9Eqdhb8tqSQWFBdDJy76I=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SoeLhLwQrDi_vZUq3dnMFE4mWPuRbqEGRHkanyRDzK4vVMe-8SF5_ETfCtSbmfTeYDTd2M9_mO1ysfq0DrLCe3bZ6rsECGYHupNHkXcITK8MCrE0rRVYvU2di94HT74fUke4ScQNuSdTg=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TqgIlZjPMi9Fg3oAfAWZFQgKEMaTvdwPPn14-a1icj2IbJGg_9g0aIFzcsZUIWEP01w2nd4R4KJfilT86vCKm4z747UqkJlpp62ZtGotaJm1oj9-psQPh6eeIc0AmsRVJFsxR6=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9T5UrSWjbsN8Q0X3Hq7PmiMTH-GFSX5rrfIQQiyQwvnpfNyOcUFzq4dcCN7C2-Se35q7JkiXDFJp4MYqgF62P3LJf14jbxDNM-B6neSXbI96im7IzWgHqf6PODe11vyVw3XX_0k=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Roy6FDt4Bh6G4sxFww8whWQJLfGCjuzOjqxR4jUS36ubMsbya5hG3Fd-90zf02Kl0YYJH0TJmGe2OVEJpXVUWudE39fuM4IzNSMnstuIEgQfD2yzGIQcrXJ1_aq3jQFMPm5J9wXQ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9S0p3xqc2Bx0K8kfiteh6-Lyov7XvuA3aRTjuogNmIN6SjF20b8pKtKBxSNBUShvtckHuCxoPPpKXIo5BKnIBWZtH-eF01QFEEmS3mz7rudiWJlOmG93fL5lkzZfGQvykOXJfIqIopX47U=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QcVBgBII8R470wPSE4_q0XjY7RH8GlfuMTWisQkjq3pZUleHR65IBy9mMXFKE0V2bGnc6rpdp_wgrv31DD3TuzHETInSEBqgYsttxltQ3T16O4Z04G5Yo6wYNPN_bo8JCBwheT=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SexWmQ8IRd4eBh_zn2rp-VZ76gF8LaSh4DFiE04zr6d9PbI4QJeo9tg0lSCUh4HrEuSEShdUTrpV5nKmbQ47bra1t0AAA3veVgTfiPlLpLcCRHKoAxpaqc8lT0su-rGaUbRZEl6ktig3Y=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TVC4C3b8bdME_eKcGs_nHMDuifCCznAeWoiEOiDnMmn8Cnexigp-gKqn8LAnLM-Iuq0csC1uzk26OHaDb3boO3TWF5mzsQJ9_bedsWeqEmEuESEPZ2BCC3p7O4ItuxlgIZOfWRLGo5Gawd=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 189,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChYIoY-y6t-_l7WtARoJL20vMDVyeDJkEAE",
+              "title": "Park Inn by Radisson Berlin Alexanderplatz Hotel",
+              "stars": 4,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.522811,
+                "longitude": 13.4131023
+              },
+              "reviews": {
+                "value": 4.1,
+                "votes_count": 29110,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhEmc8EJSd994w95j9zFWMJMW22EMwBVxpSjpQOsLxMPXBlaml9lz50cQ0rpPUtUT17aIzScpxq19i5Gq33TKNDom92ns0xV8uehGhxs86X7fvX-1JPw0IrGvy77Os_GrXGY-56t0belXUKMvgLSG8DhkP8OKdnKPoP0ZK5K-z7W65rL655hbLtm=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Te_iWq7V7A2JXVPvNrPeO7lPfIQu_Zh7l3Q9WA5kF5qXtBTw4dixISsvjrTuwA3vqQaormjlPr9bBa_d1OOjccZULhvYBa4JY2v14EArV861uxX2POqZZcdpycgSC05Df9gEUt=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9S00AREfyG6a6wVXdm9bL8cRjMCVq2kKGe6_jtJmuZhaK77YissYCWDCImpZxY567dBE0K8SyjoLuX39KUX1XRIR1jJq7Z9km5RZ5pSfE0iOw3B_Y6mB8e-vKsm7woY3jBKsRgC=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9T55bXUrHhQDGC1cAsR_qHNsOcyNiFhr58RbSesiAOBimJEkbs9iWFG2VSXatx8NYuFdWoTO3UrsrsCmkpQ9ZPRNatcn9VWq2auSmYVzt_0WwgTIS0rQew3xu23nbyUwHz-QFkX=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Ta1yNiXorFbWAQqqsaGWE3RZQfckRQf-E-nCFkSrWfgm372J-6P-HSpoatjscUKAuhQ23_OrRH5mHQZLHZip0ftpj2YJvGNfFERn-LNhbwT4AnyFFFgtGEOKUKWZLMWDB9eeTWiw=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QIrkLYVG_Okk6I1POJpcj65lZmFTomO5jduyp-CUJcZM2KncBpvZIq1KWxP8oWU-juj8egjGQRBYyc1ibZTE811zJNHLZC2CC9d2zHe3NTs2ZQI9m2qdIirHrR5mF2uwDfQ6j5mcXNTvPX=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Rve83tIeV8EHBLcPhShQZmMSwXJusk7JshxoCbOsplJu6h-_G85-Y4IWpsY4QXKBgs7zuiMQYPOmlj-pyXdiyGMvmsBJZgn4RQYrfPf_CItFJMkuxjsiNkvGuyzWnNT71yvPQWmKnbPoQ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Qrk1h113DF3ANKfSgtPJzpbkdABJ4tdmO24I7O0wnz7RHsFgXF9bGRd4IjZ4f_mqeTsw5T6MC9VHKKM-0tfMblh5L5Toagad6QEhQMh_5F-30qE6UNWIsfKPRWbFLDjTvZsezh=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QvMqNNxIN241ujhQlQmDtFggNGlkvtjqxOU8l0fAP4jKEBFKjfnrZ4yysbJTtAb6p2mjNSGZEAz3retGhVIMiXzYe--3Gnkop3lC9cwiyxmuZEWOsdTcn8TtIJaaKwLU7O-23_dYth0ymK=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 154,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChcI0drKnIvrtYx_GgsvZy8xMjE3NWxrZBAB",
+              "title": "Hotel Oderberger Berlin",
+              "stars": 0,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.53773640000001,
+                "longitude": 13.410288999999999
+              },
+              "reviews": {
+                "value": 4.4,
+                "votes_count": 1943,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QAwkUCuvgBikupHQZPuQGHcIrCys-bxF2K-VnhE5duR-R48_ZsiSLyqQLRoR1H-VkUsaIc1CIRBthNBtzeh-II2QIfHXlofV2vIFe8KH6v-_ZgnJOphBKdtBK5L4aZXWWNjro=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SfTtIc50ysZcg11grqmWGUbdw0Xi_vnFSjqFkig0gmlZGOLOleHQFVoWb1gDQPGWMqiVgQKyoxoijhCIet4K8b4_eI0IWM8SqeQwDaaU3RT1gBfAFrVMuzE5d-_57CgMCnhrpK=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QN20ufVoMlagjJ194rKpUYnlhIFkOSfp8TOb-NCsZZzyTr_cjzjABL1VumUlCmlxAgOHDenE9rebGapNKzFNndNGVQBin3mwyTny6xrvxMUo4_ZDOq680zZp7n9gk3CKZDBaNeCw=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9ShW1beTpcyrl79Mq_EgCccRv1s5TI-82tefsgXxaVi5RtTG-C7lQMDKB6c3Qtr3pYBViNCtKmYrbHeEKg1CQwSsh2pzbkbtyLR7ny5xCcTVsspfdeUPKbUxjD09TrI5vz4FsQ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Qc3Sr4ygnFRBpgkTDKE0byA3CvLn63Xoslg2LO5IaGuZyZzPRVG8Her654y4lf882tcgbhmFchYp0bkalPUyu0WODjpAo9bxtGqPHASTqggqSbdnhwpIfyDFesCXSmsvmC5cco=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Sf535wtim02JRFYlE-oUxC0bItjIwjg20i6sY1wuLFERS4zO74mQaxSFm55Ef3vHhqVHYe6ovSvPdOXPEFs17Dch0LGql4raDppNZZhgzNSVZRVO5XImRg4YWAw6CHPaQo5rjtkA=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QS_bdwY_s9ABh1xaxdQnn4Phzki3YpIauNjdUNFZsIut6cMOMlOdCDkpRk8nxipg0vWcyT-cbD6OoH_miPHa3g0UUQFiTNnYbHlwo-NbltoQN-FkGz3V6kJLJjvqqz9JgN2JmE=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SvEFP4K_UIt0zGmCXYsSgHcZHtK3EImxS9esm1H90jXSlN4TLkb4ogmt4uo0p2sSpEFk2Raijb3sxT-SAbbsRI6rzZW8q8utvTdt9i179mZI8LwN7sQhKSPqBURNk1YorgDx_i8w=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SIsimz7pr8vUHzVIYKC9UfJ1069KknMoMc-xlVZzUw7qDk0PX5zvwy5XbWFHPvokhLQ-ELCSzcd6O0M0BcxQ6vpOAK3ExI8Go2TiWM_8jbkvSSnA6ikbMIbeM6jkWK9pmU6Ldm=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 199,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChkIqbSQrq_2t4Z9Gg0vZy8xMWhfMWdqa240EAE",
+              "title": "Wilde Aparthotels, Berlin, Checkpoint Charlie",
+              "stars": 0,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.5076463,
+                "longitude": 13.387483999999999
+              },
+              "reviews": {
+                "value": 4.7,
+                "votes_count": 452,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Tk1HItYFpSNenjKYmuLavNZ0fPbKaxObJLpX5Ods_I2dI3TXVC28snkIPhht87DOONJi52paLU-zbNuRoWbd2KMOuTne6Xw1jrh8CSyNFNzP9q2L-9F_cksx7KQwmhbCa_vTzJ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TaLfPVtpEXfR0gKAW8Utz_Bhn7vX_No_KlP5_sLRd19TlWtEWw5TfnzJijAvwNGoGfqI5Iq2r-daxNaqsPU7GaWcBOwSnrq7PoT8cBn89IErEUxx7xFpKA3OHjyNBrX62IoqXPKblm9cBv=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Q0Vtfm3eQtyYS2xKIalNJSFVS4Wufud4ILgeRrci_9Q0ME2PsgFVvxoVKZPgi6N_q16LyOZdcZ0pbNvwKQhpT9tAtMNSBMSxQKixugIRJRHsuwYJgkKVzXNhyTtl322U1LdFMdSw=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9S2YdUssyF6RXvVFdLK8MzbqKiuvrMXynnYK-x-vabn5yCphtRPN00sHplLI-MY2Y4rgMU6iIlyLOVdxci10k6_CBjnmqPhi8360Yr7k0d7Y2N8vLXONLgxk2x9v7T3XEfqp1sqOA=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TqgVdNHoIKKA3ArIqlNc7EJ8nzK8tPgzr8D72cKaAGEIHUsdPKx_zOGCBwz4TILY6_YGxa4cGxcKJgKtzRSfDnTSwfhMY4ZONhrC_KygiZ2vd_H2jSACp5bbtYGXC8Q_GAXnM=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TufYTY5qSZBAPqmjv30JjGXtrtGKPQfDLQPxiPYwlF1axXhV_kxpOrZ2pXTi9CXrrV3vIdRVimYu_ZCKg8HlUe7BXpi5ct7VNoBa-2P_fquxn0tWFgq_GAdWVVF9zm8BXxObp4Og=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QecDiWtqzvQ2Ea6FOy35EzDbaQ_6mXrKGizjAqLvxKtehw662QeutC53zzTftRpI15F1HRD-jpThhuj_Cx0d3QiCexbvra-1pitadAv81LkXzdmZ___OOwpy_vZJwTMTM7ZOX6yA=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TTWBGtYq5V40MdiIYYQ9fjrqPCgjKJhN9G7qIJxTFcTkOzEq6jfVnQajIlC7GL6xS2eaVsXNiGrLfoVGzrS-rdCNXyPjRG7quSPLeU2L8FRJl4rRfXcXvJgn98sez9oIXrSBA=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhGnUGBrtRI1RiMaEor5-uaIoT0WMjjF2IbFqncpJk2q7-CIdDFYhapbP1D_YPVWG6rrRV_-UcWJ8NqT81U6DDVh3mXRKatGgBFkw1dRPmNyFugTIW7CKLPDTkSzRPxM_3rdZ4QZ2i2SLOWEO518CX2-qvQBHrzu0_2WLjaEPMzkrUbMjGc3hAxm=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 163,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChoIw8ur7IqPu6O_ARoNL2cvMTFjNmRidjlnMRAB",
+              "title": "The Cloud One Hotel Berlin-Upper West",
+              "stars": 0,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.505021899999996,
+                "longitude": 13.3329145
+              },
+              "reviews": {
+                "value": 4.5,
+                "votes_count": 4848,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9RQS8zTXZb0veMqtmZkfgHQwP1PSQHfhWSgaRJBxF4j7i0LvbMjUFYrxw9ub8GKXwicVs748Yvk3D49FZq07DYFfJwEtc3aM4Frjlu5ORGvZLkdL1-EfvVB8PxBbiRpekuJd_CkWg=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SoUJTLP-BTfAKdwAC8AAjLIjZa4G8XP67GZal5k_XDFd9B8VvefTFradQeU6_16F7itzpxtWki5JAFd1EhJ4FoCMHKsXtNThIDCCjrY47lnhJQ5C_lbeycwwzy6WJz0YeUd2Kp=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SZ20_qzxJkqB7yhvkjtvz6HCuCPoOAFYLPjFpywZFa11Ei_eoitTSnFE53VOXhAPn9MeyEx7K9EKR_fUF_RRwW0tZj4-eyU3mfLl0RuWjr-emx_VesahRddN83XUfXntAkRXAg=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TtTrSoNHMtOxxNR8S4OVYWOFNAfsVnWu2atKqYaOAsIIB9kdsf-AxYOF0WAgPbv2Pv67vkl5yLB-yKnAken8KeRyOmsYkjwAo1xOsD7YQZtbQfAT5XQ23jEhsD8tFHu8MNK3UhObm_DcG8=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TIsIV5FrwT8UcnbZ6FwHhXQx_tV9_ZkVICb-BI8k2SIEi0cxyWFR6affyMLQicn7QUqRRXHpj27rY-bMhe-50lEcvgUFrrY9Rwa1dtKb_QUjqwLX_0k48l1mbzsm7zgvZ2NCE=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Q7DQco0c9AufDCrGccB0_Ee9Bu1bqCedROY16_U3qW0NXyAOIJCmFIYnGCtJwX3-Thpl5fUBf5p877kwezLstqTH-UXImsFyG002LAxzjPm32sPhZQlotjAIBzIR3-7esbzruMJnr35OJ9=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SoFGWFebzxi3UPMfhqhQ1l8_avjw-sOtMFEHs__OfwdbujeCq2b8dNQlx5gFMGD85QQjqrub3rFghgtiytI63UbmzMxA7KV9gRZ9agfAjVEcyvv91owWZRVAl5bTeDPCLV1jpn=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9RDABJM-qAMo9h7AVfkDZ7Ol68VXXnrDRGhVjr67az4plVVkclJJ72AlunV6sMEXB07SfZ_Un7km4VTpTjJChz_yQi7uJjMgTT1yiWB8sbAQsoItOxK5mDRoovkHnUYZM5Y0ptjNuHsLcaL=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Q06luJTSZHzmUeHCVDeZXw4ApnArIQIfmi5dyxgNzRGqO-v4D748iP12aySQU_odW-LDH9979PETIEFA4aI4f_KdXKbqC1TcFhN6KXtXgV2HgNGcMiCt9qh3OUaIJu177lHPWPJk6llrXU=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 100,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChcIlb2fkJjIvrVsGgsvbS8wMTEzZmJ6ahAB",
+              "title": "Waldorf Astoria Berlin",
+              "stars": 0,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.505693,
+                "longitude": 13.3330139
+              },
+              "reviews": {
+                "value": 4.5,
+                "votes_count": 3467,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Q43wNGTdcKEauIXbIcsVj7WmdeSieDecOD-xUzxlyAMS8XKBXjQw27ISW0qN4qxnHGjmlzUMHFlG96y2VG_DB-F1Bu0B5r5278xMxdqrkY7NeqrgbdAt_e-UN87l5GRgbALNS76Q=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QQOBVJaH_IaVaLcm8kIjBJ_T5NwfddnUfqCrpBJYrRXK9tCMiTzeGQFwsmLtsnHi0SLIRG2j-Qf37ea0o1xE3GPBAHAWzSwRfHoA7gpN45KeA73TFKb-oDbFNa988R83u2iENChA=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TYxSngFL6QN-06pb_kuDzOKSmbcL9ESWzNlBsOJH0aIr5BFqpP8krxJf1YKwViSrl2hohh9sxI-ZV5FO9Lr2qT5Vb-lgpghwmIVqxulr0WpTfq8-yJzwF456jMQe_Cgrmlp7otQxpzK01P=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QqeCBUJhN7K-UhZ8-FinHumMRYWxjfZbYFbb7nciC48hYED5BGwf5q6Wza5WVgtp3QwTzfs454v1uJ6m-B7QVQI4vpRQLeEmcACxk_8hlGJzQ85zHXaIEDwz-kps8iEQDnGa_zQZ-YAEGl=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SqfQM1gUoG0TrFvhOUVTxwzHNl7YdoWrBbUXqv9NiG44dg1o_qlg1ibTi37a_Zu0aDinLCcRbHK8dB5C6xUTyTjEEb72rDFdNdmlHSQIoV0xu3Oj1zBp5KMGLX8ZW0VmHK1rQ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhGqtQjNQEhmBYKeGtbcvUvWX6DOhd9Xus8YGAxPHZhHAZ9lzfrWraqFaairlOAGmy9YQPezaNhA9R54Vy3l2AOLiCckJdLcDPpneJy4Gq7t5H2wzESmg1ElnC1z7R3RKXlqCuZw6X-T5o7YZ00Cotz-9EzFo1E7dzk-NFK9uaBNOaDW_YP3PQRV=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhGwIIofDfXG-SwOLcrivYoVGIZS26mC9jjprmVjPGRLM8xFJyREB7M_t2s5H7MhaTR_eFnT7jXBs3VnLx5bvgaLMc21A3RYiIlCMipK1YUYTrdvESQ4gxPxfQv7UzoKhqla0xRLi3k0ikoX9JW8ebL8A_gocr40XimeUm5eaG-gzhGI8UQTDZE=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9RNKwNQKM0CPn0hWveXFUiU7kA7IP3WQ70dn9IT_KwZG2rpXTAOU-oWpvSPakrIsBgUa6LaN0e8QqJmNXglf9WtHvuvoQxE6LN2gr49mDw7cAtny40Z2Ow5MYvfQzw8NJRW69fJMQ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SICLKidiR05maCKL4WFPqoJK1yzxh_lAjOTyG70f-xPffL3cFFjE3Nx6trcqIu5Rkwu6ZAC9hMXE7TmBMqSDjDEELQAduUjCWmNlmhANckjJcsIQisfpUdXiUbMyh6arR6hoqpiOfL71I=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 295,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChoIg92Smpqq6pz6ARoNL2cvMTFyaHM3bHgxNRAB",
+              "title": "B&B HOTEL Berlin City-Ost",
+              "stars": 0,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.5148514,
+                "longitude": 13.4659816
+              },
+              "reviews": {
+                "value": 4,
+                "votes_count": 1105,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TIuQacEKpF10ViGp2qjk_TWhLlphzeONUmCWsxrLBqn2QysVlAWqs34VgrK3qRToSL-RRx9ukPslB7XA2BG7a6HkUGjHVIl_V0x8D9MAbOwg1ReKmKCLdz3ZrgSnWRevcdNHyIzTDyntvI=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TqBD9MpyQiRv7z00pQGCLAPZ3EPe4Pecl2xAR37QGlzmZENiwt9dHabDAufz0hrZUoLV_YATvC_27b4YbbbIwEzWh3TF8gQ7WxhD_gxgi5hHgd2xXiscgNetlbgZBXbtZnu-apTsy7UXWY=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TFCB-bD6GtRzJDGmODyXJaqTS79aWVbMFy1igdfX7RBlpfk6rc007maep-yoZNod268uWeeF5aSDifKTYCQ4UsPhtKbN_jOQqG2n3jLRBnQg8wi4FiKhBB9AHCjSrHcpBKBE7Usj5Im5RD=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9R5NJdXqvOXgtyQ3qSfuhN4tc8u_zB8iJyN79NBV16PHAO7J6jF6o5prW-zR7l6V2CaZn68FGalCVOaEjOYFRMHTWpbzTIUueuYNGFdaQzR_QQEfsR4UrwBUjbV8Z-UxOfBKt3XzfPePCag=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Q4Z3kZUf-dvabO2GLj_IUMECp4MXtUtX17pJK0gFmkGFbw5U5DXGvZrhf2xRIVOK7Ja7V-dkde9WEqzMRcpf-BZFSfFb0_Gx-NVx_mE3STozvhDPPtROyAxaFV5s4C0RzP7_f5d-n8fYQn=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TXbeZri46GKHOYiNsC8fzeUMfXVo1m9SbZYaKp4zvqA0UyLjvPa3WmGJ6oe2H8e7-i-Mo63RhWGkotZTMx84uqWoF4ZU-QVUN8EhZchfhZzGpdEhYCQvX46my3gCfSMk7ypVxujtl0_saj=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Sy9igeUi-yRHYNgS4ocLvXtMNU5BRVzNTF6j_NbJKMQOgJfbUBGVmPf5qMWjudDwSsEbxqTsRP0dkZ0WMwXPpqC63t3Wr5p0SwyumR8XeqDGLmvER2z2y0gCD_qFa5rpXP4-bWHzwMr54d=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Th-ipVgqwLRISRd-pam9d9-hCzJ2VXjsInW2Ad0xI8cVZO1ICXxt-CyWnXk0uN0iBX16jGx7TfyHiOXh2j9lS1h6O83IzCdNCJZ2KFNGrCOEM8-XjrviOt_65ywHJkKlo7bBI4UQv4ZEbW=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9R4o9hpdCSfhSCsv_JSjDM9gRGItOJaT9EiqiVdFLuyf15bT5FvP78fE7oI5gyN_pgGj1Evcm3eyMQWHWXAIUTE0GTwn9TFVo1xolXoXGx6gsLH5avvvO-e9RwoTMLYcOTVqrlBBk0D6TdD=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 57,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChkI4ISkst7gj4RdGg0vZy8xMWI2eWJ0a3o4EAE",
+              "title": "Vienna House by Wyndham Andel's Berlin",
+              "stars": 4,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.5283695,
+                "longitude": 13.4566792
+              },
+              "reviews": {
+                "value": 4.3,
+                "votes_count": 8037,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9RuE6MKDJpJlWVVIZBp31FY1jN9D_6LaTm1AwtxCGDkb0uDf7U4tFNch7-Y5darPCx9Y_bgLz2jT5Pb6cANYj_bq9a-lXdaCiEVGX3_k87daqid8aLIgmO1P5aubIO32NMB1vyxyQ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Svl04DKTab-nIi_ptrVzlOhX-MD99IqOuVwKymPvhe798_IGuId35dGUIxaqA1QPRMTBLRVehochjFLGVOFfp-yJ9M42x6DR0asc2go1NMbqrR-ihAlydhDZmR56cptaK4icPw0N7fUTLc=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SIKoDzzqwpxEDprBBN4mlm-02SUv7LOo-JbY4TREElS6VGjIHfz1CPUT3zTPwcXxTy4t4lWMl0zgP4Tbt3j2CnTctjE7zwNlbm0rLAdQqZVliNmdlC7X-LGPwW5diCIEbRIsZQ3gslXyR4=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Q10sxjMo8OOY7HNywj3jXaavVusIzkfRdWgdNQilZINzzRImqceIXWd7MDU-JaUf-sYJ1Zs_3saykS-ZzJrirDtOU2mLN9KRT5HkITAsGMi_OL78KA-2nwxP25bPNIzPtenqxF=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QWEhKuOsSztDU-hEFjXats7cDD6We2JKjgtv8ywVmGyT18ENJgXB_Lw_6L0d9ktsU_9aEdK9OfJvaGXBBE1jQEyK01LHONK-a5iTrqitnZJ-vqwdYSf3A9Y-VEUDy5_MwvBRVQLOFMIjzT=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhHxYYJ3VA5-315IpafPwx7HZi714VPt7j8jda1QMUmQoKZ7D1cUqvII_vLTf3_a9HnvPA5h8bzl2Ie6tGajdD5w0IiCJAqxrfOF6ObUG6pYZqHFn7ygNGzMay0p12yriqMues4PdWFcxIPaEVrHF_AjBoz1b4Ncce9adgEIoSos7FDIBcL4_KG-1A=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9S9fy_pMgb-49Bemfn_oB0L2DZAguGA5_M-MTo-l5MhsHY3gsRMX1slgD29T6rip3c6_zbLIL8m-DYY-mto5JvQCDUO8nzzVDh_l0-nzgdT00Xxxx4Q1P72ChNp_zo1WF0ho-l5gkTeVgi-=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9R1KDeOBUnwAegODFILk71K6qwiB6XfGOcWwpKdHQRS4En6nfL7LJ5ZxpQ-hR-TogKp2kTKobNbqmEetCbkYJv3tDjcNkfZbwGcuRxymOmq7pJuNMCyTBtofewzUdK_BxFvl7MbcgmwZfc=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9T9OMyQIICvAb5rTCzdhqAKhJaCKV5A2ivlXgTd75RgP3Ajxw7PgIyWJZ4FeVdHFLEWd4OnZoK9Glgf2SJUhF3B6jHx3__Gr-SHS8B6qdYW7pZV319PrcdXwiP9juFA0vXrjHVOO-SiE7FK=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 106,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChgImLnNjO2_hf7NARoLL2cvMXRnZ21wNG4QAQ",
+              "title": "Hotel Astrid",
+              "stars": 0,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.5022163,
+                "longitude": 13.3192139
+              },
+              "reviews": {
+                "value": 3.7,
+                "votes_count": 350,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhF6QUqtJwc0btfeMgiRJ9gitM_XVBVsUrStMlGdh0g4XLXihFxVubxUygjnXpCiiXOpte6vwuDdG-EEXY1DFs_qMtxLpypDWrJfitKGBQsYPXh7fmQ6Y2rbBZB1QwhQ56W3XDwV4sL6IlUtCqsKlVNdfac6aeXk3c2bhxik75BgrWEsiQ5Y2rmq=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhEjOYyYfN-xMJoV9Q9Y9BL79h80Rw1sVPDPOLEpJLR2g8Hi_56ysK1aAgZIahZC0r16o033lB7BTDfh8MlzQ2I4B9A8nyyJe0awOfq4kngpdJ_QCQNX35iNZfYH0OiqD_zGkTTHIDDbEGGE-q_j6m2nvxlZCClJQE66qx9nMAe_k4W4xkVayMuY=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhFFy48134BD7RHcqcuWXWFPRx8XByuXayCVaggFO1zZ5Xk3QulZkYgV7JKm_IrKW9naVgDF_hD2NUxNWpxg4Dsu4gOYbdhMJIewU7m7oDMQ8RBGf8pNt6MYqJv8d-dufu0yQ04UDOuD-FaBV7HbfmN7HMIzNnuEwMhfXSgbEFJyrPLNpk-XT3b-=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhHu9LV2e1sYBI2H9IEzCzK2UyoxvvXqEQY9O1iPmjbSVYJEtYFgWpW4zmS-uepmTCkq-xRz0DtsCEVU85hQWq5XCj6pbzP0dGfDFZGoakgfHbXvHXxb3HpcOT5bGen3r746sjxF24KSD7jimvl5OHytsLvigQ96b2rDG1pyn-N2OMpapBsWe7k=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhGfj3Fc3NYwBKiIj82e7cKXx057oOlBcncok2V2bkiBwRxMERtcWeSrEGp-7yhm3cLr1mjl2TGy8D-ysLp6FcpSC5zCEpB78O228X6nQHzmKtUoMPl2pXJf-yFq3-lLLHI_Hn43swogqWDPNO4hDTRpPKeWXBl7YaMhYNSIXjwzKh3UO7CzFtMv=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhHIQClTFj2VcNCmQsjk0IHPAG58MWm56awzvMo7qTKvVfFsb4ol2Q04dbTFqQq709vHNT7ooWzTUy8CIewKSraemIO9JvOIMUi7LAsLqoISxXmPwxdiWuk9GW15qgkwVKVUU0w0GeBcOxW-CCgOpwEsi6YmVdZ7JxE_3iBOO_66PloC5_BTgUzmyg=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhE8zuA0FFeoWXBGMICZrdrVzG7IkAOTlGuT4Usn9WnxiXVCDeDLA68lbhnYWhvLAuTjP4YAZSGoXfbi_zd8SMUbWcpWwyaH5kcrveBas5GS522aqCZ71gmeT6O3tk7oBz_KHBpOWGMANMFLKDvqmabCqZv-u63kQ-8ihC7hNW1MiaOWJjDn4oJy=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhH9MhEb__Ca-WkKn3i_mTs86wSPxWX_Qjdwf6POXZ6SY5iY2qB5lySjxE_NE-sFe9TnP3KhuhpkTIXG2O4sgbfQeKVQ20EsVPfL5PLWDpgCU9fmtpAY_GVs4fg5yrxa1Ny8aQ97OLsxvOB8suOAUW5YMUE0PSwwXECbpwTMNaAGe9V7j1cYThCS=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhFNxw9ErOOcHxMWOEYOV2SKJQjxL7ATdYya2dUBkGJ0egHykx_W-_IAIyDT_gJ1eyRVmjwo2GwbNteMzi8SKFXTnZNs8-oYZZB8fXteQDPdN4NJnOcf06W1fNcoGqE-g0RhPcSMBqaDofPNMWCi5dVu_rXGV9WK4D5n3qCZHVrl_O-bwQBuy-wW4g=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 75,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChcI6cPN9v2qmOxSGgsvZy8xdjF2YzZreBAB",
+              "title": "Artim Hotel",
+              "stars": 4,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.4990647,
+                "longitude": 13.3447974
+              },
+              "reviews": {
+                "value": 4.5,
+                "votes_count": 512,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SbIT69yOLXK1X8C3U-rLklCkk0equ-mFsKjZPLQBLHl36wCwoxAOfBKtWM5_tS4DPpS-QjQjDihYoB8q0GluIkqJV9QL-w_kOUenWXbcbW0_h-YSGTmygcjv6zui2cHKo-iHac-K3nXxRc=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9R3V06O90TRP513OQwbYlAQLfXIXKVVPvudGvBEeaWUC4cLO9P2d7Z3x_IwFnBy5u2wl-bLXAn5L1yMvIRbaJhDaFOr8U3PL3TonSeQZPjqiMntBzYg30eEH9i4ElqrCyrxbdLx1Nbv0e4=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TGbnWZUYUj_lEZ5nc5JD1AFAj3zO0WWsqnvDCfnBhgNygLZZTe8C95CUfiX4AuQWzZF_yNEETVtduzQMkfonMiJ5_MxX_PLFFtRpiRSKDpC22WqtOlbDKMNpLAWYJWI5wB49hUWJwC0sA=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QQp2hg5zzIAewTGz1XjlE7t1enKc_BZEGxF9WVXHb9oPSwUMyHGPhycSOvXrf70IofYJGnGEN1LCUMsGpof0TuoJs5e9mWs6gB2Z0QH8dQUL2VieCsxlEhQFqVSSuAn5mYKM4=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhGtVPotEKC2FSVsjmYoKYdsGY34xFWpzLbfsmFygT6Tcngf_s_Z6W73qw6pd-Id6GgjRuPLsI27M4iO52JvqD2HlpplHMfiHCUhE3dL4TCYipmRAfpV_kR4d0V24lV_hh3RAGodRku307NaYF_8jdZnRPLZ4sknOALj5cGXsK98260jwDdTyw7_=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SnQ3pgvAq4BEhyNCtoBRhxlvOd9szZK3w0eGWmA4wagKGTMbus_OQnP6CPjL1K2IUxvFSMBY947Fo0XzLJCAQXmZaEcYadjMt0xJC7Q7PRCz1hI6QO-TCi31kWGHTdsil3D_y7o9lKlcfg=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhFips8xsPNqh3RqDfPxHu1BJKaLh3PtL959rrtRswj43lhOKChcpWy5FvzpB4nemOgxMOGp0eIIbl-v1E9mwwB6CJXut5oGyAxgFFEXsd2ivIxzoBY_vZL0_teqH1ROCpnJV9OuQ8pLbJ1gOdg2XK0gLdm8w8cIErEAL5xyVCWbPxOCZCx6iVbv=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9RiK9I2YpuWp-mSvmGEVQb3BnXBlr1J8X0vmGr0WOMVSLVvZlFgqTAfNnNLei0LwWzwALPOUi6sNLkCdQpV3YRZZY2WHYKZlttc8QKLxKhvHqRXjsEen6I67seMeQi7ANNzcCAV00ofiUdh=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhHIHfCWH_dF4gXWENPzck99zl2dOSB6RRIPmYP1ApPUxApBTTDkSh70OZHZynlN5LrQJ2Yz25zAONISqj6iHZ7D9dhOc9TV41RdhrGVBNWe_hqQR4gJqc9MdGcoZCFBjAv1KE2OIu048-T2JzkCljxLDmFyvKxdy4av7kUYUs4ljts2zEJrowff=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 74,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChoIvq2zjYvl8LzCARoNL2cvMTFjNTA3MDN5ZhAB",
+              "title": "Ocak Aparthotel",
+              "stars": 0,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.5507875,
+                "longitude": 13.3917352
+              },
+              "reviews": {
+                "value": 4.2,
+                "votes_count": 494,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SoCmfHMJfOtaOAqZFlbzYlTubhPo78Nr9arbAVP2A0TJik2jwpsgGe0eV3gxxQeEffh9D2wE9z_rReB_WPTznp5ZTjbyLg0sTdaOhsKoDLqpwZQVvD5oDEspmd7JIcg30tDp0=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9T7PEl_FJxWh6UG_41HYVflMnLT5F44X0wiklsVaeSnBddkfdsXWg8aR0fUOJGsz1LcVV5ldL7WdEz-ZqeaBnChptnjILGNwyzv5UQwUrd9CkSgKSnIx9JX3_S9f1Y5TymUrtZ72g=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9TZVWHaFl_50_1BSkMOT6SvA4qMxMt8UeUlCgern0H5ixNUNtyh7gn5wS8vUHlPYtmQdmnRbzUY8tCs_t1HmDcNf4EIGa3N0O41i5b3Zf_rhBFjnJZT5ugmyBdQKejcGcl_gkPk=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SeGTvsIWDLWnASbaJdV9l-wXKA3Y0_sT5VYB0rL4kS1S6WFbp-LJL7I_KS-vREGhEEpNLUVxgttA6OTLcrdA2viKmuNg1M2Pq_VXsRNn1zS1hldywa5OvJFMcjeLc19w-cwjTQ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SMCQNzz3XmhIWeosC-qn27BaVNyRAv87vI2eXmywUaYRKrJvXsQOCcKBZ_ISbVe5mHzR-FDtDuol_6erk-NtG1FddzJXxsEIcA0uR7eI5GImQoJGp1smdqKEU2rFlMm8G-b1Iw=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9RMrH-dj_7vm_CyFercDsMmi5P4nCTgSHFCv3Tno52F0Bf0DxlMQ7__E64cngP04JHcfqUfoiiyNYB4kLNbui04KaLPZiQtZbO6OP4xLWk654Or3ZaJ8uIvTRG5sqWjI9bLmLAw2g=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9RXvv2zFJHPKLEbbmnn_1IM7qmGO3KAq-_-7C1J4FAROL927kK9A3HIMKUP2Z8P2Z5jD5-2M9Elbnu_aa8Pqht0bHKCTaCt4oOhyplvkKlCPnehs1L4cwZ1v8MU3QAxW2Ck_z42=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QumjOy90iVEc-uCRaOxY78gQ7NcGyYbyeu2ZMfTY1psKfaEdQ9zP19psQ0ihW-5OmbFXtqU4KBwXCp7h-7j0DA362SFMXrB7UNRIFNJTjF2jAZQu8uhL3yZZtu6tIwq-DzygB_=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QgCfRkBpXSKXYgs0Y_840BDbO17_nXHUmEBrjCtkNMUNWt477ctQ9dNT6S3iwyoZBF65IyEUXJya2yOcoGGvslnwm4PyWJlWLE2-MtZxY2qE9x6MkcnW2bSZahegnltFKQ3fw7gw=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 78,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            },
+            {
+              "type": "hotel_search_item",
+              "hotel_identifier": "ChoIzrWE9sGrgIqDARoNL2cvMTFiNzNyZ3Y4bBAB",
+              "title": "Titanic Gendarmenmarkt Berlin",
+              "stars": 0,
+              "is_paid": false,
+              "location": {
+                "latitude": 52.5149656,
+                "longitude": 13.3944946
+              },
+              "reviews": {
+                "value": 4.5,
+                "votes_count": 2582,
+                "mentions": null,
+                "rating_distribution": null,
+                "other_sites_reviews": null
+              },
+              "overview_images": [
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SO7R8YZnwk46hkPp38jerFvwimS2EOubWIp0ozdP0OK_Ia5LuRJWf5tkxTJyxW4nggOj_CFBxg5bfCRvKw2uwPgu30p6eDVvbpeljeiIQWhitsF8PqxS-MrGTlSoCXVEVzHwdC=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9REpTg0KAKuf-2jjDUMn8adKK33CizdTZoQBQiJrH0Jd_AxztkBYB9MGOQHA2FTpjU5r5LEabLMmXhdHafKNrRoEx4m96rzNfHpVjEYZd_I-MeiHKtl8HFxI4_LKNjRD6mFkZY=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QvNlirIk-BMz0F5yRvDIDbCG126q6z5exRQ_uZunZDsHg_DHp7VM-VyNn5ZHT4xls3jXBPH8DKbHA8htQBfrIlQn94df2O3o0RbXW88gm8UDE5_IAgJ4pYV6RrW1QOAaVyu6to=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Tet3hGKCIvx5ITQF_85HRfO75AUZkbgU7Bw1faHi3Gh1pqB0zNH1Yp_bEbqs2JbI-oVbtWT95o_t3hW1OVM0pn71kCdNCeH-hsGOItsbkSrsvxy2DCFgohwXca1n1Am81nsCW0=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhFln6wlRbPnwYGI45-TBJ24S24DzVNRG6iV3ju587xMHVe8zghv5g2GKegUAN8XiRu-ORdnHJMlbhOOQmggEzNbOo5CZJbpFSyj1t1NlGgeA0SE3WPtytMEcOz1HAtU_s0HhStBQEBbkFQZ4keCk_EHM3JBXmHKWgb8GOx1gueLUKgvenklxj66NQ=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9S-pzpzOLJmSlB9GhirWRg5l3FFGotJ0AgesrB7U7S7f2lLWO7EJCJtJKqO9fYX_myDt3U63tTqZztF9_81bhrfbh7q5rP5laTBMVqBCAfH_akz2ReN3LMtf6dYsKr5IJQ19qA=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhG2j5sQMnGVbNm7W-C13VqFvzVobeu8SGhntrATDASPpr3r60jqB1PJNhsO9v5xPZAE-knXD4englwMZwzgIUh-NUqjtgcI3wh6jClI_CzPwPm6gw3SiktjD4XRSDbrONITdtvtfvUjVRYU7V1gFHexvbtXnZJJLdGkkNAXBsKsX6nBuH7wS7Q=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-proxy/ALd4DhHwuobrV0OoDmtfS9kxbWCRToU3d2TEklksBcw50A6hvRfInDu5GyZRV-yme5yRjXTzNF0YI5hJ4Y2tqcjcRU70foX8ymAj9zOVzgTCpokh0O1P93H5KOhrw826GACVcvT3dgphobed7FQKLDPhNkLGYIi_RQQBsuVOHwot61Yns9Yhhy-3hud1=s287-w287-h192-n-k-no-v1",
+                "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Tz_r_0_Mxi0pugC0x5wD1hM5xgLhdNU1bL7Mw6yjCG_56zryiSgR2UPpBrnD3HK3eIWX6k_QnVGR5mFUr_OFrn1UbUZoWNclffpPAkh8fCcVWjasfj-J0CkT-BlIWtSvmZ2ojxeg=s287-w287-h192-n-k-no-v1"
+              ],
+              "prices": {
+                "price": 199,
+                "price_without_discount": null,
+                "currency": "EUR",
+                "discount_text": null,
+                "check_in": "2026-12-01 00:00:00 +00:00",
+                "check_out": "2026-12-03 00:00:00 +00:00",
+                "visitors": 2,
+                "items": null,
+                "prices_by_dates": null
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

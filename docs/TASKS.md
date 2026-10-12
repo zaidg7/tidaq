@@ -21,7 +21,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-004 | Supabase schema v1, RLS, seed providers and cities | CLOUD | M | C-001, Z-04 | DONE |
 | C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03b, Z-04 | IN PROGRESS |
 | **Phase 1: Data** (weeks 42–44, target Sun 1 Nov: data flowing) |||||
-| C-010 | DataForSEO spike: real response shape, cost, feasibility report | CLOUD | M | C-001, Z-04, Z-06 | TODO |
+| C-010 | DataForSEO spike: real response shape, cost, feasibility report | CLOUD | M | C-001, Z-04, Z-06 | DONE |
 | C-012 | Stay grid generator | CLOUD | S | C-004 | TODO |
 | C-014 | Normalization and provider mapping | CLOUD | M | C-010 | TODO |
 | C-015 | Price stats engine (state, percentile, trend, advice) | CLOUD | M | C-001 | TODO |
@@ -59,7 +59,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-052 | "Beste Buchungszeit" and event SEO pages | CLOUD | M | C-044 (30+ days data) | TODO |
 | C-053 | Coverage expansion and "request a hotel" | CLOUD | M | C-044 | TODO |
 | C-054 | Weekly deals newsletter (opt-in) | CLOUD | M | C-031 | TODO |
-| C-055 | Breakfast/room filters (if the spike allows) | CLOUD | M | C-010 result | TODO |
+| C-055 | Breakfast/room filters (if the spike allows) | CLOUD | M | C-010 result | DROPPED (D-40) |
 | C-056 | Research: "watch my booking" rebooking alerts (v2) | CLOUD | S | C-044 | TODO |
 
 ### Zaid tasks (sessions update this table when they see a Z-task is done)
@@ -206,7 +206,8 @@ Notes: next-intl 4 with `localePrefix: 'as-needed'`, `localeDetection: false` an
 ## Phase 1: Data
 
 ### C-010 · DataForSEO spike (critical)
-Owner: CLOUD · Size: M · Depends on: C-001, Z-04, Z-06 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-001, Z-04, Z-06 · Status: DONE · PR: [#10](https://github.com/zaidg7/tidaq/pull/10)
+Notes: report `docs/research/dataforseo.md`. Spike cost $0.0136. Per-night prices, lookups by `hotel_identifier` only, ~29 sites per stay incl. the official site, results in < 4 min, no breakfast data (D-39, D-40). Run the script with `NODE_USE_ENV_PROXY=1` in cloud sessions so Node's fetch uses the proxy that adds the auth header.
 
 **Goal:** know exactly what the API gives us before building on it. **Write findings, not assumptions.**
 
@@ -226,9 +227,9 @@ Owner: CLOUD · Size: M · Depends on: C-001, Z-04, Z-06 · Status: TODO · PR: 
 4. If anything contradicts PLAN §6–§8, propose changes in the same PR (update PLAN and add a DECISIONS entry).
 
 **Done when**
-- [ ] Report merged with real numbers
-- [ ] Fixtures committed, zod schemas drafted in `packages/core/src/dataforseo.ts`
-- [ ] Cost of the spike under $1 (it must fit the free $1 sign-up credit; Zaid tops up only after this report)
+- [x] Report merged with real numbers
+- [x] Fixtures committed, zod schemas drafted in `packages/core/src/dataforseo.ts`
+- [x] Cost of the spike under $1 (it must fit the free $1 sign-up credit; Zaid tops up only after this report)
 
 ### C-011 · Hotel catalog
 Owner: CLOUD · Size: M · Depends on: C-004, C-010 · Status: TODO · PR: –
@@ -278,6 +279,8 @@ Owner: CLOUD · Size: L (split: a = posting + guard, b = results + storage) · D
 
 **Goal:** prices flow into the database every day, within budget. **The most important task of the project.**
 
+**From C-010 (D-39):** post Hotel Info by `hotel_identifier` only; collect by polling `tasks_ready` with an extra cron at 05:30 UTC (and a retry at 06:30); add these crons to `apps/collector/wrangler.jsonc`. Fixtures in `tests/fixtures/dataforseo/`, schemas in `packages/core/src/dataforseo.ts`.
+
 **Steps**
 1. Morning run (05:00 UTC): refresh grid → build job list (all active stays; watches first) → budget guard (PLAN §7.2, unit-tested in core) → post DataForSEO Hotel Info tasks in batches (max 100 per request) with a `tag` = stay_id → record in `collector_runs`.
 2. Results: postback endpoint `/postback?token=…` (secret), or a poll of `tasks_ready` every run plus a retry run (decide from C-010). Validate with zod → normalize (C-014) → insert `price_snapshots` → rebuild `stay_daily` for touched stays → recompute `stay_stats` (C-015) → trigger alert evaluation (C-031, once it exists).
@@ -295,6 +298,8 @@ Owner: CLOUD · Size: L (split: a = posting + guard, b = results + storage) · D
 
 ### C-014 · Normalization and provider mapping
 Owner: CLOUD · Size: M · Depends on: C-010 · Status: TODO · PR: –
+
+**From C-010:** prices are per night → multiply by nights; detect suspected totals (≈ nights × median); dedupe ads (`is_paid`) against organic entries; map by domain (add domain aliases like `www.booking.com`, `de.hotels.com`, `hotel.check24.de`, `de.trip.com`, `www.agoda.com`, `www.expedia.de`). See PLAN §7.3 and `docs/research/dataforseo.md`.
 
 **Steps**
 1. `packages/core/normalize.ts`: raw offer → `{providerKey, totalCents, roomName?, board?, freeCancellation?, raw}` per PLAN §7.3.
@@ -360,7 +365,7 @@ Owner: CLOUD · Size: M · Depends on: C-020a, C-011 · Status: TODO · PR: –
 **Steps**
 1. Autocomplete for hotels and cities (accessible combobox pattern, diacritics-insensitive: "zurich" finds "Zürich").
 2. Date range picker: German locale, Monday first, nights count, max 30 nights, no past dates, mobile bottom sheet.
-3. Guests: adults 1–4 (children later). Toggles only if C-055 is done.
+3. Guests: adults 1–4 (children later). No breakfast/refundable toggles in v1 (D-40).
 4. Submit → stay page URL; city → city page.
 
 **Done when**
@@ -513,7 +518,7 @@ Final launch checklist (below), production deploy to tidaq.com, collector prod c
 - **C-052 SEO pages:** "Beste Zeit, [Hotel] zu buchen" (needs 30+ days of data), "Silvester in [Stadt]".
 - **C-053 Coverage expansion:** more hotels as budget allows; a "Hotel vorschlagen" form; track user-requested hotels.
 - **C-054 Newsletter:** weekly deals email for opt-in subscribers.
-- **C-055 Breakfast and room filters:** only if C-010 shows reliable data.
+- **C-055 Breakfast and room filters:** dropped for v1 (D-40): the source has no breakfast data.
 - **C-056 Watch my booking (v2):** forward a booking confirmation → we watch the same stay → alert when it's cheaper to rebook (refundable bookings). Research and spec only.
 
 ---

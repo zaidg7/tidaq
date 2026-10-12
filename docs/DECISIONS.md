@@ -53,9 +53,12 @@ Last updated: 11 Oct 2026 (kickoff with Zaid).
 | D-36 | **Domain `tidaq.com` registered at Namecheap**, DNS managed by **Cloudflare** (Namecheap nameservers point to Cloudflare). `.com` only. | Bought by Zaid on 12 Oct 2026. Cloudflare DNS is needed for Workers custom domains, Resend records and Search Console. |
 | D-37 | **Trademark check for "Tidaq" is clean** (EUIPO, DPMA, WIPO, checked by Zaid on 12 Oct 2026). | Name is safe to use. |
 | D-38 | **Deploys: staging on every green `main` push; production (tidaq.com) only on a `v*` tag or a manual "Deploy → production" run** until launch. Revisit at C-044 (likely: production on every green `main` push after launch). | C-005 had to choose. Before launch the public domain should only change on purpose; staging gives every merge a live URL. |
+| D-39 | **Collector uses DataForSEO Hotel Info by `hotel_identifier` only, normalizes per-night prices to stay totals, and collects by polling** (post 05:00 UTC, collect 05:30, retry 06:30; `tasks_ready`/`task_get` are free). Postback optional later. | C-010: name lookups failed 7/7 and were billed; prices are per night; results were ready in < 4 min. |
+| D-40 | **No breakfast/room filters in v1 (C-055 dropped).** | C-010: 0 of 198 room offers mention breakfast; room names only on ad entries. Revisit only with another data source. |
 
 ## Changelog
 
 - **12 Oct 2026:** D-11 Supabase moved to Zaid's Pro organization (+$10/month, storage and reliability); D-13 cost estimate updated; D-19 added (raw data retention); D-36 domain bought at Namecheap with Cloudflare DNS; D-37 trademark clean.
 - **12 Oct 2026 (2):** D-13 lean start: 36 hotels × 8 stays, one daily run, cap 300 tasks/day; $50 top-up only after the spike.
 - **12 Oct 2026 (3):** D-38 added (deploy flow, C-005).
+- **12 Oct 2026 (4):** D-39, D-40 added after the DataForSEO spike (C-010).

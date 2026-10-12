@@ -1,0 +1,1673 @@
+{
+  "version": "0.1.20260917",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "time": "0.0178 sec.",
+  "cost": 0,
+  "tasks_count": 1,
+  "tasks_error": 0,
+  "tasks": [
+    {
+      "id": "10121606-2784-0282-0000-fcb2aa283694",
+      "status_code": 20000,
+      "status_message": "Ok.",
+      "time": "0.0128 sec.",
+      "cost": 0,
+      "result_count": 1,
+      "path": [
+        "v3",
+        "business_data",
+        "google",
+        "hotel_info",
+        "task_get",
+        "advanced",
+        "10121606-2784-0282-0000-fcb2aa283694"
+      ],
+      "data": {
+        "se_type": "hotel_info",
+        "se": "google",
+        "api": "business_data",
+        "function": "hotel_info",
+        "location_code": 2276,
+        "language_code": "de",
+        "currency": "EUR",
+        "adults": 2,
+        "hotel_identifier": "ChgIveLHqY3365ykARoLL2cvMTIzMjYwN3gQAQ",
+        "check_in": "2026-12-01",
+        "check_out": "2026-12-03",
+        "tag": "info-ritz-carlton-dec-id",
+        "device": "desktop",
+        "os": "windows"
+      },
+      "result": [
+        {
+          "hotel_identifier": "ChgIveLHqY3365ykARoLL2cvMTIzMjYwN3gQAQ",
+          "location_code": 2276,
+          "language_code": "de",
+          "check_url": "https://www.google.de/travel/hotels/entity/ChgIveLHqY3365ykARoLL2cvMTIzMjYwN3gQAQ?hl=de&gl=DE&gws_rd=cr&uule=w+CAIQIFISCWu-scIecppHEVvlkY5rXeh1&ts=CAESCAoCCAMKAggDGiAKAhoAEhoSFAoHCOoPEAwYARIHCOoPEAwYAxgCMgIQACoJCgU6A0VVUhoA",
+          "datetime": "2026-10-12 16:06:09 +00:00",
+          "title": "The Ritz-Carlton",
+          "stars": 5,
+          "stars_description": "5-Sterne-Hotel",
+          "address": "Potsdamer Platz 3, 10785 Berlin",
+          "phone": "030337777",
+          "about": {
+            "description": "Modernes Luxushotel mit eleganten Zimmern, gehobener deutscher Küche, eleganten Lounges und Pool.",
+            "sub_descriptions": [
+              "Dieses moderne Luxushotel ist 1 Gehminute vom Sony Center und von der U-/S-Bahn-Haltestelle Potsdamer Platz entfernt. Zum Baudenkmal Berliner Mauer sind es 11 Gehminuten.",
+              "Die schicken Zimmer mit Marmorbad und Blick auf den Potsdamer Platz oder den Tiergarten sind mit Flachbildfernseher, kostenlosem WLAN und Minibar ausgestattet. Zimmerservice wird rund um die Uhr angeboten. In den Suiten gibt es separate Wohn- und Schlafbereiche sowie teilweise eine Bibliothek und eine Pantryküche.",
+              "Es gibt eine Cocktaillounge in der Lobby, in der leichte Gerichte serviert werden, und ein gehobenes Restaurant mit deutscher Küche. Außerdem bietet das Hotel einen Wellnessbereich mit Innenpool, Saunas und Fitnessraum sowie ein Business Center und einen Ballsaal."
+            ],
+            "check_in_time": {
+              "hour": 15,
+              "minute": 0
+            },
+            "check_out_time": {
+              "hour": 12,
+              "minute": 0
+            },
+            "full_address": "The Ritz-Carlton, Potsdamer Platz 3, 10785 Berlin",
+            "domain": "www.ritzcarlton.com",
+            "url": "https://www.ritzcarlton.com/en/hotels/berzt-the-ritz-carlton-berlin/overview/?scid=f2ae0541-1279-4f24-b197-a979c79310b0",
+            "amenities": [
+              {
+                "category": "internet",
+                "category_label": "Internet",
+                "items": [
+                  {
+                    "amenity": "wifi",
+                    "amenity_label": "Wi-Fi",
+                    "hint": "free",
+                    "hint_label": "Free",
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "wifi_in_public_areas",
+                    "amenity_label": "Wi-Fi in public areas",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              },
+              {
+                "category": "food_and_drink",
+                "category_label": "Food & drink",
+                "items": [
+                  {
+                    "amenity": "restaurant",
+                    "amenity_label": "Restaurant",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "bar",
+                    "amenity_label": "Bar",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "table_service",
+                    "amenity_label": "Table service",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "room_service",
+                    "amenity_label": "Room service",
+                    "hint": "twenty_four_hour",
+                    "hint_label": "24 hour",
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "breakfast",
+                    "amenity_label": "Breakfast",
+                    "hint": "extra_charge",
+                    "hint_label": "Extra charge",
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "breakfast_buffet",
+                    "amenity_label": "Breakfast buffet",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              },
+              {
+                "category": "policies_and_payments",
+                "category_label": "Policies & payments",
+                "items": [
+                  {
+                    "amenity": "smoke_free_property",
+                    "amenity_label": "Smoke-free property",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "credit_cards",
+                    "amenity_label": "Credit cards",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "debit_cards",
+                    "amenity_label": "Debit cards",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "cash",
+                    "amenity_label": "Cash",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              },
+              {
+                "category": "services",
+                "category_label": "Services",
+                "items": [
+                  {
+                    "amenity": "front_desk",
+                    "amenity_label": "Front desk",
+                    "hint": "twenty_four_hour",
+                    "hint_label": "24 hour",
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "baggage_storage",
+                    "amenity_label": "Baggage storage",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "concierge",
+                    "amenity_label": "Concierge",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "convenience_store",
+                    "amenity_label": "Convenience store",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "currency_exchange",
+                    "amenity_label": "Currency exchange",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "full_service_laundry",
+                    "amenity_label": "Full service laundry",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "elevator",
+                    "amenity_label": "Elevator",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "wake_up_calls",
+                    "amenity_label": "Wake up calls",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "gift_shop",
+                    "amenity_label": "Gift shop",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "housekeeping",
+                    "amenity_label": "Housekeeping",
+                    "hint": "daily",
+                    "hint_label": "Daily",
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "turndown_service",
+                    "amenity_label": "Turndown service",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              },
+              {
+                "category": "children",
+                "category_label": "Children",
+                "items": [
+                  {
+                    "amenity": "kid_friendly",
+                    "amenity_label": "Kid-friendly",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              },
+              {
+                "category": "wellness",
+                "category_label": "Wellness",
+                "items": [
+                  {
+                    "amenity": "fitness_center",
+                    "amenity_label": "Fitness center",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "elliptical_machine",
+                    "amenity_label": "Elliptical machine",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "treadmill",
+                    "amenity_label": "Treadmill",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "free_weights",
+                    "amenity_label": "Free weights",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "massage",
+                    "amenity_label": "Massage",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "sauna",
+                    "amenity_label": "Sauna",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "spa",
+                    "amenity_label": "Spa",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "hair_salon",
+                    "amenity_label": "Hair salon",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              },
+              {
+                "category": "pools",
+                "category_label": "Pools",
+                "items": [
+                  {
+                    "amenity": "indoor_pool",
+                    "amenity_label": "Indoor pool",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "hot_tub",
+                    "amenity_label": "Hot tub",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": false
+                  }
+                ]
+              },
+              {
+                "category": "pets",
+                "category_label": "Pets",
+                "items": [
+                  {
+                    "amenity": "pets_allowed",
+                    "amenity_label": "Pets allowed",
+                    "hint": "extra_charge",
+                    "hint_label": "Extra charge",
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "dogs_allowed",
+                    "amenity_label": "Dogs allowed",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              },
+              {
+                "category": "parking_and_transportation",
+                "category_label": "Parking & transportation",
+                "items": [
+                  {
+                    "amenity": "parking",
+                    "amenity_label": "Parking",
+                    "hint": "extra_charge",
+                    "hint_label": "Extra charge",
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "self_parking",
+                    "amenity_label": "Self parking",
+                    "hint": "extra_charge",
+                    "hint_label": "Extra charge",
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "valet_parking",
+                    "amenity_label": "Valet parking",
+                    "hint": "extra_charge",
+                    "hint_label": "Extra charge",
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "electric_car_charging_stations",
+                    "amenity_label": "Electric-car charging stations",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "airport_shuttle",
+                    "amenity_label": "Airport shuttle",
+                    "hint": "extra_charge",
+                    "hint_label": "Extra charge",
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "private_car_service",
+                    "amenity_label": "Private car service",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "local_shuttle",
+                    "amenity_label": "Local shuttle",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              },
+              {
+                "category": "rooms",
+                "category_label": "Rooms",
+                "items": [
+                  {
+                    "amenity": "air_conditioning",
+                    "amenity_label": "Air conditioning",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "minibar",
+                    "amenity_label": "Minibar",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              },
+              {
+                "category": "accessibility",
+                "category_label": "Accessibility",
+                "items": [
+                  {
+                    "amenity": "accessible",
+                    "amenity_label": "Accessible",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "accessible_parking",
+                    "amenity_label": "Accessible parking",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "accessible_elevator",
+                    "amenity_label": "Accessible elevator",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              },
+              {
+                "category": "business_and_events",
+                "category_label": "Business & events",
+                "items": [
+                  {
+                    "amenity": "meeting_rooms",
+                    "amenity_label": "Meeting rooms",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              },
+              {
+                "category": "languages_spoken",
+                "category_label": "Languages spoken",
+                "items": [
+                  {
+                    "amenity": "english",
+                    "amenity_label": "English",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  },
+                  {
+                    "amenity": "german",
+                    "amenity_label": "German",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              },
+              {
+                "category": "bathrooms",
+                "category_label": "Bathrooms",
+                "items": [
+                  {
+                    "amenity": "private_bathroom",
+                    "amenity_label": "Private bathroom",
+                    "hint": null,
+                    "hint_label": null,
+                    "is_available": true
+                  }
+                ]
+              }
+            ],
+            "popular_amenities": [
+              {
+                "amenity": "pool",
+                "amenity_label": "Pool",
+                "hint": null,
+                "hint_label": null,
+                "is_available": true
+              },
+              {
+                "amenity": "spa",
+                "amenity_label": "Spa",
+                "hint": null,
+                "hint_label": null,
+                "is_available": true
+              },
+              {
+                "amenity": "fitness_center",
+                "amenity_label": "Fitness center",
+                "hint": null,
+                "hint_label": null,
+                "is_available": true
+              },
+              {
+                "amenity": "wifi",
+                "amenity_label": "Wi-Fi",
+                "hint": "free",
+                "hint_label": "Free",
+                "is_available": true
+              }
+            ]
+          },
+          "location": {
+            "neighborhood": "Tiergarten",
+            "neighborhood_description": "Der zentral gelegene Stadtteil Tiergarten ist für den gleichnamigen Park bekannt; hier befinden sich der Zoologische Garten Berlin sowie die Siegessäule mit ihrer geflügelten Viktoria-Statue und das Café am Neuen See. Südlich des Parks, in der Gegend rund um die Potsdamer Straße, findet man Galerien und Designerläden, die bei Kunstliebhabern und ortskundigen Besuchern beliebt sind. Das Kulturforum am Potsdamer Platz umfasst mehrere staatliche Museen sowie die Berliner Philharmonie.",
+            "maps_url": "https://maps.google.com/maps?hl=de&gl=DE&um=1&ie=UTF-8&fb=1&sa=X&ll=52.5103836,13.3752744&z=15&ftid=0x0:0xa439afb8d531f13d&q=The+Ritz-Carlton",
+            "overall_score": 5,
+            "score_by_categories": {
+              "overall": 5,
+              "things_to_do": 5,
+              "restaurants": 4.7,
+              "transit": 4.8,
+              "airport_access": 4.4
+            },
+            "latitude": 52.5103836,
+            "longitude": 13.3752744,
+            "location_chain": [
+              {
+                "card_id": "/m/0156q",
+                "feature_id": "0x47a84e373f035901:0x42120465b5e3b70",
+                "cid": "297554536935865200",
+                "title": "Berlin"
+              },
+              {
+                "card_id": "/m/022t5v",
+                "feature_id": "0x47a851082ab0098b:0x52120465b5fabd0",
+                "cid": "369612130973887440",
+                "title": "Tiergarten"
+              },
+              {
+                "card_id": null,
+                "feature_id": "0x47a851c90e1dc40d:0xa439afb8d531f13d",
+                "cid": "11833682704278352189",
+                "title": "The Ritz-Carlton"
+              }
+            ]
+          },
+          "reviews": {
+            "value": 4.6,
+            "votes_count": 3297,
+            "mentions": [
+              {
+                "title": "Service",
+                "positive_score": 0.6097243,
+                "positive_count": 303,
+                "negative_count": 42,
+                "total_count": 357,
+                "visible_by_default": true
+              },
+              {
+                "title": "Bar",
+                "positive_score": 0.6228355,
+                "positive_count": 106,
+                "negative_count": 15,
+                "total_count": 129,
+                "visible_by_default": true
+              },
+              {
+                "title": "Dining",
+                "positive_score": 0.6036553,
+                "positive_count": 98,
+                "negative_count": 17,
+                "total_count": 121,
+                "visible_by_default": true
+              },
+              {
+                "title": "Gebäude Und Außenanlagen",
+                "positive_score": 0.7011601,
+                "positive_count": 261,
+                "negative_count": 28,
+                "total_count": 301,
+                "visible_by_default": true
+              },
+              {
+                "title": "Nachtleben",
+                "positive_score": 0.5540075,
+                "positive_count": 28,
+                "negative_count": 6,
+                "total_count": 36,
+                "visible_by_default": true
+              },
+              {
+                "title": "Wellness",
+                "positive_score": 0.42752755,
+                "positive_count": 13,
+                "negative_count": 5,
+                "total_count": 23,
+                "visible_by_default": true
+              },
+              {
+                "title": "Ort",
+                "positive_score": 0.78916234,
+                "positive_count": 136,
+                "negative_count": 2,
+                "total_count": 148,
+                "visible_by_default": true
+              },
+              {
+                "title": "Spabereich",
+                "positive_score": 0.533038,
+                "positive_count": 14,
+                "negative_count": 3,
+                "total_count": 22,
+                "visible_by_default": true
+              },
+              {
+                "title": "Fitness",
+                "positive_score": 0.30605736,
+                "positive_count": 17,
+                "negative_count": 7,
+                "total_count": 27,
+                "visible_by_default": true
+              },
+              {
+                "title": "Frühstück",
+                "positive_score": 0.48263624,
+                "positive_count": 58,
+                "negative_count": 15,
+                "total_count": 76,
+                "visible_by_default": false
+              },
+              {
+                "title": "Für Geschäftsreisende",
+                "positive_score": 0.45049655,
+                "positive_count": 19,
+                "negative_count": 7,
+                "total_count": 29,
+                "visible_by_default": false
+              },
+              {
+                "title": "Ambiente",
+                "positive_score": 0.8789272,
+                "positive_count": 75,
+                "negative_count": 2,
+                "total_count": 78,
+                "visible_by_default": false
+              },
+              {
+                "title": "Fitnessstudio",
+                "positive_score": 0,
+                "positive_count": 11,
+                "negative_count": 6,
+                "total_count": 20,
+                "visible_by_default": false
+              },
+              {
+                "title": "Schlafqualität",
+                "positive_score": 0,
+                "positive_count": 34,
+                "negative_count": 16,
+                "total_count": 53,
+                "visible_by_default": false
+              },
+              {
+                "title": "Raum",
+                "positive_score": 0,
+                "positive_count": 28,
+                "negative_count": 15,
+                "total_count": 45,
+                "visible_by_default": false
+              },
+              {
+                "title": "Bad",
+                "positive_score": 0,
+                "positive_count": 18,
+                "negative_count": 14,
+                "total_count": 39,
+                "visible_by_default": false
+              },
+              {
+                "title": "Restaurant",
+                "positive_score": 0.6739298,
+                "positive_count": 25,
+                "negative_count": 4,
+                "total_count": 30,
+                "visible_by_default": false
+              },
+              {
+                "title": "Sauberkeit",
+                "positive_score": 0.33131477,
+                "positive_count": 32,
+                "negative_count": 12,
+                "total_count": 46,
+                "visible_by_default": false
+              },
+              {
+                "title": "Familienfreundlich",
+                "positive_score": 0.7496535,
+                "positive_count": 10,
+                "negative_count": 1,
+                "total_count": 11,
+                "visible_by_default": false
+              },
+              {
+                "title": "Pool",
+                "positive_score": 0,
+                "positive_count": 4,
+                "negative_count": 1,
+                "total_count": 7,
+                "visible_by_default": false
+              },
+              {
+                "title": "Barrierefreiheit",
+                "positive_score": 0,
+                "positive_count": 8,
+                "negative_count": 6,
+                "total_count": 14,
+                "visible_by_default": false
+              },
+              {
+                "title": "Klimaanlage",
+                "positive_score": 0,
+                "positive_count": 0,
+                "negative_count": 8,
+                "total_count": 9,
+                "visible_by_default": false
+              },
+              {
+                "title": "Parkplätze",
+                "positive_score": 0,
+                "positive_count": 4,
+                "negative_count": 2,
+                "total_count": 6,
+                "visible_by_default": false
+              },
+              {
+                "title": "Öffentliche Verkehrsmittel",
+                "positive_score": 0.6511914,
+                "positive_count": 14,
+                "negative_count": 1,
+                "total_count": 17,
+                "visible_by_default": false
+              },
+              {
+                "title": "Sicherheit",
+                "positive_score": 0,
+                "positive_count": 3,
+                "negative_count": 2,
+                "total_count": 5,
+                "visible_by_default": false
+              },
+              {
+                "title": "Wlan",
+                "positive_score": 0,
+                "positive_count": 2,
+                "negative_count": 4,
+                "total_count": 6,
+                "visible_by_default": false
+              }
+            ],
+            "rating_distribution": {
+              "1": 4,
+              "2": 2,
+              "3": 4,
+              "4": 10,
+              "5": 80
+            },
+            "other_sites_reviews": [
+              {
+                "title": "Tripadvisor",
+                "url": "https://www.tripadvisor.de/ShowUserReviews-g187323-d289019-r1074568429?m=68573&staydates=2026_10_25_2026_10_26&uguests=1_2_0&supdv=desktop&supuc=DE&supul=de",
+                "review_text": "Ich kann das Hotel niemandem empfehlen. Die Liste der Mängel ist lang:||Ich bestellte für meinen kleinen Hund ein Hundebett. Foto des Zustands des Hundebett auf meinem Zimmer anbei. Einfach nur ekelhaft!||Ich buchte einen Frisörtermin über das Hotel für einen Herren Haarschnitt. Offensichtlich kriegt das Hotel einen Cashback, ich musste für 20 Minuten Haareschneiden 98 € bezahlen. Es war ein 0815 Haarschnitt ohne großen Aufwand. Den Friseur organics um die Ecke würde ich dringend vermeiden. Die Concierge stellte sich bei einer Beschwerde über den Preis nicht hinter den Gast, sondern hinter den Friseur. Die persönliche Verbundenheit und das Interesse war deutlich spürbar. Sich aufdrängender Gedanke: Ab drei abgezockten Gästen zum Friseur geschickt  eine Frisur für die Concierge umsonst?||Der Wellnessbereich ist stark renovierungsbedürftig. Man wird von Baustellenband begrüßt, gefolgt von Schimmel in den Saunen (Fotos anbei).||Es gibt nie frische Handtücher und nie saubere Liegen. Den Wellnessbereich reinigt niemand.||Es tropft von der Decke, wenn man aus der Sauna kommt, weil dort ein Wasserschaden ist (Foto anbei) ||Ich habe Kaffeekapseln nachbestellt an zwei Tagen und darauf jeweils über 1 Stunde gewartet. ||Samstags waren nur 2 Leute in der Küche, aber neben den Hotelgästen viele auswärtige Gäste. Es war laut wie in einer Bahnhofshalle ohne brauchbaren Service.||Der Dyson Fön auf den Zimmer war kaputt. ||…..||Ich habe die Hotelrechnung unter dem Vorbehalt der Minderung bezahlt. Die Managerin on Duty war offensichtlich erst drei Wochen da und so unerfahren, dass sie mir nicht einmal dies bestätigen wollte, so dass ich mir einen Zeugen holen musste, dass ich nur unter Vorbehalt zahlte.",
+                "rating": {
+                  "rating_type": "Max5",
+                  "value": 4.5,
+                  "votes_count": 3582,
+                  "rating_max": null
+                }
+              },
+              {
+                "title": "The Ritz-Carlton, Berlin",
+                "url": "http://reviews.marriott.com/6604-de_de/BERZT/review/256516301/redirect.htm",
+                "review_text": "Wir haben den Aufenthalt sehr genossen. \nDer Empfang vom Parkservice und auch beim Check in waren sehr herzlich.\nDas Zimmer war hervorragend und geschmackvoll eingerichtet.\nDas Frühstück war perfekt, es blieben keine Wünsche offen.\nDer komplette Service auch an der Bar war perfekt und professionell.\nWir werden das Hotel nicht nur Freunden weiterempfehlen, wir werden bei unserem nächsten Berlin Besuch auch wieder das The Ritz Carlton buchen.\nDanke für die tolle Zeit in Ihrem Haus.",
+                "rating": {
+                  "rating_type": "Max5",
+                  "value": 4.5842390060424805,
+                  "votes_count": 368,
+                  "rating_max": null
+                }
+              }
+            ]
+          },
+          "overview_images": [
+            "https://lh3.googleusercontent.com/grass-cs/AABkmLfYKTYwW5G__O0UskN9SclA_X-LsaOp-iZJf-GxYVZR-8uIJOr1b06nEZsEypHUKqKHeG4UoecQsz7b6k4dMSAbo1D7R4rYQXhBJ6Ml7D6TQWs0AcbuScN1J5S9-ZgSs_3nXyM-y7MNxco=s287-w287-h192-n-k-no-v1",
+            "https://lh3.googleusercontent.com/grass-cs/AABkmLcBGmHzoYGr_q7cSO9SUuwJsyijkoJu8DmTR8tbGGjMrB--jJVWmA35D3qn0as4evoWRwzc7MmHo_dxXTwL4WFTgEoyVrgEExYL6aFKfCjj0JKRejkQUPhg1dusD8BT-9GP86ix=s287-w287-h192-n-k-no-v1",
+            "https://lh3.googleusercontent.com/grass-cs/AABkmLc9vp77xkBu4psQGCBNuJDznSCjYpq1N9ISvydFbfh8ua2W67EsLsmdcchZFf1Vxatkz62P5sA6qqIcrv8WuxLLb0zcGC8a6LUrJlAWRrbjy45pz_WnN8rQ6X1kurewsvpCNVIeEbhhCu7a=s287-w287-h192-n-k-no-v1",
+            "https://lh3.googleusercontent.com/grass-cs/AABkmLfBCdOP10Zgy32Ev6MbaSm1hYlq2iIsxVfyQO8DT5cYsI8vO2mkbBFJO9KAwkpnhjH93irQrEZ2sp_sAs0rdG1odSoD4ML53bFZc08CPZ2NBjMyufsOk_NrrtpLYVHSht6HYMZS=s287-w287-h192-n-k-no-v1",
+            "https://lh3.googleusercontent.com/grass-cs/AABkmLfquap5GEMfZxq2GA6RLNZoK95ch0EDxWtt-bRspARvRRN4V8m9Z5kbR1B3NVV6xQwpk6aVlFkLb6wpNHK0FxWcBXjmWmJHHxolxjl2xYKDCGzo_8SJtjjZAjTEuovfm0PNhFgy=s287-w287-h192-n-k-no-v1",
+            "https://lh3.googleusercontent.com/grass-cs/AABkmLe_Rt0DSMUPsaeGign_xo0vQNKY4wzyfEk22mfu6vm2cV8BIbE36rB8RYnSIePD7gHqRqfeONfPt_KyMXKjx7xTg5cEaCiUFqi94mxaLges-JESU1w4XG8HGjabWME_b7NnGgkuS0POoUae=s287-w287-h192-n-k-no-v1",
+            "https://lh3.googleusercontent.com/grass-proxy/AIM7gW0ujggGGf_qI7jRHQgnOCUQ27sszwNJLBH9W2i0V1ktqEhOyBJ4du4duzYB1Ke39jkRysrD2FdYbVl35xFFhGDP3XojMZnmRzQKEvCb8PPHvUa-Q1KeCdKsrcC_7lrZZcL6Yo_9FL1qM86nMJCV4rCROZvNRbbork8dzl7Za7Kw4ilqQDN2CCPZ=s287-w287-h192-n-k-no-v1",
+            "https://lh3.googleusercontent.com/grass-cs/AABkmLclBn1dVmhvAKSjaDnA1GEMamce3-QPXIu0CquqDXdhFkpcTpzkgNbX7FQuGo3hyOB-mzStxj0DeUjBkZ0OkWDLJU-vEHwEaKl_W-JW0tcp9TKAWwhf-8zFAu4wK9qjDuKAqa4h=s287-w287-h192-n-k-no-v1",
+            "https://lh3.googleusercontent.com/grass-proxy/AIM7gW03AYFKsSOIzxIicERBr8a7lVen-Tci7uvU1SWkenNaszE9NOsYdYFvfCRrZ7UFVtM2z73XSxImAPovCSSi2h-xPrR3QjAJbjOfP-9hP_svpvDVncj5wclDTkrtKj3wps5Ah7OVWCCGMZWEPRbhPugrgX5eueJEwBHvItYxwsdFyK6_FD8Jl_ATuQ=s287-w287-h192-n-k-no-v1"
+          ],
+          "prices": {
+            "price": 300,
+            "price_without_discount": null,
+            "currency": "EUR",
+            "discount_text": null,
+            "check_in": "2026-12-01 00:00:00 +00:00",
+            "check_out": "2026-12-03 00:00:00 +00:00",
+            "visitors": 2,
+            "items": [
+              {
+                "type": "hotel_info_price",
+                "title": "The Ritz-Carlton, Berlin",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://google.de/aclk?sa=l&ai=DChsSEwjA-LWB7rSXAxVDmmgJHcpiCjkYACICCAEQDRoCd2Y&co=1&ase=2&gclid=EAIaIQobChMIwPi1ge60lwMVQ5poCR3KYgo5EAoYASABEgKf1_D_BwE&cid=CAASlwHkaJFtxP9KYuTcpAFDG4XKWgLzlmh3jsnuuFraaZoy8CDvuGcxbxBRLe3aQQ6_tGoewfeOCOTWhJdmZk-GypoF625ISDi3HBHDY4ReRiX0Hu9MSj9ItWex8nlexCpd3670O65kfxByNebAPrE_KhVyCWTacUqC-3ZOeb2Df8Q6oU6Ku3o0xqHB6XNypwPCpTUA5e2cMkGR&category=acrcp_v1_48&sig=AOD64_2OPsqR73Es_q_elIxsvc8lMg0Pvw&adurl",
+                "domain": "google.de",
+                "is_paid": true,
+                "official_site": true,
+                "free_cancellation_until": null,
+                "offers": [
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Gästezimmer mit 2 Einzelbetten",
+                    "price": 354,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_znjYUA2QYVJVwlgTU9Kg35_DxX3KgttEFAtu-MgU5dOSxPrKgtHdva-QVZC5TidJl77tJVK6gl5HNNdM9iZdNtxpSSGeBJzjFRxJT5G6jxNHzGou9aD2vUHC7Z2wbAL4-0JtzTEUhG1EOfzWqv-Nx79GJMAhO6Hwek_AApdpdRCw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wuVFhSyyKe5wXNQK7h-HuX0ae7HbhxMAmg97pa6ZZaDxJv0FBEPhDyZLPcotKq9iRHqoB_2qmnbAdgvQPXhNgrvQTDSCDCB2sGT76nhIOUuLIm6jX9jPTS5acCEl-wmsGD5_mD9F0_PJ42IVLDrZh26YVOqKBbW_WGTzXOQ_bWkLG3ISH7bJ2cwPMywQC4HesDVOgKhjxoNfMaxy_gO_I",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xpFMvAB5b1LsPFyr21k1OKPn0YyedBc6uyldYle0MiHLTQwuLT-8qi7ZHt1ER2NgcLdUgNQpUvZ4XXcZbB0GEZ_NuUtvf46kxg923owNCzd1RuTVyTTl73Edjl_NMjYmjVyDAU-7L3Pe8FE_DS-f-51ahHy7-GlrJ8z8tuVRfSeMfFXH8cUKoz",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yo0y53LzwX7tu8Cz1HYuqrZqid6UHNZM5UR2zvM2H5U31X2vDsviL6P5M1FelgQhYAJy5K7fsbSBFPflqtLFHfsB0c9bh2Aufr_h3X3HsYhqWnq2KHSR8e_QbMHuFMptNgWzXXLykMPafEEzIqvWJEmwf2UypDzURmpDGtqI7q0QuA",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wFb2eLnTGoHxl9uptz23qBEs_fJVc5Fw_wE0h_rwnb3oRwuzMgVPbMUxARSiYr2thvMeCP5FftNc47IQdfEIl3edtoXx6ktVWgnCLUdT2u-7VyVlNuzn7zpIZ11hlUgrjgsMii-1bo3Q3q7pHzLPG7sSzIN2zFXHuoLc6WYEbOXpw"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Gästezimmer mit 2 Einzelbetten",
+                    "price": 392,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_znjYUA2QYVJVwlgTU9Kg35_DxX3KgttEFAtu-MgU5dOSxPrKgtHdva-QVZC5TidJl77tJVK6gl5HNNdM9iZdNtxpSSGeBJzjFRxJT5G6jxNHzGou9aD2vUHC7Z2wbAL4-0JtzTEUhG1EOfzWqv-Nx79GJMAhO6Hwek_AApdpdRCw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wuVFhSyyKe5wXNQK7h-HuX0ae7HbhxMAmg97pa6ZZaDxJv0FBEPhDyZLPcotKq9iRHqoB_2qmnbAdgvQPXhNgrvQTDSCDCB2sGT76nhIOUuLIm6jX9jPTS5acCEl-wmsGD5_mD9F0_PJ42IVLDrZh26YVOqKBbW_WGTzXOQ_bWkLG3ISH7bJ2cwPMywQC4HesDVOgKhjxoNfMaxy_gO_I",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xpFMvAB5b1LsPFyr21k1OKPn0YyedBc6uyldYle0MiHLTQwuLT-8qi7ZHt1ER2NgcLdUgNQpUvZ4XXcZbB0GEZ_NuUtvf46kxg923owNCzd1RuTVyTTl73Edjl_NMjYmjVyDAU-7L3Pe8FE_DS-f-51ahHy7-GlrJ8z8tuVRfSeMfFXH8cUKoz",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yo0y53LzwX7tu8Cz1HYuqrZqid6UHNZM5UR2zvM2H5U31X2vDsviL6P5M1FelgQhYAJy5K7fsbSBFPflqtLFHfsB0c9bh2Aufr_h3X3HsYhqWnq2KHSR8e_QbMHuFMptNgWzXXLykMPafEEzIqvWJEmwf2UypDzURmpDGtqI7q0QuA",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wFb2eLnTGoHxl9uptz23qBEs_fJVc5Fw_wE0h_rwnb3oRwuzMgVPbMUxARSiYr2thvMeCP5FftNc47IQdfEIl3edtoXx6ktVWgnCLUdT2u-7VyVlNuzn7zpIZ11hlUgrjgsMii-1bo3Q3q7pHzLPG7sSzIN2zFXHuoLc6WYEbOXpw"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe-Gästezimmer mit Kingsize-Bett",
+                    "price": 354,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zLIw1zAWFNL-xxe7ALHhb1-37ID5RoIKqTXQZW8QzY2zhj8Vi9VAvMXP5axczr3_xemtF3FB1FdNRypIuZd0Rhb896uy58dpFZg6_ReOztZb3wwzKdyhFQupBALTkbk-M8U6A8WYAbBNaJGLRVKmgmHU8c3supTqQdJkdpHtJxUbN7A-xCEYqn",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wUMnttKf1-wE_2sxIZuUX4149XkkfrXNFFIpJtO5co9BU88-DcVlAMV-R4Rzk0eNL8jbpSo8iFAwVRabY9XVSc8h4e55NG9fGDvpGc2wmh9Vnm-bc0o6YI4XsA58ZZnY_OkkI1USv7pX71fouTBDFLDz8jnPmyBLeWsTtpieMP3b4cpauT1xyNdz0jgfFjmsbRhnEWfciwSzpiY-EGh_-9tFEjZW8",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zM6WdygEBxwE2NXEU4cvdobt1XqtxajyUbDso_6ocmizoKQsa34yqBiYE_9ArQeBhchRtwAtcC6oOdSZRCX-xDssEe_Qabxz1GwPNI36U3Ao6cBo1wiXxnB6aKXTyukVj3Yd3HzobkeEyj9doMRhLuMgILWe9sXavq_-GeOpiT4ySbsg",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zKRV9x8RuQ7j_1Yi0oWAE9g_JkpEsCXig2JQsY7yAgJV85xSZviqVsyWHFMN1z4bm-0nVC88Kg0FMWmz4x-EaORTTmdsMOe1O2tT0dJk5sSBB-TlaJLhyD-GO3ckkGsXmRUdIQDSJDxTCtAoU9xt3L1E2P4pzLrq5wmWnYmAKf8wthwIpts8c",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wFb2eLnTGoHxl9uptz23qBEs_fJVc5Fw_wE0h_rwnb3oRwuzMgVPbMUxARSiYr2thvMeCP5FftNc47IQdfEIl3edtoXx6ktVWgnCLUdT2u-7VyVlNuzn7zpIZ11hlUgrjgsMii-1bo3Q3q7pHzLPG7sSzIN2zFXHuoLc6WYEbOXpw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_znqJarvqrjBBoLZAWqI-Fk-4L5L0tD4OQoUDJHQ5xiea1gaUgsUqHQEw1jxeGD5yDk4cAL7SCfhl4-dw2Dif1bpU4dUksyNXCsXlTHzXNHKokuWGtSC9kxYDAbqlscrqVkrIXsFLgrIJzP-9IDP6oChzkhaoHIGyEfxfgEqvKLdb5d-5Dc"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe-Gästezimmer mit Kingsize-Bett",
+                    "price": 392,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zLIw1zAWFNL-xxe7ALHhb1-37ID5RoIKqTXQZW8QzY2zhj8Vi9VAvMXP5axczr3_xemtF3FB1FdNRypIuZd0Rhb896uy58dpFZg6_ReOztZb3wwzKdyhFQupBALTkbk-M8U6A8WYAbBNaJGLRVKmgmHU8c3supTqQdJkdpHtJxUbN7A-xCEYqn",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wUMnttKf1-wE_2sxIZuUX4149XkkfrXNFFIpJtO5co9BU88-DcVlAMV-R4Rzk0eNL8jbpSo8iFAwVRabY9XVSc8h4e55NG9fGDvpGc2wmh9Vnm-bc0o6YI4XsA58ZZnY_OkkI1USv7pX71fouTBDFLDz8jnPmyBLeWsTtpieMP3b4cpauT1xyNdz0jgfFjmsbRhnEWfciwSzpiY-EGh_-9tFEjZW8",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zM6WdygEBxwE2NXEU4cvdobt1XqtxajyUbDso_6ocmizoKQsa34yqBiYE_9ArQeBhchRtwAtcC6oOdSZRCX-xDssEe_Qabxz1GwPNI36U3Ao6cBo1wiXxnB6aKXTyukVj3Yd3HzobkeEyj9doMRhLuMgILWe9sXavq_-GeOpiT4ySbsg",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zKRV9x8RuQ7j_1Yi0oWAE9g_JkpEsCXig2JQsY7yAgJV85xSZviqVsyWHFMN1z4bm-0nVC88Kg0FMWmz4x-EaORTTmdsMOe1O2tT0dJk5sSBB-TlaJLhyD-GO3ckkGsXmRUdIQDSJDxTCtAoU9xt3L1E2P4pzLrq5wmWnYmAKf8wthwIpts8c",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wFb2eLnTGoHxl9uptz23qBEs_fJVc5Fw_wE0h_rwnb3oRwuzMgVPbMUxARSiYr2thvMeCP5FftNc47IQdfEIl3edtoXx6ktVWgnCLUdT2u-7VyVlNuzn7zpIZ11hlUgrjgsMii-1bo3Q3q7pHzLPG7sSzIN2zFXHuoLc6WYEbOXpw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_znqJarvqrjBBoLZAWqI-Fk-4L5L0tD4OQoUDJHQ5xiea1gaUgsUqHQEw1jxeGD5yDk4cAL7SCfhl4-dw2Dif1bpU4dUksyNXCsXlTHzXNHKokuWGtSC9kxYDAbqlscrqVkrIXsFLgrIJzP-9IDP6oChzkhaoHIGyEfxfgEqvKLdb5d-5Dc"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Zimmer mit Aussicht, Gästezimmer, 1 Kingsize-Bett, Blick auf den Potsdamer Platz",
+                    "price": 392,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yIrX1-A6vur_BSa5bfi_tFV41E7EY3Jvp3k2-tv94OM4xy2UVh21Is-oiMwUpKOnPnfl1m3J44QRL5PSyGZu54Iab9JIa6sUZT_nPJpkm7dksSc-ZlEE-mziFlTgUFDtGgsW9qd-CoqFeilo6P3ZnyJxMZLmDcMKDsxQKsmTq3O9ZtyvKiY-616akksUp-e6uGtC8ayc0jmSNVXkcMiAw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xKvVSsbKmqv-1MDF5h_A41g6KbSfKTqeGTnW1PDkaluT9caG_x-yD90AGPNh1WOCnlE4zQig2V3faPAKbiRdUcWCbeaq5JtTnxo-_qGXsNCjjweobYbOA0ZIfIVK2rBvJW4J_0ylIC62PqskbnaY8GJ31guOswcJNEEkTcGp94CHF50PBNTMCOvZojMMRvFdpmx1E_n0fzdrwHkyArlA",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xIMOrcksArjoytEXuaQ1fN1AfJ68f3fUA-N1ExhU_NMiCHz3MulG3oNjReWh09aoIsjXSaJnNTJXtm1ZYUYLu4m3NKokn1ltB2EWPgnyhkZ1qmD4e-J8h1wP54ojuD38E8w1RUrYTGfVkbpI96ugF2PxdqQaiS64VKmFVXZ5C1",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yYMcHMs17luksRAx1n9nflxbEPr8WKxlj1hOWySWMBDljT4fBcU11gCBe-bWeD4HUq-6KnRqLRHj_BUjiAjcwtzJOzNVsa07OWVKQYqrVYrLE9SbxD2gbcV10AWekFBYpHX6Y9s3EbJpaQmtl0fVx9Gmd2OIt_SnyNMOTbAa3v-Q",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zBhQKi6eukLDMw2rsE8vY9UQPBjPujAHNeB4CADZjZaYfv0JaUWkY1gSOAkPA81vki0A4G5gQNvY6tdtu9ePaZAjdbFRmkmXqGpTqM9nvLenE7qvIbRwMfbgiro8hl-LPISEPZeTe8p0KFutw1lUegxZuKaGFLLgAU_PbwAyQQLTmqaKtY6E8",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yo0y53LzwX7tu8Cz1HYuqrZqid6UHNZM5UR2zvM2H5U31X2vDsviL6P5M1FelgQhYAJy5K7fsbSBFPflqtLFHfsB0c9bh2Aufr_h3X3HsYhqWnq2KHSR8e_QbMHuFMptNgWzXXLykMPafEEzIqvWJEmwf2UypDzURmpDGtqI7q0QuA",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wFb2eLnTGoHxl9uptz23qBEs_fJVc5Fw_wE0h_rwnb3oRwuzMgVPbMUxARSiYr2thvMeCP5FftNc47IQdfEIl3edtoXx6ktVWgnCLUdT2u-7VyVlNuzn7zpIZ11hlUgrjgsMii-1bo3Q3q7pHzLPG7sSzIN2zFXHuoLc6WYEbOXpw"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Zimmer mit Aussicht, Gästezimmer, 1 Kingsize-Bett, Blick auf den Potsdamer Platz",
+                    "price": 435,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yIrX1-A6vur_BSa5bfi_tFV41E7EY3Jvp3k2-tv94OM4xy2UVh21Is-oiMwUpKOnPnfl1m3J44QRL5PSyGZu54Iab9JIa6sUZT_nPJpkm7dksSc-ZlEE-mziFlTgUFDtGgsW9qd-CoqFeilo6P3ZnyJxMZLmDcMKDsxQKsmTq3O9ZtyvKiY-616akksUp-e6uGtC8ayc0jmSNVXkcMiAw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xKvVSsbKmqv-1MDF5h_A41g6KbSfKTqeGTnW1PDkaluT9caG_x-yD90AGPNh1WOCnlE4zQig2V3faPAKbiRdUcWCbeaq5JtTnxo-_qGXsNCjjweobYbOA0ZIfIVK2rBvJW4J_0ylIC62PqskbnaY8GJ31guOswcJNEEkTcGp94CHF50PBNTMCOvZojMMRvFdpmx1E_n0fzdrwHkyArlA",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xIMOrcksArjoytEXuaQ1fN1AfJ68f3fUA-N1ExhU_NMiCHz3MulG3oNjReWh09aoIsjXSaJnNTJXtm1ZYUYLu4m3NKokn1ltB2EWPgnyhkZ1qmD4e-J8h1wP54ojuD38E8w1RUrYTGfVkbpI96ugF2PxdqQaiS64VKmFVXZ5C1",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yYMcHMs17luksRAx1n9nflxbEPr8WKxlj1hOWySWMBDljT4fBcU11gCBe-bWeD4HUq-6KnRqLRHj_BUjiAjcwtzJOzNVsa07OWVKQYqrVYrLE9SbxD2gbcV10AWekFBYpHX6Y9s3EbJpaQmtl0fVx9Gmd2OIt_SnyNMOTbAa3v-Q",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zBhQKi6eukLDMw2rsE8vY9UQPBjPujAHNeB4CADZjZaYfv0JaUWkY1gSOAkPA81vki0A4G5gQNvY6tdtu9ePaZAjdbFRmkmXqGpTqM9nvLenE7qvIbRwMfbgiro8hl-LPISEPZeTe8p0KFutw1lUegxZuKaGFLLgAU_PbwAyQQLTmqaKtY6E8",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yo0y53LzwX7tu8Cz1HYuqrZqid6UHNZM5UR2zvM2H5U31X2vDsviL6P5M1FelgQhYAJy5K7fsbSBFPflqtLFHfsB0c9bh2Aufr_h3X3HsYhqWnq2KHSR8e_QbMHuFMptNgWzXXLykMPafEEzIqvWJEmwf2UypDzURmpDGtqI7q0QuA",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wFb2eLnTGoHxl9uptz23qBEs_fJVc5Fw_wE0h_rwnb3oRwuzMgVPbMUxARSiYr2thvMeCP5FftNc47IQdfEIl3edtoXx6ktVWgnCLUdT2u-7VyVlNuzn7zpIZ11hlUgrjgsMii-1bo3Q3q7pHzLPG7sSzIN2zFXHuoLc6WYEbOXpw"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe-Eckzimmer, größeres Gästezimmer, 1 Kingsize-Bett, Eckzimmer",
+                    "price": 412,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zSG66vJDpC8eOOH6Um18rP9Vy7j26ARk3o4gCcXyQxSUVHb-4Uxz7QZni9EjZnNpdHtAXUS3DRVBA6gVhqThJkDUPTSqXhxcg27LVu9z3weftfleCvfBmsozDjt-eB88s6KRBuVuKMF-tk6jkZuipTGeoIMXIS3LiWwpAPIOd4y8Ap7YxQ9OCp",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xgr-VhMRh7gDJC3hO4EOsPkkH3Hsr7sVBM4lQl3Zw8_4Y_P5BBwmbn4YaISdBlO-XwL9EvhIkC-s3qjI4vPH1yD6oDLG4lr27YbVJ4t6DPJkF48-M1KmjHJ2Fx_qlDEs8Dy_6fBRcBzyV1ucyvecf9Q5WJkZjDkII8T-fjsvM1Glg4-2sZ3MiB-VbyfnKCOdmICctZBsxrRD3EZp0WnoY",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xZqw7xRuAxQHp1ngEEv8uhgP32mPeZnGyFBN4WPak1046vT0ii1UiiOZKc4i0SzJMCZdXC-GZ4_HdeQsYZO539FNrnwx-4AE8093HM44P5ikGOMSdhEDDAiKshm4wpZ3Z3u07cWMd1Va2rdki0At5F7-3ayXw68-LE6lUBMPjqDtv31SJBfhiX71mx9Q7oSp2eZcu92nxsERDUaOwp63M",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yih6wD9UTHsy1u_SkD4uIwkSVQs7ftJIusFH6CwETHFXnKaRypqXy2tscTzXndvBLprX6KUPbhYSC5sa1v2BI-LoZPc-bMzvpX9282iDp9PF5GBLkNuRcH4i4l1Z0bIyaDZKN42p0GWHzBVpBuLEZ_vcYOPiJi8YEwl7y2NLhNQ5CW",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yPfsrNnDRWuMJ5jTFBzwQV6a6HXgrg_NJv5iIveFcErbFTmHAeX-we2U2Zg9WCpy78OF_q-oPw9pf9RdUbtbcn0Dkw7nhUaTz-SRtG80JvHEymDO08TJ1EPlSngniVo43SEgQYv4BiO4MF6Xc9P9fKShlbC_2aJxMGjP-wFRvHLKATEUm8YgI2",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wFb2eLnTGoHxl9uptz23qBEs_fJVc5Fw_wE0h_rwnb3oRwuzMgVPbMUxARSiYr2thvMeCP5FftNc47IQdfEIl3edtoXx6ktVWgnCLUdT2u-7VyVlNuzn7zpIZ11hlUgrjgsMii-1bo3Q3q7pHzLPG7sSzIN2zFXHuoLc6WYEbOXpw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yo0y53LzwX7tu8Cz1HYuqrZqid6UHNZM5UR2zvM2H5U31X2vDsviL6P5M1FelgQhYAJy5K7fsbSBFPflqtLFHfsB0c9bh2Aufr_h3X3HsYhqWnq2KHSR8e_QbMHuFMptNgWzXXLykMPafEEzIqvWJEmwf2UypDzURmpDGtqI7q0QuA"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe-Eckzimmer, größeres Gästezimmer, 1 Kingsize-Bett, Eckzimmer",
+                    "price": 457,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zSG66vJDpC8eOOH6Um18rP9Vy7j26ARk3o4gCcXyQxSUVHb-4Uxz7QZni9EjZnNpdHtAXUS3DRVBA6gVhqThJkDUPTSqXhxcg27LVu9z3weftfleCvfBmsozDjt-eB88s6KRBuVuKMF-tk6jkZuipTGeoIMXIS3LiWwpAPIOd4y8Ap7YxQ9OCp",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xgr-VhMRh7gDJC3hO4EOsPkkH3Hsr7sVBM4lQl3Zw8_4Y_P5BBwmbn4YaISdBlO-XwL9EvhIkC-s3qjI4vPH1yD6oDLG4lr27YbVJ4t6DPJkF48-M1KmjHJ2Fx_qlDEs8Dy_6fBRcBzyV1ucyvecf9Q5WJkZjDkII8T-fjsvM1Glg4-2sZ3MiB-VbyfnKCOdmICctZBsxrRD3EZp0WnoY",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xZqw7xRuAxQHp1ngEEv8uhgP32mPeZnGyFBN4WPak1046vT0ii1UiiOZKc4i0SzJMCZdXC-GZ4_HdeQsYZO539FNrnwx-4AE8093HM44P5ikGOMSdhEDDAiKshm4wpZ3Z3u07cWMd1Va2rdki0At5F7-3ayXw68-LE6lUBMPjqDtv31SJBfhiX71mx9Q7oSp2eZcu92nxsERDUaOwp63M",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yih6wD9UTHsy1u_SkD4uIwkSVQs7ftJIusFH6CwETHFXnKaRypqXy2tscTzXndvBLprX6KUPbhYSC5sa1v2BI-LoZPc-bMzvpX9282iDp9PF5GBLkNuRcH4i4l1Z0bIyaDZKN42p0GWHzBVpBuLEZ_vcYOPiJi8YEwl7y2NLhNQ5CW",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yPfsrNnDRWuMJ5jTFBzwQV6a6HXgrg_NJv5iIveFcErbFTmHAeX-we2U2Zg9WCpy78OF_q-oPw9pf9RdUbtbcn0Dkw7nhUaTz-SRtG80JvHEymDO08TJ1EPlSngniVo43SEgQYv4BiO4MF6Xc9P9fKShlbC_2aJxMGjP-wFRvHLKATEUm8YgI2",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wFb2eLnTGoHxl9uptz23qBEs_fJVc5Fw_wE0h_rwnb3oRwuzMgVPbMUxARSiYr2thvMeCP5FftNc47IQdfEIl3edtoXx6ktVWgnCLUdT2u-7VyVlNuzn7zpIZ11hlUgrjgsMii-1bo3Q3q7pHzLPG7sSzIN2zFXHuoLc6WYEbOXpw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yo0y53LzwX7tu8Cz1HYuqrZqid6UHNZM5UR2zvM2H5U31X2vDsviL6P5M1FelgQhYAJy5K7fsbSBFPflqtLFHfsB0c9bh2Aufr_h3X3HsYhqWnq2KHSR8e_QbMHuFMptNgWzXXLykMPafEEzIqvWJEmwf2UypDzURmpDGtqI7q0QuA"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe-Eckzimmer, größeres Gästezimmer, 1 Kingsize-Bett, Eckzimmer",
+                    "price": 463,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 3,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zSG66vJDpC8eOOH6Um18rP9Vy7j26ARk3o4gCcXyQxSUVHb-4Uxz7QZni9EjZnNpdHtAXUS3DRVBA6gVhqThJkDUPTSqXhxcg27LVu9z3weftfleCvfBmsozDjt-eB88s6KRBuVuKMF-tk6jkZuipTGeoIMXIS3LiWwpAPIOd4y8Ap7YxQ9OCp",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xgr-VhMRh7gDJC3hO4EOsPkkH3Hsr7sVBM4lQl3Zw8_4Y_P5BBwmbn4YaISdBlO-XwL9EvhIkC-s3qjI4vPH1yD6oDLG4lr27YbVJ4t6DPJkF48-M1KmjHJ2Fx_qlDEs8Dy_6fBRcBzyV1ucyvecf9Q5WJkZjDkII8T-fjsvM1Glg4-2sZ3MiB-VbyfnKCOdmICctZBsxrRD3EZp0WnoY",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xZqw7xRuAxQHp1ngEEv8uhgP32mPeZnGyFBN4WPak1046vT0ii1UiiOZKc4i0SzJMCZdXC-GZ4_HdeQsYZO539FNrnwx-4AE8093HM44P5ikGOMSdhEDDAiKshm4wpZ3Z3u07cWMd1Va2rdki0At5F7-3ayXw68-LE6lUBMPjqDtv31SJBfhiX71mx9Q7oSp2eZcu92nxsERDUaOwp63M",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yih6wD9UTHsy1u_SkD4uIwkSVQs7ftJIusFH6CwETHFXnKaRypqXy2tscTzXndvBLprX6KUPbhYSC5sa1v2BI-LoZPc-bMzvpX9282iDp9PF5GBLkNuRcH4i4l1Z0bIyaDZKN42p0GWHzBVpBuLEZ_vcYOPiJi8YEwl7y2NLhNQ5CW",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yPfsrNnDRWuMJ5jTFBzwQV6a6HXgrg_NJv5iIveFcErbFTmHAeX-we2U2Zg9WCpy78OF_q-oPw9pf9RdUbtbcn0Dkw7nhUaTz-SRtG80JvHEymDO08TJ1EPlSngniVo43SEgQYv4BiO4MF6Xc9P9fKShlbC_2aJxMGjP-wFRvHLKATEUm8YgI2",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wFb2eLnTGoHxl9uptz23qBEs_fJVc5Fw_wE0h_rwnb3oRwuzMgVPbMUxARSiYr2thvMeCP5FftNc47IQdfEIl3edtoXx6ktVWgnCLUdT2u-7VyVlNuzn7zpIZ11hlUgrjgsMii-1bo3Q3q7pHzLPG7sSzIN2zFXHuoLc6WYEbOXpw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yo0y53LzwX7tu8Cz1HYuqrZqid6UHNZM5UR2zvM2H5U31X2vDsviL6P5M1FelgQhYAJy5K7fsbSBFPflqtLFHfsB0c9bh2Aufr_h3X3HsYhqWnq2KHSR8e_QbMHuFMptNgWzXXLykMPafEEzIqvWJEmwf2UypDzURmpDGtqI7q0QuA"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe-Eckzimmer, größeres Gästezimmer, 1 Kingsize-Bett, Eckzimmer",
+                    "price": 505,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 3,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zSG66vJDpC8eOOH6Um18rP9Vy7j26ARk3o4gCcXyQxSUVHb-4Uxz7QZni9EjZnNpdHtAXUS3DRVBA6gVhqThJkDUPTSqXhxcg27LVu9z3weftfleCvfBmsozDjt-eB88s6KRBuVuKMF-tk6jkZuipTGeoIMXIS3LiWwpAPIOd4y8Ap7YxQ9OCp",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xgr-VhMRh7gDJC3hO4EOsPkkH3Hsr7sVBM4lQl3Zw8_4Y_P5BBwmbn4YaISdBlO-XwL9EvhIkC-s3qjI4vPH1yD6oDLG4lr27YbVJ4t6DPJkF48-M1KmjHJ2Fx_qlDEs8Dy_6fBRcBzyV1ucyvecf9Q5WJkZjDkII8T-fjsvM1Glg4-2sZ3MiB-VbyfnKCOdmICctZBsxrRD3EZp0WnoY",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xZqw7xRuAxQHp1ngEEv8uhgP32mPeZnGyFBN4WPak1046vT0ii1UiiOZKc4i0SzJMCZdXC-GZ4_HdeQsYZO539FNrnwx-4AE8093HM44P5ikGOMSdhEDDAiKshm4wpZ3Z3u07cWMd1Va2rdki0At5F7-3ayXw68-LE6lUBMPjqDtv31SJBfhiX71mx9Q7oSp2eZcu92nxsERDUaOwp63M",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yih6wD9UTHsy1u_SkD4uIwkSVQs7ftJIusFH6CwETHFXnKaRypqXy2tscTzXndvBLprX6KUPbhYSC5sa1v2BI-LoZPc-bMzvpX9282iDp9PF5GBLkNuRcH4i4l1Z0bIyaDZKN42p0GWHzBVpBuLEZ_vcYOPiJi8YEwl7y2NLhNQ5CW",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yPfsrNnDRWuMJ5jTFBzwQV6a6HXgrg_NJv5iIveFcErbFTmHAeX-we2U2Zg9WCpy78OF_q-oPw9pf9RdUbtbcn0Dkw7nhUaTz-SRtG80JvHEymDO08TJ1EPlSngniVo43SEgQYv4BiO4MF6Xc9P9fKShlbC_2aJxMGjP-wFRvHLKATEUm8YgI2",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wFb2eLnTGoHxl9uptz23qBEs_fJVc5Fw_wE0h_rwnb3oRwuzMgVPbMUxARSiYr2thvMeCP5FftNc47IQdfEIl3edtoXx6ktVWgnCLUdT2u-7VyVlNuzn7zpIZ11hlUgrjgsMii-1bo3Q3q7pHzLPG7sSzIN2zFXHuoLc6WYEbOXpw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yo0y53LzwX7tu8Cz1HYuqrZqid6UHNZM5UR2zvM2H5U31X2vDsviL6P5M1FelgQhYAJy5K7fsbSBFPflqtLFHfsB0c9bh2Aufr_h3X3HsYhqWnq2KHSR8e_QbMHuFMptNgWzXXLykMPafEEzIqvWJEmwf2UypDzURmpDGtqI7q0QuA"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Junior Suite, Suite mit 1 Schlafzimmer, 1 Kingsize-Bett",
+                    "price": 576,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wgDbcyAvXi9rLbFe-HlDefxZlJQzVvcroL2_Ro40BtF_JsvJ9eQ7eGwYhZeRiMqc8Dq8pVgZMSP2DFj5nmzJ4-rsrpHYgEYQUM96qwZ1jg6uNZ6qfkmqMGxsgB_W2381knMhBGB97JtNy9WMPirZMA3rAGLdU9PgmFiI5JC3A",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xxLV5ZtNLSZXGl3uGWRpfDDmkLqLOO9brG2LYT1yLLaIt8yMBE5Oe89n0UDtM-Geve8fEuu279znGU-pTSt-KtwunIxrDQDNzZ6g82zbCFEd4hYsW1qGfKvHuMLstPdh2Sv_k_suW84VSYZd4e64SQfC2YHUWgjJpUUYHqaHlkwhySCmWVmE_TRVGoO7uZwHP0XhCFB-w-6fmxcfHFMw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yZiMwl9WwewA4WWNkogtJaYwQQtVdY2M58y9wL67EfRZfd_hrzfJkachjuJgAIuoXlEQHV7LDAyI462Tv85r6FZ3djTfnht47aUGW3q4P2QQRdbWVJMI4kfDgNlqEhj9r0yNtSFFIaIAnumd1mhRpbljBTI80WkYGhDnof4siu-3c",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yktrHlg9NmjZEnypzJvjUas6r_lpdsQCTc8eBM5GZshyHY3gQM_n8udRZuwJdsR738peRaHpkR5WxKn7iBPiHPW6nuMm9K7kd-8iu3awQbQ1RSjn0bCUz4B8N-Gq8CkJ_7bD3bf0d79k4yQsosLcb4jXFUK-BFz6s475uQRuwsSzJ3"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Junior Suite, Suite mit 1 Schlafzimmer, 1 Kingsize-Bett",
+                    "price": 616,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 3,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wgDbcyAvXi9rLbFe-HlDefxZlJQzVvcroL2_Ro40BtF_JsvJ9eQ7eGwYhZeRiMqc8Dq8pVgZMSP2DFj5nmzJ4-rsrpHYgEYQUM96qwZ1jg6uNZ6qfkmqMGxsgB_W2381knMhBGB97JtNy9WMPirZMA3rAGLdU9PgmFiI5JC3A",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xxLV5ZtNLSZXGl3uGWRpfDDmkLqLOO9brG2LYT1yLLaIt8yMBE5Oe89n0UDtM-Geve8fEuu279znGU-pTSt-KtwunIxrDQDNzZ6g82zbCFEd4hYsW1qGfKvHuMLstPdh2Sv_k_suW84VSYZd4e64SQfC2YHUWgjJpUUYHqaHlkwhySCmWVmE_TRVGoO7uZwHP0XhCFB-w-6fmxcfHFMw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yZiMwl9WwewA4WWNkogtJaYwQQtVdY2M58y9wL67EfRZfd_hrzfJkachjuJgAIuoXlEQHV7LDAyI462Tv85r6FZ3djTfnht47aUGW3q4P2QQRdbWVJMI4kfDgNlqEhj9r0yNtSFFIaIAnumd1mhRpbljBTI80WkYGhDnof4siu-3c",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yktrHlg9NmjZEnypzJvjUas6r_lpdsQCTc8eBM5GZshyHY3gQM_n8udRZuwJdsR738peRaHpkR5WxKn7iBPiHPW6nuMm9K7kd-8iu3awQbQ1RSjn0bCUz4B8N-Gq8CkJ_7bD3bf0d79k4yQsosLcb4jXFUK-BFz6s475uQRuwsSzJ3"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Junior Suite, Suite mit 1 Schlafzimmer, 1 Kingsize-Bett",
+                    "price": 640,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wgDbcyAvXi9rLbFe-HlDefxZlJQzVvcroL2_Ro40BtF_JsvJ9eQ7eGwYhZeRiMqc8Dq8pVgZMSP2DFj5nmzJ4-rsrpHYgEYQUM96qwZ1jg6uNZ6qfkmqMGxsgB_W2381knMhBGB97JtNy9WMPirZMA3rAGLdU9PgmFiI5JC3A",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xxLV5ZtNLSZXGl3uGWRpfDDmkLqLOO9brG2LYT1yLLaIt8yMBE5Oe89n0UDtM-Geve8fEuu279znGU-pTSt-KtwunIxrDQDNzZ6g82zbCFEd4hYsW1qGfKvHuMLstPdh2Sv_k_suW84VSYZd4e64SQfC2YHUWgjJpUUYHqaHlkwhySCmWVmE_TRVGoO7uZwHP0XhCFB-w-6fmxcfHFMw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yZiMwl9WwewA4WWNkogtJaYwQQtVdY2M58y9wL67EfRZfd_hrzfJkachjuJgAIuoXlEQHV7LDAyI462Tv85r6FZ3djTfnht47aUGW3q4P2QQRdbWVJMI4kfDgNlqEhj9r0yNtSFFIaIAnumd1mhRpbljBTI80WkYGhDnof4siu-3c",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yktrHlg9NmjZEnypzJvjUas6r_lpdsQCTc8eBM5GZshyHY3gQM_n8udRZuwJdsR738peRaHpkR5WxKn7iBPiHPW6nuMm9K7kd-8iu3awQbQ1RSjn0bCUz4B8N-Gq8CkJ_7bD3bf0d79k4yQsosLcb4jXFUK-BFz6s475uQRuwsSzJ3"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Junior Suite, Suite mit 1 Schlafzimmer, 1 Kingsize-Bett",
+                    "price": 675,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 3,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wgDbcyAvXi9rLbFe-HlDefxZlJQzVvcroL2_Ro40BtF_JsvJ9eQ7eGwYhZeRiMqc8Dq8pVgZMSP2DFj5nmzJ4-rsrpHYgEYQUM96qwZ1jg6uNZ6qfkmqMGxsgB_W2381knMhBGB97JtNy9WMPirZMA3rAGLdU9PgmFiI5JC3A",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xxLV5ZtNLSZXGl3uGWRpfDDmkLqLOO9brG2LYT1yLLaIt8yMBE5Oe89n0UDtM-Geve8fEuu279znGU-pTSt-KtwunIxrDQDNzZ6g82zbCFEd4hYsW1qGfKvHuMLstPdh2Sv_k_suW84VSYZd4e64SQfC2YHUWgjJpUUYHqaHlkwhySCmWVmE_TRVGoO7uZwHP0XhCFB-w-6fmxcfHFMw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yZiMwl9WwewA4WWNkogtJaYwQQtVdY2M58y9wL67EfRZfd_hrzfJkachjuJgAIuoXlEQHV7LDAyI462Tv85r6FZ3djTfnht47aUGW3q4P2QQRdbWVJMI4kfDgNlqEhj9r0yNtSFFIaIAnumd1mhRpbljBTI80WkYGhDnof4siu-3c",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yktrHlg9NmjZEnypzJvjUas6r_lpdsQCTc8eBM5GZshyHY3gQM_n8udRZuwJdsR738peRaHpkR5WxKn7iBPiHPW6nuMm9K7kd-8iu3awQbQ1RSjn0bCUz4B8N-Gq8CkJ_7bD3bf0d79k4yQsosLcb4jXFUK-BFz6s475uQRuwsSzJ3"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Club Zimmer, Zugang zur Club Lounge, Gästezimmer, 1 Kingsize-Bett, obere Etage",
+                    "price": 644,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xxLV5ZtNLSZXGl3uGWRpfDDmkLqLOO9brG2LYT1yLLaIt8yMBE5Oe89n0UDtM-Geve8fEuu279znGU-pTSt-KtwunIxrDQDNzZ6g82zbCFEd4hYsW1qGfKvHuMLstPdh2Sv_k_suW84VSYZd4e64SQfC2YHUWgjJpUUYHqaHlkwhySCmWVmE_TRVGoO7uZwHP0XhCFB-w-6fmxcfHFMw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xgr-VhMRh7gDJC3hO4EOsPkkH3Hsr7sVBM4lQl3Zw8_4Y_P5BBwmbn4YaISdBlO-XwL9EvhIkC-s3qjI4vPH1yD6oDLG4lr27YbVJ4t6DPJkF48-M1KmjHJ2Fx_qlDEs8Dy_6fBRcBzyV1ucyvecf9Q5WJkZjDkII8T-fjsvM1Glg4-2sZ3MiB-VbyfnKCOdmICctZBsxrRD3EZp0WnoY",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xZqw7xRuAxQHp1ngEEv8uhgP32mPeZnGyFBN4WPak1046vT0ii1UiiOZKc4i0SzJMCZdXC-GZ4_HdeQsYZO539FNrnwx-4AE8093HM44P5ikGOMSdhEDDAiKshm4wpZ3Z3u07cWMd1Va2rdki0At5F7-3ayXw68-LE6lUBMPjqDtv31SJBfhiX71mx9Q7oSp2eZcu92nxsERDUaOwp63M",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_w6isPGV2PXha_xhppBc94qYUYWHvNdiQSEYd9BT46W3kJDeUZkKNmwctqRZHtZp0vX5P5jXf1JgxtBDPOLDkTXqUD5xpYxsApl4AlUjC2HwcAYZtiE_s31T4Amt1SDil24aKhCCM_0wnxn5WOx9C9d6vftMUzoNDLcF_ugW2jWd34G7z16bgt-NEUmvWAu_yjKJTs2enN1x7Cdk2xx_A8bUIggh-HuqBE",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wFb2eLnTGoHxl9uptz23qBEs_fJVc5Fw_wE0h_rwnb3oRwuzMgVPbMUxARSiYr2thvMeCP5FftNc47IQdfEIl3edtoXx6ktVWgnCLUdT2u-7VyVlNuzn7zpIZ11hlUgrjgsMii-1bo3Q3q7pHzLPG7sSzIN2zFXHuoLc6WYEbOXpw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_x123ytHv3NLHQPig8yQ4DbUZoUoI8NAULxMB9nkU-1-BZPK2YvJZVqudiSkZxWHlzz3zTHwvTBlq7Zw-pGNA057SKICOgRmJUpLTqBn2OKU5zU00L0Gly-ekY7lsIncZ2WI5iISXf-hoqSbzR5Wwj3s1IgWq0F0Tez0uLz4E6gZ2UrHGKZcwRhFOeONG7o",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wc_e-pSfBluM8uzGGRMk_AuNJOswVuXLiDZERkuw9Ft_OdBrRiI8FaX4iaIEZoGmFhOvPG8Nifp6j_PhP47B4hE4yCbq0fTnKJTGPCi9-La04lj8HvH0FQZ_fdp8cigIWX2kUiv04nSDP9hLyuB8_clZk0EekFtDXofZHQisqJLWOMRGoTAg1jBeS0qWU",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yvMANPxmswwVXZKzMRrDNhm_7uQkKlNpf2o1PjOMUKY8158Eyr-lqhZ73Mp4zPcYIbg4yfXV4rBAdfI1-v8u_tNc8fWePCsqYKCIwURflEc7e60fu-VN74E3vVvSqXkoSTgorSj_IHMRRzkSLq-nsK6gdFrViDN9eT87yWSr9ykuGYmPod5oHz1-thioaQ",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zO4ZDuOIqtoM7fLtnfbliVPqOx7MLv1m5maosyVsxr_m4REg_S0ob8eMVE6R1h-S40Nh5eFnDlyfPork2EZS99AVt0vm0yT1_VtXe3-zPAmpzU5ugKD0L-5bgrgjZKLYxwaIfPnwIGS2H8OwkBdLqctBDo6-3ZKTCTQRK0YnSVN_xt0KIcJoR_cET9nQ0",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_z4zUMQE64SYaM3N0tm-CY32Z3VReHDZ1BwtSr3m5duwoHj1hOGQWCtUT0qaxf2-JzeE4ZfL_NsjNn2Ds2okZ6mKfktdwcRaSB-RTAusqsog9Bu69WHxXTi5sS9IhnofSpnwHQw7bZDx5GJhU-RVyrXM7m35mXJZP3DRHObzgPWVGgu32NgBTmDRrBxnRI",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_z71MKeMM3tHCcCSQANuwhVYny1IM402rGOjd4co4J1UBwTTC7gP1HHDTpUtzxzLf4B5TmX_XF5_I7gkfIH8MwMOD-FMn0W3UXgg-R1UFVQ24VZiTURkEY10SP33JHRJPRIlM4D2UzwztI5s_e5yWU0r4FcBybw5Qva_upFirNtMo3YNUhvLRu1DdEdhBJZjA",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_znqJarvqrjBBoLZAWqI-Fk-4L5L0tD4OQoUDJHQ5xiea1gaUgsUqHQEw1jxeGD5yDk4cAL7SCfhl4-dw2Dif1bpU4dUksyNXCsXlTHzXNHKokuWGtSC9kxYDAbqlscrqVkrIXsFLgrIJzP-9IDP6oChzkhaoHIGyEfxfgEqvKLdb5d-5Dc",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xl3Wn2RKdYJh9IshrrauxhrjIvpimaMWM6Rg7YQcxmuSbXhtPB-8B86FYzgZSH6cuWoolrCNTgaswOCBLbQVgn7LPSn_GPXlGnHa7ISe7zECJVxrAiXl_PVCDVJYSKMWpEVfBD4VUpgrltYRyWW7KOoUaqJTemPz2DG7vX7Vn9pbJSLEoujkoPrH9a1X6M6k8",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xaUxQA8D_IBkQi8Zl8JXj-wJ1Bbxd-6nqH-lqBr6V6PwD0g4N2QWyW4Oj42zx-r_Zo-dTjjBIMtK1dyeVgcHjqDfgw1yW-33PpgLO9c1-vG3fBXsVYq8GTQZqPFTE57OO-WpCSbEh6L0uOZ_hkITjdzX9JKx87nmgDmlmmBep9ECy4hkAgwO3ibQJrP4lFRo6i"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Club Zimmer, Zugang zur Club Lounge, Gästezimmer, 1 Kingsize-Bett, obere Etage",
+                    "price": 715,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xxLV5ZtNLSZXGl3uGWRpfDDmkLqLOO9brG2LYT1yLLaIt8yMBE5Oe89n0UDtM-Geve8fEuu279znGU-pTSt-KtwunIxrDQDNzZ6g82zbCFEd4hYsW1qGfKvHuMLstPdh2Sv_k_suW84VSYZd4e64SQfC2YHUWgjJpUUYHqaHlkwhySCmWVmE_TRVGoO7uZwHP0XhCFB-w-6fmxcfHFMw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xgr-VhMRh7gDJC3hO4EOsPkkH3Hsr7sVBM4lQl3Zw8_4Y_P5BBwmbn4YaISdBlO-XwL9EvhIkC-s3qjI4vPH1yD6oDLG4lr27YbVJ4t6DPJkF48-M1KmjHJ2Fx_qlDEs8Dy_6fBRcBzyV1ucyvecf9Q5WJkZjDkII8T-fjsvM1Glg4-2sZ3MiB-VbyfnKCOdmICctZBsxrRD3EZp0WnoY",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xZqw7xRuAxQHp1ngEEv8uhgP32mPeZnGyFBN4WPak1046vT0ii1UiiOZKc4i0SzJMCZdXC-GZ4_HdeQsYZO539FNrnwx-4AE8093HM44P5ikGOMSdhEDDAiKshm4wpZ3Z3u07cWMd1Va2rdki0At5F7-3ayXw68-LE6lUBMPjqDtv31SJBfhiX71mx9Q7oSp2eZcu92nxsERDUaOwp63M",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_w6isPGV2PXha_xhppBc94qYUYWHvNdiQSEYd9BT46W3kJDeUZkKNmwctqRZHtZp0vX5P5jXf1JgxtBDPOLDkTXqUD5xpYxsApl4AlUjC2HwcAYZtiE_s31T4Amt1SDil24aKhCCM_0wnxn5WOx9C9d6vftMUzoNDLcF_ugW2jWd34G7z16bgt-NEUmvWAu_yjKJTs2enN1x7Cdk2xx_A8bUIggh-HuqBE",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wFb2eLnTGoHxl9uptz23qBEs_fJVc5Fw_wE0h_rwnb3oRwuzMgVPbMUxARSiYr2thvMeCP5FftNc47IQdfEIl3edtoXx6ktVWgnCLUdT2u-7VyVlNuzn7zpIZ11hlUgrjgsMii-1bo3Q3q7pHzLPG7sSzIN2zFXHuoLc6WYEbOXpw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_x123ytHv3NLHQPig8yQ4DbUZoUoI8NAULxMB9nkU-1-BZPK2YvJZVqudiSkZxWHlzz3zTHwvTBlq7Zw-pGNA057SKICOgRmJUpLTqBn2OKU5zU00L0Gly-ekY7lsIncZ2WI5iISXf-hoqSbzR5Wwj3s1IgWq0F0Tez0uLz4E6gZ2UrHGKZcwRhFOeONG7o",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wc_e-pSfBluM8uzGGRMk_AuNJOswVuXLiDZERkuw9Ft_OdBrRiI8FaX4iaIEZoGmFhOvPG8Nifp6j_PhP47B4hE4yCbq0fTnKJTGPCi9-La04lj8HvH0FQZ_fdp8cigIWX2kUiv04nSDP9hLyuB8_clZk0EekFtDXofZHQisqJLWOMRGoTAg1jBeS0qWU",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yvMANPxmswwVXZKzMRrDNhm_7uQkKlNpf2o1PjOMUKY8158Eyr-lqhZ73Mp4zPcYIbg4yfXV4rBAdfI1-v8u_tNc8fWePCsqYKCIwURflEc7e60fu-VN74E3vVvSqXkoSTgorSj_IHMRRzkSLq-nsK6gdFrViDN9eT87yWSr9ykuGYmPod5oHz1-thioaQ",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zO4ZDuOIqtoM7fLtnfbliVPqOx7MLv1m5maosyVsxr_m4REg_S0ob8eMVE6R1h-S40Nh5eFnDlyfPork2EZS99AVt0vm0yT1_VtXe3-zPAmpzU5ugKD0L-5bgrgjZKLYxwaIfPnwIGS2H8OwkBdLqctBDo6-3ZKTCTQRK0YnSVN_xt0KIcJoR_cET9nQ0",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_z4zUMQE64SYaM3N0tm-CY32Z3VReHDZ1BwtSr3m5duwoHj1hOGQWCtUT0qaxf2-JzeE4ZfL_NsjNn2Ds2okZ6mKfktdwcRaSB-RTAusqsog9Bu69WHxXTi5sS9IhnofSpnwHQw7bZDx5GJhU-RVyrXM7m35mXJZP3DRHObzgPWVGgu32NgBTmDRrBxnRI",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_z71MKeMM3tHCcCSQANuwhVYny1IM402rGOjd4co4J1UBwTTC7gP1HHDTpUtzxzLf4B5TmX_XF5_I7gkfIH8MwMOD-FMn0W3UXgg-R1UFVQ24VZiTURkEY10SP33JHRJPRIlM4D2UzwztI5s_e5yWU0r4FcBybw5Qva_upFirNtMo3YNUhvLRu1DdEdhBJZjA",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_znqJarvqrjBBoLZAWqI-Fk-4L5L0tD4OQoUDJHQ5xiea1gaUgsUqHQEw1jxeGD5yDk4cAL7SCfhl4-dw2Dif1bpU4dUksyNXCsXlTHzXNHKokuWGtSC9kxYDAbqlscrqVkrIXsFLgrIJzP-9IDP6oChzkhaoHIGyEfxfgEqvKLdb5d-5Dc",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xl3Wn2RKdYJh9IshrrauxhrjIvpimaMWM6Rg7YQcxmuSbXhtPB-8B86FYzgZSH6cuWoolrCNTgaswOCBLbQVgn7LPSn_GPXlGnHa7ISe7zECJVxrAiXl_PVCDVJYSKMWpEVfBD4VUpgrltYRyWW7KOoUaqJTemPz2DG7vX7Vn9pbJSLEoujkoPrH9a1X6M6k8",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xaUxQA8D_IBkQi8Zl8JXj-wJ1Bbxd-6nqH-lqBr6V6PwD0g4N2QWyW4Oj42zx-r_Zo-dTjjBIMtK1dyeVgcHjqDfgw1yW-33PpgLO9c1-vG3fBXsVYq8GTQZqPFTE57OO-WpCSbEh6L0uOZ_hkITjdzX9JKx87nmgDmlmmBep9ECy4hkAgwO3ibQJrP4lFRo6i"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Junior Suite, Suite mit 1 Schlafzimmer, 1 Kingsize-Bett, Eckzimmer",
+                    "price": 712,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xIPKk00j3UR8Yzd8ujFDpNnE1ZGCfzCpafFuMgLxJ6vUfIws9r9FgIrz1AjE_iIaisyJgclwq3h8mp0ZhzAMH18fmKQjoFLB-peNaMurRIgc7-hPhicRHAC_yjGx-9b7Xdy3owHF9_F0oMpQ4mhNFFEugz1txgSf-h0FW9WNO5CYuG0mYn7HgQgqXUJO0FZjKAlrLqJZlZ",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_z_U9TetXxDGZM0a28Na5XWCkAdIypBVSE1DuMNMKrfpY-bMtJXigyElkGABDQpKUH_1v1Un5FN-56B7URQ3-Sypg-kxHE6zoQkN-i1MA9NUbbfdYCh19YQ76VZ-jNIQLrw-asRRlrSpx7Wf_rTq2tIrAIsjWQmjaSOipHJ-C9ypPZJq8XN1ExZkLa6PH1E8ujqdjK5kZbBlMp-H1KPNyE",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wJyawRTTYp3uPqaUk__hjjLypu35Ld5coClTwGJVjXKHPJEYb93gUDa274CmohcnDSi7xi0A4CV17yVz9G79VU6d_krrLHIvKyTBf5oJvxKdqpAfCAVjw0kjm7l4iXuoX91z3rM_JGUvXbDZkPyVkvjiM2aiVJ7qseo_hMYXUfCqt6",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wy5xEA4usFMzo_zVA8v9lIyLheXOSaB0Tn0A1Uqe8hZpkaG80URqlVwtGiYcr5kxzaN09Rq6cXJssxJOASdv2x7JHBXaYPFvixN7FS6vFqcCGgKPz3J7T-pdvo5ZbI-EKsq3w5PHKaIhX1AO_dsuIWjqlDLgyj2wuW-ExEy31xnF80_WIJlSJmDVzdB100o8ZhdGSRsv9vdZl6lvw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_w12M0GoZLfgChR7xMQ5xQIZp025LYV7yWAw6vPSjLudTX1Gn7CLDHYEw5ziKWaIwNAhzuIUEfr36MnDA0KSxIicuoO4d3kPFxFiFXu2NOnu_EYX-gCj_UVmzk6FdUoRNar1t8KeQ07kXC-e1uR8otYsIDPQpIrF9lKCUsMnTxCWoC8EPITtVVaRLzFBBtKGhpU0s7U",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zQ1SD0o-vC3CqjDT1-17JJp7j3LF23RcRg-zeQbQv52REuYck2qO5rvoLlMjTJvBQtSI9gwI03ahr6WyStA1Pi12aiTn9ivRt23fZeLqqQQ3tkd4eZSv9MpNpQZhFvY7OhJrjp6lPBS2R1BJPZv_TAEPu27Kbl6h0MZmf2SakSn19xmQ",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yAl-lbTUihFkK8u_LnTtLORNvTE2gHj2qZoFqf6nyq_mPE1CK0KoUR7kNo291WjbFb9HGoiEtDZw1LhXwDtt_vTPVT_3O-SxE2lCK167vqZrKk5c5X__fI2gD9wl96xGVtojvWmYT0AXORvAW_4yEf3Iv4GjkxhAIkm7u7myTjYUL043g"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Junior Suite, Suite mit 1 Schlafzimmer, 1 Kingsize-Bett, Eckzimmer",
+                    "price": 790,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xIPKk00j3UR8Yzd8ujFDpNnE1ZGCfzCpafFuMgLxJ6vUfIws9r9FgIrz1AjE_iIaisyJgclwq3h8mp0ZhzAMH18fmKQjoFLB-peNaMurRIgc7-hPhicRHAC_yjGx-9b7Xdy3owHF9_F0oMpQ4mhNFFEugz1txgSf-h0FW9WNO5CYuG0mYn7HgQgqXUJO0FZjKAlrLqJZlZ",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_z_U9TetXxDGZM0a28Na5XWCkAdIypBVSE1DuMNMKrfpY-bMtJXigyElkGABDQpKUH_1v1Un5FN-56B7URQ3-Sypg-kxHE6zoQkN-i1MA9NUbbfdYCh19YQ76VZ-jNIQLrw-asRRlrSpx7Wf_rTq2tIrAIsjWQmjaSOipHJ-C9ypPZJq8XN1ExZkLa6PH1E8ujqdjK5kZbBlMp-H1KPNyE",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wJyawRTTYp3uPqaUk__hjjLypu35Ld5coClTwGJVjXKHPJEYb93gUDa274CmohcnDSi7xi0A4CV17yVz9G79VU6d_krrLHIvKyTBf5oJvxKdqpAfCAVjw0kjm7l4iXuoX91z3rM_JGUvXbDZkPyVkvjiM2aiVJ7qseo_hMYXUfCqt6",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wy5xEA4usFMzo_zVA8v9lIyLheXOSaB0Tn0A1Uqe8hZpkaG80URqlVwtGiYcr5kxzaN09Rq6cXJssxJOASdv2x7JHBXaYPFvixN7FS6vFqcCGgKPz3J7T-pdvo5ZbI-EKsq3w5PHKaIhX1AO_dsuIWjqlDLgyj2wuW-ExEy31xnF80_WIJlSJmDVzdB100o8ZhdGSRsv9vdZl6lvw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_w12M0GoZLfgChR7xMQ5xQIZp025LYV7yWAw6vPSjLudTX1Gn7CLDHYEw5ziKWaIwNAhzuIUEfr36MnDA0KSxIicuoO4d3kPFxFiFXu2NOnu_EYX-gCj_UVmzk6FdUoRNar1t8KeQ07kXC-e1uR8otYsIDPQpIrF9lKCUsMnTxCWoC8EPITtVVaRLzFBBtKGhpU0s7U",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zQ1SD0o-vC3CqjDT1-17JJp7j3LF23RcRg-zeQbQv52REuYck2qO5rvoLlMjTJvBQtSI9gwI03ahr6WyStA1Pi12aiTn9ivRt23fZeLqqQQ3tkd4eZSv9MpNpQZhFvY7OhJrjp6lPBS2R1BJPZv_TAEPu27Kbl6h0MZmf2SakSn19xmQ",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yAl-lbTUihFkK8u_LnTtLORNvTE2gHj2qZoFqf6nyq_mPE1CK0KoUR7kNo291WjbFb9HGoiEtDZw1LhXwDtt_vTPVT_3O-SxE2lCK167vqZrKk5c5X__fI2gD9wl96xGVtojvWmYT0AXORvAW_4yEf3Iv4GjkxhAIkm7u7myTjYUL043g"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Suite mit 1 Schlafzimmer und 1 Kingsize-Bett",
+                    "price": 808,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_z6cas15xt1D3huexYJDkeKjV0h7zQxXm1uRgLZbbUSBzYzhvUbid-aQq2nV6u2Pd1IDZ_ZGPYUwUn1RkK2YE9_AVDwUU05W6-VM0KzMyg5EcyU5yWbr_YUdBApokjgzvlVdNHVUvyGgi7_JpvWXv5GMrvvy1m-R2x4C674iAJ3iAA",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yShsI3y_pPIvusbWWEvrFbbir35BuU4qpd-iz-kvtU-FDSfoxLyFtYBptuhaFI0GF7tzdnACLGWzj7gN-4Pm6W4zWfld1DZOfJSqJgO870A5RhjL1XBIx6YGB0PLaYS8i7oFr4u7LeVGLPB-7v_vqMz_6KT22VRbUsgPdDzxprLUTs6P6zlb4",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yDQt4r7B03sNWJvs84qaGY2CTQC_XeuocmmOgH6CAyxoEkI1nLcPqzrYc5AeXTUMKDxysuUcBY1Tg2OY8BRCgjTyU0Lj21cdUDzVEpO4ntnc4D3biECNkEzVdG7Z4O2mnpyHh8OWZP4604dZbKt1-Qe8w9vsUbug0PLUdLakqRKVQ3xKhCIww",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wEnIROvmbBpuCpJPFlawo7S86-GyWxm4mhc0IPPIxUqyAwAy_oXIwUsyl_Y5sixCAqv5t64p9TRFZrfFs8B6fwMcetgmTfPWUmfmQm85FAsUTfhur9vGKsAShbQ4xtRrYGivdlNZocdyYQvFXLipkaRNH3b9k-De5_mlP7D2Y",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_w9M218j-7EbKfsRsNuxNfH00yHFF2L3RfBDplWmO9oU_aYG18ZRXz7jUOhGBmFi9hA6pyXswjFrDanc9Eky70REhBNgXhAgPrtdIt9Wqwrtg2EPfzzUsWNNwu14ziIe45ww5XDClRK084WvDgGVMw4oWqv-gvVLrhMrtNtilxu",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yiWYbHjaO5YSLKlg9reCS9jca8utR_Lyf8SbIExxJnnDogUhxfRpxA_4x9m6os16BnMjOgnkZRJN5j459sFcQOdKuGhl3vqqy9UPgxFgBvPRtrpNF_fFIRXJbwV__LjmLi_1tg-iuBQ9CntSLEcUvwsr908bH6gZ3ZW_kSvLFLS7awcDXr",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xDufTmlTw_T4Op2ZYi11zqmZPAZh5SBQ1kJpBprb33oMd7rE3WQgkdALEqLvCoDDl8BgQMWhCZ-ZsRSw4Xdul0GmKDZJABJCPnhU7AJvug2AFpE6HNdp6SovddrH3BV8lWUecEXjshINIQdiZdUD08m8ECfKkrsY_wKVDv_dlRVS87",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_y5Kg3Z1sbkisIpBA_w6RXYwf6cNGRIKjoCf3W9d3nKbqFkiHKqfm0uNVlyPMqeMxwsfq_MJZFxpGBvfF4vfMGsNn1UEPuvPrGHdt9-bi4BUOY0rub4qo-_S8CvTgtcj4mUB8OX65AKT7xA4XB7zwtz23OSXU930OVFZOLOGVPzaeuxzQ2l"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Suite mit 1 Schlafzimmer und 1 Kingsize-Bett",
+                    "price": 898,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_z6cas15xt1D3huexYJDkeKjV0h7zQxXm1uRgLZbbUSBzYzhvUbid-aQq2nV6u2Pd1IDZ_ZGPYUwUn1RkK2YE9_AVDwUU05W6-VM0KzMyg5EcyU5yWbr_YUdBApokjgzvlVdNHVUvyGgi7_JpvWXv5GMrvvy1m-R2x4C674iAJ3iAA",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yShsI3y_pPIvusbWWEvrFbbir35BuU4qpd-iz-kvtU-FDSfoxLyFtYBptuhaFI0GF7tzdnACLGWzj7gN-4Pm6W4zWfld1DZOfJSqJgO870A5RhjL1XBIx6YGB0PLaYS8i7oFr4u7LeVGLPB-7v_vqMz_6KT22VRbUsgPdDzxprLUTs6P6zlb4",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yDQt4r7B03sNWJvs84qaGY2CTQC_XeuocmmOgH6CAyxoEkI1nLcPqzrYc5AeXTUMKDxysuUcBY1Tg2OY8BRCgjTyU0Lj21cdUDzVEpO4ntnc4D3biECNkEzVdG7Z4O2mnpyHh8OWZP4604dZbKt1-Qe8w9vsUbug0PLUdLakqRKVQ3xKhCIww",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wEnIROvmbBpuCpJPFlawo7S86-GyWxm4mhc0IPPIxUqyAwAy_oXIwUsyl_Y5sixCAqv5t64p9TRFZrfFs8B6fwMcetgmTfPWUmfmQm85FAsUTfhur9vGKsAShbQ4xtRrYGivdlNZocdyYQvFXLipkaRNH3b9k-De5_mlP7D2Y",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_w9M218j-7EbKfsRsNuxNfH00yHFF2L3RfBDplWmO9oU_aYG18ZRXz7jUOhGBmFi9hA6pyXswjFrDanc9Eky70REhBNgXhAgPrtdIt9Wqwrtg2EPfzzUsWNNwu14ziIe45ww5XDClRK084WvDgGVMw4oWqv-gvVLrhMrtNtilxu",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yiWYbHjaO5YSLKlg9reCS9jca8utR_Lyf8SbIExxJnnDogUhxfRpxA_4x9m6os16BnMjOgnkZRJN5j459sFcQOdKuGhl3vqqy9UPgxFgBvPRtrpNF_fFIRXJbwV__LjmLi_1tg-iuBQ9CntSLEcUvwsr908bH6gZ3ZW_kSvLFLS7awcDXr",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_xDufTmlTw_T4Op2ZYi11zqmZPAZh5SBQ1kJpBprb33oMd7rE3WQgkdALEqLvCoDDl8BgQMWhCZ-ZsRSw4Xdul0GmKDZJABJCPnhU7AJvug2AFpE6HNdp6SovddrH3BV8lWUecEXjshINIQdiZdUD08m8ECfKkrsY_wKVDv_dlRVS87",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_y5Kg3Z1sbkisIpBA_w6RXYwf6cNGRIKjoCf3W9d3nKbqFkiHKqfm0uNVlyPMqeMxwsfq_MJZFxpGBvfF4vfMGsNn1UEPuvPrGHdt9-bi4BUOY0rub4qo-_S8CvTgtcj4mUB8OX65AKT7xA4XB7zwtz23OSXU930OVFZOLOGVPzaeuxzQ2l"
+                    ],
+                    "free_cancellation_until": null
+                  }
+                ]
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Booking.com",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://google.de/aclk?sa=l&ai=DChsSEwjA-LWB7rSXAxVDmmgJHcpiCjkYACICCAEQARoCd2Y&co=1&ase=2&gclid=EAIaIQobChMIwPi1ge60lwMVQ5poCR3KYgo5EAoYAiABEgKZofD_BwE&cid=CAASlwHkaJFtxP9KYuTcpAFDG4XKWgLzlmh3jsnuuFraaZoy8CDvuGcxbxBRLe3aQQ6_tGoewfeOCOTWhJdmZk-GypoF625ISDi3HBHDY4ReRiX0Hu9MSj9ItWex8nlexCpd3670O65kfxByNebAPrE_KhVyCWTacUqC-3ZOeb2Df8Q6oU6Ku3o0xqHB6XNypwPCpTUA5e2cMkGR&category=acrcp_v1_48&sig=AOD64_1dRD-Pah82D7Dgfs36H-WI8Pd5-A&adurl",
+                "domain": "google.de",
+                "is_paid": true,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": [
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Zweibettzimmer",
+                    "price": 354,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_y3V55g7GLRlQtCDGPv2F7itGiHLB0xvgji1oKiN0ZYr7MJ1ybhSPuWhpkqDQl0dBT6vLptlMS-bP-eQHYT-NZlBBoJ3oLQmWSLgKgQLettW2nsOoa2MaVgAXQLqCY5jNNRvYFdcNqtOLr14va2Q9TyVq4NxkfY3pF3mZktNAXPAEvYbQ6sGMUGcZO6qkWDERIBk0A9Cos9NNz-aZ7A3Z-g16qEvsgGAELE",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yYrrHjooV8QyYmxEq46fyht0kHFC5rHAwHoVajOuM_B4svVkVYU2aKUvamLsnLd25suCSPSSV0Yn24Ua_duOeQWon_tx2U0yvE302qNZEziDkSPChNBdj4c0552WuVtxw2t7m0YsHk668QVVQ5ytiVsLBPnWB4SwnLcAUddEDawBP07B8r20N1h0i_C3P1e65Pgkp1kgHochBEIMup0u5OE0_Dql-NxwM",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zynlEMxd8xuAaidHATg4Ci52oFOwmvesecE1O6l8U0jzmZ8Hymjajwstj7dp1U829cyIQyTW72XptAotbn1w6MTcsPbGCGuyDuPNAtujZ27sTef8CD9eMzyyY60vJBYzTH7OHt0-t45TZBQhZ0Af6ZOdC29Z-hw_cN91uuOJu733mbDHaOeWGWcQXll3-Odah0nYFkUKnIplOn5BGMZKEJm-yEk282ZWbF",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yHX7k_Sj4H8uHxfId5x4plyHSmPNhwQwZbItxXaebVBpUMOlnwxSjb9oET-ReWhRlzKPNG9mrzp_qSQqQTpwcL9jmBiqmuk4rES5Dym40Jsu6zxXI3a9zf8ZSnzgawCaGBatk0cNMutIa4M6gcDFc8c-MavB0rnJJ9pkA4uwv6MZlWs437TfOS7M4DpiZVeTPvBl1I8-7YYhlBnYUODur532X2KIXTEJOs"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Zweibettzimmer",
+                    "price": 392,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_y3V55g7GLRlQtCDGPv2F7itGiHLB0xvgji1oKiN0ZYr7MJ1ybhSPuWhpkqDQl0dBT6vLptlMS-bP-eQHYT-NZlBBoJ3oLQmWSLgKgQLettW2nsOoa2MaVgAXQLqCY5jNNRvYFdcNqtOLr14va2Q9TyVq4NxkfY3pF3mZktNAXPAEvYbQ6sGMUGcZO6qkWDERIBk0A9Cos9NNz-aZ7A3Z-g16qEvsgGAELE",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yYrrHjooV8QyYmxEq46fyht0kHFC5rHAwHoVajOuM_B4svVkVYU2aKUvamLsnLd25suCSPSSV0Yn24Ua_duOeQWon_tx2U0yvE302qNZEziDkSPChNBdj4c0552WuVtxw2t7m0YsHk668QVVQ5ytiVsLBPnWB4SwnLcAUddEDawBP07B8r20N1h0i_C3P1e65Pgkp1kgHochBEIMup0u5OE0_Dql-NxwM",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zynlEMxd8xuAaidHATg4Ci52oFOwmvesecE1O6l8U0jzmZ8Hymjajwstj7dp1U829cyIQyTW72XptAotbn1w6MTcsPbGCGuyDuPNAtujZ27sTef8CD9eMzyyY60vJBYzTH7OHt0-t45TZBQhZ0Af6ZOdC29Z-hw_cN91uuOJu733mbDHaOeWGWcQXll3-Odah0nYFkUKnIplOn5BGMZKEJm-yEk282ZWbF",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yHX7k_Sj4H8uHxfId5x4plyHSmPNhwQwZbItxXaebVBpUMOlnwxSjb9oET-ReWhRlzKPNG9mrzp_qSQqQTpwcL9jmBiqmuk4rES5Dym40Jsu6zxXI3a9zf8ZSnzgawCaGBatk0cNMutIa4M6gcDFc8c-MavB0rnJJ9pkA4uwv6MZlWs437TfOS7M4DpiZVeTPvBl1I8-7YYhlBnYUODur532X2KIXTEJOs"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Zimmer mit Kingsize-Bett",
+                    "price": 392,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_y3V55g7GLRlQtCDGPv2F7itGiHLB0xvgji1oKiN0ZYr7MJ1ybhSPuWhpkqDQl0dBT6vLptlMS-bP-eQHYT-NZlBBoJ3oLQmWSLgKgQLettW2nsOoa2MaVgAXQLqCY5jNNRvYFdcNqtOLr14va2Q9TyVq4NxkfY3pF3mZktNAXPAEvYbQ6sGMUGcZO6qkWDERIBk0A9Cos9NNz-aZ7A3Z-g16qEvsgGAELE",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yTNp9weBXYgAlFCSPgw00elyByGryFEnwyS3cf2NyLUfBwh9wlksnLPLWjwvgs-DOeKDQb93-OStp5Cgs5-kM3uuXWx1Ie1q8GGX7t9S6zYfLcX2UYidjXOQnjxadRMNR4YvL4kJHjZgbe4pxohFBqC6NQy9oJA5MHQhR8nmQWpapBavSpvY2n40ArYDY8VbVSGneJfLanl3riE0jwrkry4W8D6eUvpVJv",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zynlEMxd8xuAaidHATg4Ci52oFOwmvesecE1O6l8U0jzmZ8Hymjajwstj7dp1U829cyIQyTW72XptAotbn1w6MTcsPbGCGuyDuPNAtujZ27sTef8CD9eMzyyY60vJBYzTH7OHt0-t45TZBQhZ0Af6ZOdC29Z-hw_cN91uuOJu733mbDHaOeWGWcQXll3-Odah0nYFkUKnIplOn5BGMZKEJm-yEk282ZWbF",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yHX7k_Sj4H8uHxfId5x4plyHSmPNhwQwZbItxXaebVBpUMOlnwxSjb9oET-ReWhRlzKPNG9mrzp_qSQqQTpwcL9jmBiqmuk4rES5Dym40Jsu6zxXI3a9zf8ZSnzgawCaGBatk0cNMutIa4M6gcDFc8c-MavB0rnJJ9pkA4uwv6MZlWs437TfOS7M4DpiZVeTPvBl1I8-7YYhlBnYUODur532X2KIXTEJOs"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Eck-Zimmer mit Kingsize-Bett",
+                    "price": 498,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 3,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zI922r0ExnItRtfDYqZL95rBioU4PO006iL5r6XoKoJqbhvhs0D9vZYjw7QpuXIVEZL5xR_rK4JLmNIgtg_dXPzvJidjEBWUIJF5_PTwwL-I2WufY4tlZFYn5vYQ-cunMPum8J1n1lgQU6M-9Gkmt8tgOo-Qwt1EZyXNWVPnieXI4dA2lNuCj-WeDAjKqd7Rg5C17NA0eCjI4rsFlfHH46uCSM18bdOh8",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zS7piRlChbBK1CO_KSj3iezUW7mg0kfmMx2q4V4gCMIicSDriX612OE6iAKUJE895J9W7iArOeLzg3PYZpp7SASRqiFvx0laL_JgKmCUyYHCzvXkDvaF0i0KUbl3KRboHDZGW9Ved4e_WafiV9ANWwFaAhRhvzIb1M3LgFu_PBns_2vBO1JgCgEE0HP7lvJGgjgVAPkg9FbTKHSmtG8fzpelWTTXzF5BSw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zynlEMxd8xuAaidHATg4Ci52oFOwmvesecE1O6l8U0jzmZ8Hymjajwstj7dp1U829cyIQyTW72XptAotbn1w6MTcsPbGCGuyDuPNAtujZ27sTef8CD9eMzyyY60vJBYzTH7OHt0-t45TZBQhZ0Af6ZOdC29Z-hw_cN91uuOJu733mbDHaOeWGWcQXll3-Odah0nYFkUKnIplOn5BGMZKEJm-yEk282ZWbF",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yHX7k_Sj4H8uHxfId5x4plyHSmPNhwQwZbItxXaebVBpUMOlnwxSjb9oET-ReWhRlzKPNG9mrzp_qSQqQTpwcL9jmBiqmuk4rES5Dym40Jsu6zxXI3a9zf8ZSnzgawCaGBatk0cNMutIa4M6gcDFc8c-MavB0rnJJ9pkA4uwv6MZlWs437TfOS7M4DpiZVeTPvBl1I8-7YYhlBnYUODur532X2KIXTEJOs"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Deluxe Eck-Zimmer mit Kingsize-Bett",
+                    "price": 543,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 3,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zI922r0ExnItRtfDYqZL95rBioU4PO006iL5r6XoKoJqbhvhs0D9vZYjw7QpuXIVEZL5xR_rK4JLmNIgtg_dXPzvJidjEBWUIJF5_PTwwL-I2WufY4tlZFYn5vYQ-cunMPum8J1n1lgQU6M-9Gkmt8tgOo-Qwt1EZyXNWVPnieXI4dA2lNuCj-WeDAjKqd7Rg5C17NA0eCjI4rsFlfHH46uCSM18bdOh8",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zS7piRlChbBK1CO_KSj3iezUW7mg0kfmMx2q4V4gCMIicSDriX612OE6iAKUJE895J9W7iArOeLzg3PYZpp7SASRqiFvx0laL_JgKmCUyYHCzvXkDvaF0i0KUbl3KRboHDZGW9Ved4e_WafiV9ANWwFaAhRhvzIb1M3LgFu_PBns_2vBO1JgCgEE0HP7lvJGgjgVAPkg9FbTKHSmtG8fzpelWTTXzF5BSw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zynlEMxd8xuAaidHATg4Ci52oFOwmvesecE1O6l8U0jzmZ8Hymjajwstj7dp1U829cyIQyTW72XptAotbn1w6MTcsPbGCGuyDuPNAtujZ27sTef8CD9eMzyyY60vJBYzTH7OHt0-t45TZBQhZ0Af6ZOdC29Z-hw_cN91uuOJu733mbDHaOeWGWcQXll3-Odah0nYFkUKnIplOn5BGMZKEJm-yEk282ZWbF",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_yHX7k_Sj4H8uHxfId5x4plyHSmPNhwQwZbItxXaebVBpUMOlnwxSjb9oET-ReWhRlzKPNG9mrzp_qSQqQTpwcL9jmBiqmuk4rES5Dym40Jsu6zxXI3a9zf8ZSnzgawCaGBatk0cNMutIa4M6gcDFc8c-MavB0rnJJ9pkA4uwv6MZlWs437TfOS7M4DpiZVeTPvBl1I8-7YYhlBnYUODur532X2KIXTEJOs"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Junior Suite",
+                    "price": 619,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 2,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_y4t-h4F0me-UqY_yfEkDsPcKL7_OIr2uXtqWvdvUk3VAXh-FPOcUMBSjAbniuZFJRD17G4ldVSzrm-JwPhu_nHuVreMGzUc5JeUsXh0RkI6eucSTxJTlLPgVFZ_A3yPjTSgR06M_MjsTGGCcBZa9bqk_T4g6SXzITJJiI_l7rPEkBlTW9fodN9S545WIh4TyvPRV9Treed1CQlKlFD3tYvqndKpiR47lw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zfr1mmf6SMwnUgywcJuxVmoY2Kg1mqR8E3zKlJydctgm2-W68L4Bko_68sxIxoU6n8KM64xhwZ1TXxc04XZ-_apaYC2y9PEbRUT_ipiJpzhQnSi2Re6sSZpCsuLvtELyTD0WC9TkVy_GPeMJu5frAYnPTBtYJmtYAbeT8LKnRhW1CFkPEW9aMfwrfmC8yGDaib8CqctoXrEWeb9-cni_EZh37YCioCHSmF",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wNzSepth47Yw0smHXiarr7QWgCkaPM5eKRa1s3C4Xsew15gqOPc9Dtl7KFStSfKe3Sa586HHhQLXuqsXlb7pfvMG2o5jgYae3V8wcO6NbRifmv7VHzOWCoNmmjNL7NEDloFduIvOetdmr1JXLLji6zpI47ElP_dLzmULL2VG3pxwPiGTF1_XkJ5WiurmDwgICm7zhv9QOhUHkxq4Jsn2kGF-D18z0XmPU",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_y8lYylkSWiZ4pbq8eAbrwcjxtPyQalhTrPIFRhBpGSD7ohYSlIu-pN2rXjSQDEocRCXQjvBkEEvwDbFiMrNlKxEl-7wfiJ7nTZSbuLJkHJ9oThFA6gGS_4nPC7zUdNILi2QCWOPiG7evYKtTeqnFB0EH0XVM5_RVYclIF6vX1f08zh8Z6dvY4hdrAuR6cYsb1X49HR8qQIhDbNqvvUUevh20xvzIZ9vww"
+                    ],
+                    "free_cancellation_until": null
+                  },
+                  {
+                    "type": "hotel_info_price_offer",
+                    "title": "Junior Suite",
+                    "price": 705,
+                    "currency": "EUR",
+                    "url": null,
+                    "max_visitors": 3,
+                    "offer_images": [
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_y4t-h4F0me-UqY_yfEkDsPcKL7_OIr2uXtqWvdvUk3VAXh-FPOcUMBSjAbniuZFJRD17G4ldVSzrm-JwPhu_nHuVreMGzUc5JeUsXh0RkI6eucSTxJTlLPgVFZ_A3yPjTSgR06M_MjsTGGCcBZa9bqk_T4g6SXzITJJiI_l7rPEkBlTW9fodN9S545WIh4TyvPRV9Treed1CQlKlFD3tYvqndKpiR47lw",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_zfr1mmf6SMwnUgywcJuxVmoY2Kg1mqR8E3zKlJydctgm2-W68L4Bko_68sxIxoU6n8KM64xhwZ1TXxc04XZ-_apaYC2y9PEbRUT_ipiJpzhQnSi2Re6sSZpCsuLvtELyTD0WC9TkVy_GPeMJu5frAYnPTBtYJmtYAbeT8LKnRhW1CFkPEW9aMfwrfmC8yGDaib8CqctoXrEWeb9-cni_EZh37YCioCHSmF",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_wNzSepth47Yw0smHXiarr7QWgCkaPM5eKRa1s3C4Xsew15gqOPc9Dtl7KFStSfKe3Sa586HHhQLXuqsXlb7pfvMG2o5jgYae3V8wcO6NbRifmv7VHzOWCoNmmjNL7NEDloFduIvOetdmr1JXLLji6zpI47ElP_dLzmULL2VG3pxwPiGTF1_XkJ5WiurmDwgICm7zhv9QOhUHkxq4Jsn2kGF-D18z0XmPU",
+                      "https://lh3.googleusercontent.com/hrppk/ANjXD_y8lYylkSWiZ4pbq8eAbrwcjxtPyQalhTrPIFRhBpGSD7ohYSlIu-pN2rXjSQDEocRCXQjvBkEEvwDbFiMrNlKxEl-7wfiJ7nTZSbuLJkHJ9oThFA6gGS_4nPC7zUdNILi2QCWOPiG7evYKtTeqnFB0EH0XVM5_RVYclIF6vX1f08zh8Z6dvY4hdrAuR6cYsb1X49HR8qQIhDbNqvvUUevh20xvzIZ9vww"
+                    ],
+                    "free_cancellation_until": null
+                  }
+                ]
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "CHECK24.de",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://google.de/aclk?sa=l&ai=DChsSEwjA-LWB7rSXAxVDmmgJHcpiCjkYACICCAEQChoCd2Y&co=1&ase=2&gclid=EAIaIQobChMIwPi1ge60lwMVQ5poCR3KYgo5EAoYAyABEgJQD_D_BwE&cid=CAASlwHkaJFtxP9KYuTcpAFDG4XKWgLzlmh3jsnuuFraaZoy8CDvuGcxbxBRLe3aQQ6_tGoewfeOCOTWhJdmZk-GypoF625ISDi3HBHDY4ReRiX0Hu9MSj9ItWex8nlexCpd3670O65kfxByNebAPrE_KhVyCWTacUqC-3ZOeb2Df8Q6oU6Ku3o0xqHB6XNypwPCpTUA5e2cMkGR&category=acrcp_v1_48&sig=AOD64_39yKxbbAn9hWu_yKvMJoQO3QaE4A&adurl",
+                "domain": "google.de",
+                "is_paid": true,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "TUI.com",
+                "price": 406,
+                "currency": "EUR",
+                "url": "https://google.de/aclk?sa=l&ai=DChsSEwjA-LWB7rSXAxVDmmgJHcpiCjkYACICCAEQJhoCd2Y&co=1&ase=2&gclid=EAIaIQobChMIwPi1ge60lwMVQ5poCR3KYgo5EAoYBCABEgLhqfD_BwE&cid=CAASlwHkaJFtxP9KYuTcpAFDG4XKWgLzlmh3jsnuuFraaZoy8CDvuGcxbxBRLe3aQQ6_tGoewfeOCOTWhJdmZk-GypoF625ISDi3HBHDY4ReRiX0Hu9MSj9ItWex8nlexCpd3670O65kfxByNebAPrE_KhVyCWTacUqC-3ZOeb2Df8Q6oU6Ku3o0xqHB6XNypwPCpTUA5e2cMkGR&category=acrcp_v1_48&sig=AOD64_02nsobOSKvDaP2bwoRCDaI85iogg&adurl",
+                "domain": "google.de",
+                "is_paid": true,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "The Ritz-Carlton, Berlin",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://marriottclk.koddi.com/clk?destination=https%3A%2F%2Fad.doubleclick.net%2Fclk%3B269275299%3B95398642%3Bk%3Bu%3Dkoddi%26sv2%3Dkoddi_hpa_DE_BERZT_localuniversal_2_desktop_12%2F01%2F2026___default___organic%3Fhttps%3A%2F%2Fwww.marriott.com%2Fde%2Freservation%2FavailabilitySearch.mi%3Fcid%3DOMS_GLB0002Y27_GLE00070C9_GLF000C1AH%26pId%3D%26isSearch%3Dfalse%26propertyCode%3DBERZT%26fromDate%3D12%2F01%2F2026%26toDate%3D12%2F03%2F2026%26numberOfRooms%3D1%26numberOfGuests%3D2%26currency%3DEUR%26",
+                "domain": "marriottclk.koddi.com",
+                "is_paid": false,
+                "official_site": true,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "trivago DEALS",
+                "price": 300,
+                "currency": "EUR",
+                "url": "https://www.trivago.deals/hotels/germany_07_berlin/103495_the-ritz-carlton-berlin?checkIn=2026-12-01&checkOut=2026-12-03&placeId=H103495&campaignName=TrivagoDeals_Google_DE&currencyCode=EUR&dealKey=CAIQtwYiCwjD8LPWBhCErcBQKkoNAACWQxUAACREJVK4EkItMzMdQjABOLoCRQAAFkRKDAjB8LPWBhD4j9mnAWIKRGVsdXhlIFJvb2gCjQHs0ZVDoAGdgs0FqAHIBjDHBjjHqAZA0fgPSAJSCG3iUGX7ayA7WNIHYgMKASA&countryCode=DE&languageCode=de&rule=Google_DE&site=localuniversal&ads=&origin=31&priceDisplayedTotal=600.00&priceDisplayedTax=76.00&device=desktop&adults=2&children=0",
+                "domain": "www.trivago.deals",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Stayforlong.de",
+                "price": 316,
+                "currency": "EUR",
+                "url": "https://www.stayforlong.de/hotel-detail/21183?checkin=2026-12-01&checkout=2026-12-03&adults=2&metadevice=desktop&aid=gha&market=de&lang=de&total=602&query_type=pull&ch=0&adclick=free&defaultdate=true&googlesite=localuniversal&p=d5f31db37e629924f98da415261725b8&rate_token=v2.z6accf29400b43d744b36c61e52c6725d&source=meta",
+                "domain": "www.stayforlong.de",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Agoda",
+                "price": 352,
+                "currency": "EUR",
+                "url": "https://www.agoda.com/de-de/partners/partnersearch.aspx?site_id=1917614&CkInDay=01&CkInMonth=12&CkInYear=2026&CkOutDay=03&campaignid=&CkOutMonth=12&CkOutYear=2026&SearchDateType=default&NumberOfAdults=2&LT=50&NumberOfChildren=0&childages=&NumberOfRooms=1&gsite=localuniversal&los=2&PartnerCurrency=EUR&hid=51648&RoomID=47494738&masterRoomId=47494738&PriceTotal=704.09&PriceTax=89.16&PriceFee=0.00&RatePlan=be752d01-3d75-b3f3-2c7c-601a4563fc48&UserCountry=DE&Currency=EUR&UserDevice=desktop&Verif=false&rr=EEA&audience_list=&mcid=29002&booking_source=cpc&adType=0&mpt=Zis2dklkMG9MZ0pKQnE1N3I2aUtlRlZXOWdWcWsrZmEwK1IrQVVWVEFFaGxTVUVweFdsUDhsTXo4YU5aN2lDVmpHZkxLMEtSRVBwOA&original_rr=EEA&gaClickSrc=&clickType=hotel&lang=de&pkgId=NoBreakfast_NoDinner_true",
+                "domain": "www.agoda.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Booking.com",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://www.booking.com/searchresults.de.html?dest_id=73957&highlighted_hotels=73957&dest_type=hotel&checkin=2026-12-01&checkout=2026-12-03&group_adults=2&req_adults=2&show_room=7395719_369966501_0_2_0&lang=de&selected_currency=EUR&exrt=1.00000000&ext_price_total=707.34&ext_price_tax=92.41&xfc=EUR&hca=m&group_children=0&req_children=0&&ts=1791819834&no_rooms=1&edgtid=WNB9VcqTRiOQXgNtH-Z1HQ&efpc=ZYsApwezWh8&utm_source=metagha&utm_medium=localuniversal&utm_campaign=DE&utm_term=hotel-73957&utm_content=dev-desktop_los-2_bw-50_dow-Tuesday_defdate-1_room-0_gstadt-2_rateid-public_aud-0_gacid-_mcid-10_ppa-0_clrid-0_ad-0_gstkid-0_checkin-20261201_ppt-0&aid=2127499&label=metagha-link-LUDE-hotel-73957_dev-desktop_los-2_bw-50_dow-Tuesday_defdate-1_room-0_gstadt-2_rateid-public_aud-0_gacid-_mcid-10_ppa-0_clrid-0_ad-0_gstkid-0_checkin-20261201_ppt-0",
+                "domain": "www.booking.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Billabook.com",
+                "price": 341,
+                "currency": "EUR",
+                "url": "https://www.billabook.com/hotel/1946987?pkg_id=01a130bf-d410-76e1-9927-6fb1704fab20_2026-11-24&rr=default_n&oc=2-0&in=2026-12-01&out=2026-12-03&user_curr=EUR&source=free-links&campaign=&user_country=DE&device=desktop&lang=de&adults=2&children=0&&p=682.56&pt=82.99&pf=41.02",
+                "domain": "www.billabook.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "CHECK24.de",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://hotel.check24.de/ul/promotion/?promotionHotelIds[]=9568372&arrivalDate=2026-12-01&departureDate=2026-12-03&roomConfig=[A|A]&devicetype=desktop&pHP[9568372]=FJEDEHEIKDKBGICF&promotionType=googleHotelAd&promotionCityData=40784|Berlin&dateType=default&gcamid=&vtId2=9568372|707.34|2026-12-01|2026-12-03|176|localuniversal|d-mobile-0-174--||2&numGuests=2&promotionSupplierId=176&wpset=google_hotel_hotel_ad_free&cd_goaccount=383-825-6163",
+                "domain": "hotel.check24.de",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Trip.com",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://de.trip.com/hotels/redirect?hotelid=2133835&city=193&shoppingid=MLWSu8tSt98n&adult=2&children=0&ages=&checkin=2026-12-01&checkout=2026-12-03&curr=EUR&Allianceid=15214&Sid=1349494&locale=de_de&prid=LANG_DE&trip_sub1=01_12_2026_2_localuniversal_2133835_DE_desktop_default___0_0-LANG_DE-landing&hpaopts=stand[H4sIAAAAAAAA_-Ny4WKSYBJi4mCUsuL4dvvrX1YhRiMDTotPggEcMxhPz2tiXMHIuIOR6SKjx8MqkXXmxQ4PGatF1rk_lGpzeME4fc7MfYwLWBileHx9woNLLUqCSywt8hQYNd6f3HyNzYMpiM3RxMTF0i1KhovZNTRIcOPDl1M3vZF1kALxFGG8JNaUVF0X14zTYl2MTB6MqxjZuZgNjAwFmD4x8iObG29oDgCYFquXrwAAAA]fgt[1]&br=707.34&tf=92.41&display=incavg&crn=1&roomid=1606249974&allianceid=15214&sid=1349494",
+                "domain": "de.trip.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": "2026-10-13 23:59:00 +00:00",
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "HolidayCheck.de",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://www.holidaycheck.de/ho/angebote-/c0d00d20-be4e-3025-a81e-2e0eb6eb4613/hotelonly?_offer=adults:2,departureDate:2026-12-01,duration:2,returnDate:2026-12-03,travelkind:hotelonly&meta_touroperator=~35d56e6b-187f-3564-95a8-a6d5270f2cb5&utm_source=google_hotel_ads&utm_medium=metasearch&utm_campaign=gha_&utm_term=uuid_c0d00d20-be4e-3025-a81e-2e0eb6eb4613_de_DE_false&trv_dp=707.00",
+                "domain": "www.holidaycheck.de",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Expedia.de",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://www.expedia.de/Hotel-Search?selected=977386&startDate=2026-12-01&endDate=2026-12-03&MDPCID=DE.META.HPA.HOTEL-ORGANIC-desktop.HOTEL&MDPDTL=HTL.977386.20261201.20261203.DDT.50.CID..AUDID..RRID.bex_eu_desktop&adults=2&children=&mctc=10&ct=hotel&mpg=EUR&mpf=707.34&mpj=92.41&mpr=0.00&mpl=EUR&exp_pg=google&langid=de&ad=2&tp=&utm_source=google&utm_medium=cpc&utm_term=977386&utm_content=localuniversal&utm_campaign=HotelAds&rateplanid=385462002&mpm=24&mpn=211504728&mpo=EC&mpe=1791641944&mpp=1",
+                "domain": "www.expedia.de",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Luxury Escapes",
+                "price": 353,
+                "currency": "EUR",
+                "url": "https://luxuryescapes.com/de/metasearch/9fdab5c6-cd6d-413d-9ce1-665cc599ce18?utm_bp=3&source=metasearch&checkIn=2026-12-01&checkOut=2026-12-03&propertyName=The%20Ritz-Carlton,%20Berlin&propertyId=bedbank%3A9fdab5c6-cd6d-413d-9ce1-665cc599ce18&roomTypeId=a725d8f1-246c-432e-b932-f243cd7e94c1&roomRateId=bf0_dn0_int1_park0_ref0_S1_pkg&adults=2&children=none&sourceTax=92.16&sourceTotal=705.50&sourceFees=59.94&utm_source=google&utm_medium=organic&utm_content=gha-lpp&currency=EUR&priceTotal=705.50&ruleId=b~EUR~S1~M13-14~B~P~DUNK~D~A~DE&userCountry=DE&accountType=lpp&gpid=BgAAAAAAAAAAAAAAAAAAAAAWCnkBE5YAEzohFTmorfCvKg.3&userChoseDates=false",
+                "domain": "luxuryescapes.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Hotels.com",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://de.hotels.com/Hotel-Search?selected=977386&startDate=2026-12-01&endDate=2026-12-03&mdpcid=HCOM-DE.META.HPA.HOTEL-ORGANIC-desktop.HOTEL&MDPDTL=HTL.977386.20261201.20261203.DDT.50.CID..AUDID.&adults=2&children=&mctc=10&mpf=707.34&mpg=EUR&mpl=EUR&mpj=92.41&mpr=0.00&rffrid=sem.hcom.DE.156.024.localuniversal.02.desktop-2.kwrd=GGMETA.977386DEde-20261201-D-ABW=50-camp=-aud=-N&rateplanid=385461942&mpm=24&mpn=36065&mpo=EC&mpe=1791815772&mpp=1",
+                "domain": "de.hotels.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": "2026-10-12 19:00:00 +00:00",
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Traveloka.com",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://www.traveloka.com/en-en/hotel/search?spec=01-12-2026.03-12-2026.2.1.HOTEL_GEO.4006547539.Berlin.2&hotelId=1000000216476&contexts=%7B%22accessCode%22:%2290975GHAD1305desktop%22%2C%22metasearchRequestId%22%3A%2279680c71-2656-444d-b6bf-84ff5f3c0935%22%2C%22dateSelectionType%22%3A%22default%22%2C%22metasearchSelectedHotelId%22%3A%221000000216476%22%2C%22plc%22%3A%22V5uAy7PhuX1ozZSGJ5vtkDGTn8k9r%2Fa%2FFL19IW%2BRTYqueiPeD9qS40kL8zgI4l3CYlw2pMjFzEWtv7v%2F6rES5A%3D%3D%22%2C%22pvlc%22%3A%22k0pjuZrlsWQC%2Fe2SaloRgC81YpN6z60hzPV7jdcFkc%2FqERastQcE5ZMAKxjVf1WW%22%7D&metasearchId=GoogleHotelAdsUser&metasearchRateId=desktop&metasearchRatekey=sgyUU2M0LrnnpXh1LPwoI&priceDisplay=NIGHT&metasearchRefid=12345678910abcdefghijk@-&adType=0&PPA=0&hotelCampaign=1&cur=EUR",
+                "domain": "www.traveloka.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "TUI.com",
+                "price": 406,
+                "currency": "EUR",
+                "url": "https://www.tui.com/hotel/suchen/angebote/hotel/46816/offer/?endDate=2026-12-03&duration=2&selectedDuration=2&searchScope=HOTEL&showTotalPrice=1&goalid=839648&startDate=2026-12-01&travellers=2&gOffer=7FMU%7CAT05%7C0305%7C2026-12-01%7C2&coopid=GHF_up_Cou_DE_Lan_de&utm_source=hotel_gha&utm_medium=meta&utm_term=hotel&utm_content=839648&utm_campaign=gha",
+                "domain": "www.tui.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Reserving",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://h-de.reserving.com/search?i=7103&rf=GOOGLEHOTELS&portal=dtde&lang=de&auto=1&tipo=S&id=22378&numero_habs=1&no_adultos_hab1=2&no_ninos_hab1=0&fecha_entrada=01%2F12%2F2026&fecha_salida=03%2F12%2F2026&refp=707.34&campaing-id=&tp=&moneda=EUR&device=desktop&pais_dom=DE&sg=b=658,bhab=377,big=2026-10-11T20:01:00+02:00,bmid=100,bpd=de,bpt=43.05,breg=12,bt=49.35,bwp=IEVbcpV23f4,ts=2026-10-11T20:01:49+02:00/B:FB947ACF951A9B81DA84AD6586156B95CE44B1E1730C29C918F5AA81&c3=mode=P,d=2,ts_id=7417093883771227&r=CAMPAIGN-ID=;TRACKING-PARAM=;CUSTOM1=;PRICE-DISPLAYED-TOTAL=707.34;DEFAULT-DATE=1;CLICK-TYPE=hotel;USER-COUNTRY=DE;DEVICE=desktop;SITE=localuniversal;USER-LANGUAGE=de;USER-CURRENCY=EUR;POS=ALL-IT-EUR-DTIT;AD-CLICK=0;PAYMENT-ID=free;C2=b=658,bhab=377,big=2026-10-11T20:01:00+02:00,bmid=100,bpd=de,bpt=43.05,breg=12,bt=49.35,bwp=IEVbcpV23f4,ts=2026-10-11T20:01:49+02:00/B:FB947ACF951A9B81DA84AD6586156B95CE44B1E1730C29C918F5AA81;C3=mode=P,d=2,ts_id=7417093883771227",
+                "domain": "h-de.reserving.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Vio.com",
+                "price": 352,
+                "currency": "EUR",
+                "url": "https://deals.vio.com/?sig=73aca13c7f952d2641c156f3e69125e1eb497c325f122828ee5aa8797168b9a12d32303331333438363233&turl=https%3A%2F%2Fwww.vio.com%2FHotel%2FSearch%3FcheckIn%3D2026-12-01%26checkOut%3D2026-12-03%26currency%3DEUR%26forceCurrencyChange%3D1%26lang%3Dde%26forceLanguageChange%3D1%26rooms%3D2%3A%26utm_source%3Dgha%26utm_medium%3Dcpc%26hotelId%3D1209977%26userCountry%3DDE%26profile%3Dr2d2m73kn8%26preferredRate%3D704.75%26deviceType%3Ddesktop%26label%3Dsrc%253Dgha%2526cltype%253Dhotel%2526datype%253Ddefault%2526gsite%253Dlocaluniversal%2526vf%253D0%2526ucountry%253DDE%2526udevice%253Ddesktop%2526hotel%253D1209977%2526day%253D01%2526month%253D12%2526year%253D2026%2526los%253D2%2526price%253D704.75%2526currency%253DEUR%2526cid%253D%2526listid%253D%2526rateid%253DDE_D%2526closerateid%253D%2526promo%253D0%2526isPrivateRate%253D0%2526isAudienceUser%253D0%2526isPaidClick%253D0%2526%26cp%3DdZAJp2E-CkB_bp4vCg8I0J0EGPBLIgNVU0RSATISGhW1P7m8GgtMWDdrUXBXR3M2VSgCMPzAs9YG",
+                "domain": "deals.vio.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Traveluro",
+                "price": 358,
+                "currency": "EUR",
+                "url": "https://www.traveluro.com/hotels/germany_07_berlin/103495_the-ritz-carlton-berlin?checkIn=2026-12-01&checkOut=2026-12-03&placeId=H103495&campaignName=Google_DE&currencyCode=EUR&dealKey=CAIQiwIiCwjngbTWBhDc6oZ2Kk0NAACzQxUAgEVEJXsUL0Itmpk7QjABOARFAAAzREoMCMLws9YGEMyyzoIDYgpEZWx1eGUgRG91aAFw7AGNASn8skOgAaDJ4qMEqAHIBjDHBjjHqAZA0fgPSAJSCKHOSGwfYmBDWNIHYgMKASA&countryCode=DE&languageCode=de&rule=Google_DE&site=localuniversal&origin=31&ads=&priceDisplayedTotal=716.00&priceDisplayedTax=90.69&device=desktop&adults=2&children=0",
+                "domain": "www.traveluro.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Qantas Hotels",
+                "price": 353,
+                "currency": "EUR",
+                "url": "https://www.qantas.com/hotels/properties/26607?adults=2&children=0&infants=0&checkIn=2026-12-01&checkOut=2026-12-03&utm_campaign=GoogleHotels&adType=0&utm_medium=organic-search&utm_source=Google-Hotels&utm_term=26607&hotelID=26607&hotel_campaign=",
+                "domain": "www.qantas.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "HomeToGo",
+                "price": 353,
+                "currency": "EUR",
+                "url": "https://www.hometogo.com/search/5e505b05c171e?arrival=2026-12-01&duration=2&id=zad3017747e0eba40%40f%40s&adults=2&tpp=bjlbhfq.6accb26c&adword=ghf/us/zad3017747e0eba40/ct=hs/n-a/n-a/5e505b05c171e&utm_source=ghf&hl=de_DE&ghf_acc=htg_ghf&c=EUR&gValidation=false&gSite=localuniversal",
+                "domain": "www.hometogo.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Bluepillow.de",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://www.bluepillow.de/search/5943986f7c00cb0e643cb77f?begin=2026-12-01&end=2026-12-03&block_id=-b,c6rxHbMZ6kcWIcCp9q0JqnzmDyzYNL2iAAfddqJKkTyyOFTEY5Nb0lJIYnATF9Ro,-bkng-Hotel&fees=49.44&tax=92.56&total=708.63&adults=2&childs=0&infants=0&childrens=0&country=DE&currency=EUR&language=de&source=localuniversal&utm_campaign=hotel&prid=",
+                "domain": "www.bluepillow.de",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Opodo",
+                "price": 354,
+                "currency": "EUR",
+                "url": "https://accommodation.opodo.de/Hotel-Search?selected=977386&startDate=2026-12-01&endDate=2026-12-03&adults=2&children=&mpf=707.34&cur=EUR&mpj=92.41&MDPCID=Opodo-DE.DPS.Opodo.MetaSearch-GHA.HOTEL&mpl=EUR&numberOfRooms=1&locale=de_DE&rffrid=h4p.hcom.DE.ghaodigeo.000.000.kwrd=&pos=OPODO_DE&rateplanid=385462002&mctc=10&utm_medium=metasearch&utm_campaign=216476&utm_term=hotel&utm_source=FREEBOOKING",
+                "domain": "accommodation.opodo.de",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": "2026-10-12 19:00:00 +00:00",
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Evendo",
+                "price": 384,
+                "currency": "EUR",
+                "url": "https://evendo.com/stays/the-ritz-carlton-berlin/00287406?check_in=2026-12-01&check_out=2026-12-03&who=%5B%7B%22adults%22:2,%22children%22:%5B%5D%7D%5D&currency=EUR&language=de&country=DE&utm_source=google&utm_medium=googlehotels&utm_campaign=localuniversal&pdtax=100.43&pdtotal=768.84&prid=",
+                "domain": "evendo.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "dealbase.com",
+                "price": 352,
+                "currency": "EUR",
+                "url": "https://deals.dealbase.com/?sig=d24b78db5ff27b2a7633c125e8c1eb65fcdd29bfbe8d2468da3702f8e475011131373338383435313339&turl=https%3A%2F%2Fwww.dealbase.com%2FHotel%2FSearch%3FcheckIn%3D2026-12-01%26checkOut%3D2026-12-03%26currency%3DEUR%26forceCurrencyChange%3D1%26lang%3Dde%26forceLanguageChange%3D1%26rooms%3D2%3A%26utm_source%3Dgha%26utm_medium%3Dcpc%26hotelId%3D1209977%26userCountry%3DDE%26profile%3Dr2d2m73kn8%26preferredRate%3D704.75%26deviceType%3Ddesktop%26label%3Dsrc%253Dgha%2526cltype%253Dhotel%2526datype%253Ddefault%2526gsite%253Dlocaluniversal%2526vf%253D0%2526ucountry%253DDE%2526udevice%253Ddesktop%2526hotel%253D1209977%2526day%253D01%2526month%253D12%2526year%253D2026%2526los%253D2%2526price%253D704.75%2526currency%253DEUR%2526cid%253D%2526listid%253D%2526rateid%253DDE_D%2526closerateid%253D%2526promo%253D0%2526isPrivateRate%253D0%2526isAudienceUser%253D0%2526isPaidClick%253D0%2526%26cp%3D-_QsRmof3Hx_bp4vCg8I0J0EGPBLIgNVU0RSATISGhV62oaNGgtMWDdrUXBXR3M2VSgCMObys9YG",
+                "domain": "deals.dealbase.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Etrip.net",
+                "price": 352,
+                "currency": "EUR",
+                "url": "https://deals.etrip.net/?sig=e9cc68956712e1e5d60f579a67e54afadd83f5d631dc9782cc50d47864de2f2c2d32303330363031313335&turl=https%3A%2F%2Fsearch.etrip.net%2FHotel%2FSearch%3FcheckIn%3D2026-12-01%26checkOut%3D2026-12-03%26currency%3DEUR%26forceCurrencyChange%3D1%26lang%3Dde%26forceLanguageChange%3D1%26rooms%3D2%3A%26utm_source%3Dgha%26utm_medium%3Dcpc%26hotelId%3D1209977%26userCountry%3DDE%26profile%3Dr2d2m73kn8%26preferredRate%3D704.75%26label%3Dsrc%253Dgha%2526cltype%253Dhotel%2526datype%253Ddefault%2526gsite%253Dlocaluniversal%2526vf%253D0%2526ucountry%253DDE%2526udevice%253Ddesktop%2526hotel%253D1209977%2526day%253D01%2526month%253D12%2526year%253D2026%2526los%253D2%2526price%253D704.75%2526currency%253DEUR%2526cid%253D%2526listid%253D%2526rateid%253DDE_D%2526closerateid%253D%2526promo%253D0%2526isPrivateRate%253D0%2526isAudienceUser%253D0%2526isPaidClick%253D0%2526%26cp%3DdZAJp2E-CkB_bp4vCg8I0J0EGPBLIgNVU0RSATISGhW1P7m8GgtMWDdrUXBXR3M2VSgCMPzAs9YG",
+                "domain": "deals.etrip.net",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              },
+              {
+                "type": "hotel_info_price",
+                "title": "Clicktrip.com",
+                "price": 1291,
+                "currency": "EUR",
+                "url": "https://clicktrip.com/hotels/details/d48ve9JErHzMmpcq8lOXJ446FJrDO9Ptqmk5FCgEaJfn3s5M6_JCShSk66SfLqwW6Sy0GsbDn_6aCzLAXgvLqoaIUa38h6d2dDOQ0nYy-IR-gIwkBdGWc9qY-OM0vFbr0?locale=de&currency=EUR&pos=DE&date_type=default&taf=C24nYaPcj9u8z3ffh_rlZ8gDEMemqiyvFj9i6IqxFQ60Q7OgbDg7vj2SogQq9_e90&verification=false&clk_src=&utm_source=gha&rate_rule_id=",
+                "domain": "clicktrip.com",
+                "is_paid": false,
+                "official_site": false,
+                "free_cancellation_until": null,
+                "offers": null
+              }
+            ],
+            "prices_by_dates": null
+          }
+        }
+      ]
+    }
+  ]
+}
