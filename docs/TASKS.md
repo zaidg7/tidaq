@@ -18,7 +18,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-002 | CI pipeline (lint, typecheck, test, build, e2e smoke) | CLOUD | M | C-001 | DONE |
 | C-003 | Session tooling (SessionStart hook, permissions allowlist) | CLOUD | S | C-001 | DONE |
 | C-007 | i18n setup (de default, en) and formatting helpers | CLOUD | S | C-001 | DONE |
-| C-004 | Supabase schema v1, RLS, seed providers and cities | CLOUD | M | C-001, Z-04 | TODO |
+| C-004 | Supabase schema v1, RLS, seed providers and cities | CLOUD | M | C-001, Z-04 | DONE |
 | C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03b, Z-04 | TODO |
 | **Phase 1: Data** (weeks 42–44, target Sun 1 Nov: data flowing) |||||
 | C-010 | DataForSEO spike: real response shape, cost, feasibility report | CLOUD | M | C-001, Z-04, Z-06 | TODO |
@@ -137,7 +137,8 @@ Notes: hook runs only when `CLAUDE_CODE_REMOTE=true` (cloud); synchronous, ~11 s
 - [x] A fresh cloud session can run `pnpm test` without manual install
 
 ### C-004 · Supabase schema v1
-Owner: CLOUD · Size: M · Depends on: C-001, Z-04 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-001, Z-04 · Status: DONE · PR: [#8](https://github.com/zaidg7/tidaq/pull/8)
+Notes: applied to the hosted project with the Supabase MCP (`apply_migration`); files are named after the versions it recorded. Changes vs PLAN §6: identity columns instead of serial; check constraints on states, origins, outcomes, cents > 0, slugs; `providers.pending` (C-014 auto-created providers, hidden from the public); `providers.created_at`; `trust_tests.extras` is `text[]` (chips) plus a `notes` column (C-032); `tracked_stays` is publicly readable because the public views are `security_invoker` (no personal data in it). The idempotency key for snapshots (C-013 step 4) is left to C-013. RLS check: `supabase/tests/rls_check.sql` (all `true` on 12 Oct). Security advisor: only INFO "RLS enabled, no policy" on the service-role-only tables, which is intended.
 
 **Goal:** the database from PLAN §6, as migrations.
 
@@ -151,9 +152,9 @@ Owner: CLOUD · Size: M · Depends on: C-001, Z-04 · Status: TODO · PR: –
 7. Write SQL tests for RLS (pgTAP or a Vitest script that uses the anon key against a local Supabase) or at minimum a documented manual check in the PR.
 
 **Done when**
-- [ ] Migrations apply cleanly on a fresh database
-- [ ] With the anon key, selecting from `watchers` returns nothing / is denied
-- [ ] Types are generated and used by `packages/core`
+- [x] Migrations apply cleanly on a fresh database
+- [x] With the anon key, selecting from `watchers` returns nothing / is denied
+- [x] Types are generated and used by `packages/core`
 
 ### C-005 · Deploy pipeline
 Owner: CLOUD · Size: M · Depends on: C-002, Z-03b, Z-04 · Status: TODO · PR: –
