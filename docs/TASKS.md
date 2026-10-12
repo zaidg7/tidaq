@@ -285,7 +285,7 @@ Notes: `packages/core/src/grid.ts` + `specialDates.ts`. Weekends = the next N Fr
 - [x] Tests cover weekday edge cases and year boundaries
 
 ### C-013 · Collector worker
-Owner: CLOUD · Size: L (split: a = posting + guard, b = results + storage) · Depends on: C-005, C-010, C-011, C-012, C-014 · Status: a DONE, b DONE, c TODO · PR: a = [#16](https://github.com/zaidg7/tidaq/pull/16), b = [#PRNUM](https://github.com/zaidg7/tidaq/pull/PRNUM)
+Owner: CLOUD · Size: L (split: a = posting + guard, b = results + storage) · Depends on: C-005, C-010, C-011, C-012, C-014 · Status: a DONE, b DONE, c TODO · PR: a = [#16](https://github.com/zaidg7/tidaq/pull/16), b = [#17](https://github.com/zaidg7/tidaq/pull/17)
 
 **C-013a notes (DONE):** steps 1, 3, 6 and the posting half of 5. `packages/core/src/budget.ts` (`applyBudget`: watched stays first, then nearest check-in, then hotel/check-in order; daily cap counts tasks already posted today by *both* environments, they share one database; monthly estimate at $0.0008/task; `monthlyAlert` at 80 %). Collector: `morning.ts` (`runPosting`), `dataforseo.ts` (batches of 100, `tag` = stay id, retries 5xx/network with backoff), `store.ts` + `supabaseStore.ts`, `POST /run` (token = HMAC-SHA256(service key, `tidaq-collector-run`), workflow **Actions → Collector run**). Migration `20261012200019_collector_tasks`: `collector_tasks` (one row per posted task, status `posted` → `done`/`no_results`/`failed`), `collector_runs.kind/env/tasks_skipped/budget_reason`, `price_snapshots.task_id` with a unique index on (task_id, provider_id) for idempotent inserts. Runs that never got to post are still recorded with their error.
 
