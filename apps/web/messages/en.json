@@ -23,15 +23,28 @@
     "soon": "Prices often rise shortly before arrival. Don't wait too long."
   },
   "state": {
-    "collecting": "Collecting data",
+    "collecting": "Collecting data ({days}/{needed})",
     "near_low": "Near the low",
     "good": "Good price",
     "normal": "Normal",
-    "high": "Expensive"
+    "high": "Expensive right now"
   },
   "trend": {
     "falling": "falling",
     "flat": "steady",
     "rising": "rising"
+  },
+  "priceDelta": {
+    "below": "{percent} below the 30-day average",
+    "above": "{percent} above the 30-day average",
+    "same": "Right at the 30-day average"
+  },
+  "trust": {
+    "insufficient": "Not enough tests yet",
+    "sample": "{matches} of {tests} tests matched",
+    "scoreLabel": "Trust score {score} out of 100"
+  },
+  "logo": {
+    "label": "Tidaq, go to the home page"
   }
 }
