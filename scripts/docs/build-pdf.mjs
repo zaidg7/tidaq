@@ -14,7 +14,7 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../.
 const read = (p) => fs.readFileSync(path.join(root, p), "utf8");
 marked.setOptions({ gfm: true });
 
-const VERSION = "1.1";
+const VERSION = "1.2";
 const DATE = "12 October 2026";
 
 // strip the first H1 of each doc (we render our own part titles)
@@ -128,7 +128,7 @@ const cover = `
   <div class="meta">Version ${VERSION} · ${DATE} · Repo zaidg7/tidaq · tidaq.com</div>
   <div class="kpis">
     <div class="kpi"><b>30 Nov 2026</b><span>soft launch</span></div>
-    <div class="kpi"><b>&lt; €50</b><span>per month (data + hosting)</span></div>
+    <div class="kpi"><b>~€20</b><span>per month (data + hosting)</span></div>
     <div class="kpi"><b>36–50</b><span>five-star hotels, 12 cities</span></div>
     <div class="kpi"><b>~2 h</b><span>of Zaid's time per week</span></div>
   </div>

@@ -23,7 +23,7 @@ Total for week 1: **about 2 hours** (Z-01 to Z-03 are already done). After that:
 
 ### Z-03 · Domain ✅ DONE (12 Oct): tidaq.com bought at Namecheap.
 
-### Z-03b · Point tidaq.com to Cloudflare (10 min + up to 24 h waiting)
+### Z-03b · Point tidaq.com to Cloudflare ✅ DONE (12 Oct): zone active
 The domain stays at Namecheap; only the DNS moves to Cloudflare (needed for the website, emails and Google).
 1. Namecheap → Domain List → `tidaq.com` → Manage → **Advanced DNS**: if **DNSSEC** is on, turn it off first.
 2. Cloudflare dashboard → **Add a domain** (or "Add site") → `tidaq.com` → choose the **Free** plan → continue. Cloudflare shows **two nameservers** (like `xxx.ns.cloudflare.com`).
@@ -32,7 +32,7 @@ The domain stays at Namecheap; only the DNS moves to Cloudflare (needed for the 
 5. Optional, later: turn DNSSEC on again inside Cloudflare (DNS → Settings) and add the DS record it shows at Namecheap.
 
 ### Z-04 · Accounts and keys (40 min)
-**Cloudflare (account already created ✅)**
+**Cloudflare (account ✅, domain active ✅)**
 1. Workers & Pages → open it once so Workers is activated (free plan for now).
 2. My Profile → API Tokens → Create Token → template **Edit Cloudflare Workers** → All accounts / your account, zone `tidaq.com` → Create. Copy the token.
 3. Copy your **Account ID** (Workers & Pages overview, right sidebar).
@@ -43,10 +43,10 @@ The domain stays at Namecheap; only the DNS moves to Cloudflare (needed for the 
    (Don't create a new free organization: the free plan's 500 MB fills within weeks and free projects pause.)
 2. Project Settings → API: copy **Project URL**, **anon/publishable key** and **service_role/secret key**.
 
-**DataForSEO**
-1. dataforseo.com → sign up, verify email.
-2. Add funds: the smallest top-up offered (around $50 lasts about 2 months at our budget).
-3. Dashboard → API Access: copy the **API login** and **API password** (different from your account password).
+**DataForSEO** (cheapest legit source: about $0.0008 per hotel lookup)
+1. dataforseo.com → sign up, verify email. Onboarding form: **How will you use it:** only *Building SaaS Tool*. **Integration:** *REST API*. **Description:** "Price tracker for luxury hotel stays in Europe. Daily Google Hotels prices per stay via the Business Data API (Hotel Info, Hotel Searches), standard queue, ~300 tasks/day."
+2. **Don't pay yet.** You get $1 free credit, enough for the test task C-010. Top up the **$50 minimum** only when the session's spike report says the data works (it will ask in BLOCKERS). $50 lasts about 7 months at our lean rate.
+3. Dashboard → API Access: copy the **API login** and **API password** (different from your account password) into GitHub secrets.
 
 **Put the keys into GitHub** (repo `tidaq` → Settings → Secrets and variables → Actions → New repository secret). One secret per line, exact names:
 

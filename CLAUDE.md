@@ -104,7 +104,7 @@ pnpm workspace. Node 22 LTS. If reality differs, update this map in your PR.
 | `RESEND_API_KEY` | GitHub secret, Cloudflare secret | alerts |
 | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | GitHub secret | deploy workflow |
 | `ADMIN_EMAILS` | Cloudflare var | admin pages (`zaidghazal216@gmail.com`) |
-| `DAILY_TASK_CAP` (default 600), `MONTHLY_BUDGET_USD` (default 30) | Cloudflare var | budget guard |
+| `DAILY_TASK_CAP` (default 300), `MONTHLY_BUDGET_USD` (default 12), `EVENING_RUN` (default false), `GRID_WEEKENDS` (6), `GRID_MIDWEEK` (2) | Cloudflare var | budget guard, grid size |
 | `ALERTS_DRY_RUN` | Cloudflare var (`true` outside production) | alert engine |
 
 CI injects secrets into deploys. Sessions do not need raw keys for normal work: run code against fixtures, deploy through CI, and inspect production data through the Supabase MCP tools when available.

@@ -1,6 +1,6 @@
 # Tidaq build plan
 
-Version 1.1 · 12 Oct 2026 · Owner: Zaid Ghazal · Builders: Claude CLOUD + LOCAL sessions
+Version 1.2 · 12 Oct 2026 · Owner: Zaid Ghazal · Builders: Claude CLOUD + LOCAL sessions
 
 This is the master plan. `docs/TASKS.md` is the work queue, `docs/DECISIONS.md` the locked decisions, `docs/DESIGN.md` the design system, `docs/ZAID.md` Zaid's own to-do list.
 
@@ -253,20 +253,21 @@ RLS: public `select` only on catalog tables, `stay_daily`, `stay_stats`, `provid
 
 ### 7.1 The stay grid
 Charts only exist for stays we track *before* someone asks. Each day the collector makes sure every active hotel has these stays tracked:
-- **Weekends:** the next 8 Fri→Sun stays (2 nights)
-- **Midweek:** 4 Tue→Thu stays spread over the next 8 weeks
-- **Events:** New Year's Eve (30 Dec→1 Jan), Christmas markets (first two December weekends), Easter weekend, city specials (Oktoberfest, Art Basel …) in a `special_dates` config
+- **Weekends:** the next 6 Fri→Sun stays (2 nights)
+- **Midweek:** 2 Tue→Thu stays in the next 6 weeks
+- **Events:** New Year's Eve (30 Dec→1 Jan) and a few city specials (Oktoberfest, Christmas markets) in a `special_dates` config, only while they are within 90 days
 - **Plus** every stay a user watches (origin `watch`)
 
-All for 2 adults (the most common luxury booking). About 14 grid stays per hotel.
+All for 2 adults (the most common luxury booking). About 8 grid stays per hotel (lean start, D-13). The grid size is config (`GRID_WEEKENDS`, `GRID_MIDWEEK`), so scaling up later is a one-line change.
 
 ### 7.2 Budget math (verify in C-010)
 - Hotel Info, standard queue: ~$0.0008 per task (one hotel entity per task).
-- 50 hotels × 14 stays = 700 tasks/day. Daily run: $0.56/day ≈ **$17/month**.
-- A second evening run only for stays checking in within 21 days (prices move faster then): ~150 tasks/day ≈ $3.6/month.
-- User watches: capped by `DAILY_TASK_CAP`.
-- **Total ≈ $37/month:** data $20–25 + Supabase project in the Pro organization $10 + Cloudflare Workers paid $5. Domain is a yearly cost. Inside €50.
-- **Storage:** ~11,000 snapshot rows a day (50 hotels × 14 stays × ~8 providers × up to 2 runs). With raw JSON that is ~10 MB/day, so raw JSON is pruned after 30 days (D-19). Without raw, the database grows about 1 GB a year, well inside the Pro plan's 8 GB.
+- **Lean start (D-13):** 36 hotels × 8 stays = ~290 tasks/day, one run per day: about $0.23/day ≈ **$7/month**.
+- Later options, only when worth it: a second evening run for stays checking in within 21 days (~+$2/month), more stays per hotel, more hotels (50 hotels × 14 stays ≈ $17/month).
+- User watches: inside `DAILY_TASK_CAP` (300 at the start).
+- **Total ≈ $17–22/month:** data ~$7 + Supabase project in the Pro organization $10 + Cloudflare $0–5 (try the free Workers plan first). Domain is a yearly cost.
+- DataForSEO: $1 free credit on sign-up (≈ 1,250 tasks) covers the C-010 spike; minimum deposit afterwards is $50, which lasts about 7 months at the lean rate. Balance doesn't expire.
+- **Storage:** ~2,300 snapshot rows a day at the lean start (~11,000 at full scale). With raw JSON that is ~10 MB/day, so raw JSON is pruned after 30 days (D-19). Without raw, the database grows about 1 GB a year, well inside the Pro plan's 8 GB.
 - DataForSEO needs a prepaid balance. The first top-up lasts 2+ months.
 
 **Budget guard (C-013):** before posting, count today's tasks in `collector_runs`. If adding the batch would exceed `DAILY_TASK_CAP` or the month-to-date estimate would exceed `MONTHLY_BUDGET_USD`, post only the highest-priority tasks (watches first, then stays closest to check-in, then the rest) and log the skip. Unit-tested.

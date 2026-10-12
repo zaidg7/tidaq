@@ -69,9 +69,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | Z-01 | GitHub repo + Claude app access | DONE |
 | Z-02 | Trademark check | DONE (clean) |
 | Z-03 | Buy tidaq.com | DONE (Namecheap) |
-| Z-03b | Point tidaq.com nameservers to Cloudflare | TODO |
-| Z-04 | Cloudflare, Supabase, DataForSEO accounts + GitHub secrets | TODO |
-| Z-05 | Resend + `RESEND_API_KEY` | TODO |
+| Z-03b | Point tidaq.com nameservers to Cloudflare | DONE (zone active) |
+| Z-04 | Cloudflare ✅, Supabase ✅, DataForSEO (sign-up, no top-up yet) + GitHub secrets | IN PROGRESS |
+| Z-05 | Resend ✅ + `RESEND_API_KEY` secret (use a fresh key) | IN PROGRESS |
 | Z-06 | Claude cloud environment: allowed domains + env vars | TODO |
 | Z-07 | PC setup for LOCAL session + Claude in Chrome | TODO |
 | Z-09 | Google Search Console | TODO |
@@ -222,7 +222,7 @@ Owner: CLOUD · Size: M · Depends on: C-001, Z-04, Z-06 · Status: TODO · PR: 
 **Done when**
 - [ ] Report merged with real numbers
 - [ ] Fixtures committed, zod schemas drafted in `packages/core/src/dataforseo.ts`
-- [ ] Cost of the spike under $1
+- [ ] Cost of the spike under $1 (it must fit the free $1 sign-up credit; Zaid tops up only after this report)
 
 ### C-011 · Hotel catalog
 Owner: CLOUD · Size: M · Depends on: C-004, C-010 · Status: TODO · PR: –
@@ -260,7 +260,7 @@ Owner: CLOUD · Size: S · Depends on: C-004 · Status: TODO · PR: –
 
 **Steps**
 1. Pure function `buildGrid(today, hotels, specialDates)` → stays (hotel_id, check_in, check_out, adults=2).
-2. Rules: next 8 Fri→Sun; 4 Tue→Thu over the next 8 weeks; special dates from `packages/core/specialDates.ts` (New Year's Eve, first two December weekends, Easter, Oktoberfest weekends for Munich, etc.); no past dates; dedupe.
+2. Rules (lean start, D-13): next 6 Fri→Sun; 2 Tue→Thu in the next 6 weeks; sizes from config `GRID_WEEKENDS`/`GRID_MIDWEEK`; special dates from `packages/core/specialDates.ts` (New Year's Eve, first two December weekends, Easter, Oktoberfest weekends for Munich, etc.); no past dates; dedupe.
 3. Collector uses it daily and upserts `tracked_stays` (origin `grid`). Stays whose check-in has passed get `active=false`.
 4. Unit tests with fixed "today" values (e.g. a Friday, the last days of December, a leap year).
 
@@ -275,7 +275,7 @@ Owner: CLOUD · Size: L (split: a = posting + guard, b = results + storage) · D
 **Steps**
 1. Morning run (05:00 UTC): refresh grid → build job list (all active stays; watches first) → budget guard (PLAN §7.2, unit-tested in core) → post DataForSEO Hotel Info tasks in batches (max 100 per request) with a `tag` = stay_id → record in `collector_runs`.
 2. Results: postback endpoint `/postback?token=…` (secret), or a poll of `tasks_ready` every run plus a retry run (decide from C-010). Validate with zod → normalize (C-014) → insert `price_snapshots` → rebuild `stay_daily` for touched stays → recompute `stay_stats` (C-015) → trigger alert evaluation (C-031, once it exists).
-3. Evening run (17:00 UTC): only stays with check-in within 21 days, plus watches.
+3. Evening run (17:00 UTC): **disabled at the start** (feature flag `EVENING_RUN=false`). When enabled: only stays with check-in within 21 days, plus watches.
 4. Idempotency: re-running the same day must not double-insert (unique key on stay, provider, day, or dedupe by task id).
 5. Failure handling: retries with backoff for 5xx; log errors in `collector_runs.errors`; if a run fails or the cost estimate exceeds 80 % of the monthly budget, email Zaid via Resend (`ADMIN_EMAILS`).
 6. Manual trigger: `workflow_dispatch` action or an authenticated `/run` endpoint for staging.
