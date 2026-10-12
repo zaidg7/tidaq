@@ -8,7 +8,23 @@ export {
   type Locale,
   type PercentOptions,
 } from './format';
-export { nights, parseIsoDate } from './dates';
+export { addDays, daysBetween, nights, parseIsoDate, toIsoDate, weekday } from './dates';
+export {
+  buildGrid,
+  gridConfigFromEnv,
+  isStayExpired,
+  type GridConfig,
+  type GridHotel,
+  type GridReason,
+  type GridStay,
+} from './grid';
+export {
+  defaultSpecialStays,
+  easterSunday,
+  oktoberfestStart,
+  specialStaysForYear,
+  type SpecialStay,
+} from './specialDates';
 export {
   DFS_NO_RESULTS,
   DFS_OK,

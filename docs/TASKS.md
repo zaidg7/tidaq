@@ -22,7 +22,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03b, Z-04 | IN PROGRESS |
 | **Phase 1: Data** (weeks 42–44, target Sun 1 Nov: data flowing) |||||
 | C-010 | DataForSEO spike: real response shape, cost, feasibility report | CLOUD | M | C-001, Z-04, Z-06 | DONE |
-| C-012 | Stay grid generator | CLOUD | S | C-004 | TODO |
+| C-012 | Stay grid generator | CLOUD | S | C-004 | DONE |
 | C-014 | Normalization and provider mapping | CLOUD | M | C-010 | TODO |
 | C-015 | Price stats engine (state, percentile, trend, advice) | CLOUD | M | C-001 | TODO |
 | C-011 | Hotel catalog: resolve seed hotels, identifiers, images | CLOUD | M | C-004, C-010 | TODO |
@@ -261,7 +261,8 @@ Owner: CLOUD · Size: M · Depends on: C-004, C-010 · Status: TODO · PR: –
 - [ ] Uncertain matches listed in the PR and resolved
 
 ### C-012 · Stay grid generator
-Owner: CLOUD · Size: S · Depends on: C-004 · Status: TODO · PR: –
+Owner: CLOUD · Size: S · Depends on: C-004 · Status: DONE · PR: [#11](https://github.com/zaidg7/tidaq/pull/11)
+Notes: `packages/core/src/grid.ts` + `specialDates.ts`. Weekends = the next N Fridays strictly after today. Midweek = Tuesdays of every `floor(6 / GRID_MIDWEEK)`-th week counted from a fixed epoch, so a chosen stay stays in the grid every day until check-in (unbroken history). Specials (Easter Fri→Mon, Oktoberfest opening + second weekend for `muenchen`, first two December weekends, NYE 30 Dec → 1 Jan) enter 90 days ahead. Each stay carries `reasons` (`weekend`/`midweek`/`special`). `isStayExpired` deactivates only after check-in has passed. Step 3 (upsert `tracked_stays`, deactivate past stays) moves into C-013's "refresh grid".
 
 **Goal:** `packages/core/grid.ts` produces the stay list from PLAN §7.1 for a given date.
 
@@ -272,7 +273,7 @@ Owner: CLOUD · Size: S · Depends on: C-004 · Status: TODO · PR: –
 4. Unit tests with fixed "today" values (e.g. a Friday, the last days of December, a leap year).
 
 **Done when**
-- [ ] Tests cover weekday edge cases and year boundaries
+- [x] Tests cover weekday edge cases and year boundaries
 
 ### C-013 · Collector worker
 Owner: CLOUD · Size: L (split: a = posting + guard, b = results + storage) · Depends on: C-005, C-010, C-011, C-012, C-014 · Status: TODO · PR: –
