@@ -65,12 +65,15 @@ The domain stays at Namecheap; only the DNS moves to Cloudflare (needed for the 
 2. API Keys → Create → "Sending access" → copy.
 3. Add GitHub secret `RESEND_API_KEY`.
 
-### Z-06 · Claude cloud environment settings (10 min)
-In a claude.ai Code session for `tidaq`: environment menu in the session title bar → **Edit**.
-1. **Network access:** keep "Limited" and add these **Allowed domains** (keep "Allow package managers" ticked):
-   `api.dataforseo.com`, `docs.dataforseo.com`, `*.supabase.co`, `api.supabase.com`, `api.cloudflare.com`, `*.workers.dev`, `tidaq.com`, `www.tidaq.com`, `api.resend.com`, `developers.cloudflare.com`, `opennext.js.org`, `nextjs.org`
-2. **Network secrets / environment variables** (whichever the settings page offers): `DATAFORSEO_LOGIN`, `DATAFORSEO_PASSWORD`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`. Same values as in GitHub.
-3. Save. New sessions pick it up.
+### Z-06 · Claude cloud environment settings (5 min)
+Network access is already **Full** ✅. Add **one network secret** for DataForSEO: claude.ai/code → environment `tidaq` → Edit → Network secrets → **Add secret**:
+- **Name:** `DataForSEO`
+- **Secret type / Credential type:** **Basic** if the list offers it → username = API login, password = API password.
+- If there is no Basic option: keep **Bearer**, and in the header row set Name `Authorization`, Prefix `Basic`, Value = your login and password in Base64. Make that value in Windows PowerShell:
+  `[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("APILOGIN:APIPASSWORD"))` (replace both, keep the colon) and copy the output.
+- **Allowed websites:** `api.dataforseo.com`
+- **Path prefixes:** leave empty.
+- Save (Add/Connect). Supabase, Cloudflare and Resend need nothing here: Supabase goes through your claude.ai connector, deploys use the GitHub secrets.
 
 ### Z-07 · Set up your PC for the LOCAL session (30 min, once)
 1. Install **Git for Windows** (git-scm.com) with default options.

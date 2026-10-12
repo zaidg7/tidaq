@@ -98,7 +98,8 @@ pnpm workspace. Node 22 LTS. If reality differs, update this map in your PR.
 
 | Name | Where it lives | Used by |
 |---|---|---|
-| `DATAFORSEO_LOGIN`, `DATAFORSEO_PASSWORD` | GitHub secret, Cloudflare secret (collector), Claude cloud env | collector, spike scripts |
+| `DATAFORSEO_LOGIN`, `DATAFORSEO_PASSWORD` | GitHub secret, Cloudflare secret (collector) | collector, CI spike workflow |
+| DataForSEO auth in **cloud sessions** | Claude environment **network secret** on `api.dataforseo.com` (Basic auth). The agent proxy adds the `Authorization` header; the session never sees the key. Call the API **without** an auth header from cloud sessions; code must therefore treat credentials as optional (`if (login && password) add Basic header`). | spike scripts, manual checks |
 | `SUPABASE_URL`, `SUPABASE_ANON_KEY` | GitHub secret, Cloudflare var (web) | web |
 | `SUPABASE_SERVICE_ROLE_KEY` | GitHub secret, Cloudflare secret (collector + web server only) | server-side writes |
 | `RESEND_API_KEY` | GitHub secret, Cloudflare secret | alerts |
@@ -107,7 +108,7 @@ pnpm workspace. Node 22 LTS. If reality differs, update this map in your PR.
 | `DAILY_TASK_CAP` (default 300), `MONTHLY_BUDGET_USD` (default 12), `EVENING_RUN` (default false), `GRID_WEEKENDS` (6), `GRID_MIDWEEK` (2) | Cloudflare var | budget guard, grid size |
 | `ALERTS_DRY_RUN` | Cloudflare var (`true` outside production) | alert engine |
 
-CI injects secrets into deploys. Sessions do not need raw keys for normal work: run code against fixtures, deploy through CI, and inspect production data through the Supabase MCP tools when available.
+CI injects secrets into deploys. Sessions do not need raw keys for normal work: run code against fixtures, deploy through CI, and inspect production data through the **Supabase MCP connector** (Zaid's account, Pro organization). The cloud environment has **full network access**.
 
 ## 8. Useful facts
 
