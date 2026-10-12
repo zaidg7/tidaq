@@ -11,5 +11,27 @@
     "label": "Sprache",
     "de": "Deutsch",
     "en": "English"
+  },
+  "advice": {
+    "collecting": "Wir sammeln noch Daten ({days}/7 Tage). Die Einschätzung kommt, sobald wir eine Woche Preise haben.",
+    "near_low": "Jetzt buchen ist sinnvoll. Der Preis liegt nahe am Tiefpunkt der letzten {days} Tage.",
+    "good_falling": "Guter Preis, und er fällt noch. Beobachten lohnt sich.",
+    "good": "Guter Preis im Vergleich zu den letzten {days} Tagen.",
+    "normal_falling": "Der Preis fällt gerade. Beobachten lohnt sich wahrscheinlich.",
+    "normal": "Ein normaler Preis für diesen Aufenthalt. Wir sagen dir Bescheid, wenn er fällt.",
+    "high": "Gerade teuer. Wir sagen dir Bescheid, wenn er fällt.",
+    "soon": "Kurz vor Anreise steigen Preise oft. Warte nicht zu lange."
+  },
+  "state": {
+    "collecting": "Daten werden gesammelt",
+    "near_low": "Nahe Tiefpunkt",
+    "good": "Günstig",
+    "normal": "Normal",
+    "high": "Teuer"
+  },
+  "trend": {
+    "falling": "fällt",
+    "flat": "stabil",
+    "rising": "steigt"
   }
 }

@@ -24,7 +24,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-010 | DataForSEO spike: real response shape, cost, feasibility report | CLOUD | M | C-001, Z-04, Z-06 | DONE |
 | C-012 | Stay grid generator | CLOUD | S | C-004 | DONE |
 | C-014 | Normalization and provider mapping | CLOUD | M | C-010 | DONE |
-| C-015 | Price stats engine (state, percentile, trend, advice) | CLOUD | M | C-001 | TODO |
+| C-015 | Price stats engine (state, percentile, trend, advice) | CLOUD | M | C-001 | DONE |
 | C-011 | Hotel catalog: resolve seed hotels, identifiers, images | CLOUD | M | C-004, C-010 | TODO |
 | C-013 | Collector worker: cron, posting, results, budget guard | CLOUD | L | C-005, C-010, C-011, C-012, C-014 | TODO |
 | **Phase 2: MVP website** (weeks 44–47, target Sun 22 Nov) |||||
@@ -314,7 +314,8 @@ Notes: `packages/core/src/normalize.ts`. Pure: `normalizeHotelInfo(result, night
 - [x] All fixture offers normalize without errors; outlier rule tested
 
 ### C-015 · Price stats engine
-Owner: CLOUD · Size: M · Depends on: C-001 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-001 · Status: DONE · PR: [#14](https://github.com/zaidg7/tidaq/pull/14)
+Notes: `computeStayStats(series, today, checkIn)` in `packages/core/src/stats.ts` (pure). Window 60 days up to `today`; duplicate days keep the lowest price; percentile = mid-rank (ties count half), null below 2 points; trend = least squares over the last 7 days in % per week (±1.5 % → falling/rising). Advice keys: `collecting`, `near_low`, `good_falling`, `good`, `normal_falling`, `normal`, `high`, plus the `soon` note (check-in in 0–7 days). Also returns `stale` (latest point > 2 days old). Copy in `messages/*.json` under `advice`, `state`, `trend`; `apps/web/lib/messages-check.ts` fails typecheck if a key is missing or `en.json` drifts from `de.json`.
 
 **Steps**
 1. `packages/core/stats.ts`: from a series of daily best prices → low, high, avg30, percentile, trend_7d (least squares), state, advice key (PLAN §8.1). Pure functions.
@@ -322,7 +323,7 @@ Owner: CLOUD · Size: M · Depends on: C-001 · Status: TODO · PR: –
 3. Tests: flat series, falling, rising, single point, 6 points (collecting), spike outlier, near-low boundary.
 
 **Done when**
-- [ ] ≥ 95 % coverage on stats.ts; outputs match PLAN §8.1 examples
+- [x] ≥ 95 % coverage on stats.ts; outputs match PLAN §8.1 examples
 
 ### C-016 · Admin: data health and budget
 Owner: CLOUD · Size: M · Depends on: C-013, C-020a · Status: TODO · PR: –

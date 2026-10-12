@@ -54,6 +54,14 @@ export {
   type NormalizeResult,
   type UnknownSource,
 } from './normalize';
+export {
+  computeStayStats,
+  STATS,
+  type AdviceKey,
+  type DailyPrice,
+  type StayStatsResult,
+  type Trend,
+} from './stats';
 export { z, isoDateSchema } from './zod';
 export {
   stayOrigins,
