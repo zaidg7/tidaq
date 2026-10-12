@@ -19,7 +19,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-003 | Session tooling (SessionStart hook, permissions allowlist) | CLOUD | S | C-001 | DONE |
 | C-007 | i18n setup (de default, en) and formatting helpers | CLOUD | S | C-001 | DONE |
 | C-004 | Supabase schema v1, RLS, seed providers and cities | CLOUD | M | C-001, Z-04 | DONE |
-| C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03b, Z-04 | IN PROGRESS |
+| C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03b, Z-04 | BLOCKED (B-004) |
 | **Phase 1: Data** (weeks 42–44, target Sun 1 Nov: data flowing) |||||
 | C-010 | DataForSEO spike: real response shape, cost, feasibility report | CLOUD | M | C-001, Z-04, Z-06 | DONE |
 | C-012 | Stay grid generator | CLOUD | S | C-004 | DONE |
@@ -157,7 +157,8 @@ Notes: applied to the hosted project with the Supabase MCP (`apply_migration`); 
 - [x] Types are generated and used by `packages/core`
 
 ### C-005 · Deploy pipeline
-Owner: CLOUD · Size: M · Depends on: C-002, Z-03b, Z-04 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-002, Z-03b, Z-04 · Status: BLOCKED (B-004, production only) · PR: [#9](https://github.com/zaidg7/tidaq/pull/9), [#13](https://github.com/zaidg7/tidaq/pull/13)
+Notes: staging works since 12 Oct: https://tidaq-web-staging.tidaq.workers.dev (collector: https://tidaq-collector-staging.tidaq.workers.dev/health). The first production run deployed both workers, but tidaq.com still answers 522: old parking DNS records for `tidaq.com`/`www` block the Worker custom domains. Zaid deletes them (B-004), then re-run Actions → Deploy → `production` and tick the second box. #13 also makes deploy steps fail properly (`shell: bash` = pipefail; before, `deploy | tee` hid errors).
 
 **Goal:** merging to `main` deploys automatically. Two environments.
 
@@ -169,7 +170,7 @@ Owner: CLOUD · Size: M · Depends on: C-002, Z-03b, Z-04 · Status: TODO · PR:
 5. Custom domain `tidaq.com` and `www` redirect on the prod web worker. The domain is registered at Namecheap; DNS is the Cloudflare zone (Z-03b). Check the zone is active before adding the custom domain.
 
 **Done when**
-- [ ] Merge to main → staging URL updated within ~5 minutes
+- [x] Merge to main → staging URL updated within ~5 minutes
 - [ ] Prod deploy procedure documented in README and tested once (placeholder page on tidaq.com)
 
 ### C-006 · Design tokens and base components
