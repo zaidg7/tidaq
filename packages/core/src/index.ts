@@ -39,6 +39,21 @@ export {
   type DfsHotelSearchItem,
   type DfsPriceItem,
 } from './dataforseo';
+export {
+  aliasKey,
+  bestOffer,
+  DIRECT_PROVIDER,
+  NORMALIZE,
+  normalizeHotelInfo,
+  registrableDomain,
+  resolveProvider,
+  slugify,
+  unknownSources,
+  type DroppedItem,
+  type NormalizedOffer,
+  type NormalizeResult,
+  type UnknownSource,
+} from './normalize';
 export { z, isoDateSchema } from './zod';
 export {
   stayOrigins,
