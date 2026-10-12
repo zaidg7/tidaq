@@ -14,7 +14,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | ID | Title | Owner | Size | Depends on | Status |
 |---|---|---|---|---|---|
 | **Phase 0: Setup** (week 42, target Sun 18 Oct) |||||
-| C-001 | Monorepo scaffold (Next.js + OpenNext + collector + core) | CLOUD | M | Z-01 | TODO |
+| C-001 | Monorepo scaffold (Next.js + OpenNext + collector + core) | CLOUD | M | Z-01 | DONE |
 | C-002 | CI pipeline (lint, typecheck, test, build, e2e smoke) | CLOUD | M | C-001 | TODO |
 | C-003 | Session tooling (SessionStart hook, permissions allowlist) | CLOUD | S | C-001 | TODO |
 | C-007 | i18n setup (de default, en) and formatting helpers | CLOUD | S | C-001 | TODO |
@@ -86,7 +86,8 @@ Tasks marked **parallel-safe** for LOCAL (no shared files with typical CLOUD wor
 ## Phase 0: Setup
 
 ### C-001 · Monorepo scaffold
-Owner: CLOUD · Size: M · Depends on: Z-01 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: Z-01 · Status: DONE · PR: [#4](https://github.com/zaidg7/tidaq/pull/4)
+Notes: Next.js pinned to 15.5.x as specified (16 exists; OpenNext 1.20 supports both). TypeScript 5.9 (not 7) and ESLint 9 for tooling compatibility. Zod 4. `@playwright/test` pinned to 1.56.1 because it matches the Chromium preinstalled in cloud sessions. `apps/web` `build` = `next build`; the Worker bundle is `build:worker` (OpenNext calls `build` itself, so it can't be the same script). `@tidaq/core` is consumed as TS source (no build step).
 
 **Goal:** a working pnpm monorepo with the target structure from CLAUDE.md §4.
 
@@ -100,9 +101,9 @@ Owner: CLOUD · Size: M · Depends on: Z-01 · Status: TODO · PR: –
 7. Replace the placeholder README section "Development" with real commands.
 
 **Done when**
-- [ ] `pnpm install && pnpm lint && pnpm typecheck && pnpm test && pnpm build` pass from a clean clone
-- [ ] `pnpm --filter web preview` serves a placeholder page that says "Tidaq kommt bald"
-- [ ] `pnpm --filter collector dev` runs and `/health` returns `{ ok: true }`
+- [x] `pnpm install && pnpm lint && pnpm typecheck && pnpm test && pnpm build` pass from a clean clone
+- [x] `pnpm --filter web preview` serves a placeholder page that says "Tidaq kommt bald"
+- [x] `pnpm --filter collector dev` runs and `/health` returns `{ ok: true }`
 
 ### C-002 · CI pipeline
 Owner: CLOUD · Size: M · Depends on: C-001 · Status: TODO · PR: –
