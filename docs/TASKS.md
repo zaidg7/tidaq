@@ -17,7 +17,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-001 | Monorepo scaffold (Next.js + OpenNext + collector + core) | CLOUD | M | Z-01 | DONE |
 | C-002 | CI pipeline (lint, typecheck, test, build, e2e smoke) | CLOUD | M | C-001 | DONE |
 | C-003 | Session tooling (SessionStart hook, permissions allowlist) | CLOUD | S | C-001 | DONE |
-| C-007 | i18n setup (de default, en) and formatting helpers | CLOUD | S | C-001 | TODO |
+| C-007 | i18n setup (de default, en) and formatting helpers | CLOUD | S | C-001 | DONE |
 | C-004 | Supabase schema v1, RLS, seed providers and cities | CLOUD | M | C-001, Z-04 | TODO |
 | C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03b, Z-04 | TODO |
 | **Phase 1: Data** (weeks 42–44, target Sun 1 Nov: data flowing) |||||
@@ -187,7 +187,8 @@ Owner: CLOUD · Size: L (split a/b) · Depends on: C-001 · Status: TODO · PR: 
 - [ ] Keyboard focus visible on all interactive components; contrast AA
 
 ### C-007 · i18n and formatting
-Owner: CLOUD · Size: S · Depends on: C-001 · Status: TODO · PR: –
+Owner: CLOUD · Size: S · Depends on: C-001 · Status: DONE · PR: [#7](https://github.com/zaidg7/tidaq/pull/7)
+Notes: next-intl 4 with `localePrefix: 'as-needed'`, `localeDetection: false` and `localeCookie: false` (German for everyone at `/`, no cookies; `/de` redirects to `/`). Pages live in `app/[locale]/` (that layout is the root layout). Message keys are type-checked against `messages/de.json` (`global.d.ts`). `Locale`, `locales`, `defaultLocale` come from `@tidaq/core`. Cross-month date ranges contain thin spaces (U+2009) around the en dash.
 
 **Steps**
 1. next-intl with locales `de` (default, no prefix) and `en` (`/en`). Middleware, `messages/de.json`, `messages/en.json`.
@@ -196,8 +197,8 @@ Owner: CLOUD · Size: S · Depends on: C-001 · Status: TODO · PR: –
 4. Extend `apps/web/e2e/smoke.spec.ts` with the `/en` case (C-002 covers only `/`, because `/en` doesn't exist before this task).
 
 **Done when**
-- [ ] `/` German, `/en` English; all strings from message files
-- [ ] Formatting tests pass
+- [x] `/` German, `/en` English; all strings from message files
+- [x] Formatting tests pass
 
 ---
 
