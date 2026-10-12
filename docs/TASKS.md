@@ -23,7 +23,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | **Phase 1: Data** (weeks 42–44, target Sun 1 Nov: data flowing) |||||
 | C-010 | DataForSEO spike: real response shape, cost, feasibility report | CLOUD | M | C-001, Z-04, Z-06 | DONE |
 | C-012 | Stay grid generator | CLOUD | S | C-004 | DONE |
-| C-014 | Normalization and provider mapping | CLOUD | M | C-010 | TODO |
+| C-014 | Normalization and provider mapping | CLOUD | M | C-010 | DONE |
 | C-015 | Price stats engine (state, percentile, trend, advice) | CLOUD | M | C-001 | TODO |
 | C-011 | Hotel catalog: resolve seed hotels, identifiers, images | CLOUD | M | C-004, C-010 | TODO |
 | C-013 | Collector worker: cron, posting, results, budget guard | CLOUD | L | C-005, C-010, C-011, C-012, C-014 | TODO |
@@ -298,7 +298,8 @@ Owner: CLOUD · Size: L (split: a = posting + guard, b = results + storage) · D
 - [ ] Zaid gets an email when a run fails (tested by forcing an error on staging)
 
 ### C-014 · Normalization and provider mapping
-Owner: CLOUD · Size: M · Depends on: C-010 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-010 · Status: DONE · PR: [#12](https://github.com/zaidg7/tidaq/pull/12)
+Notes: `packages/core/src/normalize.ts`. Pure: `normalizeHotelInfo(result, nights, aliases)` → one offer per provider (ads merged into organic entries; outbound URL only from organic entries, never `google.de/aclk`), `totalCents = nightly × nights`, flags `suspectedTotal` (±25 % of nights × median) and `outlier` (< 30 % / > 400 % of median), `eligible` = neither. `bestOffer`, `unknownSources` (→ pending providers, done by the collector in C-013). Provider lookup: official site → `hotel-direct`; else alias by full domain, domain without `www.`, registrable domain, then site name; the seed aliases already cover the big sites. The API returns integer EUR, so no German number-string parsing is needed (C-010). A 3.6× price (Clicktrip, Ritz-Carlton Dec) passes the 400 % rule; it's never best, but C-022 may want to hide offers far above the median in the provider table.
 
 **From C-010:** prices are per night → multiply by nights; detect suspected totals (≈ nights × median); dedupe ads (`is_paid`) against organic entries; map by domain (add domain aliases like `www.booking.com`, `de.hotels.com`, `hotel.check24.de`, `de.trip.com`, `www.agoda.com`, `www.expedia.de`). See PLAN §7.3 and `docs/research/dataforseo.md`.
 
@@ -309,7 +310,7 @@ Owner: CLOUD · Size: M · Depends on: C-010 · Status: TODO · PR: –
 4. Unit tests from fixtures, including German number strings if the API returns them ("1.184,00 €").
 
 **Done when**
-- [ ] All fixture offers normalize without errors; outlier rule tested
+- [x] All fixture offers normalize without errors; outlier rule tested
 
 ### C-015 · Price stats engine
 Owner: CLOUD · Size: M · Depends on: C-001 · Status: TODO · PR: –
