@@ -15,7 +15,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 |---|---|---|---|---|---|
 | **Phase 0: Setup** (week 42, target Sun 18 Oct) |||||
 | C-001 | Monorepo scaffold (Next.js + OpenNext + collector + core) | CLOUD | M | Z-01 | DONE |
-| C-002 | CI pipeline (lint, typecheck, test, build, e2e smoke) | CLOUD | M | C-001 | TODO |
+| C-002 | CI pipeline (lint, typecheck, test, build, e2e smoke) | CLOUD | M | C-001 | DONE |
 | C-003 | Session tooling (SessionStart hook, permissions allowlist) | CLOUD | S | C-001 | TODO |
 | C-007 | i18n setup (de default, en) and formatting helpers | CLOUD | S | C-001 | TODO |
 | C-004 | Supabase schema v1, RLS, seed providers and cities | CLOUD | M | C-001, Z-04 | TODO |
@@ -106,7 +106,8 @@ Notes: Next.js pinned to 15.5.x as specified (16 exists; OpenNext 1.20 supports 
 - [x] `pnpm --filter collector dev` runs and `/health` returns `{ ok: true }`
 
 ### C-002 · CI pipeline
-Owner: CLOUD · Size: M · Depends on: C-001 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-001 · Status: DONE · PR: [#5](https://github.com/zaidg7/tidaq/pull/5)
+Notes: one job "CI" (~3 min). Red proof: [run 38272430319](https://github.com/zaidg7/tidaq/actions/runs/38272430319) failed on an intentional test, reverted. Smoke covers `/` only; C-007 adds `/en`. The 90 % line threshold lives in `packages/core/vitest.config.ts`.
 
 **Goal:** every PR is checked automatically in under ~6 minutes.
 
@@ -117,9 +118,9 @@ Owner: CLOUD · Size: M · Depends on: C-001 · Status: TODO · PR: –
 4. Add a coverage threshold for `packages/core` (90 % lines), failing CI below it.
 
 **Done when**
-- [ ] A PR shows one required-looking check "CI" that runs all steps
-- [ ] An intentionally failing test makes CI red (prove it in the PR, then revert)
-- [ ] Typical run under 6 minutes
+- [x] A PR shows one required-looking check "CI" that runs all steps
+- [x] An intentionally failing test makes CI red (prove it in the PR, then revert)
+- [x] Typical run under 6 minutes
 
 ### C-003 · Session tooling
 Owner: CLOUD · Size: S · Depends on: C-001 · Status: TODO · PR: –
@@ -191,6 +192,7 @@ Owner: CLOUD · Size: S · Depends on: C-001 · Status: TODO · PR: –
 1. next-intl with locales `de` (default, no prefix) and `en` (`/en`). Middleware, `messages/de.json`, `messages/en.json`.
 2. `packages/core/format.ts`: `formatPrice(cents, locale)` → `1.184 €` / `€1,184`; `formatDateRange` → `1.–3. Dez. 2026` / `1–3 Dec 2026`; `formatPercent`. Unit tests for both locales, including thousands, 0, negative deltas.
 3. Locale switch component (keeps the current path).
+4. Extend `apps/web/e2e/smoke.spec.ts` with the `/en` case (C-002 covers only `/`, because `/en` doesn't exist before this task).
 
 **Done when**
 - [ ] `/` German, `/en` English; all strings from message files
