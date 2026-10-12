@@ -25,8 +25,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-012 | Stay grid generator | CLOUD | S | C-004 | DONE |
 | C-014 | Normalization and provider mapping | CLOUD | M | C-010 | DONE |
 | C-015 | Price stats engine (state, percentile, trend, advice) | CLOUD | M | C-001 | DONE |
-| C-011 | Hotel catalog: resolve seed hotels, identifiers, images | CLOUD | M | C-004, C-010 | TODO |
+| C-011 | Hotel catalog: resolve seed hotels, identifiers, images | CLOUD | M | C-004, C-010 | DONE |
 | C-013 | Collector worker: cron, posting, results, budget guard | CLOUD | L | C-005, C-010, C-011, C-012, C-014 | TODO |
+| C-011b | Hotel photos: licensed Wikimedia Commons images with credits | CLOUD | S | C-011 | TODO |
 | **Phase 2: MVP website** (weeks 44–47, target Sun 22 Nov) |||||
 | C-006 | Design tokens and base UI components (Soft Modern) | CLOUD | L | C-001 | TODO |
 | C-020a | App shell: layout, navbar, footer, locale switch, admin auth | CLOUD | M | C-006, C-007 | TODO |
@@ -233,7 +234,8 @@ Notes: report `docs/research/dataforseo.md`. Spike cost $0.0136. Per-night price
 - [x] Cost of the spike under $1 (it must fit the free $1 sign-up credit; Zaid tops up only after this report)
 
 ### C-011 · Hotel catalog
-Owner: CLOUD · Size: M · Depends on: C-004, C-010 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-004, C-010 · Status: DONE · PR: [#15](https://github.com/zaidg7/tidaq/pull/15)
+Notes: 40 hotels with Google identifiers in all 12 cities; **36 active** (D-13 budget), 4 on standby (`hotel-de-rome-berlin`, `the-charles-hotel-muenchen`, `the-westin-hamburg`, `hotel-imperial-wien`). Not findable via the API and replaced by five-star hotels from the same city: Park Hyatt Hamburg → Hotel Atlantic Hamburg, Rosewood Vienna → Palais Coburg, Four Seasons Milano → Bulgari Hotel Milano, Hotel De L'Europe → InterContinental Amstel. The Conservatorium is now "Mandarin Oriental Conservatorium". Hotel Info for a Vienna hotel with location Germany works (33 sites), so prices for all cities come from the German market (D-39). Cost $0.061 (71 searches). Not done here: photos (→ C-011b; the Commons API rate-limits the cloud IP with 429) and `official_url`, which the collector can fill from Hotel Info `about.url` (C-013). `stars` stays 5 for all: Google returns 0 for some five-star hotels.
 
 **Goal:** about 36–50 five-star hotels in the catalog with correct identifiers.
 
@@ -258,8 +260,12 @@ Owner: CLOUD · Size: M · Depends on: C-004, C-010 · Status: TODO · PR: –
 4. Seed migration or idempotent upsert script; document how to add a hotel.
 
 **Done when**
-- [ ] ≥ 36 hotels active with identifiers, all 12 cities covered
-- [ ] Uncertain matches listed in the PR and resolved
+- [x] ≥ 36 hotels active with identifiers, all 12 cities covered
+- [x] Uncertain matches listed in the PR and resolved
+
+### C-011b · Hotel photos
+Owner: CLOUD (or LOCAL, if the cloud IP stays rate-limited) · Size: S · Depends on: C-011 · Status: TODO · PR: –
+For each active hotel, find a freely licensed photo on Wikimedia Commons (CC BY / CC BY-SA / public domain), store `image_url` (Commons thumbnail URL) and `image_credit` ("Foto: <author>, <license>, via Wikimedia Commons"). No photo → leave null (gradient placeholder). Never Google, Booking or hotel press photos without permission. The Commons API answered 429 from the cloud session on 12 Oct; use a descriptive User-Agent without personal data and retry with backoff, or run from LOCAL.
 
 ### C-012 · Stay grid generator
 Owner: CLOUD · Size: S · Depends on: C-004 · Status: DONE · PR: [#11](https://github.com/zaidg7/tidaq/pull/11)
@@ -280,6 +286,8 @@ Notes: `packages/core/src/grid.ts` + `specialDates.ts`. Weekends = the next N Fr
 Owner: CLOUD · Size: L (split: a = posting + guard, b = results + storage) · Depends on: C-005, C-010, C-011, C-012, C-014 · Status: TODO · PR: –
 
 **Goal:** prices flow into the database every day, within budget. **The most important task of the project.**
+
+**From C-011:** fill `hotels.official_url` from Hotel Info `about.url` when it's null. In December the grid adds NYE (and advent weekends overlap with normal weekends): 36 hotels × ~9 stays ≈ 324 > `DAILY_TASK_CAP` 300, so the budget guard must cut in priority order (watches, then nearest check-in) or the cap needs a short-term raise (propose in BLOCKERS).
 
 **From C-010 (D-39):** post Hotel Info by `hotel_identifier` only; collect by polling `tasks_ready` with an extra cron at 05:30 UTC (and a retry at 06:30); add these crons to `apps/collector/wrangler.jsonc`. Fixtures in `tests/fixtures/dataforseo/`, schemas in `packages/core/src/dataforseo.ts`.
 

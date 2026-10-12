@@ -1,0 +1,288 @@
+{
+  "posted": [
+    {
+      "id": "10121627-2784-0290-0000-595bc311ed68",
+      "tag": "catalog-hotel-adlon-kempinski-berlin"
+    },
+    {
+      "id": "10121627-2784-0290-0000-e522355d5eff",
+      "tag": "catalog-the-ritz-carlton-berlin-berlin"
+    },
+    {
+      "id": "10121627-2784-0290-0000-3345e4481754",
+      "tag": "catalog-waldorf-astoria-berlin-berlin"
+    },
+    {
+      "id": "10121627-2784-0290-0000-77898deed86d",
+      "tag": "catalog-hotel-de-rome-berlin"
+    },
+    {
+      "id": "10121627-2784-0290-0000-96696a1e85ba",
+      "tag": "catalog-mandarin-oriental-munich-muenchen"
+    },
+    {
+      "id": "10121627-2784-0290-0000-f280b4f45f55",
+      "tag": "catalog-hotel-bayerischer-hof-muenchen"
+    },
+    {
+      "id": "10121627-2784-0290-0000-fb89227517fa",
+      "tag": "catalog-rosewood-munich-muenchen"
+    },
+    {
+      "id": "10121627-2784-0290-0000-c20313b97920",
+      "tag": "catalog-the-charles-hotel-muenchen"
+    },
+    {
+      "id": "10121627-2784-0290-0000-d5458346b0bb",
+      "tag": "catalog-the-fontenay-hamburg"
+    },
+    {
+      "id": "10121627-2784-0290-0000-3c2427c27604",
+      "tag": "catalog-fairmont-hotel-vier-jahreszeiten-hamburg"
+    },
+    {
+      "id": "10121627-2784-0290-0000-8d5ee96de509",
+      "tag": "catalog-park-hyatt-hamburg-hamburg"
+    },
+    {
+      "id": "10121627-2784-0290-0000-bb77096106ce",
+      "tag": "catalog-the-westin-hamburg-hamburg"
+    },
+    {
+      "id": "10121627-2784-0290-0000-4f936e81f730",
+      "tag": "catalog-villa-kennedy-frankfurt"
+    },
+    {
+      "id": "10121627-2784-0290-0000-9dd1b667e3fd",
+      "tag": "catalog-steigenberger-icon-frankfurter-hof-frankfurt"
+    },
+    {
+      "id": "10121627-2784-0290-0000-9eb5d365e53a",
+      "tag": "catalog-sofitel-frankfurt-opera-frankfurt"
+    },
+    {
+      "id": "10121627-2784-0290-0000-5ef2dd8d5d35",
+      "tag": "catalog-hotel-sacher-wien-wien"
+    },
+    {
+      "id": "10121627-2784-0290-0000-138463294daf",
+      "tag": "catalog-park-hyatt-vienna-wien"
+    },
+    {
+      "id": "10121627-2784-0290-0000-8a34e5eba62e",
+      "tag": "catalog-rosewood-vienna-wien"
+    },
+    {
+      "id": "10121627-2784-0290-0000-af834bc803fa",
+      "tag": "catalog-hotel-imperial-wien"
+    },
+    {
+      "id": "10121627-2784-0290-0000-d915b9b8128e",
+      "tag": "catalog-baur-au-lac-zuerich"
+    },
+    {
+      "id": "10121627-2784-0290-0000-99da58d9d7f9",
+      "tag": "catalog-the-dolder-grand-zuerich"
+    },
+    {
+      "id": "10121627-2784-0290-0000-c6afdd9a39b8",
+      "tag": "catalog-park-hyatt-zurich-zuerich"
+    },
+    {
+      "id": "10121627-2784-0290-0000-d921a05cadde",
+      "tag": "catalog-le-bristol-paris-paris"
+    },
+    {
+      "id": "10121627-2784-0290-0000-bcfb13edab46",
+      "tag": "catalog-shangri-la-paris-paris"
+    },
+    {
+      "id": "10121627-2784-0290-0000-73f5cf0003b4",
+      "tag": "catalog-four-seasons-hotel-george-v-paris"
+    },
+    {
+      "id": "10121627-2784-0290-0000-277c55d5c245",
+      "tag": "catalog-the-savoy-london"
+    },
+    {
+      "id": "10121627-2784-0290-0000-2b36a831a79a",
+      "tag": "catalog-claridge-s-london"
+    },
+    {
+      "id": "10121627-2784-0290-0000-664bc1f2a6a9",
+      "tag": "catalog-the-ritz-london-london"
+    },
+    {
+      "id": "10121627-2784-0290-0000-67de95dca7b2",
+      "tag": "catalog-four-seasons-hotel-milano-mailand"
+    },
+    {
+      "id": "10121627-2784-0290-0000-0856a1426b1f",
+      "tag": "catalog-park-hyatt-milano-mailand"
+    },
+    {
+      "id": "10121627-2784-0290-0000-e03aae957ae4",
+      "tag": "catalog-mandarin-oriental-milan-mailand"
+    },
+    {
+      "id": "10121627-2784-0290-0000-fd9f6ab5600d",
+      "tag": "catalog-hotel-hassler-roma-rom"
+    },
+    {
+      "id": "10121627-2784-0290-0000-34d160f78cf5",
+      "tag": "catalog-hotel-de-russie-rom"
+    },
+    {
+      "id": "10121627-2784-0290-0000-7212201ada8c",
+      "tag": "catalog-hotel-eden-rom"
+    },
+    {
+      "id": "10121627-2784-0290-0000-476b09030513",
+      "tag": "catalog-hotel-arts-barcelona-barcelona"
+    },
+    {
+      "id": "10121627-2784-0290-0000-736f8097c11c",
+      "tag": "catalog-mandarin-oriental-barcelona-barcelona"
+    },
+    {
+      "id": "10121627-2784-0290-0000-54fd6c398ec3",
+      "tag": "catalog-majestic-hotel-spa-barcelona-barcelona"
+    },
+    {
+      "id": "10121627-2784-0290-0000-98efffcc2109",
+      "tag": "catalog-waldorf-astoria-amsterdam-amsterdam"
+    },
+    {
+      "id": "10121627-2784-0290-0000-7498073624b2",
+      "tag": "catalog-conservatorium-hotel-amsterdam"
+    },
+    {
+      "id": "10121627-2784-0290-0000-4a8c402a2dc5",
+      "tag": "catalog-hotel-de-l-europe-amsterdam"
+    },
+    {
+      "id": "10121936-2784-0290-0000-4a181e85c674",
+      "tag": "catalog-park-hyatt-hamburg-hamburg-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-a6a7954160d5",
+      "tag": "catalog-hotel-sacher-wien-wien-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-2a586879c3b4",
+      "tag": "catalog-park-hyatt-vienna-wien-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-c75721b31827",
+      "tag": "catalog-rosewood-vienna-wien-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-5356db8f9ba7",
+      "tag": "catalog-hotel-imperial-wien-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-cb8c2f7d4ef7",
+      "tag": "catalog-baur-au-lac-zuerich-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-1d5530543914",
+      "tag": "catalog-le-bristol-paris-paris-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-87743c6c0c44",
+      "tag": "catalog-shangri-la-paris-paris-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-ccda41976779",
+      "tag": "catalog-four-seasons-hotel-george-v-paris-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-c1a7b666f6f2",
+      "tag": "catalog-the-savoy-london-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-560d0f101971",
+      "tag": "catalog-claridge-s-london-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-729d716bb484",
+      "tag": "catalog-the-ritz-london-london-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-af8e8349ea2e",
+      "tag": "catalog-four-seasons-hotel-milano-mailand-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-6c32ecb1245d",
+      "tag": "catalog-park-hyatt-milano-mailand-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-35e68310f65a",
+      "tag": "catalog-mandarin-oriental-milan-mailand-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-6a28e789033b",
+      "tag": "catalog-hotel-de-russie-rom-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-05d76ee9bc13",
+      "tag": "catalog-hotel-eden-rom-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-d8f2faf66c46",
+      "tag": "catalog-hotel-arts-barcelona-barcelona-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-fbf828b92697",
+      "tag": "catalog-mandarin-oriental-barcelona-barcelona-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-cd5fa4d9e7bc",
+      "tag": "catalog-majestic-hotel-spa-barcelona-barcelona-r2"
+    },
+    {
+      "id": "10121936-2784-0290-0000-6caf8bde7ab9",
+      "tag": "catalog-hotel-de-l-europe-amsterdam-r2"
+    },
+    {
+      "id": "10121938-2784-0290-0000-9505edd6e21b",
+      "tag": "catalog-city-hamburg"
+    },
+    {
+      "id": "10121938-2784-0290-0000-92a67c8cfa61",
+      "tag": "catalog-city-wien"
+    },
+    {
+      "id": "10121938-2784-0290-0000-f2ff9c93a213",
+      "tag": "catalog-city-mailand"
+    },
+    {
+      "id": "10121938-2784-0290-0000-5ebebdfba0f3",
+      "tag": "catalog-city-rom"
+    },
+    {
+      "id": "10121938-2784-0290-0000-822c01f18846",
+      "tag": "catalog-city-barcelona"
+    },
+    {
+      "id": "10121938-2784-0290-0000-47550cad3857",
+      "tag": "catalog-city-amsterdam"
+    },
+    {
+      "id": "10121939-2784-0290-0000-307ab2c15bff",
+      "tag": "catalog-hotel-atlantic-hamburg-hamburg"
+    },
+    {
+      "id": "10121939-2784-0290-0000-108eaf13c624",
+      "tag": "catalog-palais-coburg-wien"
+    },
+    {
+      "id": "10121939-2784-0290-0000-c2301d5d6edb",
+      "tag": "catalog-bulgari-hotel-milano-mailand"
+    },
+    {
+      "id": "10121939-2784-0290-0000-db95d24f9323",
+      "tag": "catalog-intercontinental-amstel-amsterdam-amsterdam"
+    }
+  ]
+}
