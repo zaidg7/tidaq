@@ -1,7 +1,7 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from './ingest';
-import type { CatalogHotel, CollectorStore, StayJob } from './store';
+import type { CatalogHotel, CollectorStore, DayReport, RunKind, StayJob } from './store';
 
 /** PostgREST returns at most this many rows per request (Supabase default `max_rows`). */
 const PAGE = 1000;
@@ -223,6 +223,50 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
         }
       }
       return out;
+    },
+
+    async dayReport(today) {
+      const runs = check(
+        await db
+          .from('collector_runs')
+          .select('kind, env, started_at, finished_at, errors')
+          .gte('started_at', `${today}T00:00:00Z`)
+          .order('started_at'),
+        'load runs',
+      );
+      const count = async (status: string) => {
+        const res = await db
+          .from('collector_tasks')
+          .select('id', { count: 'exact', head: true })
+          .eq('status', status)
+          .gte('posted_at', `${today}T00:00:00Z`);
+        checkOk(res, `count ${status} tasks`);
+        return res.count ?? 0;
+      };
+      const [posted, done, noResults, failed] = await Promise.all(
+        ['posted', 'done', 'no_results', 'failed'].map(count),
+      );
+      return {
+        runs: runs.map((r): DayReport['runs'][number] => ({
+          kind: r.kind as RunKind,
+          env: r.env,
+          startedAt: r.started_at,
+          finishedAt: r.finished_at,
+          errors: Array.isArray(r.errors) ? r.errors.map(String) : [],
+        })),
+        tasks: {
+          posted: posted ?? 0,
+          done: done ?? 0,
+          noResults: noResults ?? 0,
+          failed: failed ?? 0,
+        },
+      };
+    },
+
+    async pruneRaw() {
+      const res = await db.rpc('prune_raw_snapshots', {});
+      checkOk(res, 'prune raw snapshots');
+      return Number(res.data ?? 0);
     },
 
     async upsertStats(rows) {

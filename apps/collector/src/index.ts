@@ -2,7 +2,9 @@ import { safeEqual, runToken } from './auth';
 import { runCollect } from './collect';
 import type { FetchFn } from './dataforseo';
 import type { Env } from './env';
-import { runPosting } from './morning';
+import { runPosting, type PostRunSummary } from './morning';
+import { crashEmail, postingEmail, sendAdminEmail } from './notify';
+import { runDailyCheck } from './report';
 import type { CollectorStore } from './store';
 import { supabaseStore } from './supabaseStore';
 
@@ -20,11 +22,15 @@ export const CRON_EVENING = '0 17 * * *';
  * most COLLECT_BATCH results, so ~300 tasks need ~10 runs. Without open tasks a run costs one query.
  */
 export const CRON_COLLECT = '*/10 5-7,17-18 * * *';
+/** Daily check after the morning collect window: prune raw JSON, email problems (C-013c). */
+export const CRON_DAILY = '55 7 * * *';
 
 /** Seams for tests: the real worker uses Supabase and global fetch. */
 export interface Deps {
   store?: CollectorStore;
   fetchFn?: FetchFn;
+  /** Used for admin emails (Resend). */
+  mailFetchFn?: FetchFn;
   now?: () => Date;
 }
 
@@ -41,6 +47,31 @@ const log = (msg: string, data: Record<string, unknown> = {}) =>
 
 export function createWorker(deps: Deps = {}) {
   const now = deps.now ?? (() => new Date());
+  const mail = (env: Env, email: Parameters<typeof sendAdminEmail>[1]) =>
+    sendAdminEmail(env, email, deps.mailFetchFn);
+
+  /** Posting run plus admin email on errors, a crash or the 80 % budget crossing. */
+  const posting = async (
+    env: Env,
+    kind: 'morning' | 'evening' | 'manual',
+  ): Promise<PostRunSummary> => {
+    try {
+      const summary = await runPosting({
+        store: storeFor(env, deps),
+        env,
+        now: now(),
+        kind,
+        fetchFn: deps.fetchFn,
+      });
+      const email = postingEmail(summary);
+      if (email) await mail(env, email);
+      return summary;
+    } catch (err) {
+      await mail(env, crashEmail(`${kind} run`, err));
+      throw err;
+    }
+  };
+
   return {
     async fetch(request: Request, env: Env): Promise<Response> {
       const { pathname } = new URL(request.url);
@@ -64,7 +95,7 @@ export function createWorker(deps: Deps = {}) {
           const store = storeFor(env, deps);
           const summary =
             pathname === '/run'
-              ? await runPosting({ store, env, now: now(), kind: 'manual', fetchFn: deps.fetchFn })
+              ? await posting(env, 'manual')
               : await runCollect({ store, env, now: now(), fetchFn: deps.fetchFn });
           log(`${kind} done`, { ...summary });
           return json({ ok: true, summary });
@@ -83,6 +114,21 @@ export function createWorker(deps: Deps = {}) {
         log('evening run disabled', { cron: controller.cron });
         return;
       }
+      if (controller.cron === CRON_DAILY) {
+        try {
+          const summary = await runDailyCheck({
+            store: storeFor(env, deps),
+            env,
+            now: now(),
+            fetchFn: deps.mailFetchFn,
+          });
+          log('daily check done', { ...summary });
+        } catch (err) {
+          await mail(env, crashEmail('daily check', err));
+          throw err;
+        }
+        return;
+      }
       if (controller.cron === CRON_COLLECT) {
         const summary = await runCollect({
           store: storeFor(env, deps),
@@ -97,13 +143,7 @@ export function createWorker(deps: Deps = {}) {
         log('no handler for cron', { cron: controller.cron });
         return;
       }
-      const summary = await runPosting({
-        store: storeFor(env, deps),
-        env,
-        now: now(),
-        kind: evening ? 'evening' : 'morning',
-        fetchFn: deps.fetchFn,
-      });
+      const summary = await posting(env, evening ? 'evening' : 'morning');
       log('posting run done', { ...summary });
     },
   } satisfies ExportedHandler<Env>;

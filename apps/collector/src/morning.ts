@@ -5,6 +5,7 @@ import {
   defaultSpecialStays,
   eveningJobs,
   gridConfigFromEnv,
+  MONTHLY_ALERT_SHARE,
   toIsoDate,
   z,
   type BudgetReason,
@@ -25,6 +26,10 @@ export interface PostRunSummary {
   budgetReason: BudgetReason;
   estCostUsd: number;
   monthlyAlert: boolean;
+  /** Estimated spend this month including this run. */
+  monthSpendUsd: number;
+  /** This run moved the month past 80 % of the budget (alert once, not every day). */
+  monthlyAlertCrossed: boolean;
   errors: string[];
 }
 
@@ -98,6 +103,11 @@ export async function runPosting(opts: {
       errors,
     });
 
+    const micros = (usd: number) => Math.round(usd * 1_000_000);
+    const before = micros(usage.spentThisMonthUsd);
+    const after = before + micros(estCostUsd);
+    const threshold = micros(limits.MONTHLY_BUDGET_USD) * MONTHLY_ALERT_SHARE;
+
     return {
       runId,
       kind,
@@ -110,6 +120,8 @@ export async function runPosting(opts: {
       budgetReason: budget.reason,
       estCostUsd,
       monthlyAlert: budget.monthlyAlert,
+      monthSpendUsd: after / 1_000_000,
+      monthlyAlertCrossed: before <= threshold && after > threshold,
       errors,
     };
   } catch (err) {

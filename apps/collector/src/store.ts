@@ -28,6 +28,19 @@ export interface RunPatch {
   errors?: unknown[];
 }
 
+/** Today's runs and the status of tasks posted today, for the daily check. */
+export interface DayReport {
+  runs: {
+    kind: RunKind;
+    env: string;
+    startedAt: string;
+    finishedAt: string | null;
+    errors: string[];
+  }[];
+  /** Tasks posted today by status (`posted` = still without result). */
+  tasks: { posted: number; done: number; noResults: number; failed: number };
+}
+
 /** One `stay_stats` row. */
 export interface StayStatsRow {
   stay_id: number;
@@ -77,4 +90,8 @@ export interface CollectorStore {
     fromDay: string,
   ): Promise<(DailyPrice & { stayId: number })[]>;
   upsertStats(rows: readonly StayStatsRow[]): Promise<void>;
+  /** Runs started today (UTC) and today's task statuses. */
+  dayReport(today: string): Promise<DayReport>;
+  /** Removes raw JSON older than 30 days (SQL `prune_raw_snapshots`, D-19). Returns the count. */
+  pruneRaw(): Promise<number>;
 }
