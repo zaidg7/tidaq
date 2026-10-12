@@ -21,7 +21,7 @@ const sqlString = (v: string): string => `'${v.replace(/'/g, "''")}'`;
 const photos: Photo[] = JSON.parse(readFileSync(join(DIR, 'photos.json'), 'utf8'));
 const found = photos.filter(
   (p): p is Photo & { imageUrl: string; credit: string } =>
-    !!p.imageUrl?.startsWith('https://upload.wikimedia.org/') && !!p.credit,
+    /^https:\/\/(upload|thumb)\.wikimedia\.org\/[^?#]+$/.test(p.imageUrl ?? '') && !!p.credit,
 );
 
 console.log(

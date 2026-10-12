@@ -19,6 +19,10 @@ const UA = 'TidaqCatalogBot/0.1 (https://tidaq.com; hotel photo licensing check)
 const WIKIDATA = 'https://www.wikidata.org/w/api.php';
 const COMMONS = 'https://commons.wikimedia.org/w/api.php';
 const MAX_DISTANCE_KM = 1;
+/** Hotels whose Wikidata image was checked and rejected by hand (slug → reason). */
+const REJECTED: Record<string, string> = {
+  'sofitel-frankfurt-opera': 'photo shows the building before the hotel opened',
+};
 const THUMB_WIDTH = 1280;
 
 interface Resolved {
@@ -86,7 +90,22 @@ export function plainText(html: string): string {
     .replace(/&#0?39;/g, "'")
     .replace(/&nbsp;/g, ' ')
     .replace(/\s+/g, ' ')
+    .replace(/\(\s*talk\s*\)/gi, '')
+    .replace(/\s+,/g, ',')
     .trim();
+}
+
+/** Thumbnail URL without Wikimedia's tracking parameters; only Wikimedia upload hosts. */
+export function cleanImageUrl(url: string): string | null {
+  try {
+    const u = new URL(url);
+    if (!['upload.wikimedia.org', 'thumb.wikimedia.org'].includes(u.hostname)) return null;
+    u.search = '';
+    u.hash = '';
+    return u.toString();
+  } catch {
+    return null;
+  }
 }
 
 const words = (s: string) =>
@@ -119,6 +138,7 @@ async function findPhoto(h: Resolved): Promise<Photo> {
     note,
   });
   if (h.lat === null || h.lng === null) return none('no coordinates');
+  if (REJECTED[h.slug]) return none(`rejected by hand: ${REJECTED[h.slug]}`);
 
   const ids = new Set<string>();
   for (const search of new Set([h.name, h.googleTitle ?? h.name])) {
@@ -168,7 +188,8 @@ async function findPhoto(h: Resolved): Promise<Photo> {
   const meta = ii?.extmetadata ?? {};
   const licenseCode: string = meta.License?.value ?? '';
   const licenseName: string = plainText(meta.LicenseShortName?.value ?? licenseCode);
-  if (!ii?.thumburl) return none('Commons file not found', best.id);
+  const imageUrl = ii?.thumburl ? cleanImageUrl(ii.thumburl) : null;
+  if (!imageUrl) return none('Commons file not found', best.id);
   if (!allowedLicense(licenseCode))
     return none(`license not allowed: ${licenseName || 'unknown'}`, best.id);
   const artist = plainText(meta.Artist?.value ?? '');
@@ -179,7 +200,7 @@ async function findPhoto(h: Resolved): Promise<Photo> {
     slug: h.slug,
     wikidata: best.id,
     file: best.file,
-    imageUrl: ii.thumburl,
+    imageUrl,
     credit: `Foto: ${artist || 'unbekannt'}, ${licenseName}, via Wikimedia Commons`,
     license: licenseName,
     pageUrl: ii.descriptionurl ?? null,
