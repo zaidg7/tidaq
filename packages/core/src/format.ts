@@ -11,7 +11,6 @@ export function isLocale(value: unknown): value is Locale {
 const INTL_LOCALE: Record<Locale, string> = { de: 'de-DE', en: 'en-GB' };
 
 const priceFormatters = new Map<Locale, Intl.NumberFormat>();
-const dateRangeFormatters = new Map<Locale, Intl.DateTimeFormat>();
 
 /**
  * Formats a stay total in EUR cents for display, without cents (D-21).
@@ -34,23 +33,52 @@ export function formatPrice(cents: number, locale: Locale): string {
   return formatter.format(cents / 100);
 }
 
+// Own month names instead of Intl: ICU versions differ between Node, CI and workerd
+// (e.g. spacing around the dash, "Sep" vs "Sept"), and SSR output must be identical everywhere.
+const MONTHS: Record<Locale, readonly string[]> = {
+  de: [
+    'Jan.',
+    'Feb.',
+    'März',
+    'Apr.',
+    'Mai',
+    'Juni',
+    'Juli',
+    'Aug.',
+    'Sept.',
+    'Okt.',
+    'Nov.',
+    'Dez.',
+  ],
+  en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+};
+
+function dayMonth(date: Date, locale: Locale): string {
+  const month = MONTHS[locale][date.getUTCMonth()];
+  return locale === 'de' ? `${date.getUTCDate()}. ${month}` : `${date.getUTCDate()} ${month}`;
+}
+
 /**
  * Formats a stay as a compact date range.
- * `de`: `1.–3. Dez. 2026` · `en`: `1–3 Dec 2026`. Dates are `YYYY-MM-DD` and formatted in UTC,
- * so the viewer's time zone never shifts a stay date.
+ * Same month: `1.–3. Dez. 2026` / `1–3 Dec 2026`.
+ * Different months: `28. Nov. – 3. Dez. 2026` / `28 Nov – 3 Dec 2026`.
+ * Different years: `30. Dez. 2026 – 1. Jan. 2027` / `30 Dec 2026 – 1 Jan 2027`.
+ * Dates are `YYYY-MM-DD` and read as UTC, so the viewer's time zone never shifts a stay date.
  */
 export function formatDateRange(checkIn: string, checkOut: string, locale: Locale): string {
-  let formatter = dateRangeFormatters.get(locale);
-  if (!formatter) {
-    formatter = new Intl.DateTimeFormat(INTL_LOCALE[locale], {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      timeZone: 'UTC',
-    });
-    dateRangeFormatters.set(locale, formatter);
+  const from = new Date(parseIsoDate(checkIn));
+  const to = new Date(parseIsoDate(checkOut));
+  const fromYear = from.getUTCFullYear();
+  const toYear = to.getUTCFullYear();
+
+  if (fromYear !== toYear) {
+    return `${dayMonth(from, locale)} ${fromYear} – ${dayMonth(to, locale)} ${toYear}`;
   }
-  return formatter.formatRange(parseIsoDate(checkIn), parseIsoDate(checkOut));
+  if (from.getUTCMonth() !== to.getUTCMonth()) {
+    return `${dayMonth(from, locale)} – ${dayMonth(to, locale)} ${toYear}`;
+  }
+  const fromDay = locale === 'de' ? `${from.getUTCDate()}.` : `${from.getUTCDate()}`;
+  return `${fromDay}–${dayMonth(to, locale)} ${toYear}`;
 }
 
 export interface PercentOptions {
