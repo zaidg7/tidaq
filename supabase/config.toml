@@ -1,0 +1,6 @@
+# Supabase CLI config. The hosted project is `tidaq` (ref kaxcnrfpgpktzrfibpzg, Frankfurt).
+# Migrations in ./migrations are the source of truth for the schema (CLAUDE.md §3 rule 6).
+project_id = "tidaq"
+
+[db]
+major_version = 17

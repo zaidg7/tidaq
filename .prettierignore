@@ -12,3 +12,4 @@ docs
 scripts/docs
 apps/web/next-env.d.ts
 apps/collector/worker-configuration.d.ts
+packages/core/src/db.types.ts
