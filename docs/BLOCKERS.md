@@ -16,6 +16,17 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-004 · Delete two old DNS records so tidaq.com can show the site
+Status: OPEN · Opened: 2026-10-12 by CLOUD · Blocks: C-005 (production on tidaq.com), later C-044 (go live)
+What I need: the old placeholder records for `tidaq.com` and `www` removed in Cloudflare DNS. They point to a dead server (tidaq.com shows "Error 522"), and Cloudflare won't connect our website to a name that already has such a record. Staging works already: https://tidaq-web-staging.tidaq.workers.dev
+Steps for Zaid (≈ 3 min):
+1. Open dash.cloudflare.com and choose the account **tidaq**, then the domain **tidaq.com**.
+2. Left menu: **DNS → Records**.
+3. Delete only the records whose **Type is A, AAAA or CNAME** and whose **Name is `tidaq.com` (or `@`) or `www`**. Click the record → **Delete**. Usually that's 2 records (often Namecheap leftovers like `parkingpage.namecheap.com` or an IP address).
+4. Don't touch **TXT** or **MX** records or anything with `resend`, `_domainkey`, `send` or `_dmarc` in the name: those are for email.
+5. Done. Change this Status to DONE or tell the session "DNS cleaned". The session re-runs the production deploy, which creates the right records itself.
+Where to put the result: nothing.
+
 ## B-003 · Top up DataForSEO with $50
 Status: OPEN · Opened: 2026-10-12 by CLOUD · Blocks: C-013 (daily data collection)
 What I need: the $50 minimum top-up at DataForSEO. The spike worked (report: `docs/research/dataforseo.md`, cost $0.0136). The $0.98 left lasts only ~4 days of daily collection.

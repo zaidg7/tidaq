@@ -31,6 +31,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: ${{ inputs.target || 'production' }}
+    defaults:
+      run:
+        # Explicit bash adds `-o pipefail`, so `deploy | tee log` fails when the deploy fails.
+        shell: bash
     env:
       TARGET: ${{ inputs.target || 'production' }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -93,14 +97,17 @@ jobs:
       - name: Smoke test
         run: |
           if [ "$TARGET" = "staging" ]; then
-            URL=$(grep -oE 'https://tidaq-web-staging\.[a-z0-9-]+\.workers\.dev' "$RUNNER_TEMP/web-deploy.log" | head -1)
+            URL=$(grep -m1 -oE 'https://tidaq-web-staging\.[a-z0-9-]+\.workers\.dev' "$RUNNER_TEMP/web-deploy.log")
           else
             URL=https://tidaq.com
           fi
           echo "Checking $URL"
           # A new custom domain needs a few minutes for DNS and the certificate.
           for i in $(seq 1 18); do
-            if curl -fsS "$URL/" | grep -q 'Tidaq' && curl -fsS "$URL/en" | grep -q 'Tidaq'; then
+            # Capture bodies first: with pipefail, `curl | grep -q` can fail on SIGPIPE.
+            de=$(curl -fsS --max-time 20 "$URL/" || true)
+            en=$(curl -fsS --max-time 20 "$URL/en" || true)
+            if grep -q 'Tidaq' <<<"$de" && grep -q 'Tidaq' <<<"$en"; then
               echo "Web is up: $URL"
               echo "### Deployed $TARGET: $URL" >> "$GITHUB_STEP_SUMMARY"
               exit 0
