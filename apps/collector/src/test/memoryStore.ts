@@ -3,6 +3,7 @@ import type { IngestPayload, OpenTask } from '../ingest';
 import type {
   CatalogHotel,
   CollectorStore,
+  DayReport,
   RunKind,
   RunPatch,
   StayJob,
@@ -49,6 +50,7 @@ export function memoryStore(
   const stats = new Map<number, StayStatsRow>();
   const officialUrls = new Map<number, string>();
   let clock = '2026-10-12T05:00:00.000Z';
+  let pruneCalls = 0;
   const watched = new Set(opts.watchedStayIds ?? []);
   const hotelById = new Map(hotels.map((h) => [h.id, h]));
 
@@ -191,6 +193,31 @@ export function memoryStore(
     async upsertStats(rows) {
       for (const r of rows) stats.set(r.stay_id, r);
     },
+    async dayReport(today) {
+      const count = (status: string) =>
+        tasks.filter((t) => t.status === status && t.postedAt.startsWith(today)).length;
+      return {
+        runs: runs
+          .filter((r) => r.startedAt.startsWith(today))
+          .map((r): DayReport['runs'][number] => ({
+            kind: r.kind,
+            env: r.env,
+            startedAt: r.startedAt,
+            finishedAt: r.finishedAt ?? null,
+            errors: (r.errors ?? []).map(String),
+          })),
+        tasks: {
+          posted: count('posted'),
+          done: count('done'),
+          noResults: count('no_results'),
+          failed: count('failed'),
+        },
+      };
+    },
+    async pruneRaw() {
+      pruneCalls++;
+      return 0;
+    },
   };
   return {
     store,
@@ -202,6 +229,7 @@ export function memoryStore(
     stats,
     providers,
     officialUrls,
+    pruneCalls: () => pruneCalls,
     /** Sets the `posted_at` time for tasks recorded from now on. */
     setClock(iso: string) {
       clock = iso;

@@ -75,6 +75,7 @@ The tracked hotels live in `public.hotels` (source: `scripts/catalog/`). To add 
 - **Manual run:** Actions → **Collector run** → Run workflow → target `staging` (cap 50) or `production`, action `post`. It calls `POST /run` with a token derived from `SUPABASE_SERVICE_ROLE_KEY`; the job summary shows the run summary. Every manual run spends real money (up to the cap × $0.0008).
 - **Collect runs** (every 10 min 05:00–07:50 and 17:00–18:50 UTC in production): ask `tasks_ready` which results are done, fetch up to `COLLECT_BATCH` (30) with `task_get` (both free), keep eligible offers, then write everything with one SQL call (`collector_ingest`): `price_snapshots`, new pending providers, task statuses, `stay_daily` for the touched days. Then `stay_stats` is recomputed for those stays. A run with nothing to do writes no `collector_runs` row.
 - **Manual collect:** Actions → **Collector run** → action `collect` (free). On staging there are no crons, so after a manual `post` run wait ~5 minutes and run `collect` (repeat while tasks are open; each call fetches 30).
+- **Admin emails** (Resend, from `collector@tidaq.com` to `ADMIN_EMAILS`): a posting run with errors or a crash, the month passing 80 % of `MONTHLY_BUDGET_USD`, and the **daily check** at 07:55 UTC (production), which also prunes raw JSON older than 30 days (D-19) and reports today's errors, unfinished runs and tasks without results. No email on a good day.
 
 ### Deploys (Cloudflare Workers)
 

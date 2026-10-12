@@ -3,9 +3,10 @@ import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { runToken, safeEqual } from './auth';
 import type { FetchFn } from './dataforseo';
-import { createWorker, CRON_COLLECT, CRON_EVENING, CRON_MORNING } from './index';
+import { createWorker, CRON_COLLECT, CRON_DAILY, CRON_EVENING, CRON_MORNING } from './index';
 import { testEnv } from './test/env';
 import { fakeDataForSeo, memoryStore } from './test/memoryStore';
+import { fakeMail } from './test/mail';
 import { fakeResults, hotelInfoFixture, SEED_ALIASES } from './test/results';
 
 const hotels = [{ id: 1, citySlug: 'berlin', dfsHotelIdentifier: 'id-adlon' }];
@@ -137,6 +138,7 @@ describe('collector scheduled', () => {
       CRON_MORNING,
       CRON_EVENING,
       CRON_COLLECT,
+      CRON_DAILY,
     ]);
   });
 
@@ -182,5 +184,77 @@ describe('auth', () => {
     expect(await runToken('other')).not.toBe(a);
     expect(safeEqual(a, a)).toBe(true);
     expect(safeEqual(a, a.slice(0, 63))).toBe(false);
+  });
+});
+
+describe('collector admin emails', () => {
+  const mailEnv = testEnv({ RESEND_API_KEY: 're_test', ADMIN_EMAILS: 'ops@example.com' });
+
+  it('emails when a posting run has errors', async () => {
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    const mem = memoryStore(hotels);
+    const mail = fakeMail();
+    const worker = createWorker({
+      store: mem.store,
+      fetchFn: fakeDataForSeo({ failStayIds: [1] }).fetchFn,
+      mailFetchFn: mail.fetchFn,
+      now,
+    });
+    await worker.scheduled(controller(CRON_MORNING), mailEnv);
+    expect(mail.sent.map((m) => m.subject)).toEqual([
+      '[staging] Collector: morning run had 1 error(s)',
+    ]);
+    vi.restoreAllMocks();
+  });
+
+  it('emails and rethrows when a run crashes', async () => {
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    const mem = memoryStore(hotels);
+    mem.store.activeHotels = async () => {
+      throw new Error('db down');
+    };
+    const mail = fakeMail();
+    const worker = createWorker({ store: mem.store, mailFetchFn: mail.fetchFn, now });
+    await expect(worker.scheduled(controller(CRON_MORNING), mailEnv)).rejects.toThrow('db down');
+    expect(mail.sent[0]?.subject).toBe('[staging] Collector: morning run failed');
+    vi.restoreAllMocks();
+  });
+
+  it('sends nothing for a clean run', async () => {
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    const mem = memoryStore(hotels);
+    const mail = fakeMail();
+    const worker = createWorker({
+      store: mem.store,
+      fetchFn: fakeDataForSeo().fetchFn,
+      mailFetchFn: mail.fetchFn,
+      now,
+    });
+    await worker.scheduled(controller(CRON_MORNING), mailEnv);
+    expect(mail.sent).toEqual([]);
+    vi.restoreAllMocks();
+  });
+
+  it('runs the daily check on its cron and emails if the check itself fails', async () => {
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    const mem = memoryStore(hotels);
+    const mail = fakeMail();
+    const worker = createWorker({
+      store: mem.store,
+      mailFetchFn: mail.fetchFn,
+      now: () => new Date('2026-10-12T07:55:00Z'),
+    });
+    await worker.scheduled(controller(CRON_DAILY), mailEnv);
+    expect(mem.pruneCalls()).toBe(1);
+    expect(mail.sent[0]?.subject).toBe(
+      '[staging] Collector: daily check found problems (2026-10-12)',
+    );
+
+    mem.store.pruneRaw = async () => {
+      throw new Error('db down');
+    };
+    await expect(worker.scheduled(controller(CRON_DAILY), mailEnv)).rejects.toThrow('db down');
+    expect(mail.sent[1]?.subject).toBe('[staging] Collector: daily check failed');
+    vi.restoreAllMocks();
   });
 });

@@ -46,6 +46,32 @@ describe('runPosting', () => {
     );
   });
 
+  it('flags the run that crosses 80 % of the monthly budget, and only that one', async () => {
+    const mem = memoryStore(hotels);
+    // Earlier this month: $9.59 of the $12 budget (80 % = $9.60).
+    mem.runs.push({
+      id: 0,
+      kind: 'morning',
+      env: 'production',
+      startedAt: '2026-10-01T05:00:00.000Z',
+      estCostUsd: 9.59,
+      tasksPosted: 0,
+    });
+    const run = () =>
+      runPosting({
+        store: mem.store,
+        env: testEnv(),
+        now: NOW,
+        kind: 'morning',
+        fetchFn: fakeDataForSeo().fetchFn,
+      });
+    const first = await run();
+    expect(first.monthlyAlertCrossed).toBe(true);
+    expect(first.monthSpendUsd).toBeCloseTo(9.59 + first.posted * 0.0008, 6);
+    const second = await run();
+    expect(second).toMatchObject({ monthlyAlert: true, monthlyAlertCrossed: false });
+  });
+
   it('is idempotent for the grid: a second run inserts nothing new', async () => {
     const { store } = memoryStore(hotels);
     const dfs = fakeDataForSeo();
