@@ -1,4 +1,4 @@
-# Manual collector run (C-013): POST /run on the deployed collector.
+# Manual collector run (C-013): POST /run (post tasks) or /collect (fetch results).
 # The token is HMAC-SHA256(SUPABASE_SERVICE_ROLE_KEY, "tidaq-collector-run") in hex,
 # so no extra secret is needed. The run goes through the budget guard like a cron run.
 name: Collector run
@@ -11,6 +11,11 @@ on:
         type: choice
         options: [staging, production]
         default: staging
+      action:
+        description: post = order new prices (costs money, budget guard applies); collect = fetch ready results (free)
+        type: choice
+        options: [post, collect]
+        default: post
 
 permissions:
   contents: read
@@ -27,10 +32,11 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: POST /run
+      - name: Call the collector
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          URL: ${{ inputs.target == 'production' && 'https://tidaq-collector.tidaq.workers.dev/run' || 'https://tidaq-collector-staging.tidaq.workers.dev/run' }}
+          BASE: ${{ inputs.target == 'production' && 'https://tidaq-collector.tidaq.workers.dev' || 'https://tidaq-collector-staging.tidaq.workers.dev' }}
+          ENDPOINT: ${{ inputs.action == 'collect' && 'collect' || 'run' }}
         run: |
           if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
             echo "::error::SUPABASE_SERVICE_ROLE_KEY secret is missing"
@@ -38,11 +44,11 @@ jobs:
           fi
           token=$(printf '%s' tidaq-collector-run | openssl dgst -sha256 -hmac "$SUPABASE_SERVICE_ROLE_KEY" -r | cut -d' ' -f1)
           echo "::add-mask::$token"
-          status=$(curl -sS -o body.json -w '%{http_code}' -X POST -H "authorization: Bearer $token" "$URL")
+          status=$(curl -sS -o body.json -w '%{http_code}' -X POST -H "authorization: Bearer $token" "$BASE/$ENDPOINT")
           echo "HTTP $status"
           cat body.json
           {
-            echo "### Collector run (${{ inputs.target }})"
+            echo "### Collector ${{ inputs.action }} (${{ inputs.target }})"
             echo
             echo '```json'
             cat body.json

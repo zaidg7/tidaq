@@ -1,0 +1,27 @@
+{
+  "version": "0.1.20260917",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "time": "0.0957 sec.",
+  "cost": 0,
+  "tasks_count": 1,
+  "tasks_error": 0,
+  "tasks": [
+    {
+      "id": "10122010-2784-0284-0000-da8b36a60c0e",
+      "status_code": 20000,
+      "status_message": "Ok.",
+      "time": "0.0548 sec.",
+      "cost": 0,
+      "result_count": 0,
+      "path": ["v3", "business_data", "google", "hotel_info", "tasks_ready"],
+      "data": {
+        "se_type": "hotel_info",
+        "se": "google",
+        "api": "business_data",
+        "function": "hotel_info"
+      },
+      "result": null
+    }
+  ]
+}

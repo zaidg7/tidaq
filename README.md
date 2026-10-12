@@ -72,8 +72,9 @@ The tracked hotels live in `public.hotels` (source: `scripts/catalog/`). To add 
 
 - **Morning run** (05:00 UTC cron in production): refresh the stay grid for active hotels → deactivate past stays → budget guard → post one DataForSEO Hotel Info task per stay (by `hotel_identifier`, `tag` = stay id) → log the run in `collector_runs` and each task in `collector_tasks`.
 - **Budget guard** (`packages/core/src/budget.ts`): at most `DAILY_TASK_CAP` tasks per UTC day and `MONTHLY_BUDGET_USD` per month at $0.0008 per task. Staging and production share the database, so both count against the same cap. When the cap cuts, watched stays go first, then the nearest check-in. The reason is stored in `collector_runs.budget_reason`.
-- **Manual run:** Actions → **Collector run** → Run workflow → target `staging` (cap 50) or `production`. It calls `POST /run` with a token derived from `SUPABASE_SERVICE_ROLE_KEY`; the job summary shows the run summary. Every manual run spends real money (up to the cap × $0.0008).
-- **Results** (polling `tasks_ready`, snapshots, stats) come in C-013b.
+- **Manual run:** Actions → **Collector run** → Run workflow → target `staging` (cap 50) or `production`, action `post`. It calls `POST /run` with a token derived from `SUPABASE_SERVICE_ROLE_KEY`; the job summary shows the run summary. Every manual run spends real money (up to the cap × $0.0008).
+- **Collect runs** (every 10 min 05:00–07:50 and 17:00–18:50 UTC in production): ask `tasks_ready` which results are done, fetch up to `COLLECT_BATCH` (30) with `task_get` (both free), keep eligible offers, then write everything with one SQL call (`collector_ingest`): `price_snapshots`, new pending providers, task statuses, `stay_daily` for the touched days. Then `stay_stats` is recomputed for those stays. A run with nothing to do writes no `collector_runs` row.
+- **Manual collect:** Actions → **Collector run** → action `collect` (free). On staging there are no crons, so after a manual `post` run wait ~5 minutes and run `collect` (repeat while tasks are open; each call fetches 30).
 
 ### Deploys (Cloudflare Workers)
 

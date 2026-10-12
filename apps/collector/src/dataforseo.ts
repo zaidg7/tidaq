@@ -1,4 +1,11 @@
-import { DFS_OK, DFS_TASK_CREATED, z } from '@tidaq/core';
+import {
+  DFS_OK,
+  DFS_TASK_CREATED,
+  dfsHotelInfoResponseSchema,
+  dfsTasksReadyResponseSchema,
+  z,
+  type DfsHotelInfoResponse,
+} from '@tidaq/core';
 
 const API = 'https://api.dataforseo.com/v3/business_data/google/hotel_info';
 /** DataForSEO accepts at most 100 tasks per POST (C-010). */
@@ -124,4 +131,32 @@ export async function postHotelInfoTasks(
     }
   }
   return result;
+}
+
+/** Ids of tasks whose results are ready (free call). Each id is listed until it is fetched. */
+export async function tasksReady(
+  creds: DfsCredentials,
+  fetchFn: FetchFn = fetch,
+): Promise<Set<string>> {
+  const res = await fetchWithRetry(fetchFn, `${API}/tasks_ready`, { headers: headers(creds) });
+  const json = dfsTasksReadyResponseSchema.parse(await res.json());
+  if (json.status_code !== DFS_OK) throw new Error(`${json.status_code} ${json.status_message}`);
+  return new Set((json.tasks ?? []).flatMap((t) => (t.result ?? []).map((r) => r.id)));
+}
+
+/**
+ * One task's result (free call, available for 30 days). Throws on transport or envelope
+ * errors; the task's own status (ready, queued, no results) is in `tasks[0]`.
+ */
+export async function taskGet(
+  id: string,
+  creds: DfsCredentials,
+  fetchFn: FetchFn = fetch,
+): Promise<DfsHotelInfoResponse> {
+  const res = await fetchWithRetry(fetchFn, `${API}/task_get/advanced/${encodeURIComponent(id)}`, {
+    headers: headers(creds),
+  });
+  const json = dfsHotelInfoResponseSchema.parse(await res.json());
+  if (json.status_code !== DFS_OK) throw new Error(`${json.status_code} ${json.status_message}`);
+  return json;
 }
