@@ -70,9 +70,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | Z-02 | Trademark check | DONE (clean) |
 | Z-03 | Buy tidaq.com | DONE (Namecheap) |
 | Z-03b | Point tidaq.com nameservers to Cloudflare | DONE (zone active) |
-| Z-04 | Cloudflare ✅, Supabase ✅, DataForSEO (sign-up, no top-up yet) + GitHub secrets | IN PROGRESS |
-| Z-05 | Resend ✅ + `RESEND_API_KEY` secret (use a fresh key) | IN PROGRESS |
-| Z-06 | Claude cloud environment: allowed domains + env vars | TODO |
+| Z-04 | Cloudflare, Supabase, DataForSEO accounts + GitHub secrets (DataForSEO top-up waits for C-010) | DONE |
+| Z-05 | Resend + `RESEND_API_KEY` secret | DONE |
+| Z-06 | Claude cloud environment: full network access ✅, DataForSEO network secret | IN PROGRESS |
 | Z-07 | PC setup for LOCAL session + Claude in Chrome | TODO |
 | Z-09 | Google Search Console | TODO |
 | Z-10 | Social handles | TODO |
@@ -205,7 +205,7 @@ Owner: CLOUD · Size: M · Depends on: C-001, Z-04, Z-06 · Status: TODO · PR: 
 **Goal:** know exactly what the API gives us before building on it. **Write findings, not assumptions.**
 
 **Steps**
-1. Script `scripts/spike/dataforseo.ts` (runs locally or via a `workflow_dispatch` GitHub Action with secrets) that:
+1. Script `scripts/spike/dataforseo.ts` (runs in the cloud session, where the agent proxy attaches DataForSEO auth automatically, or via a `workflow_dispatch` GitHub Action with secrets) that:
    - calls Hotel Searches for "Luxushotel Berlin" (location Germany, language de, EUR) and records hotel identifiers,
    - calls Hotel Info for 3 hotels (Adlon, Ritz-Carlton Berlin, Waldorf Astoria Berlin) for 2 stays (next Fri–Sun, and 1–3 Dec 2026), adults 2, currency EUR,
    - tries `load_prices_by_dates` / `prices_start_date` / `prices_end_date` if available (a price calendar would save cost),
