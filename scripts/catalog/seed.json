@@ -1,0 +1,169 @@
+[
+  {
+    "city": "berlin",
+    "name": "Hotel Adlon Kempinski"
+  },
+  {
+    "city": "berlin",
+    "name": "The Ritz-Carlton Berlin"
+  },
+  {
+    "city": "berlin",
+    "name": "Waldorf Astoria Berlin"
+  },
+  {
+    "city": "berlin",
+    "name": "Hotel de Rome"
+  },
+  {
+    "city": "muenchen",
+    "name": "Mandarin Oriental Munich"
+  },
+  {
+    "city": "muenchen",
+    "name": "Hotel Bayerischer Hof"
+  },
+  {
+    "city": "muenchen",
+    "name": "Rosewood Munich"
+  },
+  {
+    "city": "muenchen",
+    "name": "The Charles Hotel"
+  },
+  {
+    "city": "hamburg",
+    "name": "The Fontenay"
+  },
+  {
+    "city": "hamburg",
+    "name": "Fairmont Hotel Vier Jahreszeiten"
+  },
+  {
+    "city": "hamburg",
+    "name": "Hotel Atlantic Hamburg",
+    "replaces": "Park Hyatt Hamburg"
+  },
+  {
+    "city": "hamburg",
+    "name": "The Westin Hamburg"
+  },
+  {
+    "city": "frankfurt",
+    "name": "Villa Kennedy"
+  },
+  {
+    "city": "frankfurt",
+    "name": "Steigenberger Icon Frankfurter Hof"
+  },
+  {
+    "city": "frankfurt",
+    "name": "Sofitel Frankfurt Opera"
+  },
+  {
+    "city": "wien",
+    "name": "Hotel Sacher Wien"
+  },
+  {
+    "city": "wien",
+    "name": "Park Hyatt Vienna"
+  },
+  {
+    "city": "wien",
+    "name": "Palais Coburg",
+    "replaces": "Rosewood Vienna"
+  },
+  {
+    "city": "wien",
+    "name": "Hotel Imperial"
+  },
+  {
+    "city": "zuerich",
+    "name": "Baur au Lac"
+  },
+  {
+    "city": "zuerich",
+    "name": "The Dolder Grand"
+  },
+  {
+    "city": "zuerich",
+    "name": "Park Hyatt Zurich"
+  },
+  {
+    "city": "paris",
+    "name": "Le Bristol Paris"
+  },
+  {
+    "city": "paris",
+    "name": "Shangri-La Paris"
+  },
+  {
+    "city": "paris",
+    "name": "Four Seasons Hotel George V"
+  },
+  {
+    "city": "london",
+    "name": "The Savoy"
+  },
+  {
+    "city": "london",
+    "name": "Claridge's",
+    "tag": "catalog-claridge-s-london"
+  },
+  {
+    "city": "london",
+    "name": "The Ritz London"
+  },
+  {
+    "city": "mailand",
+    "name": "Bulgari Hotel Milano",
+    "replaces": "Four Seasons Hotel Milano"
+  },
+  {
+    "city": "mailand",
+    "name": "Park Hyatt Milano"
+  },
+  {
+    "city": "mailand",
+    "name": "Mandarin Oriental Milan"
+  },
+  {
+    "city": "rom",
+    "name": "Hotel Hassler Roma"
+  },
+  {
+    "city": "rom",
+    "name": "Hotel de Russie"
+  },
+  {
+    "city": "rom",
+    "name": "Hotel Eden"
+  },
+  {
+    "city": "barcelona",
+    "name": "Hotel Arts Barcelona"
+  },
+  {
+    "city": "barcelona",
+    "name": "Mandarin Oriental Barcelona"
+  },
+  {
+    "city": "barcelona",
+    "name": "Majestic Hotel & Spa Barcelona"
+  },
+  {
+    "city": "amsterdam",
+    "name": "Waldorf Astoria Amsterdam"
+  },
+  {
+    "city": "amsterdam",
+    "name": "Mandarin Oriental Conservatorium",
+    "replaces": "Conservatorium Hotel (rebranded)",
+    "tag": "catalog-conservatorium-hotel-amsterdam"
+  },
+  {
+    "city": "amsterdam",
+    "name": "InterContinental Amstel Amsterdam",
+    "replaces": "Hotel De L'Europe"
+  }
+]

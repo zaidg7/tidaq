@@ -56,6 +56,18 @@ pnpm --filter collector dev     # collector worker on http://localhost:8787 (GET
 
 Layout: `apps/web` (Next.js on Cloudflare Workers via OpenNext), `apps/collector` (Cloudflare Worker with cron triggers), `packages/core` (shared TypeScript: formatting, dates, zod schemas, later stats and trust score). `@tidaq/core` is consumed as TypeScript source; no separate build step.
 
+### Hotel catalog
+
+The tracked hotels live in `public.hotels` (source: `scripts/catalog/`). To add or replace a hotel:
+
+1. Add `{ "city": "<city slug>", "name": "<official name>" }` to `scripts/catalog/seed.json`.
+2. `NODE_USE_ENV_PROXY=1 node scripts/catalog/resolve.ts post`, then `… resolve.ts get` after 1–5 minutes. Each search costs $0.0008; the script caps paid tasks.
+   - Searches use the hotel's own country as location. With location Germany, DataForSEO appends "Germany" to the keyword and finds nothing for hotels abroad.
+   - If an exact-name search returns nothing, `post-cities` searches "5-star hotels in <city>" and matches against that list.
+3. Check `scripts/catalog/resolved.json` (match score, distance to the city centre, Google's title).
+4. `node scripts/catalog/to-sql.ts` prints an idempotent upsert. Apply it as a migration (see Database) and save it under the recorded version.
+5. New hotels start active unless listed in `INACTIVE` in `to-sql.ts`. Budget: 36 active hotels × 8 stays ≈ 290 tasks/day (D-13).
+
 ### Deploys (Cloudflare Workers)
 
 | Environment | Web | Collector | When |
