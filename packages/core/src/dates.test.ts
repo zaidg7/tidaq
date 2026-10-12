@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { nights, parseIsoDate } from './dates';
+import { addDays, daysBetween, nights, parseIsoDate, toIsoDate, weekday } from './dates';
 
 describe('nights', () => {
   it('counts nights between check-in and check-out', () => {
@@ -29,5 +29,28 @@ describe('parseIsoDate', () => {
 
   it.each(['2026-02-30', '2026-13-01', '1.12.2026', '2026-12-1', ''])('rejects %j', (value) => {
     expect(() => parseIsoDate(value)).toThrow();
+  });
+});
+
+describe('date helpers', () => {
+  it('adds days across month, year and leap day', () => {
+    expect(addDays('2026-12-31', 1)).toBe('2027-01-01');
+    expect(addDays('2028-02-28', 1)).toBe('2028-02-29');
+    expect(addDays('2026-03-01', -1)).toBe('2026-02-28');
+  });
+
+  it('knows the weekday', () => {
+    expect(weekday('2026-10-12')).toBe(1); // Monday
+    expect(weekday('2026-10-16')).toBe(5); // Friday
+    expect(weekday('2026-10-18')).toBe(0); // Sunday
+  });
+
+  it('counts days between dates', () => {
+    expect(daysBetween('2026-10-12', '2026-11-23')).toBe(42);
+    expect(daysBetween('2026-10-12', '2026-10-10')).toBe(-2);
+  });
+
+  it('formats timestamps as dates', () => {
+    expect(toIsoDate(Date.UTC(2026, 9, 12, 23, 59))).toBe('2026-10-12');
   });
 });

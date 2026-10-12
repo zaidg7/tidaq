@@ -15,3 +15,23 @@ export function nights(checkIn: string, checkOut: string): number {
   }
   return diff;
 }
+
+/** Formats a UTC timestamp as `YYYY-MM-DD`. */
+export function toIsoDate(ms: number): string {
+  return new Date(ms).toISOString().slice(0, 10);
+}
+
+/** Adds (or subtracts) whole days to a `YYYY-MM-DD` date. */
+export function addDays(date: string, days: number): string {
+  return toIsoDate(parseIsoDate(date) + days * MS_PER_DAY);
+}
+
+/** Day of the week of a `YYYY-MM-DD` date: 0 = Sunday … 6 = Saturday. */
+export function weekday(date: string): number {
+  return new Date(parseIsoDate(date)).getUTCDay();
+}
+
+/** Whole days from `from` to `to` (negative if `to` is earlier). */
+export function daysBetween(from: string, to: string): number {
+  return Math.round((parseIsoDate(to) - parseIsoDate(from)) / MS_PER_DAY);
+}
