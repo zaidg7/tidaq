@@ -25,6 +25,13 @@ Five-star hotels in DACH and top European cities · German first, English second
 
 Next.js (App Router) on Cloudflare Workers via OpenNext · Cloudflare Worker + Cron for data collection · Supabase Postgres (Frankfurt) · DataForSEO Google Hotels API · Resend · TypeScript, pnpm, Tailwind, next-intl, Vitest, Playwright.
 
+## Quick start for sessions
+
+- Cloud sessions run `.claude/hooks/session-start.sh` on start: it installs dependencies with `pnpm install --frozen-lockfile` when `node_modules` is missing or the lockfile changed. `pnpm test` works right away.
+- LOCAL (Windows) skips the hook; run `pnpm install` once after cloning or pulling.
+- `.claude/settings.json` pre-approves routine commands (pnpm scripts, read-only git, Playwright/Vitest) so sessions ask fewer permission questions.
+- Then follow `CLAUDE.md` §2 (session protocol).
+
 ## Development
 
 Requirements: Node 22 (`.nvmrc`) and pnpm 10 (`corepack enable` picks the version from `package.json`).

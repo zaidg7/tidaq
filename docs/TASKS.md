@@ -16,7 +16,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | **Phase 0: Setup** (week 42, target Sun 18 Oct) |||||
 | C-001 | Monorepo scaffold (Next.js + OpenNext + collector + core) | CLOUD | M | Z-01 | DONE |
 | C-002 | CI pipeline (lint, typecheck, test, build, e2e smoke) | CLOUD | M | C-001 | DONE |
-| C-003 | Session tooling (SessionStart hook, permissions allowlist) | CLOUD | S | C-001 | TODO |
+| C-003 | Session tooling (SessionStart hook, permissions allowlist) | CLOUD | S | C-001 | DONE |
 | C-007 | i18n setup (de default, en) and formatting helpers | CLOUD | S | C-001 | TODO |
 | C-004 | Supabase schema v1, RLS, seed providers and cities | CLOUD | M | C-001, Z-04 | TODO |
 | C-005 | Deploy pipeline to Cloudflare (web + collector), staging and prod | CLOUD | M | C-002, Z-03b, Z-04 | TODO |
@@ -123,7 +123,8 @@ Notes: one job "CI" (~3 min). Red proof: [run 38272430319](https://github.com/za
 - [x] Typical run under 6 minutes
 
 ### C-003 · Session tooling
-Owner: CLOUD · Size: S · Depends on: C-001 · Status: TODO · PR: –
+Owner: CLOUD · Size: S · Depends on: C-001 · Status: DONE · PR: [#6](https://github.com/zaidg7/tidaq/pull/6)
+Notes: hook runs only when `CLAUDE_CODE_REMOTE=true` (cloud); synchronous, ~11 s on a cold install, instant when up to date. LOCAL installs manually.
 
 **Goal:** new sessions start fast and ask fewer permission questions.
 
@@ -133,7 +134,7 @@ Owner: CLOUD · Size: S · Depends on: C-001 · Status: TODO · PR: –
 3. Add a "Quick start for sessions" section to README.
 
 **Done when**
-- [ ] A fresh cloud session can run `pnpm test` without manual install
+- [x] A fresh cloud session can run `pnpm test` without manual install
 
 ### C-004 · Supabase schema v1
 Owner: CLOUD · Size: M · Depends on: C-001, Z-04 · Status: TODO · PR: –
