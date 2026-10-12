@@ -191,6 +191,7 @@ Owner: CLOUD · Size: S · Depends on: C-001 · Status: TODO · PR: –
 1. next-intl with locales `de` (default, no prefix) and `en` (`/en`). Middleware, `messages/de.json`, `messages/en.json`.
 2. `packages/core/format.ts`: `formatPrice(cents, locale)` → `1.184 €` / `€1,184`; `formatDateRange` → `1.–3. Dez. 2026` / `1–3 Dec 2026`; `formatPercent`. Unit tests for both locales, including thousands, 0, negative deltas.
 3. Locale switch component (keeps the current path).
+4. Extend `apps/web/e2e/smoke.spec.ts` with the `/en` case (C-002 covers only `/`, because `/en` doesn't exist before this task).
 
 **Done when**
 - [ ] `/` German, `/en` English; all strings from message files
