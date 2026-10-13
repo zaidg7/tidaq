@@ -119,5 +119,31 @@
     "date": "Datum",
     "price": "Bester Preis",
     "provider": "Anbieter"
+  },
+  "verdict": {
+    "near_low": "Nah am tiefsten Preis der letzten {n} Tage.",
+    "good": "Günstiger als an {k} der letzten {n} Tage.",
+    "normal": "Im üblichen Bereich der letzten {n} Tage.",
+    "high": "Teurer als an {k} der letzten {n} Tage.",
+    "collecting": "Ab 7 Tagen sagen wir dir, ob der Preis tief oder hoch ist.",
+    "total": "gesamt · {perNight} pro Nacht · {nights, plural, one {# Nacht} other {# Nächte}}, {adults, plural, one {# Erwachsener} other {# Erwachsene}}",
+    "scrubbed": "Preis am {date}",
+    "noPrice": "{date}: kein Preis",
+    "rangeLow": "Tief {price}",
+    "rangeHigh": "Hoch {price}",
+    "rangeLabel": "Heute {now}, zwischen Tief {low} und Hoch {high} der letzten {n} Tage",
+    "updatedtoday": "Stand: heute, {time} Uhr",
+    "updatedyesterday": "Stand: gestern, {time} Uhr",
+    "updateddate": "Stand: {date}, {time} Uhr",
+    "source": "Quelle: Google Hotels"
+  },
+  "collecting": {
+    "title": "Wir sammeln noch Preise",
+    "text": "Ab 7 Tagen Verlauf sagen wir dir, ob der Preis tief oder hoch ist. Bis dahin kommt jeden Tag ein Punkt dazu.",
+    "progress": "Tag {days} von {needed} · erste Einschätzung ab {date}",
+    "progressLabel": "{days} von {needed} Tagen gesammelt"
+  },
+  "toast": {
+    "close": "Schließen"
   }
 }

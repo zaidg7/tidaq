@@ -10,7 +10,7 @@ test.describe('/dev/ui', () => {
     expect(res?.status()).toBe(200);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Komponenten');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
-    await expect(page.getByText('Daten werden gesammelt (3/7)')).toBeVisible();
+    await expect(page.getByText('Daten werden gesammelt (3/7)').first()).toBeVisible();
     await expect(page.getByText('Noch zu wenig Tests').first()).toBeVisible();
     await expect(page.getByText('5 % unter dem 30-Tage-Schnitt')).toBeVisible();
     await expect(page.getByText('12 % unter dem Schnitt seit 1. Okt.')).toBeVisible();
@@ -102,5 +102,40 @@ test.describe('/dev/ui', () => {
     ).toBeVisible();
     await expect(section.getByText('Keine Daten seit 8. Okt.')).toBeVisible();
     await expect(section.getByText(/↑\s5\.200\s€/)).toBeVisible();
+  });
+
+  test('verdict block: facts, range and price that follows the chart', async ({ page }) => {
+    await page.goto('/dev/ui');
+    const panel = page.locator('#urteil [data-scrub-scope]');
+    await expect(panel.getByText('Guter Preis')).toBeVisible();
+    await expect(panel.getByText(/^Günstiger als an \d+ der letzten 58 Tage\.$/)).toBeVisible();
+    await expect(panel.getByText('Stand: heute, 07:12 Uhr · Quelle: Google Hotels')).toBeVisible();
+    await expect(
+      panel.getByRole('img', {
+        name: /^Heute .+, zwischen Tief .+ und Hoch .+ der letzten 58 Tage$/,
+      }),
+    ).toBeVisible();
+
+    const total = panel.getByText(/^gesamt · .+ pro Nacht · 2 Nächte, 2 Erwachsene$/);
+    await expect(total).toBeVisible();
+    await panel.getByRole('slider').focus();
+    await page.keyboard.press('Home');
+    await expect(panel.getByText('Preis am 15. Aug.')).toBeVisible();
+    await expect(total).toBeHidden();
+    await page.keyboard.press('Escape');
+    await expect(total).toBeVisible();
+  });
+
+  test('collecting state and toast', async ({ page }) => {
+    await page.goto('/dev/ui');
+    const progress = page.getByRole('progressbar', { name: '3 von 7 Tagen gesammelt' });
+    await expect(progress).toHaveAttribute('aria-valuenow', '3');
+    await expect(page.getByText('Tag 3 von 7 · erste Einschätzung ab Sa, 17. Okt.')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Toast zeigen' }).click();
+    const toast = page.getByRole('status').filter({ hasText: 'Alarm gespeichert' });
+    await expect(toast).toBeVisible();
+    await toast.getByRole('button', { name: 'Schließen' }).click();
+    await expect(toast).toBeHidden();
   });
 });

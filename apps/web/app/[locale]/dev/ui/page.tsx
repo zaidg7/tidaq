@@ -15,7 +15,17 @@ import {
   Users,
   X,
 } from 'lucide-react';
-import { addDays, stayStates, type DailyPrice, type Locale } from '@tidaq/core';
+import {
+  addDays,
+  computeStayStats,
+  stayStates,
+  verdictFacts,
+  type DailyPrice,
+  type Locale,
+} from '@tidaq/core';
+import { ToastDemo } from '@/components/dev/ToastDemo';
+import { CollectingState } from '@/components/stay/CollectingState';
+import { VerdictBlock } from '@/components/stay/VerdictBlock';
 import { PriceChart } from '@/components/chart/PriceChart';
 import { Badge } from '@/components/ui/Badge';
 import { Button, buttonClasses, IconButton } from '@/components/ui/Button';
@@ -25,6 +35,7 @@ import { TextField } from '@/components/ui/Field';
 import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
 import { Price } from '@/components/ui/Price';
+import { ChartSkeleton, VerdictSkeleton } from '@/components/ui/Skeleton';
 import { PriceDelta } from '@/components/ui/PriceDelta';
 import { StateChip } from '@/components/ui/StateChip';
 import { TrustScore } from '@/components/ui/TrustScore';
@@ -67,6 +78,12 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
   const series = sampleSeries(to);
   const avg = Math.round(series.slice(-30).reduce((s, p) => s + p.bestCents, 0) / 30);
   const live = await getFeaturedStay();
+  const checkIn = addDays(to, 50);
+  const stats = computeStayStats(series, to, checkIn);
+  const fewDays = series.slice(-3);
+  const fewStats = computeStayStats(fewDays, to, checkIn);
+  const updatedAt = '2026-10-13T05:12:00Z';
+  const devNow = new Date('2026-10-13T10:00:00Z');
 
   return (
     <div className="mx-auto w-full max-w-[1080px] px-5 py-10 md:px-7">
@@ -260,6 +277,54 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
             <StateChip key={s} state={s} daysTracked={5} size="sm" />
           ))}
         </div>
+      </Section>
+
+      <Section title="Urteil">
+        <Card variant="float" className="w-full" data-scrub-scope="">
+          <div className="grid gap-8 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+            <VerdictBlock
+              stats={stats}
+              series={series}
+              today={to}
+              nights={2}
+              adults={2}
+              updatedAt={updatedAt}
+              now={devNow}
+            />
+            <PriceChart series={series} from={from} to={to} avgCents={stats.avg30Cents} />
+          </div>
+        </Card>
+        <Card className="w-full md:w-[calc(50%-6px)]">
+          <CollectingState
+            daysTracked={fewStats.daysTracked}
+            verdictOn={verdictFacts(fewDays, to, null).verdictOn}
+          >
+            <Button leading={<Icon icon={Bell} size={18} />}>Preis beobachten</Button>
+          </CollectingState>
+        </Card>
+        <Card className="w-full md:w-[calc(50%-6px)]">
+          <VerdictBlock
+            stats={fewStats}
+            series={fewDays}
+            today={to}
+            nights={3}
+            adults={1}
+            updatedAt="2026-10-12T05:10:00Z"
+            now={devNow}
+          />
+        </Card>
+        <Card className="w-full">
+          <p className="text-h3">Lädt</p>
+          <div className="mt-4 grid gap-8 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+            <VerdictSkeleton />
+            <ChartSkeleton />
+          </div>
+        </Card>
+        <ToastDemo
+          label="Toast zeigen"
+          message="Alarm gespeichert. Wir melden uns, wenn der Preis fällt."
+          closeLabel="Schließen"
+        />
       </Section>
 
       <Section title="Preisverlauf">

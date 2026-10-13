@@ -37,8 +37,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-006b | Craft pass: CRAFT.md spec, refined tokens and components, logo, icons | CLOUD | M | C-006a | DONE |
 | C-020a | App shell: navbar, footer, locale switch, 404/500, robots | CLOUD | M | C-006b, C-007 | DONE |
 | C-006c | Price chart | CLOUD | M | C-006b | DONE |
-| C-006d | RangeBar, verdict block, Skeleton, EmptyState, Toast, visual regression | CLOUD | M | C-006c | TODO |
+| C-006d | RangeBar, verdict block, Skeleton, EmptyState, Toast | CLOUD | M | C-006c | DONE |
 | C-020b | Homepage (reference design, real live example) | CLOUD | L | C-020a, C-006d, C-015, C-019 | TODO |
+| C-006e | Visual regression screenshots of /dev/ui in CI | CLOUD | S | C-006d | TODO |
 | C-020c | Admin auth: Supabase magic link, `/admin` guard | CLOUD | S | C-020a | TODO |
 | C-016 | Admin: data health and budget dashboard | CLOUD | M | C-013b, C-020c | TODO |
 | C-032 | Trust audit tool and provider scores (early, so the audit starts in week 45) | CLOUD | M | C-020c, C-004 | TODO |
@@ -183,7 +184,7 @@ Notes: staging works since 12 Oct: https://tidaq-web-staging.tidaq.workers.dev (
 - [ ] Prod deploy procedure documented in README and tested once (placeholder page on tidaq.com)
 
 ### C-006 · Design tokens and base components
-Owner: CLOUD · Size: L (split a/b/c) · Depends on: C-001 · Status: a DONE, b DONE, c DONE, d TODO · PR: a = [#21](https://github.com/zaidg7/tidaq/pull/21), b = [#23](https://github.com/zaidg7/tidaq/pull/23), c = [#25](https://github.com/zaidg7/tidaq/pull/25)
+Owner: CLOUD · Size: L (split a/b/c) · Depends on: C-001 · Status: a DONE, b DONE, c DONE, d DONE · PR: a = [#21](https://github.com/zaidg7/tidaq/pull/21), b = [#23](https://github.com/zaidg7/tidaq/pull/23), c = [#25](https://github.com/zaidg7/tidaq/pull/25)
 
 **C-006a notes (DONE):** tokens in `apps/web/app/globals.css` (raw values on `:root`, dark set under `[data-theme='dark']`, Tailwind 4 `@theme inline` → `bg-surface`, `text-muted`, `rounded-card`, `shadow-float`, `ease-soft` …; type roles as `.text-display/.text-h2/.text-h3/.text-price-xl/.text-meta/.text-eyebrow`). **AA fix:** DESIGN.md's good/bad/warn as small text and muted-on-line miss 4.5:1, so small text uses new ink tokens (`text-good-ink` etc., documented in DESIGN.md §2). Plus Jakarta Sans 500/700/800 via `next/font` (`lib/fonts.ts`; buttons use 700 since 600 isn't loaded). Components in `components/ui/`: Logo, Button (+ `buttonClasses` for links), TextField, Chip, Card, Badge, StateChip, Price, PriceDelta, TrustScore; favicon `app/icon.svg`. Core: `trustLevel` (`trust.ts`, thresholds 85/60, < 5 tests → "Noch zu wenig Tests"), `relativeChange` (`stats.ts`). State labels now follow DESIGN.md ("Guter Preis", "Gerade teuer", "Daten werden gesammelt (3/7)"). `/dev/ui` (+ `/en/dev/ui`): every component and state, noindex, `notFound()` when `APP_ENV=production` (rendered per request via `connection()`). E2E: `e2e/dev-ui.spec.ts` (renders, font + background, focus ring, aria-describedby on field errors). Checked at 390 and 1280 px: no horizontal scroll.
 
@@ -191,7 +192,9 @@ Owner: CLOUD · Size: L (split a/b/c) · Depends on: C-001 · Status: a DONE, b 
 
 **C-006c notes (DONE):** core `chartGeometry` (`packages/core/src/chart.ts`, 21 tests): a slot per calendar day, x/y as fractions of the plot, guarded y-domain, outliers pinned to the edge, 3–4 round grid lines (`gridTicks`), gaps, low/last/avg, sparse window (≥ 14 days) with a "building" band, stale band after 2 days without data, flat-data handling. Web `components/chart/PriceChart.tsx` (server: left label gutter, stretched SVG for lines with non-scaling strokes, marks in percent, HTML labels, legend for Ø 30 Tage, table fallback) and `ChartScrub.tsx` (client: day-indexed slider, hover, touch scrub after 8 px, keys incl. PageUp/Down/Esc, readout chip clamped in the row above the plot, fires `tidaq:chartscrub` = `CHART_SCRUB_EVENT` for the verdict block). CRAFT.md §3 Price chart updated with every decision from the design-critic pass. Pass `to` = today (Europe/Berlin) on real pages, so stale data shows.
 
-**C-006d (TODO):** RangeBar and the verdict block (CRAFT.md §3; the verdict price listens to `tidaq:chartscrub` and snaps back on `null`), Skeleton, EmptyState (collecting 7-segment bar), Toast; Playwright screenshot test of `/dev/ui` at 390 and 1280 px (generate baselines in CI's Linux image, e.g. a `--update-snapshots` workflow run, because font rendering differs between machines).
+**C-006d notes (DONE):** `components/stay/VerdictBlock.tsx` (server; CRAFT.md §3 order: StateChip → XL price + "gesamt · … pro Nacht · n Nächte, n Erwachsene" → PriceDelta ("seit …" under 30 days) → RangeBar → one fact sentence → "Stand: heute, 07:12 Uhr · Quelle: Google Hotels" in German time), `VerdictPrice.tsx` (client: follows `tidaq:chartscrub` inside the nearest `[data-scrub-scope]`, snaps back), `components/ui/RangeBar.tsx`, `Skeleton.tsx` (Skeleton, VerdictSkeleton, ChartSkeleton with a dashed baseline only), `components/stay/CollectingState.tsx` (7-segment progressbar, "erste Einschätzung ab Sa, 17. Okt."), `components/ui/Toast.tsx` (role=status, 5 s, pauses on hover/focus). Core: `verdictFacts` (k of n days, first verdict day), `formatWeekdayDayMonth`, `updatedAtParts` (Europe/Berlin). Wrap verdict + chart in an element with `data-scrub-scope` so the price follows the chart.
+
+**C-006e (TODO):** Playwright screenshot test of `/dev/ui` at 390 and 1280 px (generate baselines in CI's Linux image, e.g. a `--update-snapshots` workflow run, because font rendering differs between machines).
 
 **Goal:** the Soft Modern design system from `docs/DESIGN.md` as code.
 

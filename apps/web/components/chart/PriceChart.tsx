@@ -78,7 +78,7 @@ export function PriceChart({ series, from, to, avgCents = null, providerByDay, c
             {g.yTicks.map((tk) => (
               <line
                 key={tk.cents}
-                x1="0"
+                x1={gutter}
                 x2="100%"
                 y1={pct(tk.y)}
                 y2={pct(tk.y)}
