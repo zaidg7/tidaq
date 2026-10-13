@@ -822,6 +822,7 @@ export type Database = {
       }
     }
     Functions: {
+      admin_health: { Args: { p_days?: number }; Returns: Json }
       collector_ingest: { Args: { payload: Json }; Returns: Json }
       prune_raw_snapshots: { Args: { older_than?: string }; Returns: number }
       rebuild_stay_daily: { Args: { p_stay_ids?: number[] }; Returns: number }
