@@ -52,7 +52,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | L-033                                                           | Checkout audit with Claude in Chrome (150 tests, recurring until launch)     | LOCAL | L (recurring) | C-032b, Z-07                      | TODO           |
 | C-021a                                                          | Search: hotel and city autocomplete                                          | CLOUD | S             | C-020a, C-011                     | DONE           |
 | C-021b                                                          | Search: date range picker (mobile bottom sheet)                              | CLOUD | M             | C-021a                            | DONE           |
-| C-022                                                           | Stay page with chart, stats, advice, provider table                          | CLOUD | L             | C-020a, C-015, C-013b             | TODO           |
+| C-022a                                                          | Stay page: route, data, header, chart, stats, advice, states                 | CLOUD | M             | C-020a, C-015, C-013b             | IN PROGRESS    |
+| C-022b                                                          | Stay page: provider table, watch CTA, untracked stays on demand              | CLOUD | M             | C-022a                            | TODO           |
 | C-023                                                           | Hotel page with price calendar                                               | CLOUD | M             | C-022                             | TODO           |
 | C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | TODO           |
 | C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | TODO           |
@@ -527,7 +528,7 @@ Owner: CLOUD · Size: M (split a/b) · Depends on: C-020a, C-011 · Status: DONE
 
 ### C-022 · Stay page
 
-Owner: CLOUD · Size: L (split: a = data + layout + chart, b = provider table + watch CTA + states) · Depends on: C-020a, C-015, C-013 · Status: TODO · PR: –
+Owner: CLOUD · Size: L (split: a = route + data + header + chart + stats + advice + collecting/no-data/past/inactive states; b = provider table + watch CTA + untracked stays created on demand) · Depends on: C-020a, C-015, C-013 · Status: a IN PROGRESS, b TODO · PR: –
 
 **Steps**
 
