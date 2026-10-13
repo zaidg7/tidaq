@@ -44,7 +44,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-006e                                                          | Visual regression screenshots of /dev/ui in CI                               | CLOUD | S             | C-006d                            | DONE           |
 | C-020c                                                          | Admin auth: Supabase magic link, `/admin` guard                              | CLOUD | S             | C-020a                            | DONE           |
 | C-016                                                           | Admin: data health and budget dashboard                                      | CLOUD | M             | C-013b, C-020c                    | DONE           |
-| C-013e                                                          | Villa Kennedy (Frankfurt) gets no prices: check its DataForSEO hotel ID      | CLOUD | S             | C-013b                            | TODO           |
+| C-013e                                                          | Villa Kennedy (Frankfurt) gets no prices: check its DataForSEO hotel ID      | CLOUD | S             | C-013b                            | DONE           |
+| C-013f                                                          | Re-check The Florentin (ex Villa Kennedy) in Google Hotels; re-add           | CLOUD | S             | C-013e                            | TODO           |
 | C-032a                                                          | Trust audit: form, recent tests, provider scores                             | CLOUD | S             | C-020c, C-004                     | DONE           |
 | C-032b                                                          | Trust audit: screenshot upload, edit tests, CSV export                       | CLOUD | S             | C-032a                            | DONE           |
 | L-033                                                           | Checkout audit with Claude in Chrome (150 tests, recurring until launch)     | LOCAL | L (recurring) | C-032b, Z-07                      | TODO           |
@@ -439,7 +440,15 @@ Owner: CLOUD · Size: M · Depends on: C-013, C-020c · Status: DONE · PR: [#32
 
 ### C-013e · Villa Kennedy gets no prices
 
-Owner: CLOUD · Size: S · Depends on: C-013b · Status: TODO · PR: –
+Owner: CLOUD · Size: S · Depends on: C-013b · Status: DONE · PR: [#36](https://github.com/zaidg7/tidaq/pull/36)
+
+**C-013e notes (DONE):** root cause: Villa Kennedy closed in 2022 and reopened in December 2025 as **The Florentin** (Althoff Collection); our identifier is the closed Google listing, so all 13 Hotel Info tasks returned `no_results`. Two Hotel Searches for the new name ("The Florentin", "The Florentin Frankfurt Althoff"; $0.0016 total, catalog guard) returned nothing: DataForSEO's Google Hotels data doesn't list it yet. The hotel is deactivated (migration `20261013201119`), which saves 11 empty tasks a day. `scripts/catalog/seed.json` now names The Florentin (with `replaces` and a `query` field, new in `resolve.ts`). Follow-up: C-013f.
+
+### C-013f · Re-check The Florentin
+
+Owner: CLOUD · Size: S · Depends on: C-013e · Status: TODO · PR: –
+
+Not before 10 Nov 2026. Post one Hotel Searches task for The Florentin (`node scripts/catalog/resolve.ts post` after changing the seed's `tag`), and if it resolves: data migration that sets the new `dfs_hotel_identifier`, name "The Florentin", keeps slug or renames it (also rename the photo files and the manifest), then `active = true`. If still missing, try again in December or replace it with another Frankfurt five-star hotel.
 
 Found by the C-016 dashboard on 13 Oct: Villa Kennedy (Frankfurt, hotel id 16) has active stays but no price on any day, while the other 35 active hotels have prices. Check its `dfs_hotel_identifier` with one DataForSEO hotel search call (through the budget guard), compare with the stored ID, fix the ID with a data migration, or deactivate it in `/admin` if DataForSEO doesn't list it.
 

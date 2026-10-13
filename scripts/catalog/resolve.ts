@@ -27,6 +27,8 @@ interface Seed {
   replaces?: string;
   /** Fixed task tag when the name changed after the search was posted. */
   tag?: string;
+  /** Search phrase when the plain name finds nothing (e.g. a new hotel: "The Florentin Frankfurt"). */
+  query?: string;
 }
 interface State {
   posted: { id: string; tag: string }[];
@@ -207,7 +209,7 @@ async function post(retry: boolean): Promise<void> {
   const json = await call(
     '/task_post',
     todo.map(({ seed, tag }) => ({
-      keyword: seed.name,
+      keyword: seed.query ?? seed.name,
       location_code: SEARCH_LOCATION[seed.city],
       language_code: 'de',
       currency: 'EUR',
