@@ -144,22 +144,27 @@ Plus Jakarta Sans as a **variable font**: one file, weights 200–800, self-host
 5. A fact sentence: "Günstiger als an 52 der letzten 60 Tage."
 6. Source line: "Stand: heute, 07:12 Uhr · Quelle: Google Hotels".
 
-**Price chart**
-- Height 220 / 260. No axis lines; 3–4 horizontal grid lines (`--line`). Y labels inside the left edge, 11.5 px 600 `--muted-ink`, tabular. 4 X dates ("15. Okt.").
+**Price chart** (built in C-006c; geometry in `packages/core/src/chart.ts`)
+- Plot height 220 / 260, plus a 36 px readout row above it. No axis lines; 3–4 horizontal grid lines (`--line`) at round euro steps.
+- Y labels 11.5 px 600 `--muted-ink`, tabular, in a **left gutter** sized to the longest label, so they never touch the line. 4 X dates ("15. Okt.") under the plot.
 - Line 2.25 px in **`--accent` always** Δ. Direction colour belongs to the chip and delta (D-22 stays).
-- **Straight segments or monotone-x only.**
-- Area: accent gradient 16 % → 0 %.
-- **Y-domain**: `[min − 0.5·range, max + 0.15·range]`, spanning at least ±6 % of the average, so a 9 € wiggle doesn't look like a cliff.
-- Average: dashed 4/4, 1.25 px `--muted`, label in a white pill at the right end.
-- Low point: hollow circle r 4.5 (2 px `--good`), label "Tief 1.162 €" in `--good-ink` with a white halo.
-- Today: r 5 accent dot with a 3 px white ring.
+- **Straight segments only.**
+- Area: accent gradient 16 % → 0 %, one gradient across gaps.
+- **Y-domain**: `[min − 0.5·range, max + 0.15·range]`, spanning at least ±6 % of the average, so a 9 € wiggle doesn't look like a cliff. **Outliers** (above 1.6× or below 0.5× the median) stay out of the domain: they sit on the edge as a small triangle labelled "↑ 5.200 €" and break the line.
+- Average: dashed 4/4, 1.25 px `--muted`, explained in a **legend row under the chart** ("╌ Ø 30 Tage: 1.146 €"). A pill at the line's end covered today's dot; the legend never does. No average below 7 points.
+- Low point: hollow circle r 4.5 (2 px `--good`), label "Tief 1.162 €" in `--good-ink` **below** it (the lowest mark, so that space is free).
+- Today: r 5 accent dot on an r 8 white disc. Only when the last price is from today or yesterday.
 - Missing days break the line.
-- **Fewer than 7 points**: dots only, plus a faint dashed band labelled "Hier entsteht dein Verlauf".
-- **Tooltip**: dark ink surface, radius 12, padding 10×12. Date 12 px `#C9BEF5`, price 15 px 800 white, provider 12 px.
+- **Fewer than 7 points**: dots only over a window of at least 14 days, with a dashed `--surface-2` band over the days before tracking started: "Hier entsteht dein Verlauf".
+- **No data for 2+ days**: a dashed band over the tail with "Keine Daten seit 8. Okt."
+- **No data at all**: a dashed baseline and "Noch keine Preise für diesen Aufenthalt." No dates.
+- **Flat prices** (range under 0.5 %): no low marker, no grid line under the line.
+- **Readout chip** (the one dark ink surface, `--ink-surface` in both themes): one line in the row above the plot, centred on the crosshair and clamped to the edges: date 12.5 px `--ink-muted`, price 14 px 800 white, provider. It never covers the data.
 - **Interaction**:
-  - Pointer and touch scrub (8 px horizontal drag, `touch-action: pan-y`). While scrubbing, the header price and date update; they snap back on release.
-  - Keyboard: ←/→ by day, Home/End.
-  - `aria-live` readout, plus an "Als Tabelle anzeigen" disclosure.
+  - Mouse hover. Touch scrubs after 8 px of horizontal travel (`touch-action: pan-y`, pointer capture) and snaps back on release. The chart fires `tidaq:chartscrub` so the verdict block can update its price while scrubbing (C-006d).
+  - Keyboard by **calendar day**: ←/→ day, PageUp/PageDown week, Home/End, Esc. Days without data read "kein Preis".
+  - `role="slider"` with `aria-valuetext` at rest ("13. Okt.: 1.142 €, Booking.com, heute"). A live region outside the slider speaks touch scrubbing.
+  - "Als Tabelle anzeigen" disclosure: every day of the window, newest first, gaps as "kein Preis", provider column.
 
 **Provider row**
 - Desktop grid `32px 1fr 120px 104px auto`:

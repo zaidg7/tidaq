@@ -1,6 +1,7 @@
 export {
   defaultLocale,
   formatDateRange,
+  formatDayMonth,
   formatPercent,
   formatPrice,
   priceParts,
@@ -11,6 +12,17 @@ export {
   type PriceParts,
 } from './format';
 export { localizedPath, splitLocale } from './paths';
+export {
+  areaPath,
+  CHART,
+  chartGeometry,
+  gridTicks,
+  linePath,
+  type ChartBand,
+  type ChartDay,
+  type ChartGeometry,
+  type ChartPoint,
+} from './chart';
 export { addDays, daysBetween, nights, parseIsoDate, toIsoDate, weekday } from './dates';
 export {
   buildGrid,

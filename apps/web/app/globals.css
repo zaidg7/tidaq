@@ -33,6 +33,9 @@
   --warn-soft: #f8eddc;
   --neutral-soft: #ece8f6;
   --disabled-ink: #8a84a3;
+  /* The one dark surface (tooltip, toast): dark in both themes. */
+  --ink-surface: #221c3b;
+  --ink-muted: #c9bef5;
   --blob-1: #ddd2ff;
   --blob-2: #ffd6e5;
   --blob-3: #e6ddff;
@@ -96,6 +99,8 @@
   --color-warn-soft: var(--warn-soft);
   --color-neutral-soft: var(--neutral-soft);
   --color-disabled-ink: var(--disabled-ink);
+  --color-ink-surface: var(--ink-surface);
+  --color-ink-muted: var(--ink-muted);
 
   --font-sans: var(--font-jakarta), system-ui, -apple-system, 'Segoe UI', sans-serif;
 
@@ -309,4 +314,12 @@
 }
 :root:has(.menu-sheet[open]) {
   overflow: hidden;
+}
+
+/* Chart labels over the line: a halo in the surface colour keeps them readable. */
+.chart-halo {
+  text-shadow:
+    0 0 3px var(--surface),
+    0 0 3px var(--surface),
+    0 0 3px var(--surface);
 }

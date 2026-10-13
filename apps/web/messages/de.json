@@ -103,5 +103,21 @@
     "text": "Die Seite konnte gerade nicht geladen werden. Versuch es gleich noch einmal.",
     "retry": "Nochmal versuchen",
     "home": "Zur Startseite"
+  },
+  "chart": {
+    "summary": "Preisverlauf über {days} Tage: Tief {low} am {lowDay}, zuletzt {last} am {lastDay}.",
+    "empty": "Noch keine Preise für diesen Aufenthalt.",
+    "low": "Tief {price}",
+    "avgLegend": "Ø 30 Tage: {price}",
+    "building": "Hier entsteht dein Verlauf",
+    "stale": "Keine Daten seit {since}",
+    "scrub": "Preis an einem Tag ansehen, mit den Pfeiltasten wählen",
+    "noPrice": "kein Preis",
+    "today": "heute",
+    "table": "Als Tabelle anzeigen",
+    "tableHide": "Tabelle ausblenden",
+    "date": "Datum",
+    "price": "Bester Preis",
+    "provider": "Anbieter"
   }
 }

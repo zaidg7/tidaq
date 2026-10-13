@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   defaultLocale,
   formatDateRange,
+  formatDayMonth,
   formatPercent,
   formatPrice,
   isLocale,
@@ -128,5 +129,13 @@ describe('priceParts', () => {
   it('uses a real minus sign for negative amounts', () => {
     expect(priceParts(-8_400, 'de').amount).toBe('−84');
     expect(priceParts(-8_400, 'en').amount).toBe('−84');
+  });
+});
+
+describe('formatDayMonth', () => {
+  it('formats short dates per locale', () => {
+    expect(formatDayMonth('2026-10-15', 'de')).toBe('15. Okt.');
+    expect(formatDayMonth('2026-05-03', 'de')).toBe('3. Mai');
+    expect(formatDayMonth('2026-10-15', 'en')).toBe('15 Oct');
   });
 });

@@ -15,7 +15,8 @@ import {
   Users,
   X,
 } from 'lucide-react';
-import { stayStates, type Locale } from '@tidaq/core';
+import { addDays, stayStates, type DailyPrice, type Locale } from '@tidaq/core';
+import { PriceChart } from '@/components/chart/PriceChart';
 import { Badge } from '@/components/ui/Badge';
 import { Button, buttonClasses, IconButton } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -27,11 +28,22 @@ import { Price } from '@/components/ui/Price';
 import { PriceDelta } from '@/components/ui/PriceDelta';
 import { StateChip } from '@/components/ui/StateChip';
 import { TrustScore } from '@/components/ui/TrustScore';
+import { getFeaturedStay } from '@/lib/data/featured';
 
 // APP_ENV is read per request (connection() below): the page must never render on production.
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
+
+/** 60 days of believable prices: weekly rhythm, a slow fall, two missing days, a dip at day 41. */
+function sampleSeries(to: string): DailyPrice[] {
+  return Array.from({ length: 60 }, (_, i) => {
+    const wave = Math.sin((i / 7) * Math.PI * 2) * 2_400;
+    const drift = (30 - i) * 180;
+    const dip = i >= 40 && i <= 43 ? -6_500 : 0;
+    return { day: addDays(to, i - 59), bestCents: Math.round(118_000 + wave + drift + dip) };
+  }).filter((_, i) => i !== 22 && i !== 23);
+}
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -50,6 +62,11 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
   if (process.env.APP_ENV === 'production') notFound();
   const { locale } = await params;
   setRequestLocale(locale);
+  const to = '2026-10-13';
+  const from = addDays(to, -59);
+  const series = sampleSeries(to);
+  const avg = Math.round(series.slice(-30).reduce((s, p) => s + p.bestCents, 0) / 30);
+  const live = await getFeaturedStay();
 
   return (
     <div className="mx-auto w-full max-w-[1080px] px-5 py-10 md:px-7">
@@ -243,6 +260,48 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
             <StateChip key={s} state={s} daysTracked={5} size="sm" />
           ))}
         </div>
+      </Section>
+
+      <Section title="Preisverlauf">
+        <Card variant="float" className="w-full">
+          <p className="text-h3">60 Tage mit Lücke (Beispiel)</p>
+          <PriceChart
+            className="mt-4"
+            series={series}
+            from={from}
+            to={to}
+            avgCents={avg}
+            providerByDay={Object.fromEntries(series.map((p) => [p.day, 'Booking.com']))}
+          />
+        </Card>
+        {(
+          [
+            ['Erst 4 Tage', series.slice(-4)],
+            ['Noch keine Daten', []],
+            ['Seit 5 Tagen keine Daten', series.slice(0, -5)],
+            [
+              'Ausreißer (5.200 €)',
+              series.map((p, i) => (i === 30 ? { ...p, bestCents: 520_000 } : p)),
+            ],
+          ] as const
+        ).map(([title, s]) => (
+          <Card key={title} className="w-full md:w-[calc(50%-6px)]">
+            <p className="text-h3">{title}</p>
+            <PriceChart className="mt-4" series={s} from={from} to={to} avgCents={avg} />
+          </Card>
+        ))}
+        {live && (
+          <Card variant="float" className="w-full">
+            <p className="text-h3">Live: {live.hotel.name}</p>
+            <PriceChart
+              className="mt-4"
+              series={live.series}
+              from={addDays(live.series.at(-1)?.day ?? to, -59)}
+              to={live.series.at(-1)?.day ?? to}
+              avgCents={live.stats.avg30Cents}
+            />
+          </Card>
+        )}
       </Section>
 
       <Section title="Preise und Abweichung">

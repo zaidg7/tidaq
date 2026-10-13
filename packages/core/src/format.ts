@@ -75,6 +75,11 @@ function dayMonth(date: Date, locale: Locale): string {
   return locale === 'de' ? `${date.getUTCDate()}. ${month}` : `${date.getUTCDate()} ${month}`;
 }
 
+/** A `YYYY-MM-DD` date as `15. Okt.` / `15 Oct` (chart axes, tooltips, "seit …"). */
+export function formatDayMonth(day: string, locale: Locale): string {
+  return dayMonth(new Date(parseIsoDate(day)), locale);
+}
+
 /**
  * Formats a stay as a compact date range.
  * Same month: `1.–3. Dez. 2026` / `1–3 Dec 2026`.
