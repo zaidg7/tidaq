@@ -191,5 +191,38 @@
     "past": "That date has passed. Pick a check-in from today.",
     "adults": "{n, plural, one {# adult} other {# adults}}",
     "datePlaceholder": "Choose date"
+  },
+  "how": {
+    "eyebrow": "How it works",
+    "title": "Three steps to the right moment",
+    "s1Title": "Choose hotel and dates",
+    "s1Text": "Exactly your stay: hotel, check-in, check-out and guests.",
+    "s2Title": "We check every morning",
+    "s2Text": "On the big booking sites and directly with the hotel. After 7 days you'll see whether the price is low right now.",
+    "s3Title": "You book when it fits",
+    "s3Text": "We show you where it's cheapest. Soon also by email when the price drops."
+  },
+  "checkout": {
+    "eyebrow": "Checkout check",
+    "title": "The cheapest price isn't always the real one",
+    "text": "Some sites show less in search than you pay at checkout. We test sites up to the last page before payment and compare. Sites that often end up pricier get a low price accuracy score and rank lower.",
+    "link": "How the checkout check works",
+    "receiptTitle": "Example test",
+    "receiptSite": "Site A",
+    "shown": "In search",
+    "checkout": "At checkout",
+    "diff": "Difference",
+    "receiptNote": "Example. We show real results per site as price accuracy."
+  },
+  "deals": {
+    "eyebrow": "Just dropped",
+    "title": "Five-star deals this week",
+    "meta": "{dates} · {adults, plural, one {# adult} other {# adults}}",
+    "all": "All deals"
+  },
+  "cta": {
+    "title": "Find the right moment for your hotel.",
+    "text": "Free, no account and no cookies. We only earn when you book through a partner link. Your price stays the same.",
+    "button": "See prices"
   }
 }

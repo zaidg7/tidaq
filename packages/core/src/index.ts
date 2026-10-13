@@ -98,6 +98,7 @@ export {
 export { TRUST, trustLevel, type TrustLevel } from './trust';
 export { verdictFacts, type VerdictFacts } from './verdict';
 export { FEATURED_MIN_LEAD_DAYS, pickFeaturedStay, type FeaturedCandidate } from './featured';
+export { DEALS, pickDeals, type DealCandidate } from './deals';
 export { z, isoDateSchema } from './zod';
 export {
   stayOrigins,

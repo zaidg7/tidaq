@@ -191,5 +191,38 @@
     "past": "Dieses Datum ist schon vorbei. Wähl eine Anreise ab heute.",
     "adults": "{n, plural, one {# Erwachsener} other {# Erwachsene}}",
     "datePlaceholder": "Datum wählen"
+  },
+  "how": {
+    "eyebrow": "So funktioniert’s",
+    "title": "Drei Schritte zum richtigen Moment",
+    "s1Title": "Hotel und Daten wählen",
+    "s1Text": "Genau dein Aufenthalt: Hotel, Anreise, Abreise und Gäste.",
+    "s2Title": "Wir prüfen jeden Morgen",
+    "s2Text": "Bei den großen Buchungsseiten und direkt beim Hotel. Nach 7 Tagen siehst du, ob der Preis gerade tief ist.",
+    "s3Title": "Du buchst, wenn es passt",
+    "s3Text": "Wir zeigen dir, wo es am günstigsten ist. Bald auch per E-Mail, wenn der Preis fällt."
+  },
+  "checkout": {
+    "eyebrow": "Kassen-Check",
+    "title": "Der günstigste Preis ist nicht immer der echte",
+    "text": "Manche Seiten zeigen in der Suche weniger, als du an der Kasse zahlst. Wir testen die Anbieter bis zur letzten Seite vor der Zahlung und vergleichen. Wer oft teurer wird, bekommt eine niedrige Preistreue und steht weiter unten.",
+    "link": "So funktioniert der Kassen-Check",
+    "receiptTitle": "Beispiel-Test",
+    "receiptSite": "Anbieter A",
+    "shown": "In der Suche",
+    "checkout": "An der Kasse",
+    "diff": "Unterschied",
+    "receiptNote": "Beispiel. Echte Ergebnisse zeigen wir je Anbieter als Preistreue."
+  },
+  "deals": {
+    "eyebrow": "Gerade gefallen",
+    "title": "Fünf-Sterne-Deals dieser Woche",
+    "meta": "{dates} · {adults, plural, one {# Erwachsener} other {# Erwachsene}}",
+    "all": "Alle Deals"
+  },
+  "cta": {
+    "title": "Finde den richtigen Moment für dein Hotel.",
+    "text": "Kostenlos, ohne Konto und ohne Cookies. Wir verdienen nur, wenn du über einen Partnerlink buchst. Dein Preis bleibt gleich.",
+    "button": "Preise ansehen"
   }
 }

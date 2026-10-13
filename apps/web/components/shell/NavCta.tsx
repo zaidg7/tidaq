@@ -5,8 +5,9 @@ import { buttonClasses } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
 
 /**
- * The navbar's "Preise ansehen". On a page with the search card (`#suche`) it stays hidden while
- * the card is on screen, so two primary buttons are never in view (CRAFT.md §1).
+ * The navbar's "Preise ansehen". While the search card (`#suche`) or another primary CTA marked
+ * `data-hides-nav-cta` is on screen it stays hidden, so two primary buttons are never in view
+ * (CRAFT.md §1).
  */
 export function NavCta({ href, label }: { href: string; label: string }) {
   const [searchVisible, setSearchVisible] = useState(false);
