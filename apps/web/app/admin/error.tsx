@@ -9,7 +9,8 @@ export default function AdminError({ reset }: { error: Error; reset: () => void 
     <AdminFrame>
       <h1 className="text-h3">Das hat nicht geklappt.</h1>
       <p className="text-muted-ink">
-        Die Anmeldung konnte gerade nicht geprüft werden. Versuch es in einer Minute noch mal.
+        Die Seite konnte gerade nicht geladen werden (Supabase nicht erreichbar?). Versuch es in
+        einer Minute noch mal.
       </p>
       <Button variant="subtle" onClick={reset}>
         Noch mal versuchen

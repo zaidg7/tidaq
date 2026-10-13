@@ -69,3 +69,26 @@ test('unknown admin paths show the admin 404', async ({ page }) => {
   expect(res?.status()).toBe(404);
   await expect(page.getByRole('heading', { name: /Admin-Seite gibt es nicht/ })).toBeVisible();
 });
+
+test.describe('dashboard preview (made-up data)', () => {
+  test('shows the verdict, the four numbers and the to-dos', async ({ page }) => {
+    await page.goto('/dev/admin');
+    await expect(page.getByRole('heading', { name: 'Schau mal hin' })).toBeVisible();
+    await expect(page.getByText('2 Fehler heute.')).toBeVisible();
+    await expect(page.getByText('1 Hotel ohne Preise seit 3 Tagen.')).toBeVisible();
+    await expect(page.getByText('365 / 396')).toBeVisible();
+    await expect(page.getByText('28 % vom Budget')).toBeVisible();
+    await expect(page.getByText('Letzter Fehler: stay 214')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Deaktivieren' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Freigeben' })).toHaveCount(2);
+    await expect(page.getByText('Und 62 weitere')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Staging-Lauf starten' })).toBeVisible();
+  });
+
+  test('fits a phone without horizontal scrolling', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto('/dev/admin');
+    const width = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(width).toBeLessThanOrEqual(390);
+  });
+});

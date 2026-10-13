@@ -106,7 +106,8 @@ pnpm workspace. Node 22 LTS. If reality differs, update this map in your PR.
 | `RESEND_API_KEY` | GitHub secret, Cloudflare secret | alerts |
 | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | GitHub secret | deploy workflow |
 | `ADMIN_EMAILS` | Cloudflare var (in `apps/web/wrangler.jsonc`) | admin login (`zaidghazal216@gmail.com`) |
-| `DAILY_TASK_CAP` (default 400), `MONTHLY_BUDGET_USD` (default 12), `EVENING_RUN` (default false), `GRID_WEEKENDS` (6), `GRID_MIDWEEK` (2) | Cloudflare var | budget guard, grid size |
+| `DAILY_TASK_CAP` (default 400), `MONTHLY_BUDGET_USD` (default 12), `EVENING_RUN` (default false), `GRID_WEEKENDS` (6), `GRID_MIDWEEK` (2) | Cloudflare var | budget guard, grid size (`MONTHLY_BUDGET_USD` also in the web vars for /admin) |
+| `COLLECTOR_STAGING_URL` | Cloudflare var (web) | /admin "Staging-Lauf starten" |
 | `ALERTS_DRY_RUN` | Cloudflare var (`true` outside production) | alert engine |
 
 CI injects secrets into deploys. Sessions do not need raw keys for normal work: run code against fixtures, deploy through CI, and use the claude.ai **MCP connectors** Zaid connected: **Supabase** (Pro organization: migrations, SQL checks, logs), **Cloudflare** (Workers, KV, R2, D1, docs; the connector sees two accounts: always pass `account_id` `63180a4f3295af180eed5afb45fad76b` = "tidaq", never the other one) and **Resend** (domain status, test sends). Prefer the deploy pipeline for changes that must be reproducible; use connectors for setup, inspection and debugging. Never use them to bypass migrations or send real user emails. The cloud environment has **full network access**.
