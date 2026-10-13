@@ -14,6 +14,13 @@ export {
   type PriceParts,
 } from './format';
 export { localizedPath, splitLocale } from './paths';
+export {
+  ADULTS,
+  parseStayParams,
+  stayPath,
+  type StayParams,
+  type StayParamsResult,
+} from './stayParams';
 export { parseEuroCents } from './money';
 export { toCsv } from './csv';
 export { foldText, matchHotels, type SearchableHotel } from './search';

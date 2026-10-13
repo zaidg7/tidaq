@@ -52,7 +52,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | L-033                                                           | Checkout audit with Claude in Chrome (150 tests, recurring until launch)     | LOCAL | L (recurring) | C-032b, Z-07                      | TODO           |
 | C-021a                                                          | Search: hotel and city autocomplete                                          | CLOUD | S             | C-020a, C-011                     | DONE           |
 | C-021b                                                          | Search: date range picker (mobile bottom sheet)                              | CLOUD | M             | C-021a                            | DONE           |
-| C-022                                                           | Stay page with chart, stats, advice, provider table                          | CLOUD | L             | C-020a, C-015, C-013b             | TODO           |
+| C-022a                                                          | Stay page: route, data, header, chart, stats, advice, states                 | CLOUD | M             | C-020a, C-015, C-013b             | DONE           |
+| C-022b                                                          | Stay page: provider table, watch CTA, untracked stays on demand              | CLOUD | M             | C-022a                            | TODO           |
 | C-023                                                           | Hotel page with price calendar                                               | CLOUD | M             | C-022                             | TODO           |
 | C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | TODO           |
 | C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | TODO           |
@@ -527,7 +528,9 @@ Owner: CLOUD · Size: M (split a/b) · Depends on: C-020a, C-011 · Status: DONE
 
 ### C-022 · Stay page
 
-Owner: CLOUD · Size: L (split: a = data + layout + chart, b = provider table + watch CTA + states) · Depends on: C-020a, C-015, C-013 · Status: TODO · PR: –
+Owner: CLOUD · Size: L (split: a = route + data + header + chart + stats + advice + collecting/no-data/past/inactive states; b = provider table + watch CTA + untracked stays created on demand) · Depends on: C-020a, C-015, C-013 · Status: a DONE, b TODO · PR: a = [#40](https://github.com/zaidg7/tidaq/pull/40)
+
+**C-022a notes (DONE):** route `app/[locale]/hotel/[slug]/[range]/page.tsx`, params validated by core `parseStayParams` (bad dates, check-out ≤ check-in, > 30 nights, bad slug → 404; invalid `adults` → redirect to `adults=2`; missing `adults` = 2) and linked with core `stayPath`. Data: `lib/data/stay.ts` `getStay` (hotel incl. inactive, the exact tracked stay, 60 days of reviewed best prices with the best provider's name per day, up to 6 other upcoming tracked stays from `v_hotel_calendar`); no Supabase or a read error → "Preise gerade nicht erreichbar" with reload. View: `components/stay/StayView.tsx` with `stayStatus()`: tracked (verdict + chart + Tief/Ø 30 Tage/Hoch + advice incl. "Kurz vor Anreise"), collecting (price + chart so far + 7-day progress), no_data, untracked, past, inactive. "Ändern" (`EditStay`) opens the search card prefilled (`SearchCard` got `initial` and `formId`). Sample-data previews of every state at `/dev/stay/<tracked|soon|collecting|no-data|untracked|past|inactive>` (not on production) feed `e2e/stay.spec.ts`. Checked against live data (Waldorf Astoria, collecting). For C-022b: the untracked copy says "Bald kannst du auch eigene Daten beobachten lassen" — change it when on-demand tracking ships; the provider table and watch CTA go between the panel and "Weitere Termine"; no visual-regression baseline for the stay page yet (add one when the layout settles, it costs a baseline run).
 
 **Steps**
 
