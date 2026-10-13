@@ -196,12 +196,8 @@ function PickerBody({ titleId, initial, onChange, onDone, today, locale, labels 
         year: 'numeric',
         timeZone: 'UTC',
       }),
-      short: new Intl.DateTimeFormat(l, {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-        timeZone: 'UTC',
-      }),
+      // "4.–10. Dez." / "4–10 Dec" (DESIGN.md date ranges).
+      range: new Intl.DateTimeFormat(l, { day: 'numeric', month: 'short', timeZone: 'UTC' }),
       weekdayShort: new Intl.DateTimeFormat(l, { weekday: 'short', timeZone: 'UTC' }),
       weekdayLong: new Intl.DateTimeFormat(l, { weekday: 'long', timeZone: 'UTC' }),
     };
@@ -256,12 +252,16 @@ function PickerBody({ titleId, initial, onChange, onDone, today, locale, labels 
   const nights = draft.checkIn && draft.checkOut ? dayDiff(draft.checkIn, draft.checkOut) : 0;
   const nightsText = (n: number) =>
     n === 1 ? labels.nightsOne : labels.nightsOther.replace('{n}', String(n));
-  const summary =
-    nights > 0
-      ? `${fmt.short.format(utc(draft.checkIn))} – ${fmt.short.format(utc(draft.checkOut))} · ${nightsText(nights)}`
-      : draft.phase === 'out' && draft.checkIn
-        ? labels.chooseOut
-        : labels.chooseIn;
+  const hint = draft.phase === 'out' && draft.checkIn ? labels.chooseOut : labels.chooseIn;
+  // The preview band follows the pointer only over days that can be the check-out.
+  const previewTo =
+    pointer &&
+    draft.phase === 'out' &&
+    draft.checkIn &&
+    pointer > draft.checkIn &&
+    isSelectable(pointer, today, draft)
+      ? pointer
+      : undefined;
 
   const canPrev = view > monthOf(today);
   const canNext = viewEnd <= lastDay(today);
@@ -309,7 +309,7 @@ function PickerBody({ titleId, initial, onChange, onDone, today, locale, labels 
               heading={fmt.month.format(utc(month))}
               weekdays={weekdays}
               draft={draft}
-              pointer={pointer}
+              pointer={previewTo}
               focusDay={focusDay}
               today={today}
               label={(day, role) => {
@@ -329,8 +329,17 @@ function PickerBody({ titleId, initial, onChange, onDone, today, locale, labels 
       </div>
 
       <div className="flex items-center justify-between gap-3 border-t border-line px-5 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))] md:px-6 md:pb-4">
-        <p aria-live="polite" className="min-w-0 text-[14px] leading-snug font-semibold text-fg">
-          {summary}
+        <p aria-live="polite" className="min-w-0 leading-snug">
+          {nights > 0 ? (
+            <>
+              <span className="block text-[15px] font-bold text-fg">{nightsText(nights)}</span>
+              <span className="block text-[13px] font-semibold text-muted-ink">
+                {fmt.range.formatRange(utc(draft.checkIn), utc(draft.checkOut))}
+              </span>
+            </>
+          ) : (
+            <span className="text-[14px] font-semibold text-fg">{hint}</span>
+          )}
         </p>
         <div className="flex shrink-0 items-center gap-1">
           {(draft.checkIn || draft.checkOut) && (
@@ -352,6 +361,7 @@ type GridProps = {
   heading: string;
   weekdays: { short: string; long: string }[];
   draft: RangeDraft;
+  /** The hovered or focused day while it can be the check-out (draws the preview band). */
   pointer?: string;
   focusDay: string;
   today: string;
@@ -383,8 +393,7 @@ function MonthGrid({
 }: GridProps) {
   const headingId = useId();
   const weeks = monthWeeks(month);
-  const hasEnd =
-    Boolean(draft.checkOut) || (draft.phase === 'out' && !!pointer && pointer > draft.checkIn);
+  const hasEnd = Boolean(draft.checkOut) || Boolean(pointer);
 
   return (
     <div>
@@ -419,13 +428,17 @@ function MonthGrid({
                 const role = dayRole(day, draft, pointer);
                 const selectable = isSelectable(day, today, draft);
                 const end = role === 'start' || role === 'end';
-                // The band runs from the start's centre to the end's centre.
+                const tail = role === 'none' && day === pointer;
+                // The band runs from the start's centre to the end's (or pointer's) centre and
+                // rounds off where a week wraps.
+                const rowStart = col === 0 || day.endsWith('-01');
+                const rowEnd = col === 6 || !week[col + 1];
                 const band =
                   role === 'between' || role === 'preview'
-                    ? 'inset-x-0'
-                    : role === 'start' && hasEnd
+                    ? cn('inset-x-0', rowStart && 'rounded-l-full', rowEnd && 'rounded-r-full')
+                    : role === 'start' && hasEnd && !rowEnd
                       ? 'left-1/2 right-0'
-                      : role === 'end'
+                      : (role === 'end' || tail) && !rowStart
                         ? 'left-0 right-1/2'
                         : null;
                 return (
@@ -455,7 +468,10 @@ function MonthGrid({
                         className={cn(
                           'absolute inset-y-1',
                           band,
-                          role === 'preview' ? 'bg-accent-soft/60' : 'bg-accent-soft',
+                          // Lighter while only previewing (no check-out chosen yet).
+                          role === 'preview' || tail || (role === 'start' && !draft.checkOut)
+                            ? 'bg-accent-soft/60'
+                            : 'bg-accent-soft',
                         )}
                       />
                     )}

@@ -42,7 +42,8 @@ test.describe('search autocomplete (C-021a)', () => {
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('Enter');
-    await expect(picker.getByText('Fr., 4. Dez. – So., 6. Dez. · 2 Nächte')).toBeVisible();
+    await expect(picker.getByText('2 Nächte', { exact: true })).toBeVisible();
+    await expect(picker.getByText('4.–6. Dez.')).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(picker).toBeHidden();
     await expect(form.getByRole('button', { name: /^Anreise/ })).toBeFocused();
@@ -123,7 +124,8 @@ test.describe('date range picker (C-021b)', () => {
     await clickDay(picker, /^Freitag, 4\. Dezember 2026/);
     await expect(picker.getByText('Wähl deine Abreise. Bis zu 30 Nächte.')).toBeVisible();
     await clickDay(picker, /^Montag, 7\. Dezember 2026/);
-    await expect(picker.getByText('Fr., 4. Dez. – Mo., 7. Dez. · 3 Nächte')).toBeVisible();
+    await expect(picker.getByText('3 Nächte', { exact: true })).toBeVisible();
+    await expect(picker.getByText('4.–7. Dez.')).toBeVisible();
     await expect(
       picker.getByRole('gridcell', { name: 'Freitag, 4. Dezember 2026, Anreise' }),
     ).toHaveAttribute('aria-selected', 'true');
@@ -146,7 +148,7 @@ test.describe('date range picker (C-021b)', () => {
     const tooLong = await showDay(picker, /^Mittwoch, 2\. Dezember 2026/);
     await expect(tooLong).toHaveAttribute('aria-disabled', 'true'); // 31 nights
     await clickDay(picker, /^Dienstag, 1\. Dezember 2026/); // 30 nights
-    await expect(picker.getByText(/· 30 Nächte$/)).toBeVisible();
+    await expect(picker.getByText('30 Nächte', { exact: true })).toBeVisible();
   });
 
   test('opens on the check-out and keeps a check-out that still fits', async ({ page }) => {
@@ -162,7 +164,7 @@ test.describe('date range picker (C-021b)', () => {
       picker.getByRole('gridcell', { name: /6\. Dezember 2026, Abreise/ }),
     ).toBeFocused();
     await clickDay(picker, /^Mittwoch, 9\. Dezember 2026/);
-    await expect(picker.getByText(/· 5 Nächte$/)).toBeVisible();
+    await expect(picker.getByText('5 Nächte', { exact: true })).toBeVisible();
 
     // Reset clears both dates.
     await picker.getByRole('button', { name: 'Zurücksetzen' }).click();
