@@ -29,7 +29,7 @@ export async function Navbar({ locale }: { locale: Locale }) {
   return (
     <header className="site-header sticky top-0 z-40 border-b border-transparent">
       {/* `cn` doesn't merge conflicting classes, so the wrapper owns position and visibility. */}
-      <div className="absolute top-3 left-3 z-50 -translate-y-24 focus-within:translate-y-0">
+      <div className="pointer-events-none absolute top-3 left-3 z-50 opacity-0 focus-within:pointer-events-auto focus-within:opacity-100">
         <a href="#inhalt" className={buttonClasses({ size: 'sm' })}>
           {t('skip')}
         </a>

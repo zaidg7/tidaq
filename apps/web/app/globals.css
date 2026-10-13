@@ -310,3 +310,11 @@
 :root:has(.menu-sheet[open]) {
   overflow: hidden;
 }
+
+/* Chart labels over the line: a halo in the surface colour keeps them readable. */
+.chart-halo {
+  text-shadow:
+    0 0 3px var(--surface),
+    0 0 3px var(--surface),
+    0 0 3px var(--surface);
+}

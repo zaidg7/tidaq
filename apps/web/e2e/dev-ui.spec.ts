@@ -61,4 +61,32 @@ test.describe('/dev/ui', () => {
     await expect(page.getByRole('button', { name: 'Suche öffnen' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Menü öffnen' })).toBeVisible();
   });
+
+  test('price chart: keyboard readout and table fallback', async ({ page }) => {
+    await page.goto('/dev/ui');
+    const chart = page.locator('#preisverlauf').getByRole('slider').first();
+    await expect(page.locator('#preisverlauf').getByRole('img').first()).toHaveAccessibleName(
+      /^Preisverlauf über 58 Tage: Tief/,
+    );
+    await chart.focus();
+    await page.keyboard.press('End');
+    await expect(chart).toHaveAttribute('aria-valuetext', /^13\. Okt\.: [\d.]+\s€, Booking\.com$/);
+    await page.keyboard.press('Home');
+    await expect(chart).toHaveAttribute('aria-valuetext', /^15\. Aug\.: /);
+    await page.keyboard.press('ArrowRight');
+    await expect(chart).toHaveAttribute('aria-valuenow', '1');
+
+    const table = page.locator('#preisverlauf details').first();
+    await table.getByText('Als Tabelle anzeigen').click();
+    await expect(table.locator('tbody tr')).toHaveCount(58);
+    await expect(table.locator('tbody tr').first()).toContainText('13. Okt.');
+  });
+
+  test('price chart: sparse and empty states', async ({ page }) => {
+    await page.goto('/dev/ui');
+    await expect(page.getByText('Hier entsteht dein Verlauf')).toHaveCount(2);
+    await expect(
+      page.getByRole('img', { name: 'Noch keine Preise für diesen Aufenthalt.' }),
+    ).toBeVisible();
+  });
 });

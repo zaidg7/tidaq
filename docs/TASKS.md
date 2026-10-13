@@ -36,8 +36,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-006a | Design tokens, font, base components, /dev/ui | CLOUD | M | C-001 | DONE |
 | C-006b | Craft pass: CRAFT.md spec, refined tokens and components, logo, icons | CLOUD | M | C-006a | DONE |
 | C-020a | App shell: navbar, footer, locale switch, 404/500, robots | CLOUD | M | C-006b, C-007 | DONE |
-| C-006c | Price chart, RangeBar, Skeleton, EmptyState, Toast, visual regression | CLOUD | M | C-006b | TODO |
-| C-020b | Homepage (reference design, real live example) | CLOUD | L | C-020a, C-006c, C-015, C-019 | TODO |
+| C-006c | Price chart | CLOUD | M | C-006b | IN PROGRESS |
+| C-006d | RangeBar, verdict block, Skeleton, EmptyState, Toast, visual regression | CLOUD | M | C-006c | TODO |
+| C-020b | Homepage (reference design, real live example) | CLOUD | L | C-020a, C-006d, C-015, C-019 | TODO |
 | C-020c | Admin auth: Supabase magic link, `/admin` guard | CLOUD | S | C-020a | TODO |
 | C-016 | Admin: data health and budget dashboard | CLOUD | M | C-013b, C-020c | TODO |
 | C-032 | Trust audit tool and provider scores (early, so the audit starts in week 45) | CLOUD | M | C-020c, C-004 | TODO |
@@ -182,13 +183,15 @@ Notes: staging works since 12 Oct: https://tidaq-web-staging.tidaq.workers.dev (
 - [ ] Prod deploy procedure documented in README and tested once (placeholder page on tidaq.com)
 
 ### C-006 · Design tokens and base components
-Owner: CLOUD · Size: L (split a/b/c) · Depends on: C-001 · Status: a DONE, b DONE, c TODO · PR: a = [#21](https://github.com/zaidg7/tidaq/pull/21), b = [#23](https://github.com/zaidg7/tidaq/pull/23)
+Owner: CLOUD · Size: L (split a/b/c) · Depends on: C-001 · Status: a DONE, b DONE, c IN PROGRESS, d TODO · PR: a = [#21](https://github.com/zaidg7/tidaq/pull/21), b = [#23](https://github.com/zaidg7/tidaq/pull/23), c = [#25](https://github.com/zaidg7/tidaq/pull/25)
 
 **C-006a notes (DONE):** tokens in `apps/web/app/globals.css` (raw values on `:root`, dark set under `[data-theme='dark']`, Tailwind 4 `@theme inline` → `bg-surface`, `text-muted`, `rounded-card`, `shadow-float`, `ease-soft` …; type roles as `.text-display/.text-h2/.text-h3/.text-price-xl/.text-meta/.text-eyebrow`). **AA fix:** DESIGN.md's good/bad/warn as small text and muted-on-line miss 4.5:1, so small text uses new ink tokens (`text-good-ink` etc., documented in DESIGN.md §2). Plus Jakarta Sans 500/700/800 via `next/font` (`lib/fonts.ts`; buttons use 700 since 600 isn't loaded). Components in `components/ui/`: Logo, Button (+ `buttonClasses` for links), TextField, Chip, Card, Badge, StateChip, Price, PriceDelta, TrustScore; favicon `app/icon.svg`. Core: `trustLevel` (`trust.ts`, thresholds 85/60, < 5 tests → "Noch zu wenig Tests"), `relativeChange` (`stats.ts`). State labels now follow DESIGN.md ("Guter Preis", "Gerade teuer", "Daten werden gesammelt (3/7)"). `/dev/ui` (+ `/en/dev/ui`): every component and state, noindex, `notFound()` when `APP_ENV=production` (rendered per request via `connection()`). E2E: `e2e/dev-ui.spec.ts` (renders, font + background, focus ring, aria-describedby on field errors). Checked at 390 and 1280 px: no horizontal scroll.
 
 **C-006b notes (DONE):** Zaid asked for a design level "like a team of the best graphic designers". Three expert reviews (art direction, benchmark of Linear/Stripe/Airbnb/Hopper/Google Flights, UX + German copy) are in `docs/design/research/2026-10-13-*.md`; their synthesis is **`docs/design/CRAFT.md`**, which now wins over DESIGN.md where they differ (DESIGN.md marks the changes). Delivered: new tokens (surface-2, line-strong, accent-hover/press, solid soft tints, disabled ink, two-layer violet shadows, radii scale, eases), variable Jakarta (any weight, latin-ext), type roles (display/h2/title/h3/lead/price-xl/meta/eyebrow), Lucide icons via `Icon` (stroke 1.75, 2 at ≤ 16 px), refined Button (sizes sm/md/lg, gradient primary, loading, leading icon, IconButton), TextField (leading icon, halo focus, error row), Chip (check icon, 44 px hit area), Badge, StateChip (progress ring), Price (typeset €, core `priceParts`), PriceDelta (icon + bold %, "seit …" variant), TrustScore ("Preistreue", bar, dashed box under 5 tests), Card (flat/float/interactive), logo `tidaq.` drawn from the font outlines (q curls into the accent "today" dot) and favicon `q.` on the violet gradient. Reviewed with screenshots at 390/1280 and a design-critic pass; applied: TrustScore one 28 px geometry and AA "/100", StateChip `sm` 22 px with short labels (`stateShort`), equal-width chips, gradient-keeping button hover, 44 px target for sm buttons, reduced-motion lifts, Card padding/focus/wrapping, "Nah am Tiefpunkt". Deliberately kept: the short q curl (a wave turned into a squiggle at 22 px) and the `q.` favicon (a white t looks like Tumblr). For the next UI tasks: build to CRAFT.md §3, and run the same screenshot + critic loop (CRAFT §6) before merging.
 
-**C-006c (TODO):** PriceChart (CRAFT.md §3: accent line, guarded y-domain, low/today markers, dark tooltip, scrub + keyboard, table fallback), RangeBar, Skeleton, EmptyState (collecting 7-segment bar), Toast; Playwright screenshot test of `/dev/ui` at 390 and 1280 px (generate baselines in CI's Linux image, e.g. a `--update-snapshots` workflow run, because font rendering differs between machines).
+**C-006c (price chart):** core `chartGeometry` (`packages/core/src/chart.ts`, tested): x/y as fractions of the box, guarded y-domain (min − ½ range … max + 0.15 range, at least ±6 % of the average), round euro grid lines, gaps break the line, low/last/avg marks, dots-only below 7 points. Web `components/chart/PriceChart.tsx` (server SVG at a fixed 220/260 px height; lines in a stretched 1000×1000 layer with non-scaling strokes; markers in percent; labels as HTML so text never scales) + `ChartScrub.tsx` (client: pointer/touch scrub with `touch-action: pan-y`, ←/→/Home/End, role=slider with aria-valuetext, dark tooltip hugging the point) + `<details>` table fallback. Not yet: updating the header price while scrubbing (needs the verdict block from C-006d; add a callback then).
+
+**C-006d (TODO):** RangeBar and the verdict block (CRAFT.md §3), Skeleton, EmptyState (collecting 7-segment bar), Toast; Playwright screenshot test of `/dev/ui` at 390 and 1280 px (generate baselines in CI's Linux image, e.g. a `--update-snapshots` workflow run, because font rendering differs between machines).
 
 **Goal:** the Soft Modern design system from `docs/DESIGN.md` as code.
 
@@ -396,7 +399,7 @@ Split from C-020a so the public site ships first. Supabase magic link to an emai
 - [ ] Shell works at 390 px and 1280 px; Lighthouse a11y ≥ 95
 
 ### C-020b · Homepage
-Owner: CLOUD · Size: L · Depends on: C-020a, C-006c, C-015, C-019 · Status: TODO · PR: –
+Owner: CLOUD · Size: L · Depends on: C-020a, C-006d, C-015, C-019 · Status: TODO · PR: –
 
 **Steps**
 1. Build the homepage section by section like `docs/design/reference-homepage.html` (Soft Modern variant): hero + search card, live example panel, how it works (3 steps), trust teaser with figures, deals of the week, final CTA, footer.

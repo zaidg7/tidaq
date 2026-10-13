@@ -14,6 +14,16 @@ export type ScrubPoint = {
 type Props = { points: ScrubPoint[]; label: string; lastIndex: number };
 
 /**
+ * The tooltip hugs the point: above it, or below it near the top edge; it shifts left or right
+ * near the sides so it never leaves the chart.
+ */
+function tooltipStyle(p: ScrubPoint) {
+  const x = p.x > 0.75 ? '-100%' : p.x < 0.25 ? '0%' : '-50%';
+  const y = p.y < 0.35 ? '16px' : 'calc(-100% - 16px)';
+  return { left: `${p.x * 100}%`, top: `${p.y * 100}%`, transform: `translate(${x}, ${y})` };
+}
+
+/**
  * Interaction layer over the server-rendered chart (CRAFT.md §3 Price chart): pointer and touch
  * scrub (vertical page scroll stays free via `touch-action: pan-y`), ←/→ by day, Home/End, a dark
  * tooltip and a live readout. It only positions in percent, so it fits both SVG sizes.
@@ -97,14 +107,8 @@ export function ChartScrub({ points, label, lastIndex }: Props) {
           />
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute top-0 z-10 flex -translate-y-[calc(100%+8px)] flex-col gap-0.5 rounded-[12px] bg-fg px-3 py-2.5 whitespace-nowrap text-white shadow-hover"
-            style={
-              point.x > 0.7
-                ? { right: `${(1 - point.x) * 100}%` }
-                : point.x < 0.3
-                  ? { left: `${point.x * 100}%` }
-                  : { left: `${point.x * 100}%`, transform: 'translate(-50%, calc(-100% - 8px))' }
-            }
+            className="pointer-events-none absolute z-10 flex flex-col gap-0.5 rounded-[12px] bg-fg px-3 py-2.5 whitespace-nowrap text-white shadow-hover"
+            style={tooltipStyle(point)}
           >
             <span className="text-[12px] font-semibold text-[#c9bef5]">{point.date}</span>
             <span className="text-[15px] leading-tight font-extrabold tabular-nums">
