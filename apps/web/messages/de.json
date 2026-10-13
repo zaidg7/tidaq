@@ -57,5 +57,51 @@
     "good": "Guter Preis",
     "normal": "Normal",
     "high": "Teuer"
+  },
+  "nav": {
+    "label": "Hauptnavigation",
+    "home": "Tidaq, zur Startseite",
+    "skip": "Zum Inhalt springen",
+    "hotels": "Hotels",
+    "deals": "Deals",
+    "checkoutCheck": "Kassen-Check",
+    "method": "So funktioniert's",
+    "search": "Hotel suchen",
+    "cta": "Preise ansehen",
+    "menuOpen": "Menü öffnen",
+    "menuClose": "Menü schließen",
+    "menuTitle": "Menü"
+  },
+  "footer": {
+    "tagline": "Preisverlauf für Luxushotels. Damit du weißt, ob ein Preis gerade gut ist.",
+    "explore": "Entdecken",
+    "transparency": "Transparenz",
+    "legal": "Rechtliches",
+    "links": {
+      "hotels": "Alle Hotels",
+      "deals": "Deals",
+      "method": "So funktioniert's",
+      "checkoutCheck": "Kassen-Check",
+      "ranking": "So sortieren wir",
+      "affiliate": "Affiliate-Hinweis",
+      "imprint": "Impressum",
+      "privacy": "Datenschutz"
+    },
+    "copyright": "© {year} Tidaq",
+    "source": "Preise täglich von Buchungsseiten erfasst. Ohne Cookies."
+  },
+  "notFound": {
+    "meta": "Seite nicht gefunden",
+    "eyebrow": "Fehler 404",
+    "title": "Diese Seite gibt es nicht",
+    "text": "Vielleicht hat sich die Adresse geändert, oder die Seite kommt erst noch. Auf der Startseite findest du alle Hotels.",
+    "home": "Zur Startseite"
+  },
+  "error": {
+    "eyebrow": "Fehler",
+    "title": "Da ist etwas schiefgelaufen",
+    "text": "Die Seite konnte gerade nicht geladen werden. Versuch es gleich noch einmal.",
+    "retry": "Nochmal versuchen",
+    "home": "Zur Startseite"
   }
 }
