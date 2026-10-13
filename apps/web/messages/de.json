@@ -23,15 +23,28 @@
     "soon": "Kurz vor Anreise steigen Preise oft. Warte nicht zu lange."
   },
   "state": {
-    "collecting": "Daten werden gesammelt",
+    "collecting": "Daten werden gesammelt ({days}/{needed})",
     "near_low": "Nahe Tiefpunkt",
-    "good": "Günstig",
+    "good": "Guter Preis",
     "normal": "Normal",
-    "high": "Teuer"
+    "high": "Gerade teuer"
   },
   "trend": {
     "falling": "fällt",
     "flat": "stabil",
     "rising": "steigt"
+  },
+  "priceDelta": {
+    "below": "{percent} unter dem 30-Tage-Schnitt",
+    "above": "{percent} über dem 30-Tage-Schnitt",
+    "same": "Genau im 30-Tage-Schnitt"
+  },
+  "trust": {
+    "insufficient": "Noch zu wenig Tests",
+    "sample": "{matches} von {tests} Tests stimmten",
+    "scoreLabel": "Vertrauenswert {score} von 100"
+  },
+  "logo": {
+    "label": "Tidaq, zur Startseite"
   }
 }

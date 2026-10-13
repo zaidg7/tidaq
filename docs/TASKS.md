@@ -32,8 +32,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-013d | Collector: live check on staging, first production deploy, 2-day data check | CLOUD | S | C-013c, B-005, B-003 | IN PROGRESS |
 | C-011b | Hotel photos: licensed Wikimedia Commons images with credits | CLOUD | S | C-011 | DONE |
 | **Phase 2: MVP website** (weeks 44–47, target Sun 22 Nov) |||||
-| C-006 | Design tokens and base UI components (Soft Modern) | CLOUD | L | C-001 | TODO |
-| C-020a | App shell: layout, navbar, footer, locale switch, admin auth | CLOUD | M | C-006, C-007 | TODO |
+| C-006a | Design tokens, font, base components, /dev/ui | CLOUD | M | C-001 | DONE |
+| C-006b | Sparkline, Skeleton, EmptyState, visual regression at 390/1280 | CLOUD | S | C-006a | TODO |
+| C-020a | App shell: layout, navbar, footer, locale switch, admin auth | CLOUD | M | C-006a, C-007 | TODO |
 | C-016 | Admin: data health and budget dashboard | CLOUD | M | C-013b, C-020a | TODO |
 | C-032 | Trust audit tool and provider scores (early, so the audit starts in week 45) | CLOUD | M | C-020a, C-004 | TODO |
 | L-033 | Checkout audit with Claude in Chrome (150 tests, recurring until launch) | LOCAL | L (recurring) | C-032, Z-07 | TODO |
@@ -178,7 +179,11 @@ Notes: staging works since 12 Oct: https://tidaq-web-staging.tidaq.workers.dev (
 - [ ] Prod deploy procedure documented in README and tested once (placeholder page on tidaq.com)
 
 ### C-006 · Design tokens and base components
-Owner: CLOUD · Size: L (split a/b) · Depends on: C-001 · Status: TODO · PR: –
+Owner: CLOUD · Size: L (split a/b) · Depends on: C-001 · Status: a DONE, b TODO · PR: a = [#21](https://github.com/zaidg7/tidaq/pull/21)
+
+**C-006a notes (DONE):** tokens in `apps/web/app/globals.css` (raw values on `:root`, dark set under `[data-theme='dark']`, Tailwind 4 `@theme inline` → `bg-surface`, `text-muted`, `rounded-card`, `shadow-float`, `ease-soft` …; type roles as `.text-display/.text-h2/.text-h3/.text-price-xl/.text-meta/.text-eyebrow`). **AA fix:** DESIGN.md's good/bad/warn as small text and muted-on-line miss 4.5:1, so small text uses new ink tokens (`text-good-ink` etc., documented in DESIGN.md §2). Plus Jakarta Sans 500/700/800 via `next/font` (`lib/fonts.ts`; buttons use 700 since 600 isn't loaded). Components in `components/ui/`: Logo, Button (+ `buttonClasses` for links), TextField, Chip, Card, Badge, StateChip, Price, PriceDelta, TrustScore; favicon `app/icon.svg`. Core: `trustLevel` (`trust.ts`, thresholds 85/60, < 5 tests → "Noch zu wenig Tests"), `relativeChange` (`stats.ts`). State labels now follow DESIGN.md ("Guter Preis", "Gerade teuer", "Daten werden gesammelt (3/7)"). `/dev/ui` (+ `/en/dev/ui`): every component and state, noindex, `notFound()` when `APP_ENV=production` (rendered per request via `connection()`). E2E: `e2e/dev-ui.spec.ts` (renders, font + background, focus ring, aria-describedby on field errors). Checked at 390 and 1280 px: no horizontal scroll.
+
+**C-006b (TODO):** Sparkline, Skeleton, EmptyState (DESIGN.md §3); Playwright screenshot test of `/dev/ui` at 390 and 1280 px (generate baselines in CI's Linux image, e.g. a `--update-snapshots` workflow run, because font rendering differs between machines).
 
 **Goal:** the Soft Modern design system from `docs/DESIGN.md` as code.
 

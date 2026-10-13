@@ -1,3 +1,172 @@
 @import 'tailwindcss';
 
-/* Design tokens (Soft Modern) arrive in C-006. */
+/*
+ * Soft Modern design tokens (docs/DESIGN.md §2). Raw values live on :root so dark mode can swap
+ * them later; Tailwind utilities (bg-surface, text-muted, rounded-card …) point at them.
+ */
+:root {
+  --bg: #f5f3fc;
+  --surface: #ffffff;
+  --field: #f8f6ff;
+  --line: #e6e0f7;
+  --fg: #221c3b;
+  --muted: #6c6687;
+  --accent: #6a49e0;
+  --accent-ink: #ffffff;
+  --accent-soft: #ede7ff;
+  --good: #178a62;
+  --bad: #d1435b;
+  --warn: #b26a00;
+  /* Text on white or on a tint at ≤ 18 px: darker "ink" shades keep WCAG AA (≥ 4.5:1). */
+  --good-ink: #126b4c;
+  --bad-ink: #af2b41;
+  --warn-ink: #8c5300;
+  --muted-ink: #655f7e;
+  --blob-1: #ddd2ff;
+  --blob-2: #ffd6e5;
+  --placeholder: linear-gradient(135deg, #d9cffc, #ffd9e6);
+  color-scheme: light;
+}
+
+/* Dark tokens (phase 2): opt in with data-theme="dark"; prefers-color-scheme follows later. */
+:root[data-theme='dark'] {
+  --bg: #14111f;
+  --surface: #1d1930;
+  --field: #221d38;
+  --line: #2e2848;
+  --fg: #eeeafb;
+  --muted: #a39dc0;
+  --accent: #9c85ff;
+  --accent-ink: #14111f;
+  --accent-soft: #2a2350;
+  --good: #4fd1a0;
+  --bad: #ff7a90;
+  --warn: #f0a355;
+  --good-ink: #4fd1a0;
+  --bad-ink: #ff7a90;
+  --warn-ink: #f0a355;
+  --muted-ink: #a39dc0;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-field: var(--field);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good);
+  --color-bad: var(--bad);
+  --color-warn: var(--warn);
+  --color-good-ink: var(--good-ink);
+  --color-bad-ink: var(--bad-ink);
+  --color-warn-ink: var(--warn-ink);
+  --color-muted-ink: var(--muted-ink);
+
+  --font-sans: var(--font-jakarta), system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius-badge: 10px;
+  --radius-cell: 12px;
+  --radius-card: 18px;
+  --radius-search: 26px;
+
+  --shadow-float: 0 14px 36px rgba(106, 73, 224, 0.1);
+  --ease-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    font-size: 15px;
+    line-height: 1.55;
+    font-weight: 500;
+  }
+  @media (min-width: 720px) {
+    body {
+      font-size: 16.5px;
+    }
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* DESIGN.md typography roles. */
+  .text-display {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .text-h2 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .text-h3 {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .text-price-xl {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .text-meta {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .text-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+  @media (min-width: 720px) {
+    .text-display {
+      font-size: 60px;
+    }
+    .text-h2 {
+      font-size: 40px;
+    }
+    .text-h3 {
+      font-size: 20px;
+    }
+    .text-price-xl {
+      font-size: 44px;
+    }
+  }
+  .bg-placeholder {
+    background: var(--placeholder);
+  }
+}

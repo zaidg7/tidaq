@@ -186,3 +186,9 @@ export function computeStayStats(
     stale: latest.age > STATS.staleDays,
   };
 }
+
+/** `(value − base) / base`, e.g. −0.05 for "5 % below the 30-day average". Null without a base. */
+export function relativeChange(value: number, base: number | null): number | null {
+  if (base === null || !Number.isFinite(base) || base <= 0 || !Number.isFinite(value)) return null;
+  return (value - base) / base;
+}

@@ -59,6 +59,7 @@ export {
 } from './normalize';
 export {
   computeStayStats,
+  relativeChange,
   STATS,
   type AdviceKey,
   type DailyPrice,
@@ -77,6 +78,7 @@ export {
   type BudgetResult,
   type CollectJob,
 } from './budget';
+export { TRUST, trustLevel, type TrustLevel } from './trust';
 export { z, isoDateSchema } from './zod';
 export {
   stayOrigins,

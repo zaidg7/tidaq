@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { addDays } from './dates';
-import { computeStayStats, STATS, type DailyPrice } from './stats';
+import { computeStayStats, relativeChange, STATS, type DailyPrice } from './stats';
 
 const TODAY = '2026-10-12';
 const FAR = '2026-12-01';
@@ -195,5 +195,19 @@ describe('computeStayStats check-in note', () => {
     expect(computeStayStats(data, TODAY, addDays(TODAY, 8)).soon).toBe(false);
     expect(computeStayStats(data, TODAY, addDays(TODAY, -1)).soon).toBe(false);
     expect(computeStayStats([], TODAY, addDays(TODAY, 3)).soon).toBe(true);
+  });
+});
+
+describe('relativeChange', () => {
+  it('returns the change relative to the base', () => {
+    expect(relativeChange(95_000, 100_000)).toBeCloseTo(-0.05);
+    expect(relativeChange(104_000, 100_000)).toBeCloseTo(0.04);
+    expect(relativeChange(100_000, 100_000)).toBe(0);
+  });
+
+  it('is null without a usable base', () => {
+    expect(relativeChange(100, null)).toBeNull();
+    expect(relativeChange(100, 0)).toBeNull();
+    expect(relativeChange(Number.NaN, 100)).toBeNull();
   });
 });

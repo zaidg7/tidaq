@@ -36,6 +36,8 @@ Provide tokens now, ship later: `--bg #14111F`, `--surface #1D1930`, `--field #2
 
 Contrast: `--muted` on `--bg` ≈ 5:1 (AA). Never put `--muted` text on `--accent-soft` below 14 px.
 
+**Ink tokens for small text (added in C-006, AA check):** `--good`, `--bad` and `--warn` reach only 3.5–4.3:1 as small text on white or on their own 14–18 % tints, and `--muted` on `--line` only 4.2:1. Text up to 18 px (chips, deltas, notes, TrustScore numbers) therefore uses `--good-ink #126B4C`, `--bad-ink #AF2B41`, `--warn-ink #8C5300`, `--muted-ink #655F7E` (each ≥ 4.6:1 on white, `--bg` and its tint). Tints, chart lines, borders and large numbers keep the base colors.
+
 ### Typography
 - Family: **Plus Jakarta Sans** (Google Fonts via `next/font`), weights 500, 700, 800. Fallback `system-ui, -apple-system, Segoe UI, sans-serif`.
 - Numbers: same family with `font-variant-numeric: tabular-nums` everywhere digits align.
