@@ -1,0 +1,64 @@
+name: Visual baselines
+
+# Renders the visual regression baselines (apps/web/e2e/visual.spec.ts) in CI's Linux image and
+# commits them to the given branch. Run it after a UI change that should change the screenshots,
+# then review the new images in the PR diff before merging.
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to render and commit the baselines to (never main)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: visual-baselines-${{ inputs.branch }}
+  cancel-in-progress: true
+
+jobs:
+  baselines:
+    name: Render baselines
+    if: inputs.branch != 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      UPDATE_BASELINES: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build web
+        run: pnpm --filter web build
+
+      - name: Install Playwright Chromium
+        run: pnpm --filter web exec playwright install --with-deps chromium
+
+      - name: Render baselines
+        run: pnpm --filter web exec playwright test e2e/visual.spec.ts --update-snapshots
+
+      - name: Commit baselines
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/e2e/visual.spec.ts-snapshots
+          if git diff --cached --quiet; then
+            echo "Baselines unchanged."
+          else
+            git commit -m "test(web): update visual baselines"
+            git push origin HEAD:${{ inputs.branch }}
+          fi
