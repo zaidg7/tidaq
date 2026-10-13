@@ -18,6 +18,23 @@ export { parseEuroCents } from './money';
 export { toCsv } from './csv';
 export { foldText, matchHotels, type SearchableHotel } from './search';
 export {
+  STAY_LIMITS,
+  dayDiff,
+  dayRole,
+  isSelectable,
+  lastDay,
+  monthOf,
+  monthWeeks,
+  moveFocus,
+  pickDay,
+  shiftDays,
+  shiftMonths,
+  weekdayMonFirst,
+  type DayRole,
+  type GridKey,
+  type RangeDraft,
+} from './calendar';
+export {
   isAdminEmail,
   parseAdminEmails,
   pkceChallenge,

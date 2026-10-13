@@ -195,7 +195,18 @@
     "resultsOne": "1 Hotel gefunden",
     "resultsOther": "{n} Hotels gefunden",
     "clear": "Eingabe löschen",
-    "listLabel": "Hotels"
+    "listLabel": "Hotels",
+    "picker": {
+      "title": "Reisedaten",
+      "close": "Schließen",
+      "prevMonth": "Vorheriger Monat",
+      "nextMonth": "Nächster Monat",
+      "chooseIn": "Wähl deine Anreise.",
+      "chooseOut": "Wähl deine Abreise. Bis zu 30 Nächte.",
+      "done": "Fertig",
+      "clear": "Zurücksetzen",
+      "today": "heute"
+    }
   },
   "how": {
     "eyebrow": "So funktioniert’s",

@@ -50,7 +50,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-032b                                                          | Trust audit: screenshot upload, edit tests, CSV export                       | CLOUD | S             | C-032a                            | DONE           |
 | L-033                                                           | Checkout audit with Claude in Chrome (150 tests, recurring until launch)     | LOCAL | L (recurring) | C-032b, Z-07                      | TODO           |
 | C-021a                                                          | Search: hotel and city autocomplete                                          | CLOUD | S             | C-020a, C-011                     | DONE           |
-| C-021b                                                          | Search: date range picker (mobile bottom sheet)                              | CLOUD | M             | C-021a                            | TODO           |
+| C-021b                                                          | Search: date range picker (mobile bottom sheet)                              | CLOUD | M             | C-021a                            | DONE           |
 | C-022                                                           | Stay page with chart, stats, advice, provider table                          | CLOUD | L             | C-020a, C-015, C-013b             | TODO           |
 | C-023                                                           | Hotel page with price calendar                                               | CLOUD | M             | C-022                             | TODO           |
 | C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | TODO           |
@@ -505,11 +505,11 @@ Owner: CLOUD · Size: L (split b1/b2) · Depends on: C-020a, C-006d, C-015, C-01
 
 ### C-021 · Search
 
-Owner: CLOUD · Size: M (split a/b) · Depends on: C-020a, C-011 · Status: a DONE, b TODO · PR: a = [#37](https://github.com/zaidg7/tidaq/pull/37)
+Owner: CLOUD · Size: M (split a/b) · Depends on: C-020a, C-011 · Status: DONE · PR: a = [#37](https://github.com/zaidg7/tidaq/pull/37), b = [#38](https://github.com/zaidg7/tidaq/pull/38)
 
 **C-021a notes (DONE):** `components/home/HotelCombobox.tsx` (ARIA 1.2 combobox: input keeps focus, `aria-activedescendant`, ↓/↑/Enter/Esc, click picks without blur, polite result count, exact name + Tab picks) replaces the hotel select in `SearchCard`. Matching in core `matchHotels` / `foldText` (accent-, case- and ß-insensitive, "zuerich" = "zürich", word prefixes in any order, ranked name start → name word → city → substring). The list hangs below the hotel segment across the whole group (the group lost `overflow-hidden`; corner segments round themselves). Search strings come from `lib/searchCardProps.ts` (shared by the homepage and the new "Suche" section on `/dev/ui`, which has a sample catalog so CI can test it: `e2e/search.spec.ts`). Cities are matched but don't link anywhere yet: when C-024 builds city pages, add a "Alle Hotels in {Stadt}" option that opens the city page.
 
-**C-021b (TODO):** date range picker (German locale, Monday first, nights count, max 30 nights, no past dates, mobile bottom sheet) replacing the two native date inputs; guests stay a native select (1–4).
+**C-021b notes (DONE):** `components/home/DateRangePicker.tsx` replaces the two native date inputs. The Anreise/Abreise segments are buttons (`aria-haspopup="dialog"`, named by label + value) that open a modal `<dialog>`: bottom sheet below 768 px (one month), centred card with two months from 768 px (`.date-sheet` in globals.css). Monday-first ARIA grid with roving tabindex (arrows, Home/End, PageUp/PageDown, Shift+Page = year, Enter/Space picks); past days and check-outs over 30 nights are `aria-disabled` (still focusable); check-out at most 365 days ahead. Every click updates the card live; Esc, backdrop, ✕ and "Fertig" all keep the choice; focus returns to the segment. Opening from "Abreise" edits the check-out; moving the check-in keeps a check-out that still fits. Pure logic in core `calendar.ts` (`STAY_LIMITS`, `pickDay`, `isSelectable`, `dayRole`, `moveFocus`, `monthWeeks`; 100 % covered); C-022 should reuse `STAY_LIMITS` to validate stay URLs. Guests stay a native select (1–4). Dark styles come with the dark theme (phase 2).
 
 **Steps**
 

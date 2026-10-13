@@ -195,7 +195,18 @@
     "resultsOne": "1 hotel found",
     "resultsOther": "{n} hotels found",
     "clear": "Clear",
-    "listLabel": "Hotels"
+    "listLabel": "Hotels",
+    "picker": {
+      "title": "Travel dates",
+      "close": "Close",
+      "prevMonth": "Previous month",
+      "nextMonth": "Next month",
+      "chooseIn": "Choose your check-in.",
+      "chooseOut": "Choose your check-out. Up to 30 nights.",
+      "done": "Done",
+      "clear": "Reset",
+      "today": "today"
+    }
   },
   "how": {
     "eyebrow": "How it works",

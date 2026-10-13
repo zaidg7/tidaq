@@ -316,6 +316,52 @@
   overflow: hidden;
 }
 
+/* Date range picker (C-021b): a modal <dialog>, a bottom sheet on phones and a centred card
+   with two months from 768 px. */
+.date-sheet {
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: 100%;
+  max-height: 92dvh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 26px 26px 0 0;
+  background: var(--surface);
+  color: var(--fg);
+  box-shadow: 0 -16px 40px -8px rgba(106, 73, 224, 0.18);
+}
+.date-sheet::backdrop {
+  background: rgba(34, 28, 59, 0.32);
+}
+.date-sheet[open] {
+  animation: date-sheet-up 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes date-sheet-up {
+  from {
+    transform: translateY(32px);
+    opacity: 0;
+  }
+}
+@media (min-width: 768px) {
+  .date-sheet {
+    inset: 0;
+    width: min(720px, calc(100% - 48px));
+    height: fit-content;
+    max-height: calc(100dvh - 48px);
+    margin: auto;
+    border-radius: 26px;
+    box-shadow: var(--shadow-hover);
+  }
+  .date-sheet[open] {
+    animation: sheet-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+:root:has(.date-sheet[open]) {
+  overflow: hidden;
+}
+
 /* Chart labels over the line: a halo in the surface colour keeps them readable. */
 .chart-halo {
   text-shadow:
