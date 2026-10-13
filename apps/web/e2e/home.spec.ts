@@ -41,7 +41,11 @@ test.describe('homepage', () => {
     const form = page.getByRole('form', { name: 'Preise suchen' });
     await form.getByRole('button', { name: 'Preise ansehen' }).click();
     await expect(form.getByRole('alert')).toHaveText('Wähl ein Hotel.');
-    await form.getByLabel('Anreise').fill('2026-12-01');
+    // Picking a check-in (today, focused when the picker opens) doesn't clear the hotel error.
+    await page.keyboard.press('Escape'); // the error focused the hotel field and opened its list
+    await form.getByRole('button', { name: /^Anreise/ }).click();
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Escape');
     await expect(form.getByRole('alert')).toHaveText('Wähl ein Hotel.');
   });
 

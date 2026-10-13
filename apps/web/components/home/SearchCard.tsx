@@ -6,6 +6,7 @@ import { localizedPath, type Locale } from '@tidaq/core';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
+import { DateRangePicker, type PickerLabels } from './DateRangePicker';
 import { HotelCombobox, type ComboboxLabels } from './HotelCombobox';
 
 export type SearchHotel = { slug: string; name: string; city: string };
@@ -28,6 +29,7 @@ type Labels = {
   tooLong: string;
   past: string;
   combobox: ComboboxLabels;
+  picker: PickerLabels;
 };
 
 type Props = {
@@ -62,9 +64,10 @@ function shortDate(value: string, locale: Locale): string {
 
 /**
  * Homepage search (CRAFT.md §3 search card): one segmented group, hotel on top, dates below,
- * guests, a full-width "Preise ansehen". Real form controls underneath (native date pickers, a
+ * guests, a full-width "Preise ansehen". Real controls underneath (a button per date, a native
  * select) for keyboard, screen readers and every phone, with our own display on top. The hotel
- * field is an autocomplete (C-021a); C-021b adds the date range picker. Opens the stay page (C-022).
+ * field is an autocomplete (C-021a), the dates open a range picker (C-021b). Opens the stay page
+ * (C-022).
  */
 export function SearchCard({ hotels, guestOptions, today, locale, labels }: Props) {
   const id = useId();
@@ -74,6 +77,7 @@ export function SearchCard({ hotels, guestOptions, today, locale, labels }: Prop
   const [adults, setAdults] = useState(2);
   const [submitted, setSubmitted] = useState(false);
   const [listOpen, setListOpen] = useState(false);
+  const [picker, setPicker] = useState<'in' | 'out' | null>(null);
 
   const nights = checkIn && checkOut ? nightsBetween(checkIn, checkOut) : null;
 
@@ -143,19 +147,20 @@ export function SearchCard({ hotels, guestOptions, today, locale, labels }: Prop
             icon={CalendarDays}
             label={labels.checkIn}
             htmlFor={`${id}-in`}
+            labelId={`${id}-in-label`}
             invalid={error?.field === 'dates'}
           >
             <Display
+              id={`${id}-in-value`}
               value={checkIn ? shortDate(checkIn, locale) : undefined}
               placeholder={labels.datePlaceholder}
             />
-            <input
+            <button
               id={`${id}-in`}
-              type="date"
-              min={today}
-              value={checkIn}
-              onChange={(e) => setCheckIn(e.target.value)}
-              onClick={(e) => e.currentTarget.showPicker?.()}
+              type="button"
+              aria-haspopup="dialog"
+              aria-labelledby={`${id}-in-label ${id}-in-value`}
+              onClick={() => setPicker('in')}
               className="control"
               {...aria('dates')}
             />
@@ -163,20 +168,21 @@ export function SearchCard({ hotels, guestOptions, today, locale, labels }: Prop
           <Segment
             label={nightsLabel ? `${labels.checkOut} · ${nightsLabel}` : labels.checkOut}
             htmlFor={`${id}-out`}
+            labelId={`${id}-out-label`}
             invalid={error?.field === 'dates'}
             className="border-l border-line"
           >
             <Display
+              id={`${id}-out-value`}
               value={checkOut ? shortDate(checkOut, locale) : undefined}
               placeholder={labels.datePlaceholder}
             />
-            <input
+            <button
               id={`${id}-out`}
-              type="date"
-              min={checkIn || today}
-              value={checkOut}
-              onChange={(e) => setCheckOut(e.target.value)}
-              onClick={(e) => e.currentTarget.showPicker?.()}
+              type="button"
+              aria-haspopup="dialog"
+              aria-labelledby={`${id}-out-label ${id}-out-value`}
+              onClick={() => setPicker('out')}
               className="control"
               {...aria('dates')}
             />
@@ -219,22 +225,37 @@ export function SearchCard({ hotels, guestOptions, today, locale, labels }: Prop
         {labels.submit}
       </Button>
       <p className="mt-2.5 text-center text-[12.5px] text-muted-ink">{labels.note}</p>
+      <DateRangePicker
+        openOn={picker}
+        onClose={() => setPicker(null)}
+        checkIn={checkIn}
+        checkOut={checkOut}
+        onChange={(nextIn, nextOut) => {
+          setCheckIn(nextIn);
+          setCheckOut(nextOut);
+        }}
+        today={today}
+        locale={locale}
+        labels={labels.picker}
+      />
     </form>
   );
 }
 
 /** What the segment shows: the chosen value in 16 px 700, or a muted placeholder. */
 function Display({
+  id,
   value,
   placeholder,
   chevron,
 }: {
+  id?: string;
   value?: string;
   placeholder: string;
   chevron?: boolean;
 }) {
   return (
-    <span aria-hidden="true" className="flex items-center justify-between gap-2">
+    <span id={id} aria-hidden="true" className="flex items-center justify-between gap-2">
       <span
         className={cn(
           'truncate text-[16px] font-bold',
@@ -252,6 +273,8 @@ type SegmentProps = {
   icon?: typeof MapPin;
   label: string;
   htmlFor: string;
+  /** Lets a button name itself from the label plus its value (aria-labelledby). */
+  labelId?: string;
   invalid?: boolean;
   className?: string;
   children: ReactNode;
@@ -261,7 +284,7 @@ type SegmentProps = {
  * One segment of the group. The real control (`.control`) covers the whole segment invisibly, so
  * any tap opens it; focus shows an inset accent ring, an error a red one (also while focused).
  */
-function Segment({ icon, label, htmlFor, invalid, className, children }: SegmentProps) {
+function Segment({ icon, label, htmlFor, labelId, invalid, className, children }: SegmentProps) {
   return (
     <div
       className={cn(
@@ -276,6 +299,7 @@ function Segment({ icon, label, htmlFor, invalid, className, children }: Segment
       {icon && <Icon icon={icon} size={18} className="text-muted max-[399px]:hidden" />}
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <label
+          id={labelId}
           htmlFor={htmlFor}
           className="text-[12.5px] leading-tight font-semibold whitespace-nowrap text-muted-ink"
         >
