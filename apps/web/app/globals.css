@@ -400,3 +400,13 @@
   font-size: 16px;
   appearance: none;
 }
+
+/* Kassenbon (CRAFT.md §4.2): a zig-zag bottom edge cut with a mask; the shadow sits on a parent
+   (drop-shadow follows the cut). */
+.receipt {
+  --zig: 9px;
+  padding-bottom: calc(var(--zig) + 18px);
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% /
+    calc(2 * var(--zig)) 100%;
+  border-radius: 14px 14px 0 0;
+}

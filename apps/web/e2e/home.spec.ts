@@ -44,4 +44,25 @@ test.describe('homepage', () => {
     await form.getByLabel('Anreise').fill('2026-12-01');
     await expect(form.getByRole('alert')).toHaveText('Wähl ein Hotel.');
   });
+
+  test('how it works, the labelled checkout example and the closing CTA', async ({ page }) => {
+    await page.goto('/');
+    const how = page.getByRole('region', { name: 'Drei Schritte zum richtigen Moment' });
+    await expect(how.getByRole('listitem')).toHaveCount(3);
+    const checkout = page.getByRole('region', {
+      name: 'Der günstigste Preis ist nicht immer der echte',
+    });
+    await expect(checkout.getByText('Beispiel-Test')).toBeVisible();
+    await expect(checkout.getByText(/^Beispiel\./)).toBeVisible();
+    // Without 14+ days of data there are no deals, and the section is not rendered at all.
+    await expect(page.getByRole('region', { name: 'Fünf-Sterne-Deals dieser Woche' })).toHaveCount(
+      0,
+    );
+    await page
+      .getByRole('heading', { name: 'Finde den richtigen Moment für dein Hotel.' })
+      .scrollIntoViewIfNeeded();
+    await expect(
+      page.getByRole('banner').getByRole('link', { name: 'Preise ansehen' }),
+    ).toHaveCount(0);
+  });
 });

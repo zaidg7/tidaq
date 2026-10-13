@@ -40,7 +40,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-006c                                                          | Price chart                                                                  | CLOUD | M             | C-006b                            | DONE           |
 | C-006d                                                          | RangeBar, verdict block, Skeleton, EmptyState, Toast                         | CLOUD | M             | C-006c                            | DONE           |
 | C-020b1                                                         | Homepage: hero, search card, live example                                    | CLOUD | M             | C-020a, C-006d, C-015, C-019      | DONE           |
-| C-020b2                                                         | Homepage: how it works, Kassen-Check teaser, deals, final CTA                | CLOUD | M             | C-020b1                           | TODO           |
+| C-020b2                                                         | Homepage: how it works, Kassen-Check teaser, deals, final CTA                | CLOUD | M             | C-020b1                           | DONE           |
 | C-006e                                                          | Visual regression screenshots of /dev/ui in CI                               | CLOUD | S             | C-006d                            | TODO           |
 | C-020c                                                          | Admin auth: Supabase magic link, `/admin` guard                              | CLOUD | S             | C-020a                            | TODO           |
 | C-016                                                           | Admin: data health and budget dashboard                                      | CLOUD | M             | C-013b, C-020c                    | TODO           |
@@ -460,11 +460,11 @@ Split from C-020a so the public site ships first. Supabase magic link to an emai
 
 ### C-020b · Homepage
 
-Owner: CLOUD · Size: L (split b1/b2) · Depends on: C-020a, C-006d, C-015, C-019 · Status: b1 DONE, b2 TODO · PR: b1 = [#27](https://github.com/zaidg7/tidaq/pull/27)
+Owner: CLOUD · Size: L (split b1/b2) · Depends on: C-020a, C-006d, C-015, C-019 · Status: b1 DONE, b2 DONE · PR: b1 = [#27](https://github.com/zaidg7/tidaq/pull/27), b2 = [#28](https://github.com/zaidg7/tidaq/pull/28)
 
 **C-020b1 notes (DONE):** `components/home/Hero.tsx` (eyebrow, H1 with the accent word "tief" and the falling hairline, lead and proof row with real counts from `lib/data/catalog.ts`, numbers dropped without data), `SearchCard.tsx` (client island: segmented group, hotel select grouped by city, native dates, guests, inline errors; submits to `/hotel/{slug}/{in}--{out}?adults=n`, the stay page from C-022, so **don't deploy the homepage to production before C-022**), `LiveExample.tsx` (featured stay from `getFeaturedStay` with verdict, chart and today's prices by site; without data a sample labelled "Beispieldaten" from `lib/sampleStay.ts`). `@tidaq/core` is now `"sideEffects": false`: client imports from the barrel no longer ship Zod (home first-load JS 207 → 112 kB). Lighthouse mobile (local, live data): performance 98, accessibility 100, best practices 100 once photos load without cookies (C-011c). `lib/today.ts` = Berlin date.
 
-**C-020b2 (TODO):** how it works (3 steps), Kassen-Check teaser as the "Kassenbon" card (CRAFT §4.2; explain the method, no test numbers until L-033 has real ones), deals of the week (only stays with ≥ 14 days of data; until then a dated note), final CTA, blobs only in the hero.
+**C-020b2 notes (DONE):** `components/home/HowItWorks.tsx` (3 steps), `CheckoutTeaser.tsx` (the method + a "Kassenbon" with a zig-zag mask, clearly labelled "Beispiel"; real per-site results come with L-033/C-034), `Deals.tsx` + `lib/data/deals.ts` + core `pickDeals` (≥ 14 days, ≥ 8 % under the 30-day average, one per hotel, top 3; the section renders nothing until such deals exist, expected from about 26 Oct), `FinalCta.tsx` (marked `data-hides-nav-cta`, so the navbar CTA hides there too). **Copy to update in C-030:** step 3 says "Bald auch per E-Mail, wenn der Preis fällt"; drop "Bald" when alerts ship.
 
 **Steps**
 
