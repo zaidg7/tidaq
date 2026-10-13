@@ -82,7 +82,7 @@ Steps for Zaid (≈ 3 min):
 
 ## B-003 · Top up DataForSEO with $50
 
-Status: OPEN · Opened: 2026-10-12 by CLOUD · Blocks: C-013 (daily data collection)
+Status: NOT NEEDED for now (13 Oct: Zaid chose the free source Xotelo, D-41 / C-013g; keep this as the fallback if Xotelo stops working) · Opened: 2026-10-12 by CLOUD · Blocks: nothing while Xotelo works
 What I need: the $50 minimum top-up at DataForSEO. The data works end to end (12 Oct: staging stored 756 prices for 28 hotels). About $0.88 is left: that's **~2 days** of daily collection at 400 tasks/day. When it runs out, the morning run fails and you get an error email.
 Steps for Zaid (≈ 3 min):
 

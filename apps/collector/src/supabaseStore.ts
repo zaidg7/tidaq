@@ -28,15 +28,16 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
       const rows = check(
         await db
           .from('hotels')
-          .select('id, dfs_hotel_identifier, cities!inner(slug)')
+          .select('id, dfs_hotel_identifier, xotelo_key, cities!inner(slug)')
           .eq('active', true)
-          .not('dfs_hotel_identifier', 'is', null),
+          .or('dfs_hotel_identifier.not.is.null,xotelo_key.not.is.null'),
         'load hotels',
       );
       return rows.map((h): CatalogHotel => ({
         id: h.id,
         citySlug: h.cities.slug,
-        dfsHotelIdentifier: h.dfs_hotel_identifier as string,
+        dfsHotelIdentifier: h.dfs_hotel_identifier,
+        xoteloKey: h.xotelo_key,
       }));
     },
 
@@ -78,11 +79,12 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
       const stays = check(
         await db
           .from('tracked_stays')
-          .select('id, check_in, check_out, adults, hotels!inner(dfs_hotel_identifier, active)')
+          .select(
+            'id, check_in, check_out, adults, hotels!inner(dfs_hotel_identifier, xotelo_key, active)',
+          )
           .eq('active', true)
           .gte('check_in', today)
-          .eq('hotels.active', true)
-          .not('hotels.dfs_hotel_identifier', 'is', null),
+          .eq('hotels.active', true),
         'load stays',
       );
       const watches = check(
@@ -95,7 +97,8 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
         checkIn: s.check_in,
         checkOut: s.check_out,
         adults: s.adults,
-        hotelIdentifier: s.hotels.dfs_hotel_identifier as string,
+        hotelIdentifier: s.hotels.dfs_hotel_identifier,
+        xoteloKey: s.hotels.xotelo_key,
         watched: watched.has(s.id),
       }));
     },
@@ -165,7 +168,9 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
       const rows = check(
         await db
           .from('collector_tasks')
-          .select('id, stay_id, posted_at, tracked_stays!inner(hotel_id, check_in, check_out)')
+          .select(
+            'id, stay_id, posted_at, tracked_stays!inner(hotel_id, check_in, check_out, adults, hotels!inner(xotelo_key))',
+          )
           .eq('status', 'posted')
           .order('posted_at', { ascending: true })
           .limit(limit),
@@ -177,6 +182,8 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
         hotelId: t.tracked_stays.hotel_id,
         checkIn: t.tracked_stays.check_in,
         checkOut: t.tracked_stays.check_out,
+        adults: t.tracked_stays.adults,
+        xoteloKey: t.tracked_stays.hotels.xotelo_key,
         postedAt: t.posted_at,
       }));
     },

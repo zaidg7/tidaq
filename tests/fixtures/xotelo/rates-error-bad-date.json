@@ -1,0 +1,5 @@
+{
+  "error": { "status_code": 400, "message": "chk_in=2026-13-40 is invalid date" },
+  "result": null,
+  "timestamp": 1791935008247
+}

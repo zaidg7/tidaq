@@ -4,6 +4,7 @@ import {
   DFS_OK,
   DFS_TASK_HANDED,
   DFS_TASK_IN_QUEUE,
+  isXoteloTask,
   nights,
   normalizeHotelInfo,
   registrableDomain,
@@ -19,14 +20,21 @@ export interface OpenTask {
   hotelId: number;
   checkIn: string;
   checkOut: string;
+  adults: number;
+  /** The hotel's Xotelo key; Xotelo tasks are fetched with it (D-41). */
+  xoteloKey: string | null;
   postedAt: string;
 }
+
+/** A priced result: DataForSEO's Hotel Info, or Xotelo's rates in the same shape (prices only). */
+export type PricedResult = Pick<DfsHotelInfoResult, 'prices'> &
+  Partial<Pick<DfsHotelInfoResult, 'datetime' | 'about'>>;
 
 export type TaskOutcome =
   | { kind: 'pending' }
   | { kind: 'no_results' }
   | { kind: 'failed'; error: string }
-  | { kind: 'done'; result: DfsHotelInfoResult };
+  | { kind: 'done'; result: PricedResult };
 
 export type FinalTaskStatus = 'done' | 'no_results' | 'failed';
 
@@ -42,6 +50,8 @@ export interface IngestPayload {
     total_cents: number;
     free_cancellation: boolean | null;
     raw: unknown;
+    /** A stay's `stay_daily` follows the source of its newest snapshot (D-41). */
+    source: 'dataforseo' | 'xotelo';
   }[];
   tasks: { id: string; status: FinalTaskStatus; error: string | null }[];
   /** Filled only where `hotels.official_url` is still null. */
@@ -138,6 +148,7 @@ export function buildIngest(
           nightlyCents: offer.nightlyCents,
           freeCancellationUntil: offer.freeCancellationUntil,
         },
+        source: isXoteloTask(task.id) ? 'xotelo' : 'dataforseo',
       });
     }
     for (const src of unknownSources(eligible)) {

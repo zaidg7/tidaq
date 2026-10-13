@@ -1,0 +1,42 @@
+{
+  "_stay": {
+    "check_in": "2026-10-23",
+    "check_out": "2026-10-25",
+    "adults": 2,
+    "nights": 2
+  },
+  "_hotel_key": "g187323-d2481544",
+  "error": null,
+  "result": {
+    "chk_in": "2026-10-23",
+    "chk_out": "2026-10-25",
+    "currency": "EUR",
+    "rates": [
+      {
+        "code": "HiltonEMEAGlobal",
+        "name": "Waldorf Astoria",
+        "rate": 335,
+        "tax": null
+      },
+      {
+        "code": "BookingCom",
+        "name": "Booking.com",
+        "rate": 339,
+        "tax": null
+      },
+      {
+        "code": "Agoda",
+        "name": "Agoda.com",
+        "rate": 363,
+        "tax": null
+      },
+      {
+        "code": "CtripTA",
+        "name": "Trip.com",
+        "rate": 358,
+        "tax": null
+      }
+    ]
+  },
+  "timestamp": 1791934450902
+}

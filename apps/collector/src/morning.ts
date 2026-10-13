@@ -7,11 +7,12 @@ import {
   gridConfigFromEnv,
   MONTHLY_ALERT_SHARE,
   toIsoDate,
+  xoteloTaskId,
   z,
   type BudgetReason,
 } from '@tidaq/core';
 import { postHotelInfoTasks, type FetchFn } from './dataforseo';
-import type { Env } from './env';
+import { priceSource, type Env } from './env';
 import type { CollectorStore, RunKind } from './store';
 
 export interface PostRunSummary {
@@ -66,7 +67,11 @@ export async function runPosting(opts: {
     const gridStaysInserted = await store.upsertGridStays(stays);
     const staysDeactivated = await store.deactivatePastStays(today);
 
-    const allJobs = await store.stayJobs(today);
+    // Only stays whose hotel has an id at the active source (D-41).
+    const source = priceSource(env);
+    const allJobs = (await store.stayJobs(today)).filter((j) =>
+      source === 'xotelo' ? j.xoteloKey !== null : j.hotelIdentifier !== null,
+    );
     const jobs = kind === 'evening' ? eveningJobs(allJobs, today) : allJobs;
     const usage = await store.usage(today);
     const budget = applyBudget(jobs, today, {
@@ -74,20 +79,33 @@ export async function runPosting(opts: {
       postedToday: usage.postedToday,
       monthlyBudgetUsd: limits.MONTHLY_BUDGET_USD,
       spentThisMonthUsd: usage.spentThisMonthUsd,
-      costPerTaskUsd: COST_PER_TASK_USD,
+      // Xotelo is free: only the daily cap limits it (and keeps us gentle on the service).
+      costPerTaskUsd: source === 'xotelo' ? 0 : COST_PER_TASK_USD,
     });
 
-    const result = await postHotelInfoTasks(
-      budget.selected.map((j) => ({
-        hotelIdentifier: j.hotelIdentifier,
-        checkIn: j.checkIn,
-        checkOut: j.checkOut,
-        adults: j.adults,
-        stayId: j.stayId,
-      })),
-      { login: env.DATAFORSEO_LOGIN, password: env.DATAFORSEO_PASSWORD },
-      opts.fetchFn,
-    );
+    // Xotelo answers right away, so its "tasks" are local queue entries the collect runs work
+    // through; DataForSEO tasks are posted and polled (D-39).
+    const result =
+      source === 'xotelo'
+        ? {
+            posted: budget.selected.map((j) => ({
+              id: xoteloTaskId(runId, j.stayId),
+              stayId: j.stayId,
+              costUsd: 0,
+            })),
+            errors: [] as { stayId: number; message: string }[],
+          }
+        : await postHotelInfoTasks(
+            budget.selected.map((j) => ({
+              hotelIdentifier: j.hotelIdentifier as string,
+              checkIn: j.checkIn,
+              checkOut: j.checkOut,
+              adults: j.adults,
+              stayId: j.stayId,
+            })),
+            { login: env.DATAFORSEO_LOGIN, password: env.DATAFORSEO_PASSWORD },
+            opts.fetchFn,
+          );
     await store.recordTasks(runId, result.posted);
     errors.push(...result.errors.map((e) => `stay ${e.stayId}: ${e.message}`));
 

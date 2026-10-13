@@ -9,7 +9,7 @@ import { fakeDataForSeo, memoryStore } from './test/memoryStore';
 import { fakeMail } from './test/mail';
 import { fakeResults, hotelInfoFixture, SEED_ALIASES } from './test/results';
 
-const hotels = [{ id: 1, citySlug: 'berlin', dfsHotelIdentifier: 'id-adlon' }];
+const hotels = [{ id: 1, citySlug: 'berlin', dfsHotelIdentifier: 'id-adlon', xoteloKey: null }];
 const now = () => new Date('2026-10-12T05:00:00Z');
 
 function setup() {

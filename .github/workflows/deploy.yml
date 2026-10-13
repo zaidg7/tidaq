@@ -15,6 +15,10 @@ on:
         type: choice
         options: [staging, production]
         default: staging
+      collector_only:
+        description: Deploy only the collector (e.g. a new price source) and leave the website as it is
+        type: boolean
+        default: false
   push:
     tags: ['v*']
 
@@ -75,15 +79,23 @@ jobs:
           pnpm exec wrangler secret bulk "$RUNNER_TEMP/collector-secrets.json" $ENV_FLAG
           rm "$RUNNER_TEMP/collector-secrets.json"
 
+      - name: Collector smoke test
+        run: |
+          if [ "$TARGET" = "staging" ]; then NAME=tidaq-collector-staging; else NAME=tidaq-collector; fi
+          curl -fsS --max-time 20 --retry 3 --retry-delay 5 "https://$NAME.tidaq.workers.dev/health"
+
       - name: Build web Worker (OpenNext)
+        if: ${{ !inputs.collector_only }}
         working-directory: apps/web
         run: pnpm exec opennextjs-cloudflare build
 
       - name: Deploy web
+        if: ${{ !inputs.collector_only }}
         working-directory: apps/web
         run: pnpm exec opennextjs-cloudflare deploy $ENV_FLAG 2>&1 | tee "$RUNNER_TEMP/web-deploy.log"
 
       - name: Web secrets
+        if: ${{ !inputs.collector_only }}
         working-directory: apps/web
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -95,6 +107,7 @@ jobs:
           rm "$RUNNER_TEMP/web-secrets.json"
 
       - name: Smoke test
+        if: ${{ !inputs.collector_only }}
         run: |
           if [ "$TARGET" = "staging" ]; then
             URL=$(grep -m1 -oE 'https://tidaq-web-staging\.[a-z0-9-]+\.workers\.dev' "$RUNNER_TEMP/web-deploy.log")

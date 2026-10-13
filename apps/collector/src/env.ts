@@ -11,10 +11,19 @@ export interface Env {
   ADMIN_EMAILS?: string;
   /** Results fetched per collect invocation (default 30, see COLLECT in collect.ts). */
   COLLECT_BATCH?: string;
+  /** `xotelo` (free, D-41) or `dataforseo` (paid fallback). Default `dataforseo`. */
+  PRICE_SOURCE?: string;
   // Secrets (wrangler secret bulk from GitHub secrets in deploy.yml). Optional until C-013 uses them.
   DATAFORSEO_LOGIN?: string;
   DATAFORSEO_PASSWORD?: string;
   SUPABASE_URL?: string;
   SUPABASE_SERVICE_ROLE_KEY?: string;
   RESEND_API_KEY?: string;
+}
+
+export type PriceSource = 'xotelo' | 'dataforseo';
+
+/** Where prices come from (D-41). Anything but `xotelo` keeps the paid DataForSEO path. */
+export function priceSource(env: Pick<Env, 'PRICE_SOURCE'>): PriceSource {
+  return env.PRICE_SOURCE?.trim().toLowerCase() === 'xotelo' ? 'xotelo' : 'dataforseo';
 }

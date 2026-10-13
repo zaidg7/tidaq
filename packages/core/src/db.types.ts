@@ -214,6 +214,7 @@ export type Database = {
           official_url: string | null
           slug: string
           stars: number
+          xotelo_key: string | null
         }
         Insert: {
           active?: boolean
@@ -230,6 +231,7 @@ export type Database = {
           official_url?: string | null
           slug: string
           stars?: number
+          xotelo_key?: string | null
         }
         Update: {
           active?: boolean
@@ -246,6 +248,7 @@ export type Database = {
           official_url?: string | null
           slug?: string
           stars?: number
+          xotelo_key?: string | null
         }
         Relationships: [
           {
@@ -267,6 +270,7 @@ export type Database = {
           provider_id: number
           raw: Json | null
           room_name: string | null
+          source: string
           stay_id: number
           task_id: string | null
           total_cents: number
@@ -280,6 +284,7 @@ export type Database = {
           provider_id: number
           raw?: Json | null
           room_name?: string | null
+          source?: string
           stay_id: number
           task_id?: string | null
           total_cents: number
@@ -293,6 +298,7 @@ export type Database = {
           provider_id?: number
           raw?: Json | null
           room_name?: string | null
+          source?: string
           stay_id?: number
           task_id?: string | null
           total_cents?: number

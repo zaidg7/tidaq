@@ -71,6 +71,7 @@ The tracked hotels live in `public.hotels` (source: `scripts/catalog/`). To add 
 
 ### Collector (prices)
 
+- **Price source** (`PRICE_SOURCE`, D-41): `xotelo` (free, current) or `dataforseo` (paid fallback, needs balance). With Xotelo the morning run only queues jobs (`collector_tasks` with ids `xo-<run>-<stay>`, cost 0, still limited by `DAILY_TASK_CAP`), and each collect run calls Xotelo for up to `COLLECT_BATCH` of them, 400 ms apart. Rates go through the same normalization, aliases and pending providers as DataForSEO results. `price_snapshots.source` records the API; `stay_daily` for a stay is built from the source of its newest snapshot only, so a switch never mixes the two. Hotels need `hotels.xotelo_key`. The DataForSEO notes below apply when `PRICE_SOURCE=dataforseo`.
 - **Morning run** (05:00 UTC cron in production): refresh the stay grid for active hotels → deactivate past stays → budget guard → post one DataForSEO Hotel Info task per stay (by `hotel_identifier`, `tag` = stay id) → log the run in `collector_runs` and each task in `collector_tasks`.
 - **Budget guard** (`packages/core/src/budget.ts`): at most `DAILY_TASK_CAP` tasks per UTC day and `MONTHLY_BUDGET_USD` per month at $0.0008 per task. Staging and production share the database, so both count against the same cap. When the cap cuts, watched stays go first, then the nearest check-in. The reason is stored in `collector_runs.budget_reason`.
 - **Manual run:** Actions → **Collector run** → Run workflow → target `staging` (cap 50) or `production`, action `post`. It calls `POST /run` with a token derived from `SUPABASE_SERVICE_ROLE_KEY`; the job summary shows the run summary. Every manual run spends real money (up to the cap × $0.0008).
@@ -85,7 +86,8 @@ The tracked hotels live in `public.hotels` (source: `scripts/catalog/`). To add 
 | Staging | `tidaq-web-staging` on workers.dev (URL in the job summary) | `tidaq-collector-staging`, **no crons** (manual runs only) | Automatically after CI is green on every push to `main` (job "Deploy staging" in `ci.yml`) |
 | Production | `tidaq-web` on **tidaq.com** (+ `www.tidaq.com` → 308 to `tidaq.com`) | `tidaq-collector` with the 05:00/17:00 UTC crons | Push a tag `v*`, or Actions → Deploy → Run workflow → target `production` |
 
-- Everything runs in `.github/workflows/deploy.yml`: deploy collector, push its secrets, OpenNext build, deploy web, push its secrets, smoke test (`/` and `/en` must answer).
+- Everything runs in `.github/workflows/deploy.yml`: deploy collector, push its secrets, collector `/health` check, OpenNext build, deploy web, push its secrets, smoke test (`/` and `/en` must answer).
+- **Collector only:** Actions → Deploy → Run workflow → tick **collector_only**. Updates the collector (e.g. a new price source) and leaves the website untouched, so tidaq.com keeps its "kommt bald" page until launch.
 - Worker secrets come from GitHub secrets through `wrangler secret bulk` (`scripts/deploy/secrets-json.mjs` skips unset ones). Never deploy from a laptop: there is no `deploy` script on purpose.
 - Config per environment lives in each app's `wrangler.jsonc` (top level = production, `env.staging` = staging). Staging uses `DAILY_TASK_CAP=50` and `ALERTS_DRY_RUN=true`; production keeps `ALERTS_DRY_RUN=true` until C-031.
 
