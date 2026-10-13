@@ -370,3 +370,18 @@
 [data-scrubbing] .scrub-fade {
   opacity: 0.35;
 }
+
+/* Hero background: three soft lavender/pink blobs behind the content (DESIGN.md §2). */
+.hero-blobs {
+  position: absolute;
+  inset: -10% -20% auto;
+  z-index: -1;
+  height: 120%;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 42% at 18% 22%, var(--blob-1), transparent 70%),
+    radial-gradient(34% 38% at 86% 30%, var(--blob-2), transparent 70%),
+    radial-gradient(40% 36% at 52% 78%, var(--blob-3), transparent 72%);
+  filter: blur(8px);
+  opacity: 0.85;
+}

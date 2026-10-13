@@ -1,362 +1,1877 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tidaq – Soft Modern reference homepage</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap">
-<!-- Reference only. Example data. Built from the kickoff mockup (direction: soft). docs/DESIGN.md wins where they differ. -->
-<style>
-/* Layout: a decision sheet in three steps (name, full website directions, setup). A sticky bar shows the picks; step 2 is a tabbed browser frame that renders a complete homepage per direction, with a phone-width toggle. */
-:root{
-  --bg:#f4f5f8; --fg:#13161b; --muted:#5b6270; --line:#dde1e8; --card:#ffffff; --accent:#2c56cf; --accent-ink:#ffffff; --ok:#1d7f4e; --warn:#a4560b; --sel:#e8eefc; --chrome:#e7e9ee;
-  --f-display:"Instrument Serif", Georgia, serif; --f-body:"Geist", system-ui, -apple-system, "Segoe UI", sans-serif; --f-mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
-}
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#0f1115; --fg:#eceff4; --muted:#9aa2ae; --line:#272b34; --card:#171a20; --accent:#86a2f7; --accent-ink:#0f1115; --ok:#5fd394; --warn:#f0a355; --sel:#1d2640; --chrome:#1c2027; color-scheme:dark }}
-:root[data-theme="dark"]{
-  --bg:#0f1115; --fg:#eceff4; --muted:#9aa2ae; --line:#272b34; --card:#171a20; --accent:#86a2f7; --accent-ink:#0f1115; --ok:#5fd394; --warn:#f0a355; --sel:#1d2640; --chrome:#1c2027; color-scheme:dark }
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Tidaq – Soft Modern reference homepage</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"
+    />
+    <!-- Reference only. Example data. Built from the kickoff mockup (direction: soft). docs/DESIGN.md wins where they differ. -->
+    <style>
+      /* Layout: a decision sheet in three steps (name, full website directions, setup). A sticky bar shows the picks; step 2 is a tabbed browser frame that renders a complete homepage per direction, with a phone-width toggle. */
+      :root {
+        --bg: #f4f5f8;
+        --fg: #13161b;
+        --muted: #5b6270;
+        --line: #dde1e8;
+        --card: #ffffff;
+        --accent: #2c56cf;
+        --accent-ink: #ffffff;
+        --ok: #1d7f4e;
+        --warn: #a4560b;
+        --sel: #e8eefc;
+        --chrome: #e7e9ee;
+        --f-display: 'Instrument Serif', Georgia, serif;
+        --f-body: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --f-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --bg: #0f1115;
+          --fg: #eceff4;
+          --muted: #9aa2ae;
+          --line: #272b34;
+          --card: #171a20;
+          --accent: #86a2f7;
+          --accent-ink: #0f1115;
+          --ok: #5fd394;
+          --warn: #f0a355;
+          --sel: #1d2640;
+          --chrome: #1c2027;
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme='dark'] {
+        --bg: #0f1115;
+        --fg: #eceff4;
+        --muted: #9aa2ae;
+        --line: #272b34;
+        --card: #171a20;
+        --accent: #86a2f7;
+        --accent-ink: #0f1115;
+        --ok: #5fd394;
+        --warn: #f0a355;
+        --sel: #1d2640;
+        --chrome: #1c2027;
+        color-scheme: dark;
+      }
 
-*{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5;padding-inline:16px;padding-block:0 64px}
-.wrap{max-width:1240px;margin:0 auto}
-h1,h2,h3{text-wrap:balance;margin:0}
-button{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: var(--f-body);
+        font-size: 15px;
+        line-height: 1.5;
+        padding-inline: 16px;
+        padding-block: 0 64px;
+      }
+      .wrap {
+        max-width: 1240px;
+        margin: 0 auto;
+      }
+      h1,
+      h2,
+      h3 {
+        text-wrap: balance;
+        margin: 0;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+      }
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
 
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in oklab,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-inline:-16px;padding:10px 16px}
-.bar .wrap{display:flex;gap:8px 14px;align-items:center;flex-wrap:wrap;font-size:13px}
-.bar b{font-weight:600}
-.pill{display:inline-flex;gap:6px;align-items:center;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);white-space:nowrap}
-.pill.done{border-color:color-mix(in oklab,var(--ok) 50%,var(--line));color:var(--ok)}
-.sync{margin-left:auto;color:var(--muted);font-size:12px}
+      .bar {
+        position: sticky;
+        top: env(safe-area-inset-top, 0px);
+        z-index: 20;
+        background: color-mix(in oklab, var(--bg) 88%, transparent);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+        margin-inline: -16px;
+        padding: 10px 16px;
+      }
+      .bar .wrap {
+        display: flex;
+        gap: 8px 14px;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 13px;
+      }
+      .bar b {
+        font-weight: 600;
+      }
+      .pill {
+        display: inline-flex;
+        gap: 6px;
+        align-items: center;
+        padding: 3px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: var(--card);
+        white-space: nowrap;
+      }
+      .pill.done {
+        border-color: color-mix(in oklab, var(--ok) 50%, var(--line));
+        color: var(--ok);
+      }
+      .sync {
+        margin-left: auto;
+        color: var(--muted);
+        font-size: 12px;
+      }
 
-header.hero{padding-block:40px 8px}
-.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.hero h1{font-family:var(--f-display);font-weight:400;font-size:clamp(34px,6vw,54px);line-height:1.05;margin-top:8px}
-.hero p{max-width:64ch;color:var(--muted);margin:12px 0 0}
+      header.hero {
+        padding-block: 40px 8px;
+      }
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .hero h1 {
+        font-family: var(--f-display);
+        font-weight: 400;
+        font-size: clamp(34px, 6vw, 54px);
+        line-height: 1.05;
+        margin-top: 8px;
+      }
+      .hero p {
+        max-width: 64ch;
+        color: var(--muted);
+        margin: 12px 0 0;
+      }
 
-section.step{padding-block:44px 28px;border-bottom:1px solid var(--line)}
-.step-head{margin-bottom:18px}
-.step-head h2{font-family:var(--f-display);font-weight:400;font-size:clamp(26px,4vw,36px)}
-.step-head p{color:var(--muted);margin:6px 0 0;max-width:70ch}
-.num{font-family:var(--f-mono);font-size:12px;color:var(--accent);display:block;margin-bottom:4px}
+      section.step {
+        padding-block: 44px 28px;
+        border-bottom: 1px solid var(--line);
+      }
+      .step-head {
+        margin-bottom: 18px;
+      }
+      .step-head h2 {
+        font-family: var(--f-display);
+        font-weight: 400;
+        font-size: clamp(26px, 4vw, 36px);
+      }
+      .step-head p {
+        color: var(--muted);
+        margin: 6px 0 0;
+        max-width: 70ch;
+      }
+      .num {
+        font-family: var(--f-mono);
+        font-size: 12px;
+        color: var(--accent);
+        display: block;
+        margin-bottom: 4px;
+      }
 
-.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.names{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
-.nm{position:relative;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:8px;min-width:0}
-.nm.final{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset;background:var(--sel)}
-.nm .word{font-family:var(--f-display);font-size:28px;line-height:1.05;overflow-wrap:anywhere}
-.nm .root{font-size:12px;color:var(--muted);min-height:18px}
-.nm .meta{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
-.tld{font-family:var(--f-mono);font-size:11px;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--muted)}
-.tld.com{color:var(--ok);border-color:color-mix(in oklab,var(--ok) 45%,var(--line))}
-.nm .acts{display:flex;gap:6px}
-.nm .acts button{flex:1;border:1px solid var(--line);background:transparent;border-radius:7px;padding:6px 8px;font-size:12.5px;cursor:pointer}
-.nm .acts button[aria-pressed="true"].fav{background:color-mix(in oklab,var(--warn) 16%,transparent);border-color:var(--warn);color:var(--warn)}
-.nm .acts button[aria-pressed="true"].pick{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.rec{position:absolute;top:10px;right:10px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
-.custom{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
-input[type=text],textarea{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 11px;min-width:0}
-textarea{width:100%;min-height:84px;resize:vertical}
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .chip {
+        border: 1px solid var(--line);
+        background: var(--card);
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .chip[aria-pressed='true'] {
+        background: var(--fg);
+        color: var(--bg);
+        border-color: var(--fg);
+      }
+      .names {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 10px;
+      }
+      .nm {
+        position: relative;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 14px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+      }
+      .nm.final {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px var(--accent) inset;
+        background: var(--sel);
+      }
+      .nm .word {
+        font-family: var(--f-display);
+        font-size: 28px;
+        line-height: 1.05;
+        overflow-wrap: anywhere;
+      }
+      .nm .root {
+        font-size: 12px;
+        color: var(--muted);
+        min-height: 18px;
+      }
+      .nm .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        align-items: center;
+      }
+      .tld {
+        font-family: var(--f-mono);
+        font-size: 11px;
+        padding: 1px 6px;
+        border-radius: 4px;
+        border: 1px solid var(--line);
+        color: var(--muted);
+      }
+      .tld.com {
+        color: var(--ok);
+        border-color: color-mix(in oklab, var(--ok) 45%, var(--line));
+      }
+      .nm .acts {
+        display: flex;
+        gap: 6px;
+      }
+      .nm .acts button {
+        flex: 1;
+        border: 1px solid var(--line);
+        background: transparent;
+        border-radius: 7px;
+        padding: 6px 8px;
+        font-size: 12.5px;
+        cursor: pointer;
+      }
+      .nm .acts button[aria-pressed='true'].fav {
+        background: color-mix(in oklab, var(--warn) 16%, transparent);
+        border-color: var(--warn);
+        color: var(--warn);
+      }
+      .nm .acts button[aria-pressed='true'].pick {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-ink);
+      }
+      .rec {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 10.5px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .custom {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+        align-items: center;
+      }
+      input[type='text'],
+      textarea {
+        font: inherit;
+        color: var(--fg);
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 9px 11px;
+        min-width: 0;
+      }
+      textarea {
+        width: 100%;
+        min-height: 84px;
+        resize: vertical;
+      }
 
-/* direction tabs + browser frame */
-.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px}
-.tab{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font-size:13.5px;cursor:pointer;white-space:nowrap}
-.tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.tab .h{color:var(--warn);margin-left:4px}
-.tab .c{margin-left:4px}
-.dirinfo{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;margin-bottom:12px}
-.dirinfo p{margin:0;color:var(--muted);max-width:70ch;font-size:14px}
-.dirinfo .acts{display:flex;gap:8px;flex-wrap:wrap}
-.btn2{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:8px 14px;font-size:13.5px;cursor:pointer}
-.btn2[aria-pressed="true"].like{background:color-mix(in oklab,var(--warn) 16%,transparent);border-color:var(--warn);color:var(--warn)}
-.btn2[aria-pressed="true"].pick{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.btn2[aria-pressed="true"].dev{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.browser{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--chrome);margin-inline:auto;transition:max-width .25s}
-.browser.phone{max-width:400px}
-.browser .top{display:flex;align-items:center;gap:10px;padding:9px 12px}
-.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:var(--line);display:block}
-.url{flex:1;min-width:0;background:var(--card);border-radius:7px;padding:4px 10px;font-size:12px;color:var(--muted);font-family:var(--f-mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.frame{container-type:inline-size;max-height:min(1400px,82vh);overflow:auto;-webkit-overflow-scrolling:touch}
+      /* direction tabs + browser frame */
+      .tabs {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        margin-bottom: 12px;
+      }
+      .tab {
+        flex: none;
+        border: 1px solid var(--line);
+        background: var(--card);
+        border-radius: 999px;
+        padding: 7px 14px;
+        font-size: 13.5px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .tab[aria-selected='true'] {
+        background: var(--fg);
+        color: var(--bg);
+        border-color: var(--fg);
+      }
+      .tab .h {
+        color: var(--warn);
+        margin-left: 4px;
+      }
+      .tab .c {
+        margin-left: 4px;
+      }
+      .dirinfo {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 20px;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .dirinfo p {
+        margin: 0;
+        color: var(--muted);
+        max-width: 70ch;
+        font-size: 14px;
+      }
+      .dirinfo .acts {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .btn2 {
+        border: 1px solid var(--line);
+        background: var(--card);
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-size: 13.5px;
+        cursor: pointer;
+      }
+      .btn2[aria-pressed='true'].like {
+        background: color-mix(in oklab, var(--warn) 16%, transparent);
+        border-color: var(--warn);
+        color: var(--warn);
+      }
+      .btn2[aria-pressed='true'].pick {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-ink);
+      }
+      .btn2[aria-pressed='true'].dev {
+        background: var(--fg);
+        color: var(--bg);
+        border-color: var(--fg);
+      }
+      .browser {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--chrome);
+        margin-inline: auto;
+        transition: max-width 0.25s;
+      }
+      .browser.phone {
+        max-width: 400px;
+      }
+      .browser .top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+      }
+      .dots {
+        display: flex;
+        gap: 6px;
+      }
+      .dots i {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--line);
+        display: block;
+      }
+      .url {
+        flex: 1;
+        min-width: 0;
+        background: var(--card);
+        border-radius: 7px;
+        padding: 4px 10px;
+        font-size: 12px;
+        color: var(--muted);
+        font-family: var(--f-mono);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .frame {
+        container-type: inline-size;
+        max-height: min(1400px, 82vh);
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-/* ============ SITE (the mock website) ============ */
-.site{background:var(--s-bg);color:var(--s-fg);font-family:var(--s-body);font-size:15px;line-height:1.55;position:relative;overflow:hidden}
-.site *{box-sizing:border-box}
-.site .in{max-width:1080px;margin:0 auto;padding-inline:28px}
-.s-nav{display:flex;align-items:center;gap:22px;padding-block:18px}
-.s-logo{font-family:var(--s-display);font-weight:var(--s-dw);font-size:22px;letter-spacing:var(--s-ls)}
-.s-links{display:flex;gap:20px;font-size:14px;color:var(--s-muted);margin-left:auto}
-.s-btn{background:var(--s-accent);color:var(--s-on);border-radius:var(--s-r);padding:10px 18px;font-weight:600;font-size:14px;white-space:nowrap;display:inline-block}
-.s-btn.ghost{background:transparent;color:var(--s-fg);border:1px solid var(--s-line)}
-.s-hero{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;padding-block:56px 64px}
-.s-eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--s-muted);font-weight:600}
-.s-hero h1{font-family:var(--s-display);font-weight:var(--s-dw);font-size:clamp(34px,5.4cqi,62px);line-height:1.04;letter-spacing:var(--s-ls);margin:14px 0 16px;text-wrap:balance}
-.s-hero p{color:var(--s-muted);font-size:16.5px;max-width:46ch;margin:0}
-.s-proof{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px;font-size:13px;color:var(--s-muted)}
-.s-proof b{color:var(--s-fg);font-family:var(--s-num)}
-.s-search{background:var(--s-surface);border:1px solid var(--s-line);border-radius:calc(var(--s-r) * 1.4);padding:18px;display:grid;gap:10px;box-shadow:var(--s-shadow)}
-.s-field{border:1px solid var(--s-line);border-radius:var(--s-r);padding:10px 12px;display:flex;flex-direction:column;gap:2px;background:var(--s-field)}
-.s-field small{font-size:11px;color:var(--s-muted);letter-spacing:.04em;text-transform:uppercase}
-.s-field span{font-size:15px;font-weight:600}
-.s-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.s-toggles{display:flex;gap:8px;flex-wrap:wrap}
-.s-tg{border:1px solid var(--s-line);border-radius:999px;padding:6px 12px;font-size:13px;color:var(--s-muted)}
-.s-tg.on{border-color:var(--s-accent);color:var(--s-fg);background:color-mix(in oklab,var(--s-accent) 14%,transparent)}
-.s-search .s-btn{text-align:center;padding-block:13px;font-size:15px}
+      /* ============ SITE (the mock website) ============ */
+      .site {
+        background: var(--s-bg);
+        color: var(--s-fg);
+        font-family: var(--s-body);
+        font-size: 15px;
+        line-height: 1.55;
+        position: relative;
+        overflow: hidden;
+      }
+      .site * {
+        box-sizing: border-box;
+      }
+      .site .in {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding-inline: 28px;
+      }
+      .s-nav {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        padding-block: 18px;
+      }
+      .s-logo {
+        font-family: var(--s-display);
+        font-weight: var(--s-dw);
+        font-size: 22px;
+        letter-spacing: var(--s-ls);
+      }
+      .s-links {
+        display: flex;
+        gap: 20px;
+        font-size: 14px;
+        color: var(--s-muted);
+        margin-left: auto;
+      }
+      .s-btn {
+        background: var(--s-accent);
+        color: var(--s-on);
+        border-radius: var(--s-r);
+        padding: 10px 18px;
+        font-weight: 600;
+        font-size: 14px;
+        white-space: nowrap;
+        display: inline-block;
+      }
+      .s-btn.ghost {
+        background: transparent;
+        color: var(--s-fg);
+        border: 1px solid var(--s-line);
+      }
+      .s-hero {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 40px;
+        align-items: center;
+        padding-block: 56px 64px;
+      }
+      .s-eyebrow {
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--s-muted);
+        font-weight: 600;
+      }
+      .s-hero h1 {
+        font-family: var(--s-display);
+        font-weight: var(--s-dw);
+        font-size: clamp(34px, 5.4cqi, 62px);
+        line-height: 1.04;
+        letter-spacing: var(--s-ls);
+        margin: 14px 0 16px;
+        text-wrap: balance;
+      }
+      .s-hero p {
+        color: var(--s-muted);
+        font-size: 16.5px;
+        max-width: 46ch;
+        margin: 0;
+      }
+      .s-proof {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin-top: 22px;
+        font-size: 13px;
+        color: var(--s-muted);
+      }
+      .s-proof b {
+        color: var(--s-fg);
+        font-family: var(--s-num);
+      }
+      .s-search {
+        background: var(--s-surface);
+        border: 1px solid var(--s-line);
+        border-radius: calc(var(--s-r) * 1.4);
+        padding: 18px;
+        display: grid;
+        gap: 10px;
+        box-shadow: var(--s-shadow);
+      }
+      .s-field {
+        border: 1px solid var(--s-line);
+        border-radius: var(--s-r);
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        background: var(--s-field);
+      }
+      .s-field small {
+        font-size: 11px;
+        color: var(--s-muted);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .s-field span {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .s-row2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .s-toggles {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .s-tg {
+        border: 1px solid var(--s-line);
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 13px;
+        color: var(--s-muted);
+      }
+      .s-tg.on {
+        border-color: var(--s-accent);
+        color: var(--s-fg);
+        background: color-mix(in oklab, var(--s-accent) 14%, transparent);
+      }
+      .s-search .s-btn {
+        text-align: center;
+        padding-block: 13px;
+        font-size: 15px;
+      }
 
-section.s-sec{padding-block:64px;border-top:1px solid var(--s-line)}
-.s-h2{font-family:var(--s-display);font-weight:var(--s-dw);font-size:clamp(26px,3.6cqi,40px);letter-spacing:var(--s-ls);line-height:1.1;margin:8px 0 10px;text-wrap:balance}
-.s-lead{color:var(--s-muted);max-width:60ch;margin:0 0 28px}
+      section.s-sec {
+        padding-block: 64px;
+        border-top: 1px solid var(--s-line);
+      }
+      .s-h2 {
+        font-family: var(--s-display);
+        font-weight: var(--s-dw);
+        font-size: clamp(26px, 3.6cqi, 40px);
+        letter-spacing: var(--s-ls);
+        line-height: 1.1;
+        margin: 8px 0 10px;
+        text-wrap: balance;
+      }
+      .s-lead {
+        color: var(--s-muted);
+        max-width: 60ch;
+        margin: 0 0 28px;
+      }
 
-.s-panel{background:var(--s-surface);border:1px solid var(--s-line);border-radius:calc(var(--s-r) * 1.4);padding:24px;display:grid;grid-template-columns:1.5fr 1fr;gap:28px;box-shadow:var(--s-shadow)}
-.s-ph{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start}
-.s-hname{font-family:var(--s-display);font-weight:var(--s-dw);font-size:24px;letter-spacing:var(--s-ls)}
-.s-q{font-size:13px;color:var(--s-muted)}
-.s-state{font-size:12px;font-weight:700;padding:5px 11px;border-radius:999px;background:color-mix(in oklab,var(--s-good) 16%,transparent);color:var(--s-good);white-space:nowrap}
-.s-price{font-family:var(--s-num);font-size:44px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;margin-top:14px}
-.s-delta{font-family:var(--s-num);font-size:13px;color:var(--s-good);margin-top:6px;font-variant-numeric:tabular-nums}
-.s-chart{margin-top:14px}
-.s-chart svg{display:block;width:100%;height:auto}
-.s-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-.s-stat{border:1px solid var(--s-line);border-radius:var(--s-r);padding:10px 12px}
-.s-stat small{display:block;font-size:11px;color:var(--s-muted);text-transform:uppercase;letter-spacing:.05em}
-.s-stat b{font-family:var(--s-num);font-size:17px;font-variant-numeric:tabular-nums}
-.s-advice{margin-top:14px;padding:12px 14px;border-radius:var(--s-r);background:color-mix(in oklab,var(--s-good) 10%,transparent);border:1px solid color-mix(in oklab,var(--s-good) 30%,transparent);font-size:14px}
-.s-advice b{color:var(--s-good)}
-.s-prov h4{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--s-muted)}
-.s-pr{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--s-line)}
-.s-pr:last-child{border-bottom:0}
-.s-pr .n{font-weight:600;font-size:14.5px}
-.s-pr small{display:block;font-size:12px;color:var(--s-muted);font-weight:400;margin-top:2px}
-.s-pr .p{font-family:var(--s-num);font-weight:700;font-variant-numeric:tabular-nums;font-size:15px;text-align:right}
-.s-pr .p s{display:block;font-size:11.5px;color:var(--s-bad);text-decoration:none;font-weight:600}
-.s-ts{font-family:var(--s-num);font-size:12.5px;font-weight:700;padding:4px 8px;border-radius:calc(var(--s-r) * .6);min-width:38px;text-align:center}
-.s-ts.hi{background:color-mix(in oklab,var(--s-good) 18%,transparent);color:var(--s-good)}
-.s-ts.lo{background:color-mix(in oklab,var(--s-bad) 18%,transparent);color:var(--s-bad)}
-.s-badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--s-accent-text);margin-top:4px}
-.s-ex{font-size:11px;color:var(--s-muted);margin-top:10px}
+      .s-panel {
+        background: var(--s-surface);
+        border: 1px solid var(--s-line);
+        border-radius: calc(var(--s-r) * 1.4);
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 28px;
+        box-shadow: var(--s-shadow);
+      }
+      .s-ph {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+      }
+      .s-hname {
+        font-family: var(--s-display);
+        font-weight: var(--s-dw);
+        font-size: 24px;
+        letter-spacing: var(--s-ls);
+      }
+      .s-q {
+        font-size: 13px;
+        color: var(--s-muted);
+      }
+      .s-state {
+        font-size: 12px;
+        font-weight: 700;
+        padding: 5px 11px;
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--s-good) 16%, transparent);
+        color: var(--s-good);
+        white-space: nowrap;
+      }
+      .s-price {
+        font-family: var(--s-num);
+        font-size: 44px;
+        font-weight: 700;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+        margin-top: 14px;
+      }
+      .s-delta {
+        font-family: var(--s-num);
+        font-size: 13px;
+        color: var(--s-good);
+        margin-top: 6px;
+        font-variant-numeric: tabular-nums;
+      }
+      .s-chart {
+        margin-top: 14px;
+      }
+      .s-chart svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .s-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .s-stat {
+        border: 1px solid var(--s-line);
+        border-radius: var(--s-r);
+        padding: 10px 12px;
+      }
+      .s-stat small {
+        display: block;
+        font-size: 11px;
+        color: var(--s-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .s-stat b {
+        font-family: var(--s-num);
+        font-size: 17px;
+        font-variant-numeric: tabular-nums;
+      }
+      .s-advice {
+        margin-top: 14px;
+        padding: 12px 14px;
+        border-radius: var(--s-r);
+        background: color-mix(in oklab, var(--s-good) 10%, transparent);
+        border: 1px solid color-mix(in oklab, var(--s-good) 30%, transparent);
+        font-size: 14px;
+      }
+      .s-advice b {
+        color: var(--s-good);
+      }
+      .s-prov h4 {
+        margin: 0 0 6px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--s-muted);
+      }
+      .s-pr {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 10px;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--s-line);
+      }
+      .s-pr:last-child {
+        border-bottom: 0;
+      }
+      .s-pr .n {
+        font-weight: 600;
+        font-size: 14.5px;
+      }
+      .s-pr small {
+        display: block;
+        font-size: 12px;
+        color: var(--s-muted);
+        font-weight: 400;
+        margin-top: 2px;
+      }
+      .s-pr .p {
+        font-family: var(--s-num);
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        font-size: 15px;
+        text-align: right;
+      }
+      .s-pr .p s {
+        display: block;
+        font-size: 11.5px;
+        color: var(--s-bad);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .s-ts {
+        font-family: var(--s-num);
+        font-size: 12.5px;
+        font-weight: 700;
+        padding: 4px 8px;
+        border-radius: calc(var(--s-r) * 0.6);
+        min-width: 38px;
+        text-align: center;
+      }
+      .s-ts.hi {
+        background: color-mix(in oklab, var(--s-good) 18%, transparent);
+        color: var(--s-good);
+      }
+      .s-ts.lo {
+        background: color-mix(in oklab, var(--s-bad) 18%, transparent);
+        color: var(--s-bad);
+      }
+      .s-badge {
+        display: inline-block;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--s-accent-text);
+        margin-top: 4px;
+      }
+      .s-ex {
+        font-size: 11px;
+        color: var(--s-muted);
+        margin-top: 10px;
+      }
 
-.s-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.s-step{border:1px solid var(--s-line);border-radius:calc(var(--s-r) * 1.2);padding:22px;background:var(--s-surface)}
-.s-step .k{font-family:var(--s-num);font-size:13px;color:var(--s-accent-text);font-weight:700}
-.s-step h3{font-family:var(--s-display);font-weight:var(--s-dw);font-size:20px;letter-spacing:var(--s-ls);margin:10px 0 6px}
-.s-step p{margin:0;color:var(--s-muted);font-size:14px}
+      .s-steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+      .s-step {
+        border: 1px solid var(--s-line);
+        border-radius: calc(var(--s-r) * 1.2);
+        padding: 22px;
+        background: var(--s-surface);
+      }
+      .s-step .k {
+        font-family: var(--s-num);
+        font-size: 13px;
+        color: var(--s-accent-text);
+        font-weight: 700;
+      }
+      .s-step h3 {
+        font-family: var(--s-display);
+        font-weight: var(--s-dw);
+        font-size: 20px;
+        letter-spacing: var(--s-ls);
+        margin: 10px 0 6px;
+      }
+      .s-step p {
+        margin: 0;
+        color: var(--s-muted);
+        font-size: 14px;
+      }
 
-.s-trust{display:grid;grid-template-columns:1fr 1.2fr;gap:36px;align-items:center}
-.s-figs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.s-fig{border-top:2px solid var(--s-accent);padding-top:12px}
-.s-fig b{font-family:var(--s-num);font-size:32px;display:block;line-height:1.1;font-variant-numeric:tabular-nums}
-.s-fig span{font-size:13px;color:var(--s-muted)}
+      .s-trust {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 36px;
+        align-items: center;
+      }
+      .s-figs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .s-fig {
+        border-top: 2px solid var(--s-accent);
+        padding-top: 12px;
+      }
+      .s-fig b {
+        font-family: var(--s-num);
+        font-size: 32px;
+        display: block;
+        line-height: 1.1;
+        font-variant-numeric: tabular-nums;
+      }
+      .s-fig span {
+        font-size: 13px;
+        color: var(--s-muted);
+      }
 
-.s-deals{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.s-deal{border:1px solid var(--s-line);border-radius:calc(var(--s-r) * 1.2);overflow:hidden;background:var(--s-surface)}
-.s-img{height:130px;background:var(--s-img)}
-.s-deal .b{padding:16px;display:flex;flex-direction:column;gap:4px}
-.s-deal .t{font-family:var(--s-display);font-weight:var(--s-dw);font-size:18px;letter-spacing:var(--s-ls)}
-.s-deal .m{font-size:13px;color:var(--s-muted)}
-.s-deal .pp{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px}
-.s-deal .pp b{font-family:var(--s-num);font-size:20px;font-variant-numeric:tabular-nums}
-.s-deal .pp em{font-style:normal;font-family:var(--s-num);color:var(--s-good);font-weight:700;font-size:13px}
+      .s-deals {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      .s-deal {
+        border: 1px solid var(--s-line);
+        border-radius: calc(var(--s-r) * 1.2);
+        overflow: hidden;
+        background: var(--s-surface);
+      }
+      .s-img {
+        height: 130px;
+        background: var(--s-img);
+      }
+      .s-deal .b {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .s-deal .t {
+        font-family: var(--s-display);
+        font-weight: var(--s-dw);
+        font-size: 18px;
+        letter-spacing: var(--s-ls);
+      }
+      .s-deal .m {
+        font-size: 13px;
+        color: var(--s-muted);
+      }
+      .s-deal .pp {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-top: 8px;
+      }
+      .s-deal .pp b {
+        font-family: var(--s-num);
+        font-size: 20px;
+        font-variant-numeric: tabular-nums;
+      }
+      .s-deal .pp em {
+        font-style: normal;
+        font-family: var(--s-num);
+        color: var(--s-good);
+        font-weight: 700;
+        font-size: 13px;
+      }
 
-.s-cta{text-align:center;padding-block:72px}
-.s-cta .s-h2{margin-inline:auto;max-width:22ch}
-.s-foot{border-top:1px solid var(--s-line);padding-block:26px;font-size:12.5px;color:var(--s-muted);display:flex;flex-wrap:wrap;gap:10px 22px}
-.s-foot span:first-child{color:var(--s-fg);font-weight:600}
+      .s-cta {
+        text-align: center;
+        padding-block: 72px;
+      }
+      .s-cta .s-h2 {
+        margin-inline: auto;
+        max-width: 22ch;
+      }
+      .s-foot {
+        border-top: 1px solid var(--s-line);
+        padding-block: 26px;
+        font-size: 12.5px;
+        color: var(--s-muted);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 22px;
+      }
+      .s-foot span:first-child {
+        color: var(--s-fg);
+        font-weight: 600;
+      }
 
-.s-ticker{display:none}
+      .s-ticker {
+        display: none;
+      }
 
-/* phone-width layout inside the frame */
-@container (max-width: 720px){
-  .site .in{padding-inline:18px}
-  .s-links{display:none}
-  .s-nav .s-btn{margin-left:auto;padding:8px 12px;font-size:13px}
-  .s-hero{grid-template-columns:1fr;gap:26px;padding-block:28px 40px}
-  .s-hero h1{font-size:36px}
-  .s-panel{grid-template-columns:1fr;padding:18px}
-  .s-price{font-size:38px}
-  .s-steps,.s-deals,.s-figs{grid-template-columns:1fr}
-  .s-trust{grid-template-columns:1fr;gap:22px}
-  section.s-sec{padding-block:44px}
-  .s-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .s-stat b{font-size:15px}
-}
+      /* phone-width layout inside the frame */
+      @container (max-width: 720px) {
+        .site .in {
+          padding-inline: 18px;
+        }
+        .s-links {
+          display: none;
+        }
+        .s-nav .s-btn {
+          margin-left: auto;
+          padding: 8px 12px;
+          font-size: 13px;
+        }
+        .s-hero {
+          grid-template-columns: 1fr;
+          gap: 26px;
+          padding-block: 28px 40px;
+        }
+        .s-hero h1 {
+          font-size: 36px;
+        }
+        .s-panel {
+          grid-template-columns: 1fr;
+          padding: 18px;
+        }
+        .s-price {
+          font-size: 38px;
+        }
+        .s-steps,
+        .s-deals,
+        .s-figs {
+          grid-template-columns: 1fr;
+        }
+        .s-trust {
+          grid-template-columns: 1fr;
+          gap: 22px;
+        }
+        section.s-sec {
+          padding-block: 44px;
+        }
+        .s-stats {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .s-stat b {
+          font-size: 15px;
+        }
+      }
 
-/* ---------- direction 1: Quiet Luxury ---------- */
-.site[data-m="lux"]{--s-bg:#efebe3;--s-fg:#1b2232;--s-muted:#66655f;--s-surface:#f9f7f2;--s-field:#fffdf9;--s-line:#ddd5c6;--s-accent:#1b2232;--s-on:#f2eadb;--s-accent-text:#8a6a3c;--s-good:#3c6a4d;--s-bad:#9b3b2e;--s-display:"Cormorant Garamond",Georgia,serif;--s-body:"Manrope",system-ui,sans-serif;--s-num:"Manrope",system-ui,sans-serif;--s-r:2px;--s-dw:600;--s-ls:0;--s-shadow:none;--s-img:linear-gradient(160deg,#cbbfa8,#8f8166)}
-.site[data-m="lux"] .s-nav{justify-content:center;flex-wrap:wrap;border-bottom:1px solid var(--s-line)}
-.site[data-m="lux"] .s-logo{font-size:26px;letter-spacing:.18em;text-transform:uppercase;font-weight:500}
-.site[data-m="lux"] .s-links{margin-left:0;order:3;width:100%;justify-content:center;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase}
-.site[data-m="lux"] .s-nav .s-btn{display:none}
-.site[data-m="lux"] .s-hero{grid-template-columns:1fr;text-align:center;justify-items:center;padding-block:72px 72px}
-.site[data-m="lux"] .s-hero h1{font-size:clamp(40px,6.4cqi,76px);font-weight:500;max-width:16ch}
-.site[data-m="lux"] .s-hero p{margin-inline:auto}
-.site[data-m="lux"] .s-proof{justify-content:center}
-.site[data-m="lux"] .s-search{width:100%;max-width:880px;grid-template-columns:1.4fr 1fr 1fr auto;align-items:stretch;text-align:left;padding:10px}
-.site[data-m="lux"] .s-search .s-row2{display:contents}
-.site[data-m="lux"] .s-search .s-toggles{display:none}
-.site[data-m="lux"] .s-btn{letter-spacing:.12em;text-transform:uppercase;font-size:12.5px}
-.site[data-m="lux"] .s-fig{border-top:1px solid var(--s-accent)}
-@container (max-width:720px){.site[data-m="lux"] .s-search{grid-template-columns:1fr}.site[data-m="lux"] .s-hero h1{font-size:40px}}
+      /* ---------- direction 1: Quiet Luxury ---------- */
+      .site[data-m='lux'] {
+        --s-bg: #efebe3;
+        --s-fg: #1b2232;
+        --s-muted: #66655f;
+        --s-surface: #f9f7f2;
+        --s-field: #fffdf9;
+        --s-line: #ddd5c6;
+        --s-accent: #1b2232;
+        --s-on: #f2eadb;
+        --s-accent-text: #8a6a3c;
+        --s-good: #3c6a4d;
+        --s-bad: #9b3b2e;
+        --s-display: 'Cormorant Garamond', Georgia, serif;
+        --s-body: 'Manrope', system-ui, sans-serif;
+        --s-num: 'Manrope', system-ui, sans-serif;
+        --s-r: 2px;
+        --s-dw: 600;
+        --s-ls: 0;
+        --s-shadow: none;
+        --s-img: linear-gradient(160deg, #cbbfa8, #8f8166);
+      }
+      .site[data-m='lux'] .s-nav {
+        justify-content: center;
+        flex-wrap: wrap;
+        border-bottom: 1px solid var(--s-line);
+      }
+      .site[data-m='lux'] .s-logo {
+        font-size: 26px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+      .site[data-m='lux'] .s-links {
+        margin-left: 0;
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        font-size: 12.5px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .site[data-m='lux'] .s-nav .s-btn {
+        display: none;
+      }
+      .site[data-m='lux'] .s-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        justify-items: center;
+        padding-block: 72px 72px;
+      }
+      .site[data-m='lux'] .s-hero h1 {
+        font-size: clamp(40px, 6.4cqi, 76px);
+        font-weight: 500;
+        max-width: 16ch;
+      }
+      .site[data-m='lux'] .s-hero p {
+        margin-inline: auto;
+      }
+      .site[data-m='lux'] .s-proof {
+        justify-content: center;
+      }
+      .site[data-m='lux'] .s-search {
+        width: 100%;
+        max-width: 880px;
+        grid-template-columns: 1.4fr 1fr 1fr auto;
+        align-items: stretch;
+        text-align: left;
+        padding: 10px;
+      }
+      .site[data-m='lux'] .s-search .s-row2 {
+        display: contents;
+      }
+      .site[data-m='lux'] .s-search .s-toggles {
+        display: none;
+      }
+      .site[data-m='lux'] .s-btn {
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 12.5px;
+      }
+      .site[data-m='lux'] .s-fig {
+        border-top: 1px solid var(--s-accent);
+      }
+      @container (max-width:720px) {
+        .site[data-m='lux'] .s-search {
+          grid-template-columns: 1fr;
+        }
+        .site[data-m='lux'] .s-hero h1 {
+          font-size: 40px;
+        }
+      }
 
-/* ---------- direction 2: Swiss Precision ---------- */
-.site[data-m="swiss"]{--s-bg:#ffffff;--s-fg:#0a0a0a;--s-muted:#666666;--s-surface:#ffffff;--s-field:#ffffff;--s-line:#e2e2e2;--s-accent:#e1352b;--s-on:#ffffff;--s-accent-text:#e1352b;--s-good:#0a7a43;--s-bad:#e1352b;--s-display:"Instrument Sans",Helvetica,Arial,sans-serif;--s-body:"Instrument Sans",Helvetica,Arial,sans-serif;--s-num:"JetBrains Mono",ui-monospace,monospace;--s-r:0px;--s-dw:700;--s-ls:-.035em;--s-shadow:none;--s-img:repeating-linear-gradient(90deg,#efefef 0 1px,transparent 1px 24px),linear-gradient(#f5f5f5,#e9e9e9)}
-.site[data-m="swiss"] .s-nav{border-bottom:2px solid var(--s-fg)}
-.site[data-m="swiss"] .s-hero{grid-template-columns:1.3fr .9fr;align-items:end}
-.site[data-m="swiss"] .s-hero h1{font-size:clamp(40px,7.4cqi,92px);line-height:.95}
-.site[data-m="swiss"] .s-search{border:2px solid var(--s-fg)}
-.site[data-m="swiss"] section.s-sec{border-top:2px solid var(--s-fg)}
-.site[data-m="swiss"] .s-eyebrow{color:var(--s-accent)}
-.site[data-m="swiss"] .s-panel{border:2px solid var(--s-fg)}
-.site[data-m="swiss"] .s-step .k{font-size:44px;line-height:1}
-@container (max-width:720px){.site[data-m="swiss"] .s-hero{grid-template-columns:1fr}.site[data-m="swiss"] .s-hero h1{font-size:44px}}
+      /* ---------- direction 2: Swiss Precision ---------- */
+      .site[data-m='swiss'] {
+        --s-bg: #ffffff;
+        --s-fg: #0a0a0a;
+        --s-muted: #666666;
+        --s-surface: #ffffff;
+        --s-field: #ffffff;
+        --s-line: #e2e2e2;
+        --s-accent: #e1352b;
+        --s-on: #ffffff;
+        --s-accent-text: #e1352b;
+        --s-good: #0a7a43;
+        --s-bad: #e1352b;
+        --s-display: 'Instrument Sans', Helvetica, Arial, sans-serif;
+        --s-body: 'Instrument Sans', Helvetica, Arial, sans-serif;
+        --s-num: 'JetBrains Mono', ui-monospace, monospace;
+        --s-r: 0px;
+        --s-dw: 700;
+        --s-ls: -0.035em;
+        --s-shadow: none;
+        --s-img:
+          repeating-linear-gradient(90deg, #efefef 0 1px, transparent 1px 24px),
+          linear-gradient(#f5f5f5, #e9e9e9);
+      }
+      .site[data-m='swiss'] .s-nav {
+        border-bottom: 2px solid var(--s-fg);
+      }
+      .site[data-m='swiss'] .s-hero {
+        grid-template-columns: 1.3fr 0.9fr;
+        align-items: end;
+      }
+      .site[data-m='swiss'] .s-hero h1 {
+        font-size: clamp(40px, 7.4cqi, 92px);
+        line-height: 0.95;
+      }
+      .site[data-m='swiss'] .s-search {
+        border: 2px solid var(--s-fg);
+      }
+      .site[data-m='swiss'] section.s-sec {
+        border-top: 2px solid var(--s-fg);
+      }
+      .site[data-m='swiss'] .s-eyebrow {
+        color: var(--s-accent);
+      }
+      .site[data-m='swiss'] .s-panel {
+        border: 2px solid var(--s-fg);
+      }
+      .site[data-m='swiss'] .s-step .k {
+        font-size: 44px;
+        line-height: 1;
+      }
+      @container (max-width:720px) {
+        .site[data-m='swiss'] .s-hero {
+          grid-template-columns: 1fr;
+        }
+        .site[data-m='swiss'] .s-hero h1 {
+          font-size: 44px;
+        }
+      }
 
-/* ---------- direction 3: Night Concierge ---------- */
-.site[data-m="night"]{--s-bg:#0b101e;--s-fg:#ece5d6;--s-muted:#9aa0b0;--s-surface:rgba(255,255,255,.04);--s-field:rgba(255,255,255,.03);--s-line:rgba(236,229,214,.12);--s-accent:#d6b583;--s-on:#0b101e;--s-accent-text:#d6b583;--s-good:#9fd3a8;--s-bad:#f08f7e;--s-display:"Marcellus",Georgia,serif;--s-body:"DM Sans",system-ui,sans-serif;--s-num:"DM Sans",system-ui,sans-serif;--s-r:12px;--s-dw:400;--s-ls:.01em;--s-shadow:0 20px 60px rgba(0,0,0,.35);--s-img:radial-gradient(120% 90% at 30% 20%,#33405e,#121829)}
-.site[data-m="night"]::before{content:"";position:absolute;inset:-200px -100px auto auto;width:720px;height:720px;background:radial-gradient(closest-side,rgba(214,181,131,.22),transparent);pointer-events:none}
-.site[data-m="night"] .s-search{backdrop-filter:blur(8px)}
-.site[data-m="night"] .s-btn.ghost{border-color:var(--s-line)}
+      /* ---------- direction 3: Night Concierge ---------- */
+      .site[data-m='night'] {
+        --s-bg: #0b101e;
+        --s-fg: #ece5d6;
+        --s-muted: #9aa0b0;
+        --s-surface: rgba(255, 255, 255, 0.04);
+        --s-field: rgba(255, 255, 255, 0.03);
+        --s-line: rgba(236, 229, 214, 0.12);
+        --s-accent: #d6b583;
+        --s-on: #0b101e;
+        --s-accent-text: #d6b583;
+        --s-good: #9fd3a8;
+        --s-bad: #f08f7e;
+        --s-display: 'Marcellus', Georgia, serif;
+        --s-body: 'DM Sans', system-ui, sans-serif;
+        --s-num: 'DM Sans', system-ui, sans-serif;
+        --s-r: 12px;
+        --s-dw: 400;
+        --s-ls: 0.01em;
+        --s-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        --s-img: radial-gradient(120% 90% at 30% 20%, #33405e, #121829);
+      }
+      .site[data-m='night']::before {
+        content: '';
+        position: absolute;
+        inset: -200px -100px auto auto;
+        width: 720px;
+        height: 720px;
+        background: radial-gradient(closest-side, rgba(214, 181, 131, 0.22), transparent);
+        pointer-events: none;
+      }
+      .site[data-m='night'] .s-search {
+        backdrop-filter: blur(8px);
+      }
+      .site[data-m='night'] .s-btn.ghost {
+        border-color: var(--s-line);
+      }
 
-/* ---------- direction 4: Riviera Editorial ---------- */
-.site[data-m="riviera"]{--s-bg:#f3f8fa;--s-fg:#0f2f3e;--s-muted:#4f6b77;--s-surface:#ffffff;--s-field:#f6fafb;--s-line:#d5e3e9;--s-accent:#e0603b;--s-on:#ffffff;--s-accent-text:#c8502d;--s-good:#1d7c6a;--s-bad:#c8432a;--s-display:"DM Serif Display",Georgia,serif;--s-body:"Outfit",system-ui,sans-serif;--s-num:"Outfit",system-ui,sans-serif;--s-r:16px;--s-dw:400;--s-ls:-.01em;--s-shadow:0 18px 40px rgba(15,47,62,.10);--s-img:linear-gradient(180deg,#9fd0e0 0 55%,#2f7f9c 55% 100%)}
-.site[data-m="riviera"] .s-top{background:linear-gradient(180deg,#bfe1ec 0%,#e7f3f6 70%,var(--s-bg) 100%)}
-.site[data-m="riviera"] .s-hero h1{font-size:clamp(38px,6cqi,70px)}
-.site[data-m="riviera"] .s-hero h1 em{font-style:italic;color:var(--s-accent-text)}
-.site[data-m="riviera"] .s-btn{border-radius:999px}
+      /* ---------- direction 4: Riviera Editorial ---------- */
+      .site[data-m='riviera'] {
+        --s-bg: #f3f8fa;
+        --s-fg: #0f2f3e;
+        --s-muted: #4f6b77;
+        --s-surface: #ffffff;
+        --s-field: #f6fafb;
+        --s-line: #d5e3e9;
+        --s-accent: #e0603b;
+        --s-on: #ffffff;
+        --s-accent-text: #c8502d;
+        --s-good: #1d7c6a;
+        --s-bad: #c8432a;
+        --s-display: 'DM Serif Display', Georgia, serif;
+        --s-body: 'Outfit', system-ui, sans-serif;
+        --s-num: 'Outfit', system-ui, sans-serif;
+        --s-r: 16px;
+        --s-dw: 400;
+        --s-ls: -0.01em;
+        --s-shadow: 0 18px 40px rgba(15, 47, 62, 0.1);
+        --s-img: linear-gradient(180deg, #9fd0e0 0 55%, #2f7f9c 55% 100%);
+      }
+      .site[data-m='riviera'] .s-top {
+        background: linear-gradient(180deg, #bfe1ec 0%, #e7f3f6 70%, var(--s-bg) 100%);
+      }
+      .site[data-m='riviera'] .s-hero h1 {
+        font-size: clamp(38px, 6cqi, 70px);
+      }
+      .site[data-m='riviera'] .s-hero h1 em {
+        font-style: italic;
+        color: var(--s-accent-text);
+      }
+      .site[data-m='riviera'] .s-btn {
+        border-radius: 999px;
+      }
 
-/* ---------- direction 5: Price Terminal ---------- */
-.site[data-m="terminal"]{--s-bg:#0a0c0b;--s-fg:#d8e2dc;--s-muted:#7f8c85;--s-surface:#101513;--s-field:#0c100e;--s-line:#1f2823;--s-accent:#3ddc84;--s-on:#06120b;--s-accent-text:#3ddc84;--s-good:#3ddc84;--s-bad:#ff5d5d;--s-display:"IBM Plex Sans",system-ui,sans-serif;--s-body:"IBM Plex Sans",system-ui,sans-serif;--s-num:"IBM Plex Mono",ui-monospace,monospace;--s-r:4px;--s-dw:600;--s-ls:-.01em;--s-shadow:none;--s-img:linear-gradient(135deg,#14201a,#0d1310)}
-.site[data-m="terminal"] .s-ticker{display:block;border-bottom:1px solid var(--s-line);font-family:var(--s-num);font-size:12px;white-space:nowrap;overflow:hidden;background:#0d110f}
-.site[data-m="terminal"] .s-ticker div{display:inline-block;padding:7px 0;animation:tick 40s linear infinite}
-.site[data-m="terminal"] .s-ticker span{margin-right:28px;color:var(--s-muted)}
-.site[data-m="terminal"] .s-ticker b{color:var(--s-fg);font-weight:600}
-.site[data-m="terminal"] .s-ticker .dn{color:var(--s-good)}
-.site[data-m="terminal"] .s-ticker .up{color:var(--s-bad)}
-@keyframes tick{to{transform:translateX(-50%)}}
-@media (prefers-reduced-motion:reduce){.site[data-m="terminal"] .s-ticker div{animation:none}}
-.site[data-m="terminal"] .s-hero{padding-block:40px 48px}
-.site[data-m="terminal"] .s-hero h1{font-size:clamp(32px,4.6cqi,54px)}
-.site[data-m="terminal"] .s-eyebrow{color:var(--s-accent);font-family:var(--s-num);letter-spacing:.04em}
-.site[data-m="terminal"] .s-step .k::before{content:"> "}
+      /* ---------- direction 5: Price Terminal ---------- */
+      .site[data-m='terminal'] {
+        --s-bg: #0a0c0b;
+        --s-fg: #d8e2dc;
+        --s-muted: #7f8c85;
+        --s-surface: #101513;
+        --s-field: #0c100e;
+        --s-line: #1f2823;
+        --s-accent: #3ddc84;
+        --s-on: #06120b;
+        --s-accent-text: #3ddc84;
+        --s-good: #3ddc84;
+        --s-bad: #ff5d5d;
+        --s-display: 'IBM Plex Sans', system-ui, sans-serif;
+        --s-body: 'IBM Plex Sans', system-ui, sans-serif;
+        --s-num: 'IBM Plex Mono', ui-monospace, monospace;
+        --s-r: 4px;
+        --s-dw: 600;
+        --s-ls: -0.01em;
+        --s-shadow: none;
+        --s-img: linear-gradient(135deg, #14201a, #0d1310);
+      }
+      .site[data-m='terminal'] .s-ticker {
+        display: block;
+        border-bottom: 1px solid var(--s-line);
+        font-family: var(--s-num);
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        background: #0d110f;
+      }
+      .site[data-m='terminal'] .s-ticker div {
+        display: inline-block;
+        padding: 7px 0;
+        animation: tick 40s linear infinite;
+      }
+      .site[data-m='terminal'] .s-ticker span {
+        margin-right: 28px;
+        color: var(--s-muted);
+      }
+      .site[data-m='terminal'] .s-ticker b {
+        color: var(--s-fg);
+        font-weight: 600;
+      }
+      .site[data-m='terminal'] .s-ticker .dn {
+        color: var(--s-good);
+      }
+      .site[data-m='terminal'] .s-ticker .up {
+        color: var(--s-bad);
+      }
+      @keyframes tick {
+        to {
+          transform: translateX(-50%);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .site[data-m='terminal'] .s-ticker div {
+          animation: none;
+        }
+      }
+      .site[data-m='terminal'] .s-hero {
+        padding-block: 40px 48px;
+      }
+      .site[data-m='terminal'] .s-hero h1 {
+        font-size: clamp(32px, 4.6cqi, 54px);
+      }
+      .site[data-m='terminal'] .s-eyebrow {
+        color: var(--s-accent);
+        font-family: var(--s-num);
+        letter-spacing: 0.04em;
+      }
+      .site[data-m='terminal'] .s-step .k::before {
+        content: '> ';
+      }
 
-/* ---------- direction 6: Soft Modern ---------- */
-.site[data-m="soft"]{--s-bg:#f5f3fc;--s-fg:#221c3b;--s-muted:#6c6687;--s-surface:#ffffff;--s-field:#f8f6ff;--s-line:#e6e0f7;--s-accent:#6a49e0;--s-on:#ffffff;--s-accent-text:#6a49e0;--s-good:#178a62;--s-bad:#d1435b;--s-display:"Plus Jakarta Sans",system-ui,sans-serif;--s-body:"Plus Jakarta Sans",system-ui,sans-serif;--s-num:"Plus Jakarta Sans",system-ui,sans-serif;--s-r:18px;--s-dw:800;--s-ls:-.03em;--s-shadow:0 14px 36px rgba(106,73,224,.10);--s-img:linear-gradient(135deg,#d9cffc,#ffd9e6)}
-.site[data-m="soft"]::before{content:"";position:absolute;top:-160px;left:-120px;width:560px;height:560px;border-radius:50%;background:radial-gradient(closest-side,#ddd2ff,transparent);pointer-events:none}
-.site[data-m="soft"]::after{content:"";position:absolute;top:80px;right:-160px;width:520px;height:520px;border-radius:50%;background:radial-gradient(closest-side,#ffd6e5,transparent);pointer-events:none}
-.site[data-m="soft"] .in{position:relative;z-index:1}
-.site[data-m="soft"] .s-hero{grid-template-columns:1fr;text-align:center;justify-items:center}
-.site[data-m="soft"] .s-hero p{margin-inline:auto}
-.site[data-m="soft"] .s-proof{justify-content:center}
-.site[data-m="soft"] .s-search{width:100%;max-width:560px;text-align:left}
-.site[data-m="soft"] .s-btn{border-radius:999px}
+      /* ---------- direction 6: Soft Modern ---------- */
+      .site[data-m='soft'] {
+        --s-bg: #f5f3fc;
+        --s-fg: #221c3b;
+        --s-muted: #6c6687;
+        --s-surface: #ffffff;
+        --s-field: #f8f6ff;
+        --s-line: #e6e0f7;
+        --s-accent: #6a49e0;
+        --s-on: #ffffff;
+        --s-accent-text: #6a49e0;
+        --s-good: #178a62;
+        --s-bad: #d1435b;
+        --s-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+        --s-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+        --s-num: 'Plus Jakarta Sans', system-ui, sans-serif;
+        --s-r: 18px;
+        --s-dw: 800;
+        --s-ls: -0.03em;
+        --s-shadow: 0 14px 36px rgba(106, 73, 224, 0.1);
+        --s-img: linear-gradient(135deg, #d9cffc, #ffd9e6);
+      }
+      .site[data-m='soft']::before {
+        content: '';
+        position: absolute;
+        top: -160px;
+        left: -120px;
+        width: 560px;
+        height: 560px;
+        border-radius: 50%;
+        background: radial-gradient(closest-side, #ddd2ff, transparent);
+        pointer-events: none;
+      }
+      .site[data-m='soft']::after {
+        content: '';
+        position: absolute;
+        top: 80px;
+        right: -160px;
+        width: 520px;
+        height: 520px;
+        border-radius: 50%;
+        background: radial-gradient(closest-side, #ffd6e5, transparent);
+        pointer-events: none;
+      }
+      .site[data-m='soft'] .in {
+        position: relative;
+        z-index: 1;
+      }
+      .site[data-m='soft'] .s-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        justify-items: center;
+      }
+      .site[data-m='soft'] .s-hero p {
+        margin-inline: auto;
+      }
+      .site[data-m='soft'] .s-proof {
+        justify-content: center;
+      }
+      .site[data-m='soft'] .s-search {
+        width: 100%;
+        max-width: 560px;
+        text-align: left;
+      }
+      .site[data-m='soft'] .s-btn {
+        border-radius: 999px;
+      }
 
-/* setup questions */
-.qs{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
-@media (max-width:420px){.qs{grid-template-columns:1fr}}
-.qq{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
-.qq.wide{grid-column:1/-1}
-.qq h3{font-size:15px;font-weight:600}
-.qq .why{font-size:12.5px;color:var(--muted);margin:0}
-.opts{display:flex;flex-wrap:wrap;gap:6px}
-.opt{border:1px solid var(--line);background:transparent;border-radius:8px;padding:7px 11px;font-size:13px;cursor:pointer;text-align:left}
-.opt[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.opt .r{font-size:10.5px;opacity:.75;margin-left:4px}
-.decided{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:14px 16px;font-size:13.5px;color:var(--muted);margin-bottom:14px}
-.decided b{color:var(--fg);font-weight:600}
+      /* setup questions */
+      .qs {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 14px;
+      }
+      @media (max-width: 420px) {
+        .qs {
+          grid-template-columns: 1fr;
+        }
+      }
+      .qq {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-width: 0;
+      }
+      .qq.wide {
+        grid-column: 1/-1;
+      }
+      .qq h3 {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .qq .why {
+        font-size: 12.5px;
+        color: var(--muted);
+        margin: 0;
+      }
+      .opts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .opt {
+        border: 1px solid var(--line);
+        background: transparent;
+        border-radius: 8px;
+        padding: 7px 11px;
+        font-size: 13px;
+        cursor: pointer;
+        text-align: left;
+      }
+      .opt[aria-pressed='true'] {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-ink);
+      }
+      .opt .r {
+        font-size: 10.5px;
+        opacity: 0.75;
+        margin-left: 4px;
+      }
+      .decided {
+        background: var(--card);
+        border: 1px dashed var(--line);
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 13.5px;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      .decided b {
+        color: var(--fg);
+        font-weight: 600;
+      }
 
-.finish{padding-block:40px 0;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
-.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:12px 20px;font-weight:600;font-size:15px;cursor:pointer}
-.note{color:var(--muted);font-size:13px;max-width:64ch;margin:0}
-.ok{color:var(--ok);font-weight:600}
-@media (prefers-reduced-motion:no-preference){.nm,.opt,.chip,.tab{transition:background .15s,border-color .15s,box-shadow .15s}}
+      .finish {
+        padding-block: 40px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .btn {
+        background: var(--accent);
+        color: var(--accent-ink);
+        border: 0;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+      }
+      .note {
+        color: var(--muted);
+        font-size: 13px;
+        max-width: 64ch;
+        margin: 0;
+      }
+      .ok {
+        color: var(--ok);
+        font-weight: 600;
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        .nm,
+        .opt,
+        .chip,
+        .tab {
+          transition:
+            background 0.15s,
+            border-color 0.15s,
+            box-shadow 0.15s;
+        }
+      }
 
-body{margin:0;padding:0;background:#f5f3fc}
-.frame{container-type:inline-size}
-</style></head><body><div class="frame"><div class="site" data-m="soft">
-      <div class="s-ticker" aria-hidden="true"><div><span><b>MARIS·BER</b> 1.184 € <i class="dn">▼2,1 %</i></span><span><b>LUMEN·VIE</b> 842 € <i class="dn">▼14,0 %</i></span><span><b>SELA·ZRH</b> 1.396 € <i class="up">▲1,2 %</i></span><span><b>ARLO·PAR</b> 1.120 € <i class="dn">▼11,0 %</i></span><span><b>VERA·MUC</b> 968 € <i class="dn">▼3,4 %</i></span><span><b>CORTE·MIL</b> 1.244 € <i class="up">▲0,8 %</i></span><span><b>HALE·HAM</b> 712 € <i class="dn">▼5,6 %</i></span><span><b>MARIS·BER</b> 1.184 € <i class="dn">▼2,1 %</i></span><span><b>LUMEN·VIE</b> 842 € <i class="dn">▼14,0 %</i></span><span><b>SELA·ZRH</b> 1.396 € <i class="up">▲1,2 %</i></span><span><b>ARLO·PAR</b> 1.120 € <i class="dn">▼11,0 %</i></span><span><b>VERA·MUC</b> 968 € <i class="dn">▼3,4 %</i></span><span><b>CORTE·MIL</b> 1.244 € <i class="up">▲0,8 %</i></span><span><b>HALE·HAM</b> 712 € <i class="dn">▼5,6 %</i></span></div></div>
-      <div class="s-top"><div class="in">
-        <nav class="s-nav"><span class="s-logo">Tidaq</span><span class="s-links"><span>Preisverlauf</span><span>Vertrauens-Check</span><span>Deals</span><span>So funktioniert's</span></span><span class="s-btn">Kostenlos starten</span></nav>
-        <header class="s-hero">
-          <div class="s-copy">
-            <div class="s-eyebrow">Fünf-Sterne-Hotels · DACH &amp; Europa</div>
-            <h1>Zahl nie zu viel für dein Fünf-Sterne-Hotel.</h1>
-            <p>Wir verfolgen den Preis für genau deine Daten, zeigen dir, ob er gerade tief oder hoch ist, und prüfen, welcher Anbieter an der Kasse hält, was er verspricht.</p>
-            <div class="s-proof"><span><b>25</b> Luxushotels täglich geprüft</span><span><b>7</b> Anbieter pro Hotel</span><span><b>0 €</b> für dich</span></div>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #f5f3fc;
+      }
+      .frame {
+        container-type: inline-size;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="site" data-m="soft">
+        <div class="s-ticker" aria-hidden="true">
+          <div>
+            <span><b>MARIS·BER</b> 1.184 € <i class="dn">▼2,1 %</i></span
+            ><span><b>LUMEN·VIE</b> 842 € <i class="dn">▼14,0 %</i></span
+            ><span><b>SELA·ZRH</b> 1.396 € <i class="up">▲1,2 %</i></span
+            ><span><b>ARLO·PAR</b> 1.120 € <i class="dn">▼11,0 %</i></span
+            ><span><b>VERA·MUC</b> 968 € <i class="dn">▼3,4 %</i></span
+            ><span><b>CORTE·MIL</b> 1.244 € <i class="up">▲0,8 %</i></span
+            ><span><b>HALE·HAM</b> 712 € <i class="dn">▼5,6 %</i></span
+            ><span><b>MARIS·BER</b> 1.184 € <i class="dn">▼2,1 %</i></span
+            ><span><b>LUMEN·VIE</b> 842 € <i class="dn">▼14,0 %</i></span
+            ><span><b>SELA·ZRH</b> 1.396 € <i class="up">▲1,2 %</i></span
+            ><span><b>ARLO·PAR</b> 1.120 € <i class="dn">▼11,0 %</i></span
+            ><span><b>VERA·MUC</b> 968 € <i class="dn">▼3,4 %</i></span
+            ><span><b>CORTE·MIL</b> 1.244 € <i class="up">▲0,8 %</i></span
+            ><span><b>HALE·HAM</b> 712 € <i class="dn">▼5,6 %</i></span>
           </div>
-          <div class="s-search" aria-label="Suche (Beispiel)">
-            <div class="s-field"><small>Hotel oder Stadt</small><span>Hotel Maris, Berlin</span></div>
-            <div class="s-row2"><div class="s-field"><small>Daten</small><span>1.–3. Dez. 2026</span></div><div class="s-field"><small>Gäste</small><span>2 Erwachsene</span></div></div>
-            <div class="s-toggles"><span class="s-tg on">mit Frühstück</span><span class="s-tg">Deluxe-Zimmer</span><span class="s-tg on">kostenlos stornierbar</span></div>
+        </div>
+        <div class="s-top">
+          <div class="in">
+            <nav class="s-nav">
+              <span class="s-logo">Tidaq</span
+              ><span class="s-links"
+                ><span>Preisverlauf</span><span>Vertrauens-Check</span><span>Deals</span
+                ><span>So funktioniert's</span></span
+              ><span class="s-btn">Kostenlos starten</span>
+            </nav>
+            <header class="s-hero">
+              <div class="s-copy">
+                <div class="s-eyebrow">Fünf-Sterne-Hotels · DACH &amp; Europa</div>
+                <h1>Zahl nie zu viel für dein Fünf-Sterne-Hotel.</h1>
+                <p>
+                  Wir verfolgen den Preis für genau deine Daten, zeigen dir, ob er gerade tief oder
+                  hoch ist, und prüfen, welcher Anbieter an der Kasse hält, was er verspricht.
+                </p>
+                <div class="s-proof">
+                  <span><b>25</b> Luxushotels täglich geprüft</span
+                  ><span><b>7</b> Anbieter pro Hotel</span><span><b>0 €</b> für dich</span>
+                </div>
+              </div>
+              <div class="s-search" aria-label="Suche (Beispiel)">
+                <div class="s-field">
+                  <small>Hotel oder Stadt</small><span>Hotel Maris, Berlin</span>
+                </div>
+                <div class="s-row2">
+                  <div class="s-field"><small>Daten</small><span>1.–3. Dez. 2026</span></div>
+                  <div class="s-field"><small>Gäste</small><span>2 Erwachsene</span></div>
+                </div>
+                <div class="s-toggles">
+                  <span class="s-tg on">mit Frühstück</span><span class="s-tg">Deluxe-Zimmer</span
+                  ><span class="s-tg on">kostenlos stornierbar</span>
+                </div>
+                <span class="s-btn">Preis verfolgen</span>
+              </div>
+            </header>
+          </div>
+        </div>
+
+        <section class="s-sec">
+          <div class="in">
+            <div class="s-eyebrow">Live-Beispiel</div>
+            <h2 class="s-h2">Ist jetzt ein guter Moment zum Buchen?</h2>
+            <p class="s-lead">
+              Jede Suche wird zur Preiskurve. Du siehst sofort, ob der Preis fällt, steigt oder am
+              Tiefpunkt liegt.
+            </p>
+            <div class="s-panel">
+              <div>
+                <div class="s-ph">
+                  <div>
+                    <div class="s-hname">Hotel Maris, Berlin Mitte</div>
+                    <div class="s-q">1.–3. Dez. 2026 · 2 Erw. · Deluxe · Frühstück</div>
+                  </div>
+                  <span class="s-state">Nahe Tiefpunkt</span>
+                </div>
+                <div class="s-price">1.212 €</div>
+                <div class="s-delta">▼ 1 % unter dem 30-Tage-Schnitt · 2 Nächte gesamt</div>
+                <div class="s-chart">
+                  <svg
+                    viewBox="0 0 640 240"
+                    role="img"
+                    aria-label="Preisverlauf über 60 Tage: Hoch 1.350 €, Tief 1.196 €, heute 1.212 €"
+                  >
+                    <line
+                      x1="54"
+                      x2="624"
+                      y1="210"
+                      y2="210"
+                      stroke="var(--s-line)"
+                      stroke-width="1"
+                    ></line>
+                    <text
+                      x="46"
+                      y="214"
+                      text-anchor="end"
+                      font-size="11"
+                      fill="var(--s-muted)"
+                      font-family="var(--s-num)"
+                    >
+                      1.150
+                    </text>
+                    <line
+                      x1="54"
+                      x2="624"
+                      y1="171.2"
+                      y2="171.2"
+                      stroke="var(--s-line)"
+                      stroke-width="1"
+                    ></line>
+                    <text
+                      x="46"
+                      y="175.2"
+                      text-anchor="end"
+                      font-size="11"
+                      fill="var(--s-muted)"
+                      font-family="var(--s-num)"
+                    >
+                      1.200
+                    </text>
+                    <line
+                      x1="54"
+                      x2="624"
+                      y1="132.4"
+                      y2="132.4"
+                      stroke="var(--s-line)"
+                      stroke-width="1"
+                    ></line>
+                    <text
+                      x="46"
+                      y="136.4"
+                      text-anchor="end"
+                      font-size="11"
+                      fill="var(--s-muted)"
+                      font-family="var(--s-num)"
+                    >
+                      1.250
+                    </text>
+                    <line
+                      x1="54"
+                      x2="624"
+                      y1="93.6"
+                      y2="93.6"
+                      stroke="var(--s-line)"
+                      stroke-width="1"
+                    ></line>
+                    <text
+                      x="46"
+                      y="97.6"
+                      text-anchor="end"
+                      font-size="11"
+                      fill="var(--s-muted)"
+                      font-family="var(--s-num)"
+                    >
+                      1.300
+                    </text>
+                    <line
+                      x1="54"
+                      x2="624"
+                      y1="54.8"
+                      y2="54.8"
+                      stroke="var(--s-line)"
+                      stroke-width="1"
+                    ></line>
+                    <text
+                      x="46"
+                      y="58.8"
+                      text-anchor="end"
+                      font-size="11"
+                      fill="var(--s-muted)"
+                      font-family="var(--s-num)"
+                    >
+                      1.350
+                    </text>
+                    <line
+                      x1="54"
+                      x2="624"
+                      y1="16"
+                      y2="16"
+                      stroke="var(--s-line)"
+                      stroke-width="1"
+                    ></line>
+                    <text
+                      x="46"
+                      y="20"
+                      text-anchor="end"
+                      font-size="11"
+                      fill="var(--s-muted)"
+                      font-family="var(--s-num)"
+                    >
+                      1.400
+                    </text>
+                    <text
+                      x="54"
+                      y="232"
+                      text-anchor="start"
+                      font-size="11"
+                      fill="var(--s-muted)"
+                      font-family="var(--s-num)"
+                    >
+                      13. Aug
+                    </text>
+                    <text
+                      x="198.91525423728814"
+                      y="232"
+                      text-anchor="middle"
+                      font-size="11"
+                      fill="var(--s-muted)"
+                      font-family="var(--s-num)"
+                    >
+                      28. Aug
+                    </text>
+                    <text
+                      x="343.8305084745763"
+                      y="232"
+                      text-anchor="middle"
+                      font-size="11"
+                      fill="var(--s-muted)"
+                      font-family="var(--s-num)"
+                    >
+                      12. Sep
+                    </text>
+                    <text
+                      x="488.7457627118644"
+                      y="232"
+                      text-anchor="middle"
+                      font-size="11"
+                      fill="var(--s-muted)"
+                      font-family="var(--s-num)"
+                    >
+                      27. Sep
+                    </text>
+                    <text
+                      x="624"
+                      y="232"
+                      text-anchor="end"
+                      font-size="11"
+                      fill="var(--s-muted)"
+                      font-family="var(--s-num)"
+                    >
+                      Heute
+                    </text>
+                    <line
+                      x1="343.8305084745763"
+                      x2="624"
+                      y1="155.68"
+                      y2="155.68"
+                      stroke="var(--s-muted)"
+                      stroke-dasharray="4 4"
+                      stroke-width="1.2"
+                    ></line>
+                    <text
+                      x="347.8305084745763"
+                      y="149.68"
+                      font-size="11"
+                      fill="var(--s-muted)"
+                      font-family="var(--s-num)"
+                    >
+                      30-Tage-Schnitt 1.220 €
+                    </text>
+                    <path
+                      d="M54.0 62.6 L63.7 54.8 L73.3 57.9 L83.0 67.2 L92.6 69.5 L102.3 70.3 L112.0 80.4 L121.6 89.7 L131.3 85.1 L140.9 82.7 L150.6 88.2 L160.3 87.4 L169.9 80.4 L179.6 83.5 L189.3 95.2 L198.9 98.3 L208.6 98.3 L218.2 107.6 L227.9 116.1 L237.6 111.4 L247.2 106.8 L256.9 111.4 L266.5 113.0 L276.2 107.6 L285.9 110.7 L295.5 123.1 L305.2 127.7 L314.8 127.0 L324.5 134.0 L334.2 141.7 L343.8 137.1 L353.5 130.8 L363.2 135.5 L372.8 138.6 L382.5 134.7 L392.1 137.8 L401.8 151.0 L411.5 156.5 L421.1 154.9 L430.8 160.3 L440.4 167.3 L450.1 162.7 L459.8 155.7 L469.4 160.3 L479.1 165.0 L488.7 162.7 L498.4 161.9 L508.1 171.2 L517.7 174.3 L527.4 167.3 L537.1 167.3 L546.7 169.6 L556.4 161.9 L566.0 151.0 L575.7 151.8 L585.4 155.7 L595.0 151.0 L604.7 150.2 L614.3 159.6 L624.0 161.9 L 624 210 L 54 210 Z"
+                      fill="var(--s-good)"
+                      opacity=".10"
+                    ></path>
+                    <path
+                      d="M54.0 62.6 L63.7 54.8 L73.3 57.9 L83.0 67.2 L92.6 69.5 L102.3 70.3 L112.0 80.4 L121.6 89.7 L131.3 85.1 L140.9 82.7 L150.6 88.2 L160.3 87.4 L169.9 80.4 L179.6 83.5 L189.3 95.2 L198.9 98.3 L208.6 98.3 L218.2 107.6 L227.9 116.1 L237.6 111.4 L247.2 106.8 L256.9 111.4 L266.5 113.0 L276.2 107.6 L285.9 110.7 L295.5 123.1 L305.2 127.7 L314.8 127.0 L324.5 134.0 L334.2 141.7 L343.8 137.1 L353.5 130.8 L363.2 135.5 L372.8 138.6 L382.5 134.7 L392.1 137.8 L401.8 151.0 L411.5 156.5 L421.1 154.9 L430.8 160.3 L440.4 167.3 L450.1 162.7 L459.8 155.7 L469.4 160.3 L479.1 165.0 L488.7 162.7 L498.4 161.9 L508.1 171.2 L517.7 174.3 L527.4 167.3 L537.1 167.3 L546.7 169.6 L556.4 161.9 L566.0 151.0 L575.7 151.8 L585.4 155.7 L595.0 151.0 L604.7 150.2 L614.3 159.6 L624.0 161.9"
+                      fill="none"
+                      stroke="var(--s-good)"
+                      stroke-width="2.2"
+                      stroke-linejoin="round"
+                    ></path>
+                    <circle
+                      cx="517.728813559322"
+                      cy="174.304"
+                      r="4"
+                      fill="var(--s-bg)"
+                      stroke="var(--s-good)"
+                      stroke-width="2"
+                    ></circle>
+                    <text
+                      x="517.728813559322"
+                      y="194.304"
+                      text-anchor="middle"
+                      font-size="11"
+                      font-weight="700"
+                      fill="var(--s-good)"
+                      font-family="var(--s-num)"
+                    >
+                      Tief 1.196 €
+                    </text>
+                    <circle cx="624" cy="161.888" r="5" fill="var(--s-good)"></circle>
+                  </svg>
+                </div>
+                <div class="s-stats">
+                  <div class="s-stat"><small>Tief</small><b>1.196 €</b></div>
+                  <div class="s-stat"><small>Schnitt</small><b>1.220 €</b></div>
+                  <div class="s-stat"><small>Hoch</small><b>1.350 €</b></div>
+                </div>
+                <div class="s-advice">
+                  <b>Jetzt buchen ist sinnvoll.</b> Der Preis liegt nahe am Tiefpunkt der letzten 60
+                  Tage. Wir melden uns, falls er weiter fällt.
+                </div>
+              </div>
+              <div class="s-prov">
+                <h4>Vertrauens-Check pro Anbieter</h4>
+                <div class="s-pr">
+                  <div class="n">
+                    Hotel direkt<small>+ Frühstück für 2, 100 € Guthaben, Late Check-out</small
+                    ><span class="s-badge">Bester Gesamtwert</span>
+                  </div>
+                  <span class="p">1.240 €</span><span class="s-ts hi">98</span>
+                </div>
+                <div class="s-pr">
+                  <div class="n">
+                    Booking.com<small>Preis = Checkout in 24 von 25 Tests</small
+                    ><span class="s-badge">Günstigster verlässlicher Preis</span>
+                  </div>
+                  <span class="p">1.184 €</span><span class="s-ts hi">96</span>
+                </div>
+                <div class="s-pr">
+                  <div class="n">Expedia<small>Preis = Checkout in 22 von 25 Tests</small></div>
+                  <span class="p">1.205 €</span><span class="s-ts hi">91</span>
+                </div>
+                <div class="s-pr">
+                  <div class="n">
+                    Portal X<small>Lockpreis, an der Kasse deutlich teurer</small>
+                  </div>
+                  <span class="p">1.020 €<s>Kasse 1.212 €</s></span
+                  ><span class="s-ts lo">41</span>
+                </div>
+                <div class="s-ex">
+                  Beispieldaten. Vertrauens-Score = wie oft der angezeigte Preis an der Kasse
+                  stimmt.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="s-sec">
+          <div class="in">
+            <div class="s-eyebrow">So funktioniert's</div>
+            <h2 class="s-h2">In drei Schritten zum besten Preis</h2>
+            <div class="s-steps">
+              <div class="s-step">
+                <span class="k">1</span>
+                <h3>Hotel &amp; Daten eingeben</h3>
+                <p>Zimmer, Gäste, Frühstück: genau so, wie du buchen willst.</p>
+              </div>
+              <div class="s-step">
+                <span class="k">2</span>
+                <h3>Wir prüfen täglich</h3>
+                <p>
+                  Alle wichtigen Anbieter, inklusive Hotel-Website, und ob der Preis an der Kasse
+                  stimmt.
+                </p>
+              </div>
+              <div class="s-step">
+                <span class="k">3</span>
+                <h3>Alarm, wenn es günstig wird</h3>
+                <p>
+                  Per E-Mail, sobald der Preis fällt oder am Tiefpunkt ist. Du buchst, wo es am
+                  fairsten ist.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="s-sec">
+          <div class="in s-trust">
+            <div>
+              <div class="s-eyebrow">Vertrauens-Check</div>
+              <h2 class="s-h2">Der günstigste Preis ist nicht immer der echte.</h2>
+              <p class="s-lead">
+                Wir buchen bis zur Kasse durch und vergleichen. Anbieter mit Lockpreisen sinken im
+                Score und landen unten.
+              </p>
+            </div>
+            <div class="s-figs">
+              <div class="s-fig"><b>150</b><span>Checkouts getestet</span></div>
+              <div class="s-fig">
+                <b>1 von 4</b><span>Billigportalen war an der Kasse teurer</span>
+              </div>
+              <div class="s-fig"><b>+14 %</b><span>Ø Aufschlag bei Lockpreisen</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="s-sec">
+          <div class="in">
+            <div class="s-eyebrow">Gerade gefallen</div>
+            <h2 class="s-h2">Fünf-Sterne-Deals dieser Woche</h2>
+            <div class="s-deals">
+              <div class="s-deal">
+                <div class="s-img"></div>
+                <div class="b">
+                  <span class="t">Hotel Lumen, Wien</span
+                  ><span class="m">6.–8. Nov. · 2 Erw. · Frühstück</span>
+                  <div class="pp"><b>842 €</b><em>▼ 14 %</em></div>
+                </div>
+              </div>
+              <div class="s-deal">
+                <div class="s-img"></div>
+                <div class="b">
+                  <span class="t">Maison Arlo, Paris</span
+                  ><span class="m">20.–22. Nov. · 2 Erw.</span>
+                  <div class="pp"><b>1.120 €</b><em>▼ 11 %</em></div>
+                </div>
+              </div>
+              <div class="s-deal">
+                <div class="s-img"></div>
+                <div class="b">
+                  <span class="t">Hotel Sela, Zürich</span
+                  ><span class="m">11.–13. Dez. · 2 Erw. · Frühstück</span>
+                  <div class="pp"><b>1.396 €</b><em>▼ 9 %</em></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="s-sec s-cta">
+          <div class="in">
+            <h2 class="s-h2">Verfolge deinen ersten Hotelpreis. Kostenlos.</h2>
+            <p class="s-lead" style="margin-inline: auto">
+              Keine Kreditkarte, kein Abo. Wir verdienen nur, wenn du über uns buchst, und dein
+              Preis bleibt gleich.
+            </p>
             <span class="s-btn">Preis verfolgen</span>
           </div>
-        </header>
-      </div></div>
+        </section>
 
-      <section class="s-sec"><div class="in">
-        <div class="s-eyebrow">Live-Beispiel</div>
-        <h2 class="s-h2">Ist jetzt ein guter Moment zum Buchen?</h2>
-        <p class="s-lead">Jede Suche wird zur Preiskurve. Du siehst sofort, ob der Preis fällt, steigt oder am Tiefpunkt liegt.</p>
-        <div class="s-panel">
-          <div>
-            <div class="s-ph"><div><div class="s-hname">Hotel Maris, Berlin Mitte</div><div class="s-q">1.–3. Dez. 2026 · 2 Erw. · Deluxe · Frühstück</div></div><span class="s-state">Nahe Tiefpunkt</span></div>
-            <div class="s-price">1.212 €</div>
-            <div class="s-delta">▼ 1 % unter dem 30-Tage-Schnitt · 2 Nächte gesamt</div>
-            <div class="s-chart"><svg viewBox="0 0 640 240" role="img" aria-label="Preisverlauf über 60 Tage: Hoch 1.350 €, Tief 1.196 €, heute 1.212 €">
-      <line x1="54" x2="624" y1="210" y2="210" stroke="var(--s-line)" stroke-width="1"></line><text x="46" y="214" text-anchor="end" font-size="11" fill="var(--s-muted)" font-family="var(--s-num)">1.150</text><line x1="54" x2="624" y1="171.2" y2="171.2" stroke="var(--s-line)" stroke-width="1"></line><text x="46" y="175.2" text-anchor="end" font-size="11" fill="var(--s-muted)" font-family="var(--s-num)">1.200</text><line x1="54" x2="624" y1="132.4" y2="132.4" stroke="var(--s-line)" stroke-width="1"></line><text x="46" y="136.4" text-anchor="end" font-size="11" fill="var(--s-muted)" font-family="var(--s-num)">1.250</text><line x1="54" x2="624" y1="93.6" y2="93.6" stroke="var(--s-line)" stroke-width="1"></line><text x="46" y="97.6" text-anchor="end" font-size="11" fill="var(--s-muted)" font-family="var(--s-num)">1.300</text><line x1="54" x2="624" y1="54.8" y2="54.8" stroke="var(--s-line)" stroke-width="1"></line><text x="46" y="58.8" text-anchor="end" font-size="11" fill="var(--s-muted)" font-family="var(--s-num)">1.350</text><line x1="54" x2="624" y1="16" y2="16" stroke="var(--s-line)" stroke-width="1"></line><text x="46" y="20" text-anchor="end" font-size="11" fill="var(--s-muted)" font-family="var(--s-num)">1.400</text><text x="54" y="232" text-anchor="start" font-size="11" fill="var(--s-muted)" font-family="var(--s-num)">13. Aug</text><text x="198.91525423728814" y="232" text-anchor="middle" font-size="11" fill="var(--s-muted)" font-family="var(--s-num)">28. Aug</text><text x="343.8305084745763" y="232" text-anchor="middle" font-size="11" fill="var(--s-muted)" font-family="var(--s-num)">12. Sep</text><text x="488.7457627118644" y="232" text-anchor="middle" font-size="11" fill="var(--s-muted)" font-family="var(--s-num)">27. Sep</text><text x="624" y="232" text-anchor="end" font-size="11" fill="var(--s-muted)" font-family="var(--s-num)">Heute</text>
-      <line x1="343.8305084745763" x2="624" y1="155.68" y2="155.68" stroke="var(--s-muted)" stroke-dasharray="4 4" stroke-width="1.2"></line>
-      <text x="347.8305084745763" y="149.68" font-size="11" fill="var(--s-muted)" font-family="var(--s-num)">30-Tage-Schnitt 1.220 €</text>
-      <path d="M54.0 62.6 L63.7 54.8 L73.3 57.9 L83.0 67.2 L92.6 69.5 L102.3 70.3 L112.0 80.4 L121.6 89.7 L131.3 85.1 L140.9 82.7 L150.6 88.2 L160.3 87.4 L169.9 80.4 L179.6 83.5 L189.3 95.2 L198.9 98.3 L208.6 98.3 L218.2 107.6 L227.9 116.1 L237.6 111.4 L247.2 106.8 L256.9 111.4 L266.5 113.0 L276.2 107.6 L285.9 110.7 L295.5 123.1 L305.2 127.7 L314.8 127.0 L324.5 134.0 L334.2 141.7 L343.8 137.1 L353.5 130.8 L363.2 135.5 L372.8 138.6 L382.5 134.7 L392.1 137.8 L401.8 151.0 L411.5 156.5 L421.1 154.9 L430.8 160.3 L440.4 167.3 L450.1 162.7 L459.8 155.7 L469.4 160.3 L479.1 165.0 L488.7 162.7 L498.4 161.9 L508.1 171.2 L517.7 174.3 L527.4 167.3 L537.1 167.3 L546.7 169.6 L556.4 161.9 L566.0 151.0 L575.7 151.8 L585.4 155.7 L595.0 151.0 L604.7 150.2 L614.3 159.6 L624.0 161.9 L 624 210 L 54 210 Z" fill="var(--s-good)" opacity=".10"></path>
-      <path d="M54.0 62.6 L63.7 54.8 L73.3 57.9 L83.0 67.2 L92.6 69.5 L102.3 70.3 L112.0 80.4 L121.6 89.7 L131.3 85.1 L140.9 82.7 L150.6 88.2 L160.3 87.4 L169.9 80.4 L179.6 83.5 L189.3 95.2 L198.9 98.3 L208.6 98.3 L218.2 107.6 L227.9 116.1 L237.6 111.4 L247.2 106.8 L256.9 111.4 L266.5 113.0 L276.2 107.6 L285.9 110.7 L295.5 123.1 L305.2 127.7 L314.8 127.0 L324.5 134.0 L334.2 141.7 L343.8 137.1 L353.5 130.8 L363.2 135.5 L372.8 138.6 L382.5 134.7 L392.1 137.8 L401.8 151.0 L411.5 156.5 L421.1 154.9 L430.8 160.3 L440.4 167.3 L450.1 162.7 L459.8 155.7 L469.4 160.3 L479.1 165.0 L488.7 162.7 L498.4 161.9 L508.1 171.2 L517.7 174.3 L527.4 167.3 L537.1 167.3 L546.7 169.6 L556.4 161.9 L566.0 151.0 L575.7 151.8 L585.4 155.7 L595.0 151.0 L604.7 150.2 L614.3 159.6 L624.0 161.9" fill="none" stroke="var(--s-good)" stroke-width="2.2" stroke-linejoin="round"></path>
-      <circle cx="517.728813559322" cy="174.304" r="4" fill="var(--s-bg)" stroke="var(--s-good)" stroke-width="2"></circle>
-      <text x="517.728813559322" y="194.304" text-anchor="middle" font-size="11" font-weight="700" fill="var(--s-good)" font-family="var(--s-num)">Tief 1.196 €</text>
-      <circle cx="624" cy="161.888" r="5" fill="var(--s-good)"></circle>
-    </svg></div>
-            <div class="s-stats"><div class="s-stat"><small>Tief</small><b>1.196 €</b></div><div class="s-stat"><small>Schnitt</small><b>1.220 €</b></div><div class="s-stat"><small>Hoch</small><b>1.350 €</b></div></div>
-            <div class="s-advice"><b>Jetzt buchen ist sinnvoll.</b> Der Preis liegt nahe am Tiefpunkt der letzten 60 Tage. Wir melden uns, falls er weiter fällt.</div>
-          </div>
-          <div class="s-prov">
-            <h4>Vertrauens-Check pro Anbieter</h4>
-            <div class="s-pr"><div class="n">Hotel direkt<small>+ Frühstück für 2, 100 € Guthaben, Late Check-out</small><span class="s-badge">Bester Gesamtwert</span></div><span class="p">1.240 €</span><span class="s-ts hi">98</span></div>
-            <div class="s-pr"><div class="n">Booking.com<small>Preis = Checkout in 24 von 25 Tests</small><span class="s-badge">Günstigster verlässlicher Preis</span></div><span class="p">1.184 €</span><span class="s-ts hi">96</span></div>
-            <div class="s-pr"><div class="n">Expedia<small>Preis = Checkout in 22 von 25 Tests</small></div><span class="p">1.205 €</span><span class="s-ts hi">91</span></div>
-            <div class="s-pr"><div class="n">Portal X<small>Lockpreis, an der Kasse deutlich teurer</small></div><span class="p">1.020 €<s>Kasse 1.212 €</s></span><span class="s-ts lo">41</span></div>
-            <div class="s-ex">Beispieldaten. Vertrauens-Score = wie oft der angezeigte Preis an der Kasse stimmt.</div>
-          </div>
+        <div class="in">
+          <footer class="s-foot">
+            <span>© 2026 Tidaq</span><span>Impressum</span><span>Datenschutz</span
+            ><span>Affiliate-Hinweis</span><span>English</span>
+          </footer>
         </div>
-      </div></section>
-
-      <section class="s-sec"><div class="in">
-        <div class="s-eyebrow">So funktioniert's</div>
-        <h2 class="s-h2">In drei Schritten zum besten Preis</h2>
-        <div class="s-steps">
-          <div class="s-step"><span class="k">1</span><h3>Hotel &amp; Daten eingeben</h3><p>Zimmer, Gäste, Frühstück: genau so, wie du buchen willst.</p></div>
-          <div class="s-step"><span class="k">2</span><h3>Wir prüfen täglich</h3><p>Alle wichtigen Anbieter, inklusive Hotel-Website, und ob der Preis an der Kasse stimmt.</p></div>
-          <div class="s-step"><span class="k">3</span><h3>Alarm, wenn es günstig wird</h3><p>Per E-Mail, sobald der Preis fällt oder am Tiefpunkt ist. Du buchst, wo es am fairsten ist.</p></div>
-        </div>
-      </div></section>
-
-      <section class="s-sec"><div class="in s-trust">
-        <div><div class="s-eyebrow">Vertrauens-Check</div><h2 class="s-h2">Der günstigste Preis ist nicht immer der echte.</h2><p class="s-lead">Wir buchen bis zur Kasse durch und vergleichen. Anbieter mit Lockpreisen sinken im Score und landen unten.</p></div>
-        <div class="s-figs">
-          <div class="s-fig"><b>150</b><span>Checkouts getestet</span></div>
-          <div class="s-fig"><b>1 von 4</b><span>Billigportalen war an der Kasse teurer</span></div>
-          <div class="s-fig"><b>+14 %</b><span>Ø Aufschlag bei Lockpreisen</span></div>
-        </div>
-      </div></section>
-
-      <section class="s-sec"><div class="in">
-        <div class="s-eyebrow">Gerade gefallen</div>
-        <h2 class="s-h2">Fünf-Sterne-Deals dieser Woche</h2>
-        <div class="s-deals">
-          <div class="s-deal"><div class="s-img"></div><div class="b"><span class="t">Hotel Lumen, Wien</span><span class="m">6.–8. Nov. · 2 Erw. · Frühstück</span><div class="pp"><b>842 €</b><em>▼ 14 %</em></div></div></div>
-          <div class="s-deal"><div class="s-img"></div><div class="b"><span class="t">Maison Arlo, Paris</span><span class="m">20.–22. Nov. · 2 Erw.</span><div class="pp"><b>1.120 €</b><em>▼ 11 %</em></div></div></div>
-          <div class="s-deal"><div class="s-img"></div><div class="b"><span class="t">Hotel Sela, Zürich</span><span class="m">11.–13. Dez. · 2 Erw. · Frühstück</span><div class="pp"><b>1.396 €</b><em>▼ 9 %</em></div></div></div>
-        </div>
-      </div></section>
-
-      <section class="s-sec s-cta"><div class="in">
-        <h2 class="s-h2">Verfolge deinen ersten Hotelpreis. Kostenlos.</h2>
-        <p class="s-lead" style="margin-inline:auto">Keine Kreditkarte, kein Abo. Wir verdienen nur, wenn du über uns buchst, und dein Preis bleibt gleich.</p>
-        <span class="s-btn">Preis verfolgen</span>
-      </div></section>
-
-      <div class="in"><footer class="s-foot"><span>© 2026 Tidaq</span><span>Impressum</span><span>Datenschutz</span><span>Affiliate-Hinweis</span><span>English</span></footer></div>
-    </div></div></body></html>
+      </div>
+    </div>
+  </body>
+</html>

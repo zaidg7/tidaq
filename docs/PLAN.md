@@ -8,9 +8,10 @@ This is the master plan. `docs/TASKS.md` is the work queue, `docs/DECISIONS.md` 
 
 ## 1. What Tidaq is
 
-**One sentence:** Tidaq shows you how the price of *your* luxury hotel stay is moving, whether right now is a low or a high, and which booking site actually charges at checkout what it shows.
+**One sentence:** Tidaq shows you how the price of _your_ luxury hotel stay is moving, whether right now is a low or a high, and which booking site actually charges at checkout what it shows.
 
 **Example:** You want the Hotel Adlon in Berlin, 1–3 Dec 2026, 2 adults, with breakfast. Tidaq shows:
+
 - today's best price per provider (Booking.com, Expedia, the hotel's own website …)
 - a chart of how that price moved since we started tracking it, with the 30-day average and the lowest point
 - a clear signal: **Nahe Tiefpunkt / Günstig / Normal / Teuer**, plus the trend (falling, flat, rising)
@@ -18,8 +19,9 @@ This is the master plan. `docs/TASKS.md` is the work queue, `docs/DECISIONS.md` 
 - a button: **Preis beobachten**. You get an email when the price drops or hits a low.
 
 **Why now / the gap:**
+
 - Google Hotels shows a little price info but no clear history, no breakfast or room filters, and its cheapest offers often come from providers that charge more at checkout.
-- Google penalizes partners whose checkout price doesn't match (its Price Accuracy Policy), which proves mismatches are common. Nobody shows users *which* providers are reliable.
+- Google penalizes partners whose checkout price doesn't match (its Price Accuracy Policy), which proves mismatches are common. Nobody shows users _which_ providers are reliable.
 - In Germany hotels may sell cheaper on their own website (the BGH struck down Booking.com's best-price clause), so real price gaps between channels exist.
 - On a €1,500 stay, a 10 % move is €150. Luxury guests notice that, and our commission per booking is high.
 
@@ -28,6 +30,7 @@ This is the master plan. `docs/TASKS.md` is the work queue, `docs/DECISIONS.md` 
 **Primary: the aspirational luxury traveller.** 25–45, DACH, books a five-star hotel 1–3× a year for a city break, anniversary or New Year's Eve. Price-aware, researches for weeks, hates overpaying, doesn't use luxury travel agents.
 
 Jobs to be done:
+
 1. "Tell me if I should book now or wait."
 2. "Show me the real price, not a teaser that grows at checkout."
 3. "Watch it for me and tell me when it drops."
@@ -38,6 +41,7 @@ Jobs to be done:
 ## 3. Scope
 
 ### v1 (launch target Mon 30 Nov 2026)
+
 - ~50 five-star hotels in 12 cities (D-04), tracked daily on a rolling grid of stay dates
 - Stay page with chart, stats, signal, advice, provider table with trust score
 - Hotel page with a **price calendar** (cheapest upcoming dates)
@@ -48,6 +52,7 @@ Jobs to be done:
 - German + English, mobile-first, Soft Modern design
 
 ### Not in v1 (on purpose)
+
 - User accounts with passwords (email-only watches instead)
 - Any hotel in the world (only our catalog; "request a hotel" form instead)
 - Room-type and breakfast filters, **unless** the C-010 spike shows the API returns that data reliably
@@ -56,15 +61,15 @@ Jobs to be done:
 
 ## 4. Goals and milestones
 
-| When | Milestone | Measure |
-|---|---|---|
-| Sun 18 Oct 2026 | Setup done | Repo, CI, domain, accounts, spike report merged |
-| Sun 1 Nov 2026 | **Data flowing** | Collector runs daily for ≥ 36 hotels, cost within cap |
-| Sun 22 Nov 2026 | MVP feature-complete | Home, stay, hotel, city, deals, legal pages live on staging |
-| Mon 30 Nov 2026 | **Soft launch** | tidaq.com live, alerts working, ≥ 150 checkout tests published |
-| Dec 2026 | First content wave | Trust report + TikTok series; 500 visitors |
-| Mar 2027 | First money | Affiliate programs approved; **first €100 in commission** |
-| Jun 2027 | Traction | 5,000 visitors/month, 1,000 active watches |
+| When            | Milestone            | Measure                                                        |
+| --------------- | -------------------- | -------------------------------------------------------------- |
+| Sun 18 Oct 2026 | Setup done           | Repo, CI, domain, accounts, spike report merged                |
+| Sun 1 Nov 2026  | **Data flowing**     | Collector runs daily for ≥ 36 hotels, cost within cap          |
+| Sun 22 Nov 2026 | MVP feature-complete | Home, stay, hotel, city, deals, legal pages live on staging    |
+| Mon 30 Nov 2026 | **Soft launch**      | tidaq.com live, alerts working, ≥ 150 checkout tests published |
+| Dec 2026        | First content wave   | Trust report + TikTok series; 500 visitors                     |
+| Mar 2027        | First money          | Affiliate programs approved; **first €100 in commission**      |
+| Jun 2027        | Traction             | 5,000 visitors/month, 1,000 active watches                     |
 
 The earlier the collector runs, the better the charts at launch. **Data collection is the critical path.** Everything else can be polished later.
 
@@ -252,7 +257,9 @@ RLS: public `select` only on catalog tables, `stay_daily`, `stay_stats`, `provid
 ## 7. Data collection
 
 ### 7.1 The stay grid
-Charts only exist for stays we track *before* someone asks. Each day the collector makes sure every active hotel has these stays tracked:
+
+Charts only exist for stays we track _before_ someone asks. Each day the collector makes sure every active hotel has these stays tracked:
+
 - **Weekends:** the next 6 Fri→Sun stays (2 nights)
 - **Midweek:** 2 Tue→Thu stays in the next 6 weeks
 - **Events:** New Year's Eve (30 Dec→1 Jan) and a few city specials (Oktoberfest, Christmas markets) in a `special_dates` config, only while they are within 90 days
@@ -261,6 +268,7 @@ Charts only exist for stays we track *before* someone asks. Each day the collect
 All for 2 adults (the most common luxury booking). About 8 grid stays per hotel (lean start, D-13). The grid size is config (`GRID_WEEKENDS`, `GRID_MIDWEEK`), so scaling up later is a one-line change.
 
 ### 7.2 Budget math (verify in C-010)
+
 - Hotel Info, standard queue: ~$0.0008 per task (one hotel entity per task).
 - **Lean start (D-13):** 36 hotels × 8 stays = ~290 tasks/day, one run per day: about $0.23/day ≈ **$7/month**.
 - Later options, only when worth it: a second evening run for stays checking in within 21 days (~+$2/month), more stays per hotel, more hotels (50 hotels × 14 stays ≈ $17/month).
@@ -273,7 +281,9 @@ All for 2 adults (the most common luxury booking). About 8 grid stays per hotel 
 **Budget guard (C-013):** before posting, count today's tasks in `collector_runs`. If adding the batch would exceed `DAILY_TASK_CAP` or the month-to-date estimate would exceed `MONTHLY_BUDGET_USD`, post only the highest-priority tasks (watches first, then stays closest to check-in, then the rest) and log the skip. Unit-tested.
 
 ### 7.3 Normalization
+
 Verified in the C-010 spike (`docs/research/dataforseo.md`).
+
 - Request by **`hotel_identifier`** (from `hotels.dfs_hotel_identifier`), `currency=EUR`, `language_code=de`, location Germany (2276). Lookups by hotel name fail (`40102`) and are still billed.
 - The API returns **per-night prices** (integer EUR). Store the **total for the stay**: `total_cents = price × nights × 100`, and mark `nightly: true` in `raw`.
 - Some sites report the stay total instead: if an entry is ≈ `nights ×` the stay's median that day (±25 %), flag it as a suspected total and exclude it from best price and provider tables (keep it in `raw`).
@@ -285,7 +295,9 @@ Verified in the C-010 spike (`docs/research/dataforseo.md`).
 ## 8. Methods
 
 ### 8.1 Price signal (per stay)
+
 Input: `stay_daily.best_cents` for the last N days (N = days tracked, max 60).
+
 - **Collecting:** fewer than 7 days of data. Show "Wir sammeln noch Daten (x/7 Tage)" and the chart so far.
 - **Percentile:** where today's best price sits in the window (0 = lowest ever seen, 1 = highest).
 - **State:** `near_low` if today ≤ low × 1.02 or percentile ≤ 0.10; `good` if percentile ≤ 0.35; `high` if percentile ≥ 0.75; else `normal`.
@@ -298,37 +310,41 @@ Input: `stay_daily.best_cents` for the last N days (N = days tracked, max 60).
 - Never promise the future. Wording: "lohnt sich wahrscheinlich", never "wird fallen".
 
 ### 8.2 Trust score (per provider)
+
 From `trust_tests` (manual checkout tests, PLAN §9 and task L-033):
+
 1. For each test: markup = (checkout − listed) / listed. A test **passes** if markup ≤ +1 % (same price or cheaper). `unavailable` (the price could not be booked) fails.
 2. accuracy = passed tests / all tests (n).
 3. penalty = mean of the positive markups of the failed tests × 200, capped at 40 points (e.g. an average +14 % markup gives 28 points).
 4. raw_score = clamp(100 × accuracy − penalty × (1 − accuracy), 0, 100).
 5. **Bayesian shrinkage** for small samples: score = round((n × raw_score + 5 × 70) / (n + 5)), so a provider with 2 perfect tests shows 79, not 100.
 6. Recompute after every new test. Unit-test with fixed examples.
+
 - Show the score **with the sample**: "96 · 24 von 25 Tests stimmten". Under 5 tests: show "Noch zu wenig Tests" instead of a number.
 - Methodology page explains all of this in plain German.
 
 ### 8.3 Ranking in the provider table
+
 Sort by **trusted price**: listed price adjusted by the provider's average markup (if score is known), so a teaser price from an unreliable provider doesn't sit on top. Show the listed price and, when relevant, "erwartet an der Kasse ≈ 1.212 €". **Commission never affects ranking.** This is stated on the ranking transparency page (§ 5b UWG requires disclosing the main ranking parameters).
 
 ## 9. Pages and features (v1)
 
 All pages in DE (`/…`) and EN (`/en/…`). Mobile-first. Soft Modern design.
 
-| Route (DE) | What it does | Key acceptance criteria |
-|---|---|---|
-| `/` | Hero with search, live example stay, how it works, trust teaser, deals, CTA | Matches reference design; live example uses real data; LCP < 2.5 s on 4G |
-| `/hotel/[slug]` | Hotel overview: photo, city, **price calendar** (heatmap of best price per tracked stay, next 60 days), best current deals, providers | Calendar works on mobile (horizontal scroll by month), tap → stay page |
-| `/hotel/[slug]/[checkin]--[checkout]?adults=2` | **Stay page**: price now, state chip, delta vs avg30, 60-day chart, low/avg/high, advice, provider table with trust score + "erwartet an der Kasse", Preis beobachten | Chart accessible (table fallback), empty/collecting states, untracked stay → create on demand within cap and show "Erste Preise in ca. 1 Stunde" |
-| `/stadt/[city]` | Luxury hotels in a city with current state per hotel | SEO title "Luxushotels in Berlin: Preisverlauf & Deals" |
-| `/deals` | Biggest drops vs 30-day average in the last 7 days, filter by city | Only stays with ≥ 14 days of data |
-| `/anbieter/[slug]` | Provider trust page: score, tests, typical extras | Facts only, with test dates |
-| `/methodik` | How price signal and trust score work | Plain language, examples |
-| `/ranking` | Ranking transparency (§ 5b UWG) | States that commission doesn't affect ranking |
-| `/watch/confirm`, `/watch/manage/[token]` | Double opt-in confirmation; manage or unsubscribe all watches | One-click unsubscribe works without login |
-| `/go/[offerId]` | Outbound redirect to the provider with affiliate params if available; logs an `outbound_click` event | `rel="sponsored nofollow"` on links; 302; no personal data logged |
-| `/impressum`, `/datenschutz`, `/affiliate-hinweis` | Legal | See §11 |
-| `/admin/*` | Zaid only: data health, audit entry, hotel catalog, budget | Supabase Auth magic link, email must be in `ADMIN_EMAILS` |
+| Route (DE)                                         | What it does                                                                                                                                                          | Key acceptance criteria                                                                                                                          |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/`                                                | Hero with search, live example stay, how it works, trust teaser, deals, CTA                                                                                           | Matches reference design; live example uses real data; LCP < 2.5 s on 4G                                                                         |
+| `/hotel/[slug]`                                    | Hotel overview: photo, city, **price calendar** (heatmap of best price per tracked stay, next 60 days), best current deals, providers                                 | Calendar works on mobile (horizontal scroll by month), tap → stay page                                                                           |
+| `/hotel/[slug]/[checkin]--[checkout]?adults=2`     | **Stay page**: price now, state chip, delta vs avg30, 60-day chart, low/avg/high, advice, provider table with trust score + "erwartet an der Kasse", Preis beobachten | Chart accessible (table fallback), empty/collecting states, untracked stay → create on demand within cap and show "Erste Preise in ca. 1 Stunde" |
+| `/stadt/[city]`                                    | Luxury hotels in a city with current state per hotel                                                                                                                  | SEO title "Luxushotels in Berlin: Preisverlauf & Deals"                                                                                          |
+| `/deals`                                           | Biggest drops vs 30-day average in the last 7 days, filter by city                                                                                                    | Only stays with ≥ 14 days of data                                                                                                                |
+| `/anbieter/[slug]`                                 | Provider trust page: score, tests, typical extras                                                                                                                     | Facts only, with test dates                                                                                                                      |
+| `/methodik`                                        | How price signal and trust score work                                                                                                                                 | Plain language, examples                                                                                                                         |
+| `/ranking`                                         | Ranking transparency (§ 5b UWG)                                                                                                                                       | States that commission doesn't affect ranking                                                                                                    |
+| `/watch/confirm`, `/watch/manage/[token]`          | Double opt-in confirmation; manage or unsubscribe all watches                                                                                                         | One-click unsubscribe works without login                                                                                                        |
+| `/go/[offerId]`                                    | Outbound redirect to the provider with affiliate params if available; logs an `outbound_click` event                                                                  | `rel="sponsored nofollow"` on links; 302; no personal data logged                                                                                |
+| `/impressum`, `/datenschutz`, `/affiliate-hinweis` | Legal                                                                                                                                                                 | See §11                                                                                                                                          |
+| `/admin/*`                                         | Zaid only: data health, audit entry, hotel catalog, budget                                                                                                            | Supabase Auth magic link, email must be in `ADMIN_EMAILS`                                                                                        |
 
 **Search (header and hero):** autocomplete over our hotels and cities (client-side list, under 100 items). Date range picker with German locale, nights shown, max 30 nights, no past dates. Adults 1–4. Toggles (breakfast, refundable) shown only if C-010 proves the data exists.
 
@@ -368,17 +384,17 @@ Not legal advice. Before launch, Zaid reads the final texts once (task Z-12).
 
 ## 13. Risks
 
-| Risk | Impact | Mitigation |
-|---|---|---|
-| DataForSEO data lacks per-provider detail or breakfast/room info | Weaker product | C-010 spike first; fall back to "best price per provider" only; SerpApi as backup source |
-| Costs higher than estimated | Budget | Budget guard, daily cap, cost dashboard, weekly cost in summary |
-| Few visitors at launch | No revenue | Content-led launch from the checkout audit; SEO pages from real data; mydealz/Reddit |
-| Affiliate programs reject a young site | No revenue | Apply after launch with content; several networks; direct links still give value |
-| Legal complaint from a provider | Stress, cost | Facts only, screenshots, neutral wording, quick correction process |
-| Pro plan usage limits slow the build | Delays | Small tasks, one session at a time, upgrade to Max 5x if milestones slip > 1 week |
-| Zaid has little time | Blocked tasks | All Zaid tasks batched, with exact steps, in `docs/ZAID.md` |
-| Supabase cost or limits | Budget | Project in the Pro organization (no pause, 8 GB); raw-data pruning keeps growth around 1 GB/year |
-| Next.js on Workers limits (bundle size, CPU) | Deploy problems | Workers paid plan; keep pages server-light; ISR |
+| Risk                                                             | Impact          | Mitigation                                                                                       |
+| ---------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------ |
+| DataForSEO data lacks per-provider detail or breakfast/room info | Weaker product  | C-010 spike first; fall back to "best price per provider" only; SerpApi as backup source         |
+| Costs higher than estimated                                      | Budget          | Budget guard, daily cap, cost dashboard, weekly cost in summary                                  |
+| Few visitors at launch                                           | No revenue      | Content-led launch from the checkout audit; SEO pages from real data; mydealz/Reddit             |
+| Affiliate programs reject a young site                           | No revenue      | Apply after launch with content; several networks; direct links still give value                 |
+| Legal complaint from a provider                                  | Stress, cost    | Facts only, screenshots, neutral wording, quick correction process                               |
+| Pro plan usage limits slow the build                             | Delays          | Small tasks, one session at a time, upgrade to Max 5x if milestones slip > 1 week                |
+| Zaid has little time                                             | Blocked tasks   | All Zaid tasks batched, with exact steps, in `docs/ZAID.md`                                      |
+| Supabase cost or limits                                          | Budget          | Project in the Pro organization (no pause, 8 GB); raw-data pruning keeps growth around 1 GB/year |
+| Next.js on Workers limits (bundle size, CPU)                     | Deploy problems | Workers paid plan; keep pages server-light; ISR                                                  |
 
 ## 14. Operating model
 
@@ -390,9 +406,11 @@ Not legal advice. Before launch, Zaid reads the final texts once (task Z-12).
 ### Start prompts (copy-paste)
 
 **CLOUD session** (claude.ai → Code → new session with repo `zaidg7/tidaq`):
+
 > You are the Tidaq CLOUD build session. Read CLAUDE.md and follow its session protocol exactly. Work through docs/TASKS.md top-down: take the next TODO task owned by CLOUD whose dependencies are DONE and that has no open PR. One PR per task, tests included, merge yourself when CI is green. Continue with the next task until you run low on usage or only blocked tasks remain. Log anything you need from me in docs/BLOCKERS.md with exact steps. Don't ask me questions in chat unless something is truly impossible without me.
 
 **LOCAL session** (Claude Code on the PC, in the cloned `tidaq` folder):
+
 > You are the Tidaq LOCAL session on my Windows 11 PC. Read CLAUDE.md and follow its session protocol. Take the next TODO task owned by LOCAL. If none is open, take a CLOUD task marked parallel-safe that has no open PR. Never make bookings or enter payment or personal data on any website. Log anything you need from me in docs/BLOCKERS.md.
 
 **Weekly check (Zaid, Sundays):** open the newest "Weekly summary" issue on GitHub, do the listed Zaid steps, close the issue.

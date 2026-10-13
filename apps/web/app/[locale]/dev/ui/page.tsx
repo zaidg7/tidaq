@@ -15,14 +15,7 @@ import {
   Users,
   X,
 } from 'lucide-react';
-import {
-  addDays,
-  computeStayStats,
-  stayStates,
-  verdictFacts,
-  type DailyPrice,
-  type Locale,
-} from '@tidaq/core';
+import { addDays, computeStayStats, stayStates, verdictFacts, type Locale } from '@tidaq/core';
 import { ToastDemo } from '@/components/dev/ToastDemo';
 import { CollectingState } from '@/components/stay/CollectingState';
 import { VerdictBlock } from '@/components/stay/VerdictBlock';
@@ -40,21 +33,12 @@ import { PriceDelta } from '@/components/ui/PriceDelta';
 import { StateChip } from '@/components/ui/StateChip';
 import { TrustScore } from '@/components/ui/TrustScore';
 import { getFeaturedStay } from '@/lib/data/featured';
+import { sampleSeries } from '@/lib/sampleStay';
 
 // APP_ENV is read per request (connection() below): the page must never render on production.
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
-
-/** 60 days of believable prices: weekly rhythm, a slow fall, two missing days, a dip at day 41. */
-function sampleSeries(to: string): DailyPrice[] {
-  return Array.from({ length: 60 }, (_, i) => {
-    const wave = Math.sin((i / 7) * Math.PI * 2) * 2_400;
-    const drift = (30 - i) * 180;
-    const dip = i >= 40 && i <= 43 ? -6_500 : 0;
-    return { day: addDays(to, i - 59), bestCents: Math.round(118_000 + wave + drift + dip) };
-  }).filter((_, i) => i !== 22 && i !== 23);
-}
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -282,7 +266,7 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
 
       <Section title="Urteil">
         <Card variant="float" className="w-full" data-scrub-scope="">
-          <div className="grid gap-4 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-8">
+          <div className="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-8">
             <VerdictBlock
               stats={stats}
               series={series}

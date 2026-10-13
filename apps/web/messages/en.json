@@ -4,8 +4,26 @@
     "description": "Price history for luxury hotels: is today a low or a high?"
   },
   "home": {
-    "title": "Tidaq is coming soon",
-    "intro": "Soon you'll see how the price of your luxury hotel stay is moving."
+    "eyebrow": "Price history for five-star hotels",
+    "title": "Is your hotel price <hi>low</hi> or high right now?",
+    "lead": "Every morning we check the prices of {hotels} five-star hotels in {cities} cities. You see the history, the low and where it's cheapest right now.",
+    "leadNoData": "Every morning we check the prices of five-star hotels. You see the history, the low and where it's cheapest right now.",
+    "proofHotels": "{hotels} hotels",
+    "proofCities": "{cities} cities",
+    "proofDaily": "checked daily",
+    "proofFree": "free, no account",
+    "liveEyebrow": "Live example",
+    "liveTitle": "Is now a good time to book?",
+    "liveText": "A real stay from our data, updated this morning. Every trip looks like this on Tidaq.",
+    "sampleText": "We don't have live data right now, so this is an example. Every trip looks like this on Tidaq.",
+    "sampleBadge": "Sample data",
+    "stayMeta": "{dates} · {adults, plural, one {# adult} other {# adults}}",
+    "offersTitle": "Prices by site",
+    "cheapest": "Cheapest",
+    "direct": "Hotel direct",
+    "offersNote": "Total for the whole stay when we checked. It can differ at checkout.",
+    "offersEmpty": "Today we have no reviewed site with a price for these dates.",
+    "photoCredit": "Photo: {credit}"
   },
   "localeSwitch": {
     "label": "Language",
@@ -148,5 +166,23 @@
     "close": "Close",
     "watchSaved": "Saved: you're now watching this price.",
     "loading": "Loading prices"
+  },
+  "search": {
+    "label": "Search prices",
+    "hotel": "Hotel",
+    "hotelPlaceholder": "Choose a hotel",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "guests": "Guests",
+    "submit": "See prices",
+    "note": "Free · no account · no cookies",
+    "nightsOne": "1 night",
+    "nightsOther": "{n} nights",
+    "hotelMissing": "Choose a hotel.",
+    "datesMissing": "Choose check-in and check-out.",
+    "order": "Check-out must be after check-in.",
+    "tooLong": "30 nights max. Pick a shorter stay.",
+    "past": "That date has passed. Pick a check-in from today.",
+    "adults": "{n, plural, one {# adult} other {# adults}}"
   }
 }
