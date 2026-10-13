@@ -14,6 +14,7 @@ export {
   type PriceParts,
 } from './format';
 export { localizedPath, splitLocale } from './paths';
+export { parseEuroCents } from './money';
 export {
   isAdminEmail,
   parseAdminEmails,
@@ -118,7 +119,7 @@ export {
   TRUST_SCORE,
   trustLevel,
   trustOutcome,
-  type ProviderScore,
+  type ProviderTrustScore,
   type TrustLevel,
   type TrustTestPrices,
 } from './trust';

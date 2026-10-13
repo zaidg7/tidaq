@@ -51,7 +51,7 @@ export function trustOutcome(t: TrustTestPrices): 'match' | 'higher' | 'lower' |
   return 'match';
 }
 
-export interface ProviderScore {
+export interface ProviderTrustScore {
   tests: number;
   /** Tests that passed: bookable at most 1 % above the listed price. */
   matches: number;
@@ -61,7 +61,7 @@ export interface ProviderScore {
 }
 
 /** Trust score of one provider from its checkout tests (PLAN §8.2); null without tests. */
-export function providerScore(tests: readonly TrustTestPrices[]): ProviderScore | null {
+export function providerScore(tests: readonly TrustTestPrices[]): ProviderTrustScore | null {
   const n = tests.length;
   if (n === 0) return null;
   const markups = tests.map(checkoutMarkup);
