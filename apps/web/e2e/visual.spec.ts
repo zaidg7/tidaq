@@ -5,7 +5,9 @@ import { expect, test, type Page } from '@playwright/test';
  * Visual regression (C-006e): screenshots of the component gallery and the homepage hero at
  * 390 and 1280 px, compared with baselines made in CI's Linux image (font rendering differs
  * between machines, so local runs skip). New or changed baselines: run the "Visual baselines"
- * workflow for your branch; it commits `e2e/visual.spec.ts-snapshots/`.
+ * workflow for your branch; it commits `e2e/visual.spec.ts-snapshots/`. That bot commit does not
+ * start CI (GitHub skips workflows for pushes made with GITHUB_TOKEN): pull it and push your next
+ * real commit (e.g. the TASKS.md update) so CI checks the new baselines before merge.
  */
 const SECTIONS = [
   'logo',
