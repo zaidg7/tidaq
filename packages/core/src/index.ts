@@ -16,6 +16,7 @@ export {
 export { localizedPath, splitLocale } from './paths';
 export { parseEuroCents } from './money';
 export { toCsv } from './csv';
+export { foldText, matchHotels, type SearchableHotel } from './search';
 export {
   isAdminEmail,
   parseAdminEmails,
