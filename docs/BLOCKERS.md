@@ -16,6 +16,16 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-008 · GitHub Actions minutes: optional safety budget
+
+Status: OPEN · Opened: 2026-10-13 by CLOUD · Blocks: nothing yet. If the 2,000 free minutes run out before 1 Nov, CI stops and no PR can be merged until then.
+What I need: a decision. CI now uses far fewer minutes (C-002b), and I'm pacing the work, so we should land under the limit. If you want a safety net: extra minutes cost less than 1 cent each, so a $5 cap buys at least 600 minutes. Don't set a $0 budget: that stops CI completely at the limit.
+Steps for Zaid (≈ 2 min, optional):
+
+1. github.com → your profile picture → **Settings** → **Billing and licensing** → **Budgets and alerts**.
+2. **New budget** → product **Actions** → amount **$5** → turn on **Stop usage when budget limit is reached** → Create.
+   Where to put the result: nothing. Change this Status to DONE (or tell the session "budget set" or "no budget").
+
 ## B-007 · Turn on the admin login (Supabase settings + email via Resend)
 
 Status: OPEN · Opened: 2026-10-13 by CLOUD · Blocks: using `/admin` (C-016 data health, C-032 checkout audit tool). Building them is not blocked.

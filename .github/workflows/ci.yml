@@ -1,9 +1,15 @@
 name: CI
 
+# Actions minutes are limited on the private repo, so runs are only spent where they test code:
+# draft PRs (a draft only claims a task) and docs-only changes skip CI. Every ready PR and every
+# push to main still runs the full suite.
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore: ['docs/**', '**/*.md']
   push:
     branches: [main]
+    paths-ignore: ['docs/**', '**/*.md']
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -15,6 +21,7 @@ permissions:
 jobs:
   ci:
     name: CI
+    if: github.event_name == 'push' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -42,10 +49,12 @@ jobs:
       - name: Unit tests (core coverage ≥ 90 % lines)
         run: pnpm test
 
-      - name: Build (web + collector)
-        run: pnpm build
+      - name: Build collector
+        run: pnpm --filter collector build
 
-      - name: Build web Worker bundle (OpenNext)
+      # OpenNext runs `next build` itself (the .next output also serves the e2e tests), so the
+      # web app is built once, not twice.
+      - name: Build web + Worker bundle (OpenNext)
         run: pnpm --filter web build:worker
 
       - name: Cache Playwright browsers
