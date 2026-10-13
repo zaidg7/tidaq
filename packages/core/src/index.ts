@@ -15,6 +15,7 @@ export {
 } from './format';
 export { localizedPath, splitLocale } from './paths';
 export { parseEuroCents } from './money';
+export { toCsv } from './csv';
 export {
   isAdminEmail,
   parseAdminEmails,

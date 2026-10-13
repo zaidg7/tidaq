@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { AuditForm } from '@/components/admin/AuditForm';
 import { AuditList } from '@/components/admin/AuditList';
 import { Card } from '@/components/ui/Card';
-import { auditOptions, recentTests } from '@/lib/admin/audit';
+import { auditOptions, getTest, recentTests } from '@/lib/admin/audit';
 import { requireAdmin } from '@/lib/admin/session';
 import { berlinToday } from '@/lib/today';
 import { AdminFrame } from '../AdminFrame';
@@ -10,9 +10,14 @@ import { AdminFrame } from '../AdminFrame';
 const FLASH: Record<string, { ok: boolean; text: string }> = {
   'ok:audit': { ok: true, text: 'Test gespeichert. Der Score des Anbieters ist aktualisiert.' },
   'ok:auditDelete': { ok: true, text: 'Test gelöscht. Der Score ist neu berechnet.' },
+  'ok:auditEdit': { ok: true, text: 'Änderung gespeichert. Der Score ist neu berechnet.' },
+  'fail:auditEdit': {
+    ok: false,
+    text: 'Änderung nicht gespeichert. Prüf die Preise und den Screenshot (höchstens 5 MB).',
+  },
   'fail:audit': {
     ok: false,
-    text: 'Nicht gespeichert. Prüf die Preise (z. B. 1.184 oder 1.184,50) und die Daten.',
+    text: 'Nicht gespeichert. Prüf die Preise (z. B. 1.184 oder 1.184,50), die Daten und den Screenshot (höchstens 5 MB).',
   },
   'fail:auditDelete': { ok: false, text: 'Löschen hat nicht geklappt. Versuch es noch mal.' },
 };
@@ -25,7 +30,12 @@ export default async function AuditPage({ searchParams }: Props) {
   const params = await searchParams;
   const flag = (k: 'ok' | 'fail') => (typeof params[k] === 'string' ? `${k}:${params[k]}` : null);
   const notice = FLASH[flag('fail') ?? flag('ok') ?? ''];
-  const [{ hotels, providers }, tests] = await Promise.all([auditOptions(), recentTests()]);
+  const editId = typeof params.edit === 'string' ? Number(params.edit) : NaN;
+  const [{ hotels, providers }, tests, editing] = await Promise.all([
+    auditOptions(),
+    recentTests(),
+    Number.isSafeInteger(editId) && editId > 0 ? getTest(editId) : Promise.resolve(null),
+  ]);
 
   return (
     <AdminFrame wide>
@@ -53,11 +63,24 @@ export default async function AuditPage({ searchParams }: Props) {
       )}
       <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
         <Card variant="float">
-          <h2 className="text-h3 mb-4">Neuer Test</h2>
-          <AuditForm hotels={hotels} providers={providers} today={berlinToday()} />
+          <h2 className="text-h3 mb-4">
+            {editing ? `Test ${editing.id} bearbeiten` : 'Neuer Test'}
+          </h2>
+          <AuditForm
+            key={editing?.id ?? 'new'}
+            hotels={hotels}
+            providers={providers}
+            today={berlinToday()}
+            initial={editing ?? undefined}
+          />
         </Card>
         <Card>
-          <h2 className="text-h3">Letzte Tests</h2>
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-h3">Letzte Tests</h2>
+            <a href="/admin/audit/export" className="text-meta font-semibold text-accent" download>
+              Alle als CSV
+            </a>
+          </div>
           <AuditList tests={tests} />
         </Card>
       </div>

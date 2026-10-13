@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { formatDateRange, formatPrice } from '@tidaq/core';
 import { deleteAuditTestAction } from '@/app/admin/actions';
 import { Badge, type BadgeTone } from '@/components/ui/Badge';
@@ -47,17 +48,36 @@ export function AuditList({ tests }: { tests: AuditTest[] }) {
                     </p>
                   )}
                 </div>
-                <form action={deleteAuditTestAction}>
-                  <input type="hidden" name="id" value={t.id} />
-                  <Button
-                    type="submit"
-                    variant="ghost"
-                    size="sm"
-                    aria-label={`Test ${t.id} löschen`}
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <Link
+                    href={`/admin/audit?edit=${t.id}`}
+                    className="text-meta px-2 py-1 font-semibold text-accent"
+                    aria-label={`Test ${t.id} bearbeiten`}
                   >
-                    Löschen
-                  </Button>
-                </form>
+                    Bearbeiten
+                  </Link>
+                  {t.screenshot_path && (
+                    <a
+                      href={`/admin/audit/screenshot/${t.id}`}
+                      target="_blank"
+                      rel="noopener"
+                      className="text-meta px-2 py-1 font-semibold text-accent"
+                    >
+                      Screenshot
+                    </a>
+                  )}
+                  <form action={deleteAuditTestAction}>
+                    <input type="hidden" name="id" value={t.id} />
+                    <Button
+                      type="submit"
+                      variant="ghost"
+                      size="sm"
+                      aria-label={`Test ${t.id} löschen`}
+                    >
+                      Löschen
+                    </Button>
+                  </form>
+                </div>
               </li>
             );
           })}

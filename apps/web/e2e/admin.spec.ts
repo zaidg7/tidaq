@@ -109,3 +109,22 @@ test('Kassen-Check: the audit page is guarded and the form preview works', async
   await expect(form.getByText('Teurer')).toBeVisible();
   await expect(form.getByRole('button', { name: 'Test speichern' })).toBeVisible();
 });
+
+test('Kassen-Check: export, screenshots and edit stay behind the login', async ({
+  page,
+  request,
+}) => {
+  for (const path of ['/admin/audit/export', '/admin/audit/screenshot/1', '/admin/audit?edit=1']) {
+    const res = await request.get(path, { maxRedirects: 0 });
+    expect(res.status(), path).toBe(307);
+    expect(res.headers().location, path).toContain('/admin/login');
+  }
+  await page.goto('/dev/admin');
+  const list = page.locator('#kassen-check');
+  await expect(list.getByRole('link', { name: 'Test 2 bearbeiten' })).toHaveAttribute(
+    'href',
+    '/admin/audit?edit=2',
+  );
+  await expect(list.getByRole('link', { name: 'Screenshot' })).toHaveCount(1);
+  await expect(list.getByLabel(/Screenshot der Kasse/)).toHaveAttribute('type', 'file');
+});

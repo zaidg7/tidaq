@@ -2,7 +2,14 @@
 
 import { redirect } from 'next/navigation';
 import { parseEuroCents, trustOutcome, z } from '@tidaq/core';
-import { AUDIT_EXTRAS, deleteTest, insertTest, type AuditExtra } from '@/lib/admin/audit';
+import {
+  AUDIT_EXTRAS,
+  deleteTest,
+  insertTest,
+  updateTest,
+  uploadScreenshot,
+  type AuditExtra,
+} from '@/lib/admin/audit';
 import { approveProvider, runStagingCollector, setHotelActive } from '@/lib/admin/db';
 import { requireAdmin } from '@/lib/admin/session';
 
@@ -69,10 +76,14 @@ const auditForm = z.object({
   notes: z.string().max(500),
 });
 
-/** One checkout test (C-032). The outcome follows from the two prices. */
+/**
+ * Saves a checkout test (C-032): new, or an edit when `test_id` is set. The outcome follows from
+ * the two prices; a screenshot goes to the private bucket.
+ */
 export async function saveAuditTestAction(form: FormData) {
+  const editing = form.get('test_id') ? id.parse(form.get('test_id')) : null;
   await guarded(
-    'audit',
+    editing ? 'auditEdit' : 'audit',
     async () => {
       const f = auditForm.parse({
         hotel_id: form.get('hotel_id'),
@@ -95,7 +106,9 @@ export async function saveAuditTestAction(form: FormData) {
         throw new Error('invalid audit input');
       }
       const prices = { listedCents: listed, checkoutCents: checkout };
-      await insertTest({
+      const shot = form.get('screenshot');
+      const screenshotPath = await uploadScreenshot(shot instanceof File ? shot : null);
+      const test = {
         provider_id: f.provider_id,
         hotel_id: f.hotel_id,
         check_in: f.check_in,
@@ -106,8 +119,11 @@ export async function saveAuditTestAction(form: FormData) {
         outcome: trustOutcome(prices),
         extras,
         notes: f.notes.trim() || null,
-      });
-      return 'audit';
+        screenshot_path: screenshotPath,
+      };
+      if (editing) await updateTest(editing, test);
+      else await insertTest(test);
+      return editing ? 'auditEdit' : 'audit';
     },
     '/admin/audit',
   );
