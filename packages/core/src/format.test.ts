@@ -3,6 +3,8 @@ import {
   defaultLocale,
   formatDateRange,
   formatDayMonth,
+  formatWeekdayDayMonth,
+  updatedAtParts,
   formatPercent,
   formatPrice,
   isLocale,
@@ -137,5 +139,43 @@ describe('formatDayMonth', () => {
     expect(formatDayMonth('2026-10-15', 'de')).toBe('15. Okt.');
     expect(formatDayMonth('2026-05-03', 'de')).toBe('3. Mai');
     expect(formatDayMonth('2026-10-15', 'en')).toBe('15 Oct');
+  });
+});
+
+describe('formatWeekdayDayMonth', () => {
+  it('adds the short weekday', () => {
+    expect(formatWeekdayDayMonth('2026-10-17', 'de')).toBe('Sa, 17. Okt.');
+    expect(formatWeekdayDayMonth('2026-10-17', 'en')).toBe('Sat, 17 Oct');
+  });
+});
+
+describe('updatedAtParts', () => {
+  const now = new Date('2026-10-13T10:00:00Z');
+
+  it('reads the time in German time', () => {
+    expect(updatedAtParts('2026-10-13T05:12:00Z', now, 'de')).toEqual({
+      day: 'today',
+      date: '13. Okt.',
+      time: '07:12',
+    });
+  });
+
+  it('uses the Berlin day, not the UTC day', () => {
+    // 23:30 UTC on the 12th is already the 13th in Berlin (CEST, UTC+2).
+    expect(updatedAtParts('2026-10-12T23:30:00Z', now, 'de').day).toBe('today');
+    expect(updatedAtParts('2026-10-12T05:00:00Z', now, 'en')).toMatchObject({
+      day: 'yesterday',
+      time: '07:00',
+    });
+    expect(updatedAtParts('2026-10-10T05:00:00Z', now, 'de')).toMatchObject({
+      day: 'date',
+      date: '10. Okt.',
+    });
+  });
+
+  it('follows winter time', () => {
+    expect(
+      updatedAtParts('2026-12-01T05:12:00Z', new Date('2026-12-01T09:00:00Z'), 'de').time,
+    ).toBe('06:12');
   });
 });

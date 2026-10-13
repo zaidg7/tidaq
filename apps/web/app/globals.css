@@ -323,3 +323,50 @@
     0 0 3px var(--surface),
     0 0 3px var(--surface);
 }
+
+/* Range bar track: low (good) → usual (neutral) → high (bad), mixed from the theme tokens. */
+.bg-range {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--good) 50%, var(--surface)),
+    var(--neutral-soft) 50%,
+    color-mix(in srgb, var(--bad) 45%, var(--surface))
+  );
+}
+
+/* Skeleton pulse (CRAFT.md §3): 1.4 s, opacity .55 ↔ 1; the reduced-motion rule stops it. */
+@keyframes skeleton-pulse {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.55;
+  }
+}
+.skeleton {
+  animation: skeleton-pulse 0.7s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+/* Toast entrance: rise 8 px and fade in. */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.toast {
+  animation: toast-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* While the chart shows another day, the parts of the verdict that describe today step back. */
+.scrub-fade {
+  transition: opacity 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+[data-scrubbing] .scrub-fade {
+  opacity: 0.35;
+}

@@ -1,4 +1,4 @@
-import { parseIsoDate } from './dates';
+import { daysBetween, parseIsoDate } from './dates';
 
 export const locales = ['de', 'en'] as const;
 export type Locale = (typeof locales)[number];
@@ -73,6 +73,48 @@ const MONTHS: Record<Locale, readonly string[]> = {
 function dayMonth(date: Date, locale: Locale): string {
   const month = MONTHS[locale][date.getUTCMonth()];
   return locale === 'de' ? `${date.getUTCDate()}. ${month}` : `${date.getUTCDate()} ${month}`;
+}
+
+const WEEKDAYS: Record<Locale, readonly string[]> = {
+  de: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+  en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+};
+
+/** `Sa, 17. Okt.` / `Sat, 17 Oct` (when something is due). */
+export function formatWeekdayDayMonth(day: string, locale: Locale): string {
+  const date = new Date(parseIsoDate(day));
+  return `${WEEKDAYS[locale][date.getUTCDay()]}, ${dayMonth(date, locale)}`;
+}
+
+const BERLIN = 'Europe/Berlin';
+
+/**
+ * When the data is from, in German time (CRAFT.md "Stand"): `{ day: 'today', time: '07:12' }`,
+ * `'yesterday'`, or `'date'` with `date: '11. Okt.'`. Pass `now` for testable output.
+ */
+export function updatedAtParts(
+  iso: string,
+  now: Date,
+  locale: Locale,
+): { day: 'today' | 'yesterday' | 'date'; date: string; time: string } {
+  const at = new Date(iso);
+  const ymd = (d: Date) =>
+    new Intl.DateTimeFormat('en-CA', {
+      timeZone: BERLIN,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(d);
+  const time = new Intl.DateTimeFormat(INTL_LOCALE[locale], {
+    timeZone: BERLIN,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(at);
+  const atDay = ymd(at);
+  const diff = daysBetween(atDay, ymd(now));
+  const day = diff === 0 ? 'today' : diff === 1 ? 'yesterday' : 'date';
+  return { day, date: formatDayMonth(atDay, locale), time };
 }
 
 /** A `YYYY-MM-DD` date as `15. Okt.` / `15 Oct` (chart axes, tooltips, "seit …"). */

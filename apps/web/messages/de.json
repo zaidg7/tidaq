@@ -39,8 +39,8 @@
     "above": "<b>{percent}</b> über dem 30-Tage-Schnitt",
     "belowSince": "<b>{percent}</b> unter dem Schnitt seit {since}",
     "aboveSince": "<b>{percent}</b> über dem Schnitt seit {since}",
-    "same": "Genau im 30-Tage-Schnitt",
-    "sameSince": "Genau im Schnitt seit {since}"
+    "same": "Etwa im 30-Tage-Schnitt",
+    "sameSince": "Etwa im Schnitt seit {since}"
   },
   "trust": {
     "insufficient": "Noch zu wenig Tests ({tests})",
@@ -119,5 +119,34 @@
     "date": "Datum",
     "price": "Bester Preis",
     "provider": "Anbieter"
+  },
+  "verdict": {
+    "near_low": "Nah am tiefsten Preis seit {since}.",
+    "good": "Günstiger als an {k} von {n} Tagen seit {since}.",
+    "normal": "Im üblichen Bereich seit {since}.",
+    "high": "Teurer als an {k} von {n} Tagen seit {since}.",
+    "collecting": "Für ein Urteil fehlen noch {missing, plural, one {# Tag} other {# Tage}} mit Preis.",
+    "scrubbed": "Preis am {date}",
+    "noPrice": "{date}: kein Preis",
+    "rangeLow": "Tief {price}",
+    "rangeHigh": "Hoch {price}",
+    "rangeLabel": "Aktuell {now}, zwischen Tief {low} und Hoch {high} seit {since}",
+    "updatedtoday": "Stand: heute, {time} Uhr",
+    "updatedyesterday": "Stand: gestern, {time} Uhr",
+    "updateddate": "Stand: {date}, {time} Uhr",
+    "source": "Quelle: Google Hotels",
+    "totalPrice": "gesamt · {perNight} pro Nacht",
+    "totalStay": "{nights, plural, one {# Nacht} other {# Nächte}}, {adults, plural, one {# Erwachsener} other {# Erwachsene}}"
+  },
+  "collecting": {
+    "title": "Wir sammeln noch Preise",
+    "text": "Wir fragen den Preis jeden Morgen ab. Nach 7 Tagen mit Preis siehst du, ob er gerade tief oder hoch ist.",
+    "progress": "Tag {days} von {needed} · Einschätzung frühestens {date}",
+    "progressLabel": "{days} von {needed} Tagen gesammelt"
+  },
+  "toast": {
+    "close": "Schließen",
+    "watchSaved": "Gespeichert: Du beobachtest jetzt diesen Preis.",
+    "loading": "Preise werden geladen"
   }
 }

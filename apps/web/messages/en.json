@@ -39,8 +39,8 @@
     "above": "<b>{percent}</b> above the 30-day average",
     "belowSince": "<b>{percent}</b> below the average since {since}",
     "aboveSince": "<b>{percent}</b> above the average since {since}",
-    "same": "Right at the 30-day average",
-    "sameSince": "Right at the average since {since}"
+    "same": "About the 30-day average",
+    "sameSince": "About the average since {since}"
   },
   "trust": {
     "insufficient": "Not enough tests yet ({tests})",
@@ -119,5 +119,34 @@
     "date": "Date",
     "price": "Best price",
     "provider": "Provider"
+  },
+  "verdict": {
+    "near_low": "Close to the lowest price since {since}.",
+    "good": "Cheaper than on {k} of {n} days since {since}.",
+    "normal": "Within the usual range since {since}.",
+    "high": "Pricier than on {k} of {n} days since {since}.",
+    "collecting": "{missing, plural, one {# more day} other {# more days}} with a price until our first verdict.",
+    "scrubbed": "Price on {date}",
+    "noPrice": "{date}: no price",
+    "rangeLow": "Low {price}",
+    "rangeHigh": "High {price}",
+    "rangeLabel": "Currently {now}, between the low of {low} and the high of {high} since {since}",
+    "updatedtoday": "As of today, {time}",
+    "updatedyesterday": "As of yesterday, {time}",
+    "updateddate": "As of {date}, {time}",
+    "source": "Source: Google Hotels",
+    "totalPrice": "total · {perNight} per night",
+    "totalStay": "{nights, plural, one {# night} other {# nights}}, {adults, plural, one {# adult} other {# adults}}"
+  },
+  "collecting": {
+    "title": "We're still collecting prices",
+    "text": "We check the price every morning. After 7 days with a price you'll see whether it's low or high right now.",
+    "progress": "Day {days} of {needed} · verdict {date} at the earliest",
+    "progressLabel": "{days} of {needed} days collected"
+  },
+  "toast": {
+    "close": "Close",
+    "watchSaved": "Saved: you're now watching this price.",
+    "loading": "Loading prices"
   }
 }
