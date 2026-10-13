@@ -196,19 +196,19 @@
     ]
   },
   {
-    "slug": "villa-kennedy-frankfurt",
-    "name": "Villa Kennedy",
-    "googleTitle": "Rocco Forte Villa Kennedy",
+    "slug": "the-florentin-frankfurt",
+    "name": "The Florentin",
+    "googleTitle": null,
     "city": "frankfurt",
-    "seedName": "Villa Kennedy",
-    "dfsHotelIdentifier": "ChgIiMu774yos5GzARoLL2cvMTIxdjg3bm4QAQ",
-    "lat": 50.097247499999995,
-    "lng": 8.6695244,
-    "stars": 0,
-    "score": 1,
-    "distanceKm": 1.8,
-    "uncertain": false,
-    "candidates": ["Rocco Forte Villa Kennedy (1.00, 1.8 km)"]
+    "seedName": "The Florentin",
+    "dfsHotelIdentifier": null,
+    "lat": null,
+    "lng": null,
+    "stars": null,
+    "score": 0,
+    "distanceKm": null,
+    "uncertain": true,
+    "candidates": []
   },
   {
     "slug": "steigenberger-icon-frankfurter-hof-frankfurt",

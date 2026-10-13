@@ -51,7 +51,9 @@
   {
     "city": "frankfurt",
     "name": "The Florentin",
-    "replaces": "Villa Kennedy"
+    "replaces": "Villa Kennedy",
+    "query": "The Florentin Frankfurt Althoff",
+    "tag": "catalog-the-florentin-frankfurt-q2"
   },
   {
     "city": "frankfurt",
