@@ -16,6 +16,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | **Phase 0: Setup** (week 42, target Sun 18 Oct)                 |                                                                              |       |               |                                   |
 | C-001                                                           | Monorepo scaffold (Next.js + OpenNext + collector + core)                    | CLOUD | M             | Z-01                              | DONE           |
 | C-002                                                           | CI pipeline (lint, typecheck, test, build, e2e smoke)                        | CLOUD | M             | C-001                             | DONE           |
+| C-002b                                                          | CI: spend fewer GitHub Actions minutes                                       | CLOUD | S             | C-002                             | DONE           |
 | C-003                                                           | Session tooling (SessionStart hook, permissions allowlist)                   | CLOUD | S             | C-001                             | DONE           |
 | C-007                                                           | i18n setup (de default, en) and formatting helpers                           | CLOUD | S             | C-001                             | DONE           |
 | C-004                                                           | Supabase schema v1, RLS, seed providers and cities                           | CLOUD | M             | C-001, Z-04                       | DONE           |
@@ -130,6 +131,8 @@ Owner: CLOUD · Size: M · Depends on: C-001 · Status: DONE · PR: [#5](https:/
 Notes: one job "CI" (~3 min). Red proof: [run 38272430319](https://github.com/zaidg7/tidaq/actions/runs/38272430319) failed on an intentional test, reverted. Smoke covers `/` only; C-007 adds `/en`. The 90 % line threshold lives in `packages/core/vitest.config.ts`.
 
 **Goal:** every PR is checked automatically in under ~6 minutes.
+
+**C-002b notes (DONE):** the private repo gets 2,000 Actions minutes a month and hit 90 % on 13 Oct. CI now skips draft PRs (a draft only claims a task; CI runs when it's marked ready) and docs-only changes (`docs/**`, `*.md`), and builds the web app once (OpenNext's build runs `next build`, whose output also serves the e2e tests). Every ready PR and every push to main still runs the full suite. Session habit: run all checks locally, keep the PR a draft while working, mark it ready once and let CI run once.
 
 **Steps**
 
