@@ -12,6 +12,10 @@ export default function middleware(request: NextRequest) {
     const { pathname, search } = request.nextUrl;
     return NextResponse.redirect(`https://${CANONICAL_HOST}${pathname}${search}`, 308);
   }
+  // The admin area has no locales; its pages guard themselves (lib/admin/session.ts).
+  if (request.nextUrl.pathname === '/admin' || request.nextUrl.pathname.startsWith('/admin/')) {
+    return NextResponse.next();
+  }
   return intl(request);
 }
 

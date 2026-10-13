@@ -64,6 +64,7 @@ Create `docs/progress/YYYY-Www.md` from `docs/progress/TEMPLATE.md` and open a G
 ```
 apps/web/            Next.js app (App Router), deployed to Cloudflare Workers via OpenNext
   app/[locale]/…     pages (de default, en)
+  app/admin/…        admin area (own layout, German, magic-link login, guarded by requireAdmin)
   components/        UI components (Soft Modern design system)
   lib/               server utils, data access, formatting, stats
   messages/          next-intl de.json / en.json
@@ -104,7 +105,7 @@ pnpm workspace. Node 22 LTS. If reality differs, update this map in your PR.
 | `SUPABASE_SERVICE_ROLE_KEY` | GitHub secret, Cloudflare secret (collector + web server only) | server-side writes |
 | `RESEND_API_KEY` | GitHub secret, Cloudflare secret | alerts |
 | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | GitHub secret | deploy workflow |
-| `ADMIN_EMAILS` | Cloudflare var | admin pages (`zaidghazal216@gmail.com`) |
+| `ADMIN_EMAILS` | Cloudflare var (in `apps/web/wrangler.jsonc`) | admin login (`zaidghazal216@gmail.com`) |
 | `DAILY_TASK_CAP` (default 400), `MONTHLY_BUDGET_USD` (default 12), `EVENING_RUN` (default false), `GRID_WEEKENDS` (6), `GRID_MIDWEEK` (2) | Cloudflare var | budget guard, grid size |
 | `ALERTS_DRY_RUN` | Cloudflare var (`true` outside production) | alert engine |
 

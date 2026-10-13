@@ -16,6 +16,25 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-007 · Turn on the admin login (Supabase settings + email via Resend)
+
+Status: OPEN · Opened: 2026-10-13 by CLOUD · Blocks: using `/admin` (C-016 data health, C-032 checkout audit tool). Building them is not blocked.
+What I need: two settings in the Supabase dashboard so the login link can reach you and bring you back to tidaq.com. The code is done; without these the link either never arrives or lands on the wrong address.
+Steps for Zaid (≈ 6 min):
+
+1. Open supabase.com/dashboard → project **tidaq** → **Authentication** → **URL Configuration**.
+   - **Site URL:** `https://tidaq.com` → Save.
+   - **Redirect URLs → Add URL**, one at a time:
+     `https://tidaq.com/admin/auth/callback`
+     `https://tidaq-web-staging.tidaq.workers.dev/admin/auth/callback`
+     `http://localhost:3000/admin/auth/callback`
+2. Open resend.com → **API Keys** → **Create API key**. Name `supabase-auth`, permission **Sending access**, domain **tidaq.com** → Create → copy the key. Don't paste it anywhere except the next step.
+3. Back in Supabase → **Authentication** → **Emails** → **SMTP Settings** → turn on **Enable custom SMTP**:
+   - Sender email `login@tidaq.com`, sender name `Tidaq`
+   - Host `smtp.resend.com`, port `465`, username `resend`, password = the key from step 2 → Save.
+4. Test (after the C-020c PR is merged and staging has deployed): open https://tidaq-web-staging.tidaq.workers.dev/admin, enter `zaidghazal216@gmail.com`, then click the link in the email **in the same browser**. You should see "Übersicht" and "Angemeldet als …".
+   Where to put the result: nothing. Change this Status to DONE (or tell the session "admin login works"). If you want a different admin email, tell the session which one.
+
 ## B-006 · Decision: raise the daily task cap from 300 to 400
 
 Status: DONE – yes (12 Oct 2026, cap 400 in `wrangler.jsonc`, D-13 updated) · Opened: 2026-10-12 by CLOUD · Blocks: nothing today (the guard keeps spending safe); affects data for the December special dates

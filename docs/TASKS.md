@@ -42,7 +42,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-020b1                                                         | Homepage: hero, search card, live example                                    | CLOUD | M             | C-020a, C-006d, C-015, C-019      | DONE           |
 | C-020b2                                                         | Homepage: how it works, Kassen-Check teaser, deals, final CTA                | CLOUD | M             | C-020b1                           | DONE           |
 | C-006e                                                          | Visual regression screenshots of /dev/ui in CI                               | CLOUD | S             | C-006d                            | DONE           |
-| C-020c                                                          | Admin auth: Supabase magic link, `/admin` guard                              | CLOUD | S             | C-020a                            | TODO           |
+| C-020c                                                          | Admin auth: Supabase magic link, `/admin` guard                              | CLOUD | S             | C-020a                            | DONE           |
 | C-016                                                           | Admin: data health and budget dashboard                                      | CLOUD | M             | C-013b, C-020c                    | TODO           |
 | C-032                                                           | Trust audit tool and provider scores (early, so the audit starts in week 45) | CLOUD | M             | C-020c, C-004                     | TODO           |
 | L-033                                                           | Checkout audit with Claude in Chrome (150 tests, recurring until launch)     | LOCAL | L (recurring) | C-032, Z-07                       | TODO           |
@@ -450,7 +450,9 @@ Owner: CLOUD · Size: M · Depends on: C-006b, C-007 · Status: DONE · PR: [#24
 
 ### C-020c · Admin auth
 
-Owner: CLOUD · Size: S · Depends on: C-020a · Status: TODO · PR: –
+Owner: CLOUD · Size: S · Depends on: C-020a · Status: DONE · PR: see `[C-020c]` PR
+
+**C-020c notes (DONE):** `app/admin/` is its own root layout outside `[locale]` (German only, noindex, `force-dynamic`; the middleware skips next-intl for `/admin`). Login = Supabase magic link with PKCE over plain REST (`lib/admin/gotrue.ts`, Zod-validated, no supabase-js): `POST /admin/auth/login` (same-origin check, only `ADMIN_EMAILS` get a link, same answer for every address) → email link → `GET /admin/auth/callback?code=` (exchanges with the verifier cookie, checks `ADMIN_EMAILS` again) → cookies `tidaq_admin_at/_rt` (HttpOnly, SameSite=Lax, **Path=/admin**, so public pages never see a cookie). `requireAdmin(path)` (`lib/admin/session.ts`) guards each page itself (no middleware-only protection) and verifies the token with Supabase on every request; expired tokens go through `GET /admin/auth/refresh?next=` (`safeAdminPath` blocks open redirects). `POST /admin/auth/logout`. Core: `parseAdminEmails`, `isAdminEmail`, `safeAdminPath`, `randomVerifier`, `pkceChallenge`. `ADMIN_EMAILS` is a var in `apps/web/wrangler.jsonc`. **Security rule for C-016/C-032:** anyone can create a Supabase Auth user with the public anon key, so never grant the `authenticated` role extra rights in RLS. Admin reads and writes go through server code after `requireAdmin()`, using the service role. **Login only works after B-007** (Supabase redirect URLs + Resend SMTP); until then the page shows the link error. Lighthouse mobile `/admin/login`: a11y 100, best practices 100, performance 96.
 
 Split from C-020a so the public site ships first. Supabase magic link to an email in `ADMIN_EMAILS`; middleware protects `/admin/*`; no cookies on public pages.
 
