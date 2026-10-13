@@ -3,6 +3,7 @@ import {
   formatDayMonth,
   formatPrice,
   relativeChange,
+  STATS,
   updatedAtParts,
   verdictFacts,
   type DailyPrice,
@@ -52,43 +53,54 @@ export function VerdictBlock({
   const facts = verdictFacts(series, today, stats.nowCents);
   const collecting = stats.state === 'collecting';
   const delta = relativeChange(stats.nowCents, stats.avg30Cents);
-  const since =
-    stats.daysTracked < 30 && facts.firstDay ? formatDayMonth(facts.firstDay, locale) : undefined;
+  // Every fact names its window ("seit 15. Aug."): days with a price, not calendar days.
+  const sinceDay = facts.firstDay ? formatDayMonth(facts.firstDay, locale) : '';
+  const since = stats.daysTracked < 30 && sinceDay ? sinceDay : undefined;
   const fact =
     stats.state === 'good'
-      ? t('good', { k: facts.pricierDays, n: facts.n })
+      ? t('good', { k: facts.pricierDays, n: facts.n, since: sinceDay })
       : stats.state === 'high'
-        ? t('high', { k: facts.cheaperDays, n: facts.n })
-        : t(stats.state, { n: facts.n });
+        ? t('high', { k: facts.cheaperDays, n: facts.n, since: sinceDay })
+        : stats.state === 'collecting'
+          ? t('collecting', { missing: Math.max(1, STATS.minDays - facts.n) })
+          : t(stats.state, { since: sinceDay });
   const updated = updatedAt ? updatedAtParts(updatedAt, now, locale) : null;
 
+  // Parts that describe today fade while the chart is scrubbed (`.scrub-fade`, globals.css).
   return (
     <div className={cn('flex flex-col gap-4', className)}>
-      <StateChip state={stats.state} daysTracked={stats.daysTracked} className="self-start" />
+      <StateChip
+        state={stats.state}
+        daysTracked={stats.daysTracked}
+        className="scrub-fade self-start"
+      />
       <div className="flex flex-col gap-2">
         <VerdictPrice
           cents={stats.nowCents}
-          restLine={t('total', {
-            perNight: price(Math.round(stats.nowCents / nights)),
-            nights,
-            adults,
-          })}
+          restLine={[
+            t('totalPrice', { perNight: price(Math.round(stats.nowCents / nights)) }),
+            t('totalStay', { nights, adults }),
+          ]}
           scrubbedLine={t('scrubbed', { date: '{date}' })}
           noPriceLine={t('noPrice', { date: '{date}' })}
         />
-        {!collecting && delta !== null && <PriceDelta ratio={delta} since={since} />}
+        {!collecting && delta !== null && (
+          <PriceDelta ratio={delta} since={since} className="scrub-fade" />
+        )}
       </div>
       {!collecting && stats.lowCents !== null && stats.highCents !== null && (
         <RangeBar
           lowCents={stats.lowCents}
           highCents={stats.highCents}
           nowCents={stats.nowCents}
-          days={facts.n}
+          since={sinceDay}
+          className="scrub-fade"
         />
       )}
-      <p className="font-semibold text-fg">{fact}</p>
+      {/* "seit 15. Aug." at the end of a sentence must not end in "..". */}
+      <p className="scrub-fade font-semibold text-fg">{fact.replace(/\.\.$/, '.')}</p>
       {updated && (
-        <p className="text-meta -mt-2 text-muted-ink">
+        <p className="scrub-fade text-meta -mt-2 text-muted-ink">
           {t(`updated${updated.day}`, { time: updated.time, date: updated.date })} · {t('source')}
         </p>
       )}

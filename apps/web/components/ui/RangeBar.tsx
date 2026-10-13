@@ -6,8 +6,8 @@ type Props = {
   lowCents: number;
   highCents: number;
   nowCents: number;
-  /** Days the range covers ("der letzten {n} Tage"). */
-  days: number;
+  /** First day of the window ("seit 15. Aug."), already formatted. */
+  since: string;
   className?: string;
 };
 
@@ -15,7 +15,7 @@ type Props = {
  * Where today's price sits between the window's low and high (CRAFT.md §3 Verdict block):
  * an 8 px track tinted good → neutral → bad, a 14 px accent dot at today's price.
  */
-export function RangeBar({ lowCents, highCents, nowCents, days, className }: Props) {
+export function RangeBar({ lowCents, highCents, nowCents, since, className }: Props) {
   const t = useTranslations('verdict');
   const locale = useLocale() as Locale;
   const price = (c: number) => formatPrice(c, locale);
@@ -29,7 +29,7 @@ export function RangeBar({ lowCents, highCents, nowCents, days, className }: Pro
         now: price(nowCents),
         low: price(lowCents),
         high: price(highCents),
-        n: days,
+        since,
       })}
       className={cn('flex flex-col gap-2', className)}
     >

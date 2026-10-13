@@ -126,82 +126,84 @@ export function PriceChart({ series, from, to, avgCents = null, providerByDay, c
         </div>
       </div>
 
-      {g.avg && (
-        <p className="text-meta mt-2 flex items-center gap-2 text-muted-ink">
-          <svg aria-hidden="true" width="18" height="2" className="shrink-0">
-            <line
-              x1="0"
-              x2="18"
-              y1="1"
-              y2="1"
-              stroke="var(--muted)"
-              strokeWidth="1.5"
-              strokeDasharray="4 3"
-            />
-          </svg>
-          {t('avgLegend', { price: price(g.avg.cents) })}
-        </p>
-      )}
-
-      {g.points.length > 0 && (
-        <details className="group text-meta mt-1">
-          <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-1.5 rounded-full font-semibold text-accent hover:underline [&::-webkit-details-marker]:hidden">
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 12 12"
-              className="size-3 transition-transform group-open:rotate-90"
-            >
-              <path
-                d="M4 2l4 4-4 4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
+      <div className="mt-1 flex flex-wrap items-start justify-between gap-x-6">
+        {g.avg && (
+          <p className="text-meta flex min-h-11 items-center gap-2 text-muted-ink">
+            <svg aria-hidden="true" width="18" height="2" className="shrink-0">
+              <line
+                x1="0"
+                x2="18"
+                y1="1"
+                y2="1"
+                stroke="var(--muted)"
+                strokeWidth="1.5"
+                strokeDasharray="4 3"
               />
             </svg>
-            <span className="group-open:hidden">{t('table')}</span>
-            <span className="hidden group-open:inline">{t('tableHide')}</span>
-          </summary>
-          <div className="mt-2 max-h-72 overflow-y-auto rounded-cell border border-line">
-            <table className="w-full text-left tabular-nums">
-              <caption className="sr-only">{summary}</caption>
-              <thead className="sticky top-0 bg-surface-2 text-muted-ink">
-                <tr>
-                  <th scope="col" className="px-3 py-2 font-semibold">
-                    {t('date')}
-                  </th>
-                  <th scope="col" className="px-3 py-2 text-right font-semibold">
-                    {t('price')}
-                  </th>
-                  {providerByDay && (
+            {t('avgLegend', { price: price(g.avg.cents) })}
+          </p>
+        )}
+
+        {g.points.length > 0 && (
+          <details className="group text-meta open:basis-full">
+            <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-1.5 rounded-full font-semibold text-accent hover:underline [&::-webkit-details-marker]:hidden">
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 12 12"
+                className="size-3 transition-transform group-open:rotate-90"
+              >
+                <path
+                  d="M4 2l4 4-4 4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span className="group-open:hidden">{t('table')}</span>
+              <span className="hidden group-open:inline">{t('tableHide')}</span>
+            </summary>
+            <div className="mt-2 max-h-72 overflow-y-auto rounded-cell border border-line">
+              <table className="w-full text-left tabular-nums">
+                <caption className="sr-only">{summary}</caption>
+                <thead className="sticky top-0 bg-surface-2 text-muted-ink">
+                  <tr>
                     <th scope="col" className="px-3 py-2 font-semibold">
-                      {t('provider')}
+                      {t('date')}
                     </th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {[...g.days].reverse().map((d) => (
-                  <tr key={d.day} className="border-t border-line">
-                    <td className="px-3 py-1.5">{day(d.day)}</td>
-                    <td
-                      className={cn(
-                        'px-3 py-1.5 text-right',
-                        d.point ? 'font-semibold' : 'text-muted-ink',
-                      )}
-                    >
-                      {d.point ? price(d.point.cents) : t('noPrice')}
-                    </td>
+                    <th scope="col" className="px-3 py-2 text-right font-semibold">
+                      {t('price')}
+                    </th>
                     {providerByDay && (
-                      <td className="px-3 py-1.5 text-muted-ink">{providerByDay[d.day] ?? ''}</td>
+                      <th scope="col" className="px-3 py-2 font-semibold">
+                        {t('provider')}
+                      </th>
                     )}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </details>
-      )}
+                </thead>
+                <tbody>
+                  {[...g.days].reverse().map((d) => (
+                    <tr key={d.day} className="border-t border-line">
+                      <td className="px-3 py-1.5">{day(d.day)}</td>
+                      <td
+                        className={cn(
+                          'px-3 py-1.5 text-right',
+                          d.point ? 'font-semibold' : 'text-muted-ink',
+                        )}
+                      >
+                        {d.point ? price(d.point.cents) : t('noPrice')}
+                      </td>
+                      {providerByDay && (
+                        <td className="px-3 py-1.5 text-muted-ink">{providerByDay[d.day] ?? ''}</td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        )}
+      </div>
     </figure>
   );
 }
@@ -297,18 +299,6 @@ function Plot({ g, summary, locale, t }: PlotProps) {
           .map((p) => (
             <circle key={p.day} cx={pct(p.x)} cy={pct(p.y)} r="3.5" fill="var(--accent)" />
           ))}
-        {/* Outliers sit on the edge as a small triangle pointing off the chart. */}
-        {outliers.map((p) => (
-          <svg key={p.day} x={pct(p.x)} y={pct(p.y)} overflow="visible">
-            <path
-              d={p.outlier === 'high' ? 'M-5 5L0 -3L5 5Z' : 'M-5 -5L0 3L5 -5Z'}
-              fill="var(--muted)"
-              stroke="var(--surface)"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-            />
-          </svg>
-        ))}
         {g.low && !g.sparse && (
           <circle
             cx={pct(g.low.x)}
@@ -335,7 +325,8 @@ function Plot({ g, summary, locale, t }: PlotProps) {
           g.xTicks.map((tk, i) => (
             <span
               key={tk.day}
-              className={cn(LABEL, 'absolute bottom-0.5')}
+              // At phone width two middle dates would touch: the first one hides.
+              className={cn(LABEL, 'absolute bottom-0.5', i === 1 && 'max-md:hidden')}
               style={{
                 left: pct(tk.x),
                 transform: `translateX(${i === 0 ? '0%' : i === g.xTicks.length - 1 ? '-100%' : '-50%'})`,

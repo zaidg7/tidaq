@@ -248,12 +248,14 @@ Plus Jakarta Sans as a **variable font**: one file, weights 200–800, self-host
 - **Hero H1**: "Ist dein Hotelpreis gerade *tief* oder hoch?" ("tief" gets the wave underline).
 - **Hero lead**: "Wir prüfen jeden Tag die Preise von 36 Fünf-Sterne-Hotels in 12 Städten. Du siehst den Verlauf, den Tiefpunkt und welcher Anbieter an der Kasse beim Preis bleibt."
 - **Proof row**: "36 Hotels · 12 Städte · täglich geprüft · kostenlos, ohne Konto". Real numbers only, read from the data.
-- **Verdict lines**:
-  - near_low "Nah am tiefsten Preis der letzten {n} Tage."
-  - good "Günstiger als an {k} der letzten {n} Tage."
-  - normal "Im üblichen Bereich der letzten {n} Tage."
-  - high "Teurer als an {k} der letzten {n} Tage."
-  - collecting "Ab 7 Tagen sagen wir dir, ob der Preis tief oder hoch ist."
+- **Verdict lines** (C-006d: every fact names its window; days with a price, not calendar days):
+  - near_low "Nah am tiefsten Preis seit {Datum}."
+  - good "Günstiger als an {k} von {n} Tagen seit {Datum}."
+  - normal "Im üblichen Bereich seit {Datum}."
+  - high "Teurer als an {k} von {n} Tagen seit {Datum}."
+  - collecting "Für ein Urteil fehlen noch {m} Tage mit Preis."
+  - Within ±2 % of the average the delta reads "Etwa im 30-Tage-Schnitt" (neutral, no colour).
+  - While the chart is scrubbed, the price follows it; chip, delta, range, fact and "Stand" fade to 35 %. A day without a price shows "–", never today's price.
 - **Affiliate line**: "Mit „Partnerlink“ markierte Links: Buchst du darüber, bekommen wir ggf. eine Provision. Dein Preis ändert sich nicht, die Reihenfolge auch nicht."
 - **Source line**: "Preise aus Google Hotels (Markt Deutschland), jeden Morgen abgefragt. Wir buchen nichts und setzen keine Cookies."
 - **404**: "Diese Seite gibt es nicht. Vielleicht ein alter Link." → [Hotel finden] [Zur Startseite]

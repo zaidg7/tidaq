@@ -328,9 +328,9 @@
 .bg-range {
   background: linear-gradient(
     90deg,
-    color-mix(in srgb, var(--good) 38%, var(--surface)),
+    color-mix(in srgb, var(--good) 50%, var(--surface)),
     var(--neutral-soft) 50%,
-    color-mix(in srgb, var(--bad) 32%, var(--surface))
+    color-mix(in srgb, var(--bad) 45%, var(--surface))
   );
 }
 
@@ -361,4 +361,12 @@
 }
 .toast {
   animation: toast-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* While the chart shows another day, the parts of the verdict that describe today step back. */
+.scrub-fade {
+  transition: opacity 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+[data-scrubbing] .scrub-fade {
+  opacity: 0.35;
 }

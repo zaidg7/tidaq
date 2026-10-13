@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import type { ReactNode } from 'react';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import {
   ArrowUpRight,
   Bell,
@@ -78,6 +78,7 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
   const series = sampleSeries(to);
   const avg = Math.round(series.slice(-30).reduce((s, p) => s + p.bestCents, 0) / 30);
   const live = await getFeaturedStay();
+  const tt = await getTranslations('toast');
   const checkIn = addDays(to, 50);
   const stats = computeStayStats(series, to, checkIn);
   const fewDays = series.slice(-3);
@@ -281,7 +282,7 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
 
       <Section title="Urteil">
         <Card variant="float" className="w-full" data-scrub-scope="">
-          <div className="grid gap-8 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+          <div className="grid gap-4 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-8">
             <VerdictBlock
               stats={stats}
               series={series}
@@ -315,16 +316,12 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
         </Card>
         <Card className="w-full">
           <p className="text-h3">Lädt</p>
-          <div className="mt-4 grid gap-8 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-            <VerdictSkeleton />
+          <div className="mt-4 grid gap-4 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-8">
+            <VerdictSkeleton label={tt('loading')} />
             <ChartSkeleton />
           </div>
         </Card>
-        <ToastDemo
-          label="Toast zeigen"
-          message="Alarm gespeichert. Wir melden uns, wenn der Preis fällt."
-          closeLabel="Schließen"
-        />
+        <ToastDemo label="Toast zeigen" message={tt('watchSaved')} closeLabel={tt('close')} />
       </Section>
 
       <Section title="Preisverlauf">

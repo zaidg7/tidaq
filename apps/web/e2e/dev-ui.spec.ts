@@ -108,11 +108,13 @@ test.describe('/dev/ui', () => {
     await page.goto('/dev/ui');
     const panel = page.locator('#urteil [data-scrub-scope]');
     await expect(panel.getByText('Guter Preis')).toBeVisible();
-    await expect(panel.getByText(/^Günstiger als an \d+ der letzten 58 Tage\.$/)).toBeVisible();
+    await expect(
+      panel.getByText(/^Günstiger als an \d+ von 58 Tagen seit 15\. Aug\.$/),
+    ).toBeVisible();
     await expect(panel.getByText('Stand: heute, 07:12 Uhr · Quelle: Google Hotels')).toBeVisible();
     await expect(
       panel.getByRole('img', {
-        name: /^Heute .+, zwischen Tief .+ und Hoch .+ der letzten 58 Tage$/,
+        name: /^Aktuell .+, zwischen Tief .+ und Hoch .+ seit 15\. Aug\.$/,
       }),
     ).toBeVisible();
 
@@ -122,19 +124,31 @@ test.describe('/dev/ui', () => {
     await page.keyboard.press('Home');
     await expect(panel.getByText('Preis am 15. Aug.')).toBeVisible();
     await expect(total).toBeHidden();
+    await expect(panel).toHaveAttribute('data-scrubbing', '');
+    // A day without a price never borrows today's price.
+    for (let i = 0; i < 22; i++) await page.keyboard.press('ArrowRight');
+    await expect(panel.getByText('6. Sept.: kein Preis')).toBeVisible();
+    await expect(panel.getByText('–', { exact: true })).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(total).toBeVisible();
+    await expect(panel).not.toHaveAttribute('data-scrubbing');
   });
 
   test('collecting state and toast', async ({ page }) => {
     await page.goto('/dev/ui');
     const progress = page.getByRole('progressbar', { name: '3 von 7 Tagen gesammelt' });
     await expect(progress).toHaveAttribute('aria-valuenow', '3');
-    await expect(page.getByText('Tag 3 von 7 · erste Einschätzung ab Sa, 17. Okt.')).toBeVisible();
+    await expect(
+      page.getByText('Tag 3 von 7 · Einschätzung frühestens Sa, 17. Okt.'),
+    ).toBeVisible();
+    await expect(page.getByText('Für ein Urteil fehlen noch 4 Tage mit Preis.')).toBeVisible();
 
     await page.getByRole('button', { name: 'Toast zeigen' }).click();
-    const toast = page.getByRole('status').filter({ hasText: 'Alarm gespeichert' });
+    const toast = page.getByRole('status').filter({ hasText: 'Du beobachtest jetzt diesen Preis' });
     await expect(toast).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(toast).toBeHidden();
+    await page.getByRole('button', { name: 'Toast zeigen' }).click();
     await toast.getByRole('button', { name: 'Schließen' }).click();
     await expect(toast).toBeHidden();
   });

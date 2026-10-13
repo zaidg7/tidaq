@@ -176,7 +176,7 @@ export function ChartScrub({ days, restIndex, labels }: Props) {
             <div
               ref={chip}
               aria-hidden="true"
-              className="pointer-events-none absolute -top-9 flex h-8 items-center gap-2 rounded-full bg-ink-surface px-3 text-[12.5px] whitespace-nowrap text-white shadow-hover"
+              className="pointer-events-none absolute -top-9 flex h-8 items-center gap-2 rounded-full bg-ink-surface px-3 text-[12.5px] whitespace-nowrap text-white shadow-[0_4px_12px_-4px_rgba(34,28,59,0.28)]"
               style={{ left: chipLeft }}
             >
               <span className="font-semibold text-ink-muted">{day.date}</span>

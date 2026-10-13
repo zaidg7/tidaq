@@ -12,8 +12,8 @@ type Props = {
   className?: string;
 };
 
-/** Below 0.5 % the delta rounds to 0 % and reads "at the average". */
-const SAME = 0.005;
+/** Within ±2 % the delta reads "etwa im Schnitt": smaller moves are noise for a hotel total. */
+const SAME = 0.02;
 
 /**
  * "−5 % unter dem 30-Tage-Schnitt" with a trend icon (CRAFT.md §3 PriceDelta). Falling is
