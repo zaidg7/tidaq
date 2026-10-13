@@ -151,3 +151,29 @@ export async function runStagingCollector(): Promise<z.infer<typeof runResponse>
   });
   return runResponse.parse(await res.json());
 }
+
+/** Supabase Storage with the service role (private buckets, C-032b screenshots). */
+export async function serviceStorage(
+  path: string,
+  init: { method: 'POST' | 'DELETE'; body?: BodyInit; contentType?: string },
+): Promise<unknown> {
+  const cfg = config();
+  if (!cfg) throw new Error('Supabase service role is not configured');
+  const res = await fetch(`${cfg.url}/storage/v1/${path}`, {
+    method: init.method,
+    headers: {
+      apikey: cfg.key,
+      authorization: `Bearer ${cfg.key}`,
+      ...(init.contentType ? { 'content-type': init.contentType } : {}),
+    },
+    body: init.body,
+    signal: AbortSignal.timeout(20_000),
+    cache: 'no-store',
+  });
+  if (!res.ok) {
+    const detail = (await res.text().catch(() => '')).slice(0, 200);
+    throw new Error(`Storage ${res.status} on ${path.split('/').slice(0, 2).join('/')}: ${detail}`);
+  }
+  const text = await res.text();
+  return text ? (JSON.parse(text) as unknown) : null;
+}

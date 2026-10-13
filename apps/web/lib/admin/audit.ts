@@ -1,6 +1,6 @@
 import 'server-only';
 import { providerScore, z } from '@tidaq/core';
-import { serviceRest } from './db';
+import { serviceRest, serviceStorage } from './db';
 
 /**
  * Checkout audit data (C-032): manual tests of "listed on Google Hotels" vs "total at the
@@ -32,6 +32,7 @@ const testSchema = z.object({
   outcome: z.string(),
   extras: z.array(z.string()),
   notes: z.string().nullable(),
+  screenshot_path: z.string().nullable(),
   tested_at: z.string(),
   providers: z.object({ name: z.string() }).nullable(),
   hotels: z.object({ name: z.string() }).nullable(),
@@ -48,7 +49,7 @@ export async function auditOptions() {
 
 export async function recentTests(limit = 20): Promise<AuditTest[]> {
   return serviceRest(
-    `trust_tests?select=id,provider_id,hotel_id,check_in,check_out,adults,listed_cents,checkout_cents,outcome,extras,notes,tested_at,providers(name),hotels(name)&order=tested_at.desc&limit=${limit}`,
+    `trust_tests?select=${TEST_SELECT}&order=tested_at.desc&limit=${limit}`,
     z.array(testSchema),
   );
 }
@@ -69,6 +70,7 @@ export interface NewAuditTest {
   outcome: string;
   extras: AuditExtra[];
   notes: string | null;
+  screenshot_path?: string | null;
 }
 
 export async function insertTest(test: NewAuditTest) {
@@ -76,15 +78,84 @@ export async function insertTest(test: NewAuditTest) {
   await recomputeScore(test.provider_id);
 }
 
-export async function deleteTest(testId: number) {
+const TEST_SELECT =
+  'id,provider_id,hotel_id,check_in,check_out,adults,listed_cents,checkout_cents,outcome,extras,notes,screenshot_path,tested_at,providers(name),hotels(name)';
+
+export async function getTest(testId: number): Promise<AuditTest | null> {
   const rows = await serviceRest(
-    `trust_tests?id=eq.${testId}&select=provider_id`,
-    z.array(z.object({ provider_id: id })),
+    `trust_tests?id=eq.${testId}&select=${TEST_SELECT}`,
+    z.array(testSchema),
   );
-  const providerId = rows[0]?.provider_id;
-  if (providerId === undefined) return;
+  return rows[0] ?? null;
+}
+
+/** Saves an edited test; recomputes the old and (if changed) the new provider's score. */
+export async function updateTest(testId: number, test: NewAuditTest) {
+  const before = await getTest(testId);
+  if (!before) throw new Error(`trust test ${testId} not found`);
+  const patch: Partial<NewAuditTest> = { ...test };
+  // Keep the stored screenshot unless a new one was uploaded.
+  if (!test.screenshot_path) delete patch.screenshot_path;
+  await serviceRest(`trust_tests?id=eq.${testId}`, null, { method: 'PATCH', body: patch });
+  if (test.screenshot_path && before.screenshot_path)
+    await removeScreenshot(before.screenshot_path);
+  await recomputeScore(test.provider_id);
+  if (before.provider_id !== test.provider_id) await recomputeScore(before.provider_id);
+}
+
+export async function deleteTest(testId: number) {
+  const before = await getTest(testId);
+  if (!before) return;
   await serviceRest(`trust_tests?id=eq.${testId}`, null, { method: 'DELETE' });
-  await recomputeScore(providerId);
+  if (before.screenshot_path) await removeScreenshot(before.screenshot_path);
+  await recomputeScore(before.provider_id);
+}
+
+export const SCREENSHOT_BUCKET = 'audit-screenshots';
+const SCREENSHOT_TYPES: Record<string, string> = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/webp': 'webp',
+};
+export const SCREENSHOT_MAX_BYTES = 5 * 1024 * 1024;
+
+/** Stores a checkout screenshot privately; returns its path, or null for an empty field. */
+export async function uploadScreenshot(file: File | null): Promise<string | null> {
+  if (!file || file.size === 0) return null;
+  const ext = SCREENSHOT_TYPES[file.type];
+  if (!ext) throw new Error(`screenshot type ${file.type} not allowed`);
+  if (file.size > SCREENSHOT_MAX_BYTES) throw new Error('screenshot too large');
+  const path = `${new Date().toISOString().slice(0, 7)}/${crypto.randomUUID()}.${ext}`;
+  await serviceStorage(`object/${SCREENSHOT_BUCKET}/${path}`, {
+    method: 'POST',
+    body: file,
+    contentType: file.type,
+  });
+  return path;
+}
+
+async function removeScreenshot(path: string) {
+  await serviceStorage(`object/${SCREENSHOT_BUCKET}/${path}`, { method: 'DELETE' }).catch((e) =>
+    console.error('[admin] screenshot delete failed', (e as Error).message),
+  );
+}
+
+/** A link to a private screenshot that works for 5 minutes. */
+export async function signedScreenshotUrl(path: string): Promise<string> {
+  // Storage answers with a path relative to /storage/v1.
+  const data = z.object({ signedURL: z.string().startsWith('/') }).parse(
+    await serviceStorage(`object/sign/${SCREENSHOT_BUCKET}/${path}`, {
+      method: 'POST',
+      body: JSON.stringify({ expiresIn: 300 }),
+      contentType: 'application/json',
+    }),
+  );
+  const base = (process.env.SUPABASE_URL ?? '').replace(/\/$/, '');
+  return `${base}/storage/v1${data.signedURL}`;
+}
+
+export async function allTests(): Promise<AuditTest[]> {
+  return serviceRest(`trust_tests?select=${TEST_SELECT}&order=tested_at.desc`, z.array(testSchema));
 }
 
 /** Recomputes one provider's score from all its tests (PLAN §8.2) and stores it. */
