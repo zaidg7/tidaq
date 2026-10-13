@@ -103,5 +103,16 @@
     "text": "The page couldn't load just now. Please try again in a moment.",
     "retry": "Try again",
     "home": "Go to the home page"
+  },
+  "chart": {
+    "summary": "Price history over {days} days: low {low} on {lowDay}, latest {last} on {lastDay}.",
+    "empty": "No prices for this stay yet.",
+    "low": "Low {price}",
+    "avg": "Avg {price}",
+    "building": "Your price history starts here",
+    "scrub": "See the price on a day, choose with the arrow keys",
+    "table": "Show as table",
+    "date": "Date",
+    "price": "Best price"
   }
 }
