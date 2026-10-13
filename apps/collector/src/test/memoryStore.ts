@@ -46,7 +46,10 @@ export function memoryStore(
     [...new Set(aliases.values())].map((slug) => [slug, { pending: false, name: slug }]),
   );
   const snapshots: (IngestPayload['snapshots'][number] & { day: string })[] = [];
-  const daily = new Map<string, { stayId: number; day: string; bestCents: number; best: string }>();
+  const daily = new Map<
+    string,
+    { stayId: number; day: string; bestCents: number; best: string | null }
+  >();
   const stats = new Map<number, StayStatsRow>();
   const officialUrls = new Map<number, string>();
   let clock = '2026-10-12T05:00:00.000Z';
@@ -162,7 +165,11 @@ export function memoryStore(
       }
       for (const key of touched) {
         const [stayId, day] = key.split('|') as [string, string];
-        const rows = snapshots.filter((x) => x.stay_id === Number(stayId) && x.day === day);
+        // Mirrors rebuild_stay_daily: the best price comes from reviewed providers; a day with
+        // pending providers only keeps the raw minimum and has no best provider.
+        const all = snapshots.filter((x) => x.stay_id === Number(stayId) && x.day === day);
+        const reviewed = all.filter((x) => !providers.get(x.provider_slug)?.pending);
+        const rows = reviewed.length > 0 ? reviewed : all;
         const best = rows.reduce((a, b) =>
           b.total_cents < a.total_cents ||
           (b.total_cents === a.total_cents && b.provider_slug < a.provider_slug)
@@ -173,7 +180,7 @@ export function memoryStore(
           stayId: Number(stayId),
           day,
           bestCents: best.total_cents,
-          best: best.provider_slug,
+          best: reviewed.length > 0 ? best.provider_slug : null,
         });
       }
       for (const t of payload.tasks) {
@@ -187,7 +194,7 @@ export function memoryStore(
     },
     async dailySeries(stayIds, fromDay) {
       return [...daily.values()]
-        .filter((d) => stayIds.includes(d.stayId) && d.day >= fromDay)
+        .filter((d) => stayIds.includes(d.stayId) && d.day >= fromDay && d.best !== null)
         .map(({ stayId, day, bestCents }) => ({ stayId, day, bestCents }));
     },
     async upsertStats(rows) {

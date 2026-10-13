@@ -211,6 +211,8 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
               .select('stay_id, day, best_cents')
               .in('stay_id', ids)
               .gte('day', fromDay)
+              // Days with offers from unreviewed providers only have no public best price.
+              .not('best_provider_id', 'is', null)
               .order('stay_id')
               .order('day')
               .range(from, from + PAGE - 1),

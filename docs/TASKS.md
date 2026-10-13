@@ -31,6 +31,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-013c | Collector: admin emails, daily check, raw-data prune | CLOUD | S | C-013b | DONE |
 | C-013d | Collector: live check on staging, first production deploy, 2-day data check | CLOUD | S | C-013c, B-005, B-003 | IN PROGRESS |
 | C-011b | Hotel photos: licensed Wikimedia Commons images with credits | CLOUD | S | C-011 | DONE |
+| C-019 | Web data layer (public reads) and best price from reviewed providers | CLOUD | S | C-013b | DONE |
 | **Phase 2: MVP website** (weeks 44–47, target Sun 22 Nov) |||||
 | C-006a | Design tokens, font, base components, /dev/ui | CLOUD | M | C-001 | DONE |
 | C-006b | Sparkline, Skeleton, EmptyState, visual regression at 390/1280 | CLOUD | S | C-006a | TODO |
@@ -276,6 +277,10 @@ Owner: CLOUD (or LOCAL, if the cloud IP stays rate-limited) · Size: S · Depend
 Notes: `scripts/catalog/photos.ts` matches each hotel to its Wikidata item (name + within 1 km of our coordinates) and takes its curated image (P18) if Commons lists CC BY, CC BY-SA, CC0 or public domain; credit "Foto: <author>, <license>, via Wikimedia Commons". It runs in GitHub Actions (workflow **Catalog photos**, also on PRs that change the script) because Wikimedia answers 429 to the cloud sessions' IP. Result: `scripts/catalog/photos.json` (26 of 40 hotels, 23 of the 36 active ones; Sofitel Frankfurt rejected by hand: pre-opening photo), applied with `photos-sql.ts` as migration `20261012211009_hotel_photos` (also adds `hotels.image_source_url`, the Commons file page). Hotels without a photo keep `image_url` null (gradient placeholder). Images are hotlinked from `thumb.wikimedia.org`/`upload.wikimedia.org` (1280 px): C-022/C-023 must allow that host for `next/image` (or plain `<img>`), show `image_credit` next to the photo and link it to `image_source_url`. Not checked visually from the cloud (Wikimedia blocked): Zaid or LOCAL should glance at the photos once on the hotel pages; reject one by adding it to `REJECTED` in photos.ts.
 For each active hotel, find a freely licensed photo on Wikimedia Commons (CC BY / CC BY-SA / public domain), store `image_url` (Commons thumbnail URL) and `image_credit` ("Foto: <author>, <license>, via Wikimedia Commons"). No photo → leave null (gradient placeholder). Never Google, Booking or hotel press photos without permission. The Commons API answered 429 from the cloud session on 12 Oct; use a descriptive User-Agent without personal data and retry with backoff, or run from LOCAL.
 
+### C-019 · Web data layer and reviewed best price
+Owner: CLOUD · Size: S · Depends on: C-013b · Status: DONE · PR: [#22](https://github.com/zaidg7/tidaq/pull/22)
+Notes: **Best price = cheapest reviewed provider.** Pending providers (unreviewed resellers) are hidden from the public by RLS, but they were the cheapest in 18 of 18 staging stays, so a public "best price" could not be named. Migration `20261013073715_stay_daily_reviewed_best`: new SQL function `rebuild_stay_daily(stay_ids | null)` (used by `collector_ingest`; call `rebuild_stay_daily(null)` after approving providers in /admin, C-016). `per_provider` keeps every provider; a day with pending providers only keeps the raw minimum with `best_provider_id = null`, and the stats and the web skip such days (13 of 410 days on 13 Oct). Web: `apps/web/lib/data/supabase.ts` (PostgREST with the anon key, Zod per row, 4 s timeout, `hasSupabase()` false in CI so pages show fallbacks) and `lib/data/featured.ts` (`getFeaturedStay`: picks the homepage example with core `pickFeaturedStay`, recomputes the stats from the reviewed series because `stay_stats` can lag a day, offers from reviewed providers on the latest day).
+
 ### C-012 · Stay grid generator
 Owner: CLOUD · Size: S · Depends on: C-004 · Status: DONE · PR: [#11](https://github.com/zaidg7/tidaq/pull/11)
 Notes: `packages/core/src/grid.ts` + `specialDates.ts`. Weekends = the next N Fridays strictly after today. Midweek = Tuesdays of every `floor(6 / GRID_MIDWEEK)`-th week counted from a fixed epoch, so a chosen stay stays in the grid every day until check-in (unbroken history). Specials (Easter Fri→Mon, Oktoberfest opening + second weekend for `muenchen`, first two December weekends, NYE 30 Dec → 1 Jan) enter 90 days ahead. Each stay carries `reasons` (`weekend`/`midweek`/`special`). `isStayExpired` deactivates only after check-in has passed. Step 3 (upsert `tracked_stays`, deactivate past stays) moves into C-013's "refresh grid".
@@ -358,6 +363,7 @@ Owner: CLOUD · Size: M · Depends on: C-013, C-020a · Status: TODO · PR: –
 **Steps**
 1. `/admin` (auth from C-020a): last 14 collector runs (tasks, cost, errors), month-to-date cost vs budget, coverage (active hotels, stays, % stays with today's data), unknown providers to map, hotels with no data in 3 days.
 2. Buttons: "Run collector now (staging)", "Deactivate hotel".
+3. Approving a pending provider (unknown provider list) must call SQL `rebuild_stay_daily(null)` afterwards, so best prices include it (C-019).
 
 **Done when**
 - [ ] Zaid can see on his phone in 10 seconds whether data is healthy

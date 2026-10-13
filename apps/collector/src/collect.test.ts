@@ -54,11 +54,18 @@ describe('runCollect', () => {
     expect(mem.tasks.filter((t) => t.status === 'done').map((t) => t.id)).toEqual([a, b]);
     expect(mem.tasks.find((t) => t.id === c)?.status).toBe('no_results');
 
-    // stay_daily holds the cheapest snapshot per stay day; stats start as "collecting".
+    // stay_daily holds the cheapest snapshot of a reviewed provider per stay day (pending
+    // resellers are hidden from the public); stats start as "collecting".
     for (const d of mem.daily.values()) {
       const cheapest = Math.min(
+        ...mem.snapshots
+          .filter((s) => s.stay_id === d.stayId && !mem.providers.get(s.provider_slug)?.pending)
+          .map((s) => s.total_cents),
+      );
+      const overall = Math.min(
         ...mem.snapshots.filter((s) => s.stay_id === d.stayId).map((s) => s.total_cents),
       );
+      expect(cheapest).toBeGreaterThanOrEqual(overall);
       expect(d.bestCents).toBe(cheapest);
       expect(d.day).toBe('2026-10-12');
       expect(mem.stats.get(d.stayId)).toMatchObject({
@@ -238,5 +245,20 @@ describe('refreshStats', () => {
   it('does nothing for no stays', async () => {
     const mem = memoryStore(hotels);
     expect(await refreshStats(mem.store, new Map(), at(POSTED))).toBe(0);
+  });
+});
+
+describe('stay_daily without reviewed providers', () => {
+  it('skips days whose offers all come from pending providers in the stats', async () => {
+    const mem = memoryStore(hotels);
+    mem.daily.set('5|2026-10-11', { stayId: 5, day: '2026-10-11', bestCents: 90_000, best: null });
+    mem.daily.set('5|2026-10-12', {
+      stayId: 5,
+      day: '2026-10-12',
+      bestCents: 100_000,
+      best: 'booking-com',
+    });
+    await refreshStats(mem.store, new Map([[5, '2026-12-04']]), at('2026-10-12T06:00:00Z'));
+    expect(mem.stats.get(5)).toMatchObject({ days_tracked: 1, now_cents: 100_000 });
   });
 });
