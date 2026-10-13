@@ -2,7 +2,7 @@
 
 import { useId, useState, type FormEvent, type ReactNode } from 'react';
 import { CalendarDays, ChevronDown, CircleAlert, MapPin, Users } from 'lucide-react';
-import { localizedPath, type Locale } from '@tidaq/core';
+import { localizedPath, stayPath, type Locale } from '@tidaq/core';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
@@ -40,6 +40,10 @@ type Props = {
   today: string;
   locale: Locale;
   labels: Labels;
+  /** Prefill (the stay page's "Ändern"): hotel slug, dates, adults. */
+  initial?: { hotel: string; checkIn: string; checkOut: string; adults: number };
+  /** Form id, the target of "/#suche" links on the homepage. */
+  formId?: string;
 };
 
 type Field = 'hotel' | 'dates';
@@ -69,12 +73,20 @@ function shortDate(value: string, locale: Locale): string {
  * field is an autocomplete (C-021a), the dates open a range picker (C-021b). Opens the stay page
  * (C-022).
  */
-export function SearchCard({ hotels, guestOptions, today, locale, labels }: Props) {
+export function SearchCard({
+  hotels,
+  guestOptions,
+  today,
+  locale,
+  labels,
+  initial,
+  formId = 'suche',
+}: Props) {
   const id = useId();
-  const [hotel, setHotel] = useState('');
-  const [checkIn, setCheckIn] = useState('');
-  const [checkOut, setCheckOut] = useState('');
-  const [adults, setAdults] = useState(2);
+  const [hotel, setHotel] = useState(initial?.hotel ?? '');
+  const [checkIn, setCheckIn] = useState(initial?.checkIn ?? '');
+  const [checkOut, setCheckOut] = useState(initial?.checkOut ?? '');
+  const [adults, setAdults] = useState(initial?.adults ?? 2);
   const [submitted, setSubmitted] = useState(false);
   const [listOpen, setListOpen] = useState(false);
   const [picker, setPicker] = useState<'in' | 'out' | null>(null);
@@ -100,9 +112,7 @@ export function SearchCard({ hotels, guestOptions, today, locale, labels }: Prop
       document.getElementById(p.field === 'hotel' ? `${id}-hotel` : `${id}-in`)?.focus();
       return;
     }
-    window.location.assign(
-      `${localizedPath(`/hotel/${hotel}/${checkIn}--${checkOut}`, locale)}?adults=${adults}`,
-    );
+    window.location.assign(localizedPath(stayPath(hotel, checkIn, checkOut, adults), locale));
   };
 
   const errorId = `${id}-error`;
@@ -117,7 +127,7 @@ export function SearchCard({ hotels, guestOptions, today, locale, labels }: Prop
 
   return (
     <form
-      id="suche"
+      id={formId}
       onSubmit={onSubmit}
       noValidate
       aria-label={labels.label}
