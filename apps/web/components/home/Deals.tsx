@@ -39,14 +39,12 @@ export async function Deals({ locale }: { locale: Locale }) {
           <li key={d.stayId}>
             <Card interactive padded={false} className="h-full overflow-hidden">
               {d.imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element -- licensed photo; self-hosted in C-011c
+                // eslint-disable-next-line @next/next/no-img-element -- licensed photo, self-hosted (C-011c), already sized
                 <img
                   src={d.imageUrl}
                   alt=""
                   loading="lazy"
                   decoding="async"
-                  crossOrigin="anonymous"
-                  referrerPolicy="no-referrer"
                   className="bg-placeholder aspect-[16/10] w-full object-cover"
                 />
               ) : (
