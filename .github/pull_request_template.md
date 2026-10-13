@@ -1,13 +1,17 @@
 ## Task
+
 [ID] <title> · closes the task in docs/TASKS.md
 
 ## What changes for users
+
 <plain words, 1–3 lines>
 
 ## How it works
+
 <short technical summary for the next session>
 
 ## Checklist
+
 - [ ] Acceptance criteria of the task are all met
 - [ ] Tests added/updated; lint, typecheck, test, build pass locally
 - [ ] CI green on the latest commit
@@ -18,4 +22,5 @@
 - [ ] Full diff self-reviewed
 
 ## Notes for the next session
+
 <anything unfinished, follow-ups added to TASKS.md>
