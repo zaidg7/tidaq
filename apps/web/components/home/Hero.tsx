@@ -1,7 +1,5 @@
-import { Check } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import type { Locale } from '@tidaq/core';
-import { Icon } from '@/components/ui/Icon';
 import { getCatalog } from '@/lib/data/catalog';
 import { berlinToday } from '@/lib/today';
 import { SearchCard } from './SearchCard';
@@ -13,7 +11,7 @@ function Hairline() {
       aria-hidden="true"
       viewBox="0 0 100 12"
       preserveAspectRatio="none"
-      className="absolute inset-x-0 -bottom-[0.14em] h-[0.26em] w-full overflow-visible"
+      className="absolute inset-x-0 -bottom-[0.08em] h-[0.24em] w-full overflow-visible"
     >
       <path
         d="M2 3.5C18 2.5 30 3 44 6.5S72 11 98 9.5"
@@ -30,7 +28,7 @@ function Hairline() {
 
 /**
  * Homepage hero (DESIGN.md §4, CRAFT.md §5): eyebrow, H1 with the accent word, lead with real
- * numbers from the catalog, proof row, and the search card. Lavender blobs sit behind it.
+ * numbers from the catalog, and the search card. Lavender blobs fade out behind it.
  */
 export async function Hero({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'home' });
@@ -39,16 +37,10 @@ export async function Hero({ locale }: { locale: Locale }) {
   const hotels = catalog?.hotels.length ?? 0;
   const cities = catalog?.cityCount ?? 0;
 
-  const proof = [
-    ...(catalog ? [t('proofHotels', { hotels }), t('proofCities', { cities })] : []),
-    t('proofDaily'),
-    t('proofFree'),
-  ];
-
   return (
     <section className="relative isolate overflow-hidden">
       <div aria-hidden="true" className="hero-blobs" />
-      <div className="mx-auto flex w-full max-w-[1080px] flex-col items-center px-5 pt-10 pb-14 text-center md:px-7 lg:pt-16 lg:pb-[88px]">
+      <div className="mx-auto flex w-full max-w-[1080px] flex-col items-center px-5 pt-10 pb-12 text-center md:px-7 lg:pt-12 lg:pb-16">
         <p className="text-eyebrow text-accent">{t('eyebrow')}</p>
         <h1 className="text-display mt-4 max-w-[16ch]">
           {t.rich('title', {
@@ -63,15 +55,7 @@ export async function Hero({ locale }: { locale: Locale }) {
         <p className="text-lead mt-5 max-w-[34em] text-muted-ink">
           {catalog ? t('lead', { hotels, cities }) : t('leadNoData')}
         </p>
-        <ul className="text-meta mt-5 flex flex-wrap justify-center gap-x-4 gap-y-1.5 font-semibold text-muted-ink">
-          {proof.map((item) => (
-            <li key={item} className="flex items-center gap-1.5">
-              <Icon icon={Check} size={14} className="text-good-ink" />
-              {item}
-            </li>
-          ))}
-        </ul>
-        <div className="mt-9 w-full max-w-[560px] text-left">
+        <div className="mt-8 w-full max-w-[560px] text-left">
           <SearchCard
             hotels={(catalog?.hotels ?? []).map((h) => ({
               slug: h.slug,
@@ -87,6 +71,7 @@ export async function Hero({ locale }: { locale: Locale }) {
               hotelPlaceholder: ts('hotelPlaceholder'),
               checkIn: ts('checkIn'),
               checkOut: ts('checkOut'),
+              datePlaceholder: ts('datePlaceholder'),
               guests: ts('guests'),
               submit: ts('submit'),
               note: ts('note'),

@@ -8,6 +8,7 @@ import { navRoutes, routes } from '@/lib/routes';
 import { cn } from '@/lib/cn';
 import { LocaleLinks } from './LocaleLinks';
 import { MobileMenu } from './MobileMenu';
+import { NavCta } from './NavCta';
 import { NavLinks } from './NavLinks';
 
 const iconLink = cn(
@@ -60,9 +61,7 @@ export async function Navbar({ locale }: { locale: Locale }) {
           <Icon icon={Search} />
         </a>
         <span className="ml-1 hidden lg:block">
-          <a href={localizedPath(routes.search, locale)} className={buttonClasses({ size: 'sm' })}>
-            {t('cta')}
-          </a>
+          <NavCta href={localizedPath(routes.search, locale)} label={t('cta')} />
         </span>
         <MobileMenu
           items={items}

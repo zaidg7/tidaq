@@ -96,7 +96,7 @@ test.describe('/dev/ui', () => {
   test('price chart: sparse, empty, stale and outlier states', async ({ page }) => {
     await page.goto('/dev/ui');
     const section = page.locator('#preisverlauf');
-    await expect(section.getByText('Hier entsteht dein Verlauf')).toHaveCount(1);
+    await expect(section.getByText('Hier entsteht der Verlauf')).toHaveCount(1);
     await expect(
       section.getByRole('img', { name: 'Noch keine Preise für diesen Aufenthalt.' }),
     ).toBeVisible();

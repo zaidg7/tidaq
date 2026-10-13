@@ -5,7 +5,8 @@ test.describe('desktop shell', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
   test('shows the navbar links, CTA and footer columns', async ({ page }) => {
-    await page.goto('/');
+    // The homepage hides the navbar CTA while its search card is visible; other pages show it.
+    await page.goto('/dev/ui');
     const nav = page.getByRole('navigation', { name: 'Hauptnavigation' });
     for (const name of ['Hotels', 'Deals', 'Kassen-Check', 'So funktioniert’s']) {
       await expect(nav.getByRole('link', { name })).toBeVisible();
