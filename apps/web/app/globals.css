@@ -1,29 +1,41 @@
 @import 'tailwindcss';
 
 /*
- * Soft Modern design tokens (docs/DESIGN.md §2). Raw values live on :root so dark mode can swap
- * them later; Tailwind utilities (bg-surface, text-muted, rounded-card …) point at them.
+ * Soft Modern design tokens (docs/DESIGN.md §2, craft details in docs/design/CRAFT.md).
+ * Raw values live on :root so dark mode can swap them; Tailwind utilities point at them.
+ * Every text/background pair used for text is AA-checked (CRAFT.md §2).
  */
 :root {
   --bg: #f5f3fc;
   --surface: #ffffff;
+  --surface-2: #fbfaff;
   --field: #f8f6ff;
   --line: #e6e0f7;
+  --line-strong: #d6ccf2;
   --fg: #221c3b;
   --muted: #6c6687;
   --accent: #6a49e0;
+  --accent-hover: #5b3bd1;
+  --accent-press: #4f31be;
   --accent-ink: #ffffff;
   --accent-soft: #ede7ff;
   --good: #178a62;
   --bad: #d1435b;
   --warn: #b26a00;
-  /* Text on white or on a tint at ≤ 18 px: darker "ink" shades keep WCAG AA (≥ 4.5:1). */
+  /* Small text on white or on a soft tint uses these darker inks (≥ 4.6:1). */
   --good-ink: #126b4c;
   --bad-ink: #af2b41;
   --warn-ink: #8c5300;
   --muted-ink: #655f7e;
+  /* Solid tints (not alpha, which shifts hue on lavender). */
+  --good-soft: #e3f3ec;
+  --bad-soft: #fbe6ea;
+  --warn-soft: #f8eddc;
+  --neutral-soft: #ece8f6;
+  --disabled-ink: #8a84a3;
   --blob-1: #ddd2ff;
   --blob-2: #ffd6e5;
+  --blob-3: #e6ddff;
   --placeholder: linear-gradient(135deg, #d9cffc, #ffd9e6);
   color-scheme: light;
 }
@@ -32,11 +44,15 @@
 :root[data-theme='dark'] {
   --bg: #14111f;
   --surface: #1d1930;
+  --surface-2: #19152a;
   --field: #221d38;
   --line: #2e2848;
+  --line-strong: #3d3560;
   --fg: #eeeafb;
   --muted: #a39dc0;
   --accent: #9c85ff;
+  --accent-hover: #ad9aff;
+  --accent-press: #8b72f5;
   --accent-ink: #14111f;
   --accent-soft: #2a2350;
   --good: #4fd1a0;
@@ -46,17 +62,26 @@
   --bad-ink: #ff7a90;
   --warn-ink: #f0a355;
   --muted-ink: #a39dc0;
+  --good-soft: #173a2e;
+  --bad-soft: #43202a;
+  --warn-soft: #3d2c14;
+  --neutral-soft: #2a2442;
+  --disabled-ink: #6f6990;
   color-scheme: dark;
 }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-field: var(--field);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-fg: var(--fg);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-press: var(--accent-press);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
   --color-good: var(--good);
@@ -66,16 +91,29 @@
   --color-bad-ink: var(--bad-ink);
   --color-warn-ink: var(--warn-ink);
   --color-muted-ink: var(--muted-ink);
+  --color-good-soft: var(--good-soft);
+  --color-bad-soft: var(--bad-soft);
+  --color-warn-soft: var(--warn-soft);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-disabled-ink: var(--disabled-ink);
 
   --font-sans: var(--font-jakarta), system-ui, -apple-system, 'Segoe UI', sans-serif;
 
+  --radius-chip-sm: 8px;
   --radius-badge: 10px;
   --radius-cell: 12px;
+  --radius-tooltip: 14px;
   --radius-card: 18px;
   --radius-search: 26px;
 
-  --shadow-float: 0 14px 36px rgba(106, 73, 224, 0.1);
+  --shadow-float: 0 1px 2px rgba(34, 28, 59, 0.04), 0 16px 40px -8px rgba(106, 73, 224, 0.14);
+  --shadow-hover: 0 2px 4px rgba(34, 28, 59, 0.05), 0 24px 48px -10px rgba(106, 73, 224, 0.2);
+  --shadow-button: 0 8px 20px -8px rgba(106, 73, 224, 0.6);
+  --shadow-halo: 0 0 0 4px rgba(106, 73, 224, 0.14);
+  --shadow-halo-bad: 0 0 0 4px rgba(209, 67, 91, 0.14);
+
   --ease-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
 }
 
 @layer base {
@@ -84,13 +122,16 @@
     color: var(--fg);
     font-family: var(--font-sans);
     -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   body {
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.55;
     font-weight: 500;
   }
-  @media (min-width: 720px) {
+  @media (min-width: 1024px) {
     body {
       font-size: 16.5px;
     }
@@ -99,6 +140,13 @@
   h2,
   h3 {
     text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: #ddd2ff;
+    color: var(--fg);
   }
   :focus-visible {
     outline: 2px solid var(--accent);
@@ -109,37 +157,50 @@
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-property: color, background-color, border-color, opacity !important;
+      scroll-behavior: auto !important;
     }
   }
 }
 
 @layer utilities {
-  /* DESIGN.md typography roles. */
+  /* Type roles (CRAFT.md §2), mobile first. */
   .text-display {
-    font-size: 36px;
+    font-size: 38px;
     font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.05;
+    letter-spacing: -0.035em;
+    line-height: 1.04;
   }
   .text-h2 {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 800;
     letter-spacing: -0.03em;
     line-height: 1.1;
   }
+  .text-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
   .text-h3 {
     font-size: 18px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+  .text-lead {
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    line-height: 1.5;
   }
   .text-price-xl {
     font-size: 38px;
     font-weight: 800;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
     line-height: 1;
-    font-variant-numeric: tabular-nums;
   }
   .text-meta {
     font-size: 13px;
@@ -148,25 +209,43 @@
   .text-eyebrow {
     font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     line-height: 1.3;
     text-transform: uppercase;
   }
-  @media (min-width: 720px) {
+  .prose-de {
+    hyphens: auto;
+    max-width: 65ch;
+  }
+  @media (min-width: 1024px) {
     .text-display {
       font-size: 60px;
     }
     .text-h2 {
       font-size: 40px;
     }
+    .text-title {
+      font-size: 28px;
+    }
     .text-h3 {
       font-size: 20px;
+    }
+    .text-lead {
+      font-size: 19px;
     }
     .text-price-xl {
       font-size: 44px;
     }
+    .text-meta {
+      font-size: 13.5px;
+    }
   }
   .bg-placeholder {
     background: var(--placeholder);
+  }
+  /* Primary button fill: a soft top-lit gradient with a white inner edge. */
+  .bg-accent-gradient {
+    background: linear-gradient(180deg, #7556e8, #6343da);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
   }
 }

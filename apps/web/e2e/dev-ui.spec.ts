@@ -13,6 +13,8 @@ test.describe('/dev/ui', () => {
     await expect(page.getByText('Daten werden gesammelt (3/7)')).toBeVisible();
     await expect(page.getByText('Noch zu wenig Tests').first()).toBeVisible();
     await expect(page.getByText('5 % unter dem 30-Tage-Schnitt')).toBeVisible();
+    await expect(page.getByText('12 % unter dem Schnitt seit 1. Okt.')).toBeVisible();
+    await expect(page.getByRole('img', { name: 'Tidaq' }).first()).toBeVisible();
     expect(errors).toEqual([]);
   });
 
@@ -28,7 +30,7 @@ test.describe('/dev/ui', () => {
 
   test('shows a visible focus ring on keyboard focus', async ({ page }) => {
     await page.goto('/dev/ui');
-    const button = page.getByRole('button', { name: 'Preis verfolgen', exact: true }).first();
+    const button = page.getByRole('button', { name: 'Preise ansehen', exact: true }).first();
     await button.focus();
     await page.keyboard.press('Shift+Tab');
     await page.keyboard.press('Tab');
@@ -44,5 +46,19 @@ test.describe('/dev/ui', () => {
     const input = page.locator('#dev-email-error');
     await expect(input).toHaveAttribute('aria-invalid', 'true');
     await expect(input).toHaveAccessibleDescription(/fehlt etwas nach dem @/);
+  });
+
+  test('marks a loading button as busy and keeps it out of the click path', async ({ page }) => {
+    await page.goto('/dev/ui');
+    const busy = page.locator('button[aria-busy="true"]');
+    await expect(busy).toHaveCount(1);
+    await expect(busy).toHaveAccessibleName('Preis beobachten');
+    expect(await busy.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe('none');
+  });
+
+  test('names icon-only buttons', async ({ page }) => {
+    await page.goto('/dev/ui');
+    await expect(page.getByRole('button', { name: 'Suche öffnen' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Menü öffnen' })).toBeVisible();
   });
 });

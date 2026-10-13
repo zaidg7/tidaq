@@ -35,14 +35,18 @@
     "rising": "steigt"
   },
   "priceDelta": {
-    "below": "{percent} unter dem 30-Tage-Schnitt",
-    "above": "{percent} über dem 30-Tage-Schnitt",
-    "same": "Genau im 30-Tage-Schnitt"
+    "below": "<b>{percent}</b> unter dem 30-Tage-Schnitt",
+    "above": "<b>{percent}</b> über dem 30-Tage-Schnitt",
+    "belowSince": "<b>{percent}</b> unter dem Schnitt seit {since}",
+    "aboveSince": "<b>{percent}</b> über dem Schnitt seit {since}",
+    "same": "Genau im 30-Tage-Schnitt",
+    "sameSince": "Genau im Schnitt seit {since}"
   },
   "trust": {
-    "insufficient": "Noch zu wenig Tests",
+    "insufficient": "Noch zu wenig Tests ({tests})",
+    "untested": "Noch nicht getestet",
     "sample": "{matches} von {tests} Tests stimmten",
-    "scoreLabel": "Vertrauenswert {score} von 100"
+    "scoreLabel": "Preistreue {score} von 100"
   },
   "logo": {
     "label": "Tidaq, zur Startseite"
