@@ -46,7 +46,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-016                                                           | Admin: data health and budget dashboard                                      | CLOUD | M             | C-013b, C-020c                    | DONE           |
 | C-013e                                                          | Villa Kennedy (Frankfurt) gets no prices: check its DataForSEO hotel ID      | CLOUD | S             | C-013b                            | TODO           |
 | C-032a                                                          | Trust audit: form, recent tests, provider scores                             | CLOUD | S             | C-020c, C-004                     | DONE           |
-| C-032b                                                          | Trust audit: screenshot upload, edit tests, CSV export                       | CLOUD | S             | C-032a                            | TODO           |
+| C-032b                                                          | Trust audit: screenshot upload, edit tests, CSV export                       | CLOUD | S             | C-032a                            | DONE           |
 | L-033                                                           | Checkout audit with Claude in Chrome (150 tests, recurring until launch)     | LOCAL | L (recurring) | C-032b, Z-07                      | TODO           |
 | C-021                                                           | Search: autocomplete, date range picker, guests                              | CLOUD | M             | C-020a, C-011                     | TODO           |
 | C-022                                                           | Stay page with chart, stats, advice, provider table                          | CLOUD | L             | C-020a, C-015, C-013b             | TODO           |
@@ -607,11 +607,11 @@ After each collector run: evaluate active, confirmed watches against triggers (P
 
 ### C-032 · Trust audit tool
 
-Owner: CLOUD · Size: M (split a/b) · Depends on: C-020c, C-004 (scheduled early in Phase 2) · Status: a DONE, b TODO · PR: a = [#33](https://github.com/zaidg7/tidaq/pull/33)
+Owner: CLOUD · Size: M (split a/b) · Depends on: C-020c, C-004 (scheduled early in Phase 2) · Status: a DONE, b DONE · PR: a = [#33](https://github.com/zaidg7/tidaq/pull/33), b = [#34](https://github.com/zaidg7/tidaq/pull/34)
 
 **C-032a notes (DONE):** `/admin/audit` (link "Kassen-Check eintragen" on `/admin`): form in `components/admin/AuditForm.tsx` (hotel, provider, dates, guests, "Preis bei Google", "Preis an der Kasse" with the number keypad, extras as chips, notes; works without JS), the latest 20 tests with delete in `AuditList.tsx`. Server actions `saveAuditTestAction` / `deleteAuditTestAction` (`requireAdmin()` first). Prices typed as "1.184" or "1.184,50" are parsed by core `parseEuroCents`; the outcome comes from the prices (core `trustOutcome`, ±1 % = match); "Nicht buchbar" stores no checkout price. After every save or delete `recomputeScore()` (`lib/admin/audit.ts`) rebuilds that provider's row in `provider_scores` with core `providerScore` (PLAN §8.2: pass ≤ +1 %, penalty ×200 capped at 40, shrinkage to 70 with weight 5; `avg_markup_pct` = mean markup of bookable tests). Preview with made-up data on `/dev/admin#kassen-check`.
 
-**C-032b (TODO):** screenshot upload to a private Storage bucket (`screenshot_path`), edit a test, CSV export. L-033 waits for this, because provider claims need a screenshot (PLAN §8).
+**C-032b notes (DONE):** screenshot field in the form (PNG/JPG/WebP, ≤ 5 MB) → private bucket `audit-screenshots` (migration `20261013191634`, no storage policies: anon can't list or upload; only the service role). "Screenshot" in the list opens `/admin/audit/screenshot/[id]`, which redirects to a 5-minute signed URL. "Bearbeiten" opens `/admin/audit?edit=ID` with the form prefilled; saving recomputes the old and new provider's score and replaces the screenshot only if a new one was chosen; deleting a test also deletes its screenshot. "Alle als CSV" → `/admin/audit/export` (core `toCsv`: semicolons + BOM for German Excel, formula cells defused). **For L-033:** the LOCAL session enters tests at `/admin/audit` in Zaid's Chrome, logged in with his magic link (needs B-007).
 
 **Steps**
 
@@ -622,7 +622,7 @@ Owner: CLOUD · Size: M (split a/b) · Depends on: C-020c, C-004 (scheduled earl
 
 **Done when**
 
-- [ ] Entering one test takes under 60 seconds on a phone
+- [x] Entering one test takes under 60 seconds on a phone (8 fields, prices with the number keypad, extras as chips; to be confirmed by Zaid with the first real tests)
 
 ### L-033 · Checkout audit with Claude in Chrome (recurring)
 
