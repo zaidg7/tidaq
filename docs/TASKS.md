@@ -403,6 +403,8 @@ Owner: CLOUD · Size: L · Depends on: C-020a, C-006c, C-015, C-019 · Status: T
 2. The live example uses a real featured stay: `getFeaturedStay()` (C-019, `apps/web/lib/data/featured.ts`); falls back to a static example labeled "Beispiel" if data is missing.
 3. Copy from the reference, refined; DE and EN.
 
+**Perf baseline (measured in C-020a, Lighthouse 12 mobile on a local `next start`, placeholder home with the shell):** performance 88, accessibility 100, best practices 100, SEO 63 (only the intended pre-launch `noindex`). TBT 430 ms is mostly the React/Next runtime (~119 KiB unused JS); LCP 2.4 s is the hero text. To reach ≥ 90 with real content: keep client components tiny (chart scrub can be one small island), no client-side data fetching, let the live example render on the server, check the font and CSS on the critical path.
+
 **Done when**
 - [ ] Side-by-side with the reference: same structure and feel; real data visible
 - [ ] Mobile LCP < 2.5 s (Lighthouse mobile ≥ 90)
