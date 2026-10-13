@@ -87,7 +87,7 @@ export async function saveAuditTestAction(form: FormData) {
       const extras = form
         .getAll('extras')
         .map(String)
-        .filter((e): e is AuditExtra => e in AUDIT_EXTRAS);
+        .filter((e): e is AuditExtra => Object.hasOwn(AUDIT_EXTRAS, e));
       const listed = parseEuroCents(f.listed);
       const notBookable = extras.includes('not_bookable');
       const checkout = notBookable ? null : parseEuroCents(f.checkout);

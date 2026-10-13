@@ -92,3 +92,20 @@ test.describe('dashboard preview (made-up data)', () => {
     expect(width).toBeLessThanOrEqual(390);
   });
 });
+
+test('Kassen-Check: the audit page is guarded and the form preview works', async ({ page }) => {
+  await page.goto('/admin/audit');
+  await expect(page).toHaveURL(/\/admin\/login/);
+
+  await page.goto('/dev/admin');
+  const form = page.locator('#kassen-check');
+  await expect(form.getByLabel('Hotel')).toBeVisible();
+  await expect(form.getByLabel('Preis bei Google')).toHaveAttribute('inputmode', 'decimal');
+  await expect(form.getByLabel('Preis bei Google')).toHaveAttribute('required', '');
+  const chip = form.getByLabel('Citytax extra');
+  await chip.check();
+  await expect(chip).toBeChecked();
+  await expect(form.getByText('1.184 € → 1.289 €')).toBeVisible();
+  await expect(form.getByText('Teurer')).toBeVisible();
+  await expect(form.getByRole('button', { name: 'Test speichern' })).toBeVisible();
+});
