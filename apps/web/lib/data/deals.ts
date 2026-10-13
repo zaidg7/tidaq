@@ -2,6 +2,7 @@ import 'server-only';
 import { DEALS, pickDeals, z } from '@tidaq/core';
 import { berlinToday } from '@/lib/today';
 import { hasSupabase, rest } from './supabase';
+import { hotelPhoto } from '@/lib/hotelPhotos';
 
 const dealRow = z.object({
   stay_id: z.number(),
@@ -17,8 +18,6 @@ const dealRow = z.object({
   now_cents: z.number().nullable(),
   avg30_cents: z.number().nullable(),
 });
-
-const imageRow = z.object({ id: z.number(), image_url: z.string().nullable() });
 
 export interface Deal {
   stayId: number;
@@ -42,17 +41,13 @@ export interface Deal {
 export async function getDeals(limit = 3): Promise<Deal[] | null> {
   if (!hasSupabase()) return null;
   try {
-    const [rows, images] = await Promise.all([
-      rest(
-        'v_stay_public?select=stay_id,hotel_id,hotel_slug,hotel_name,city_name_de,city_name_en,' +
-          'check_in,check_out,adults,days_tracked,now_cents,avg30_cents' +
-          `&active=eq.true&check_in=gte.${berlinToday()}&days_tracked=gte.${DEALS.minDays}` +
-          '&now_cents=not.is.null&avg30_cents=not.is.null&limit=1000',
-        dealRow,
-      ),
-      rest('hotels?select=id,image_url&active=eq.true', imageRow),
-    ]);
-    const imageByHotel = new Map(images.map((h) => [h.id, h.image_url]));
+    const rows = await rest(
+      'v_stay_public?select=stay_id,hotel_id,hotel_slug,hotel_name,city_name_de,city_name_en,' +
+        'check_in,check_out,adults,days_tracked,now_cents,avg30_cents' +
+        `&active=eq.true&check_in=gte.${berlinToday()}&days_tracked=gte.${DEALS.minDays}` +
+        '&now_cents=not.is.null&avg30_cents=not.is.null&limit=1000',
+      dealRow,
+    );
     return pickDeals(
       rows.map((r) => ({
         ...r,
@@ -73,7 +68,7 @@ export async function getDeals(limit = 3): Promise<Deal[] | null> {
       adults: d.adults,
       nowCents: d.now_cents as number,
       drop: d.drop,
-      imageUrl: imageByHotel.get(d.hotel_id) ?? null,
+      imageUrl: hotelPhoto(d.hotel_slug)?.[960].src ?? null,
     }));
   } catch (error) {
     console.error('deals unavailable', { error: String(error) });

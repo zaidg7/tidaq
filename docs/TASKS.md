@@ -32,7 +32,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-013d                                                          | Collector: live check on staging, first production deploy, 2-day data check  | CLOUD | S             | C-013c, B-005, B-003              | IN PROGRESS    |
 | C-011b                                                          | Hotel photos: licensed Wikimedia Commons images with credits                 | CLOUD | S             | C-011                             | DONE           |
 | C-019                                                           | Web data layer (public reads) and best price from reviewed providers         | CLOUD | S             | C-013b                            | DONE           |
-| C-011c                                                          | Self-host hotel photos (no third-party requests from our pages)              | CLOUD | S             | C-011b                            | TODO           |
+| C-011c                                                          | Self-host hotel photos (no third-party requests from our pages)              | CLOUD | S             | C-011b                            | DONE           |
 | **Phase 2: MVP website** (weeks 44–47, target Sun 22 Nov)       |                                                                              |       |               |                                   |
 | C-006a                                                          | Design tokens, font, base components, /dev/ui                                | CLOUD | M             | C-001                             | DONE           |
 | C-006b                                                          | Craft pass: CRAFT.md spec, refined tokens and components, logo, icons        | CLOUD | M             | C-006a                            | DONE           |
@@ -322,7 +322,9 @@ For each active hotel, find a freely licensed photo on Wikimedia Commons (CC BY 
 
 ### C-011c · Self-host hotel photos
 
-Owner: CLOUD · Size: S · Depends on: C-011b · Status: TODO · PR: –
+Owner: CLOUD · Size: S · Depends on: C-011b · Status: DONE · PR: see `[C-011c]` PR
+
+**C-011c notes (DONE):** photos are copied once by `scripts/photos/self-host.mjs` (input: JSON of `slug` + `image_url` from `hotels`) into `apps/web/public/hotels/<slug>-160.webp` and `-960.webp` (fitted inside 160/960 px, WebP, 3 MB for 26 hotels) and listed in the generated `apps/web/lib/hotelPhotos.generated.ts`. The web app uses `hotelPhoto(slug)` and never the Wikimedia URL, so pages load images only from tidaq.com (verified: the homepage requests only its own host). `image_url` stays in the database as the source of the copy; credit and source link still come from `image_credit` / `image_source_url`. New hotel photo → add it to the JSON, re-run the script, commit. Static assets instead of R2: no extra service, same domain, cached by Cloudflare.
 
 Found in C-020b: hotlinked Wikimedia photos let a third party set cookies (Lighthouse "third-party cookies") and see visitors' IPs, which breaks "ohne Cookies" (D-15) and needs a Datenschutz mention. Copy each licensed photo once into Cloudflare R2 (or a Worker route on tidaq.com), resized to 2–3 widths as WebP/AVIF, store the new URL next to `image_source_url`, and serve only from our domain. Keep the credit and source link. Until then images load with `crossOrigin="anonymous"` and `referrerPolicy="no-referrer"`. Must be done before launch (C-044).
 

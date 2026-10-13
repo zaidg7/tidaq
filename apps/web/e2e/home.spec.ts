@@ -66,3 +66,14 @@ test.describe('homepage', () => {
     ).toHaveCount(0);
   });
 });
+
+test('hotel photos are served from our own domain (C-011c)', async ({ request }) => {
+  for (const file of [
+    'hotel-adlon-kempinski-berlin-160.webp',
+    'hotel-adlon-kempinski-berlin-960.webp',
+  ]) {
+    const res = await request.get(`/hotels/${file}`);
+    expect(res.status(), file).toBe(200);
+    expect(res.headers()['content-type'], file).toContain('image/webp');
+  }
+});

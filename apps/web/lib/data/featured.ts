@@ -1,4 +1,5 @@
 import 'server-only';
+import { hotelPhoto } from '@/lib/hotelPhotos';
 import {
   addDays,
   computeStayStats,
@@ -32,7 +33,6 @@ const stayRow = z.object({
 
 const hotelImageRow = z.object({
   id: z.number(),
-  image_url: z.string().nullable(),
   image_credit: z.string().nullable(),
   image_source_url: z.string().nullable(),
 });
@@ -64,6 +64,7 @@ export interface FeaturedStay {
     name: string;
     citySlug: string;
     cityName: { de: string; en: string };
+    /** Self-hosted thumbnail (C-011c) with the photo credit. */
     image: { url: string; credit: string; sourceUrl: string | null } | null;
   };
   checkIn: string;
@@ -96,10 +97,7 @@ export async function getFeaturedStay(now = new Date()): Promise<FeaturedStay | 
           '&order=days_tracked.desc.nullslast&limit=500',
         stayRow,
       ),
-      rest(
-        'hotels?select=id,image_url,image_credit,image_source_url&active=eq.true',
-        hotelImageRow,
-      ),
+      rest('hotels?select=id,image_credit,image_source_url&active=eq.true', hotelImageRow),
     ]);
     const imageByHotel = new Map(images.map((h) => [h.id, h]));
     const picked = pickFeaturedStay(
@@ -109,7 +107,7 @@ export async function getFeaturedStay(now = new Date()): Promise<FeaturedStay | 
         checkIn: s.check_in,
         daysTracked: s.days_tracked,
         nowCents: s.now_cents,
-        hasImage: !!imageByHotel.get(s.hotel_id)?.image_url,
+        hasImage: !!hotelPhoto(s.hotel_slug) && !!imageByHotel.get(s.hotel_id)?.image_credit,
       })),
       today,
     );
@@ -141,6 +139,7 @@ export async function getFeaturedStay(now = new Date()): Promise<FeaturedStay | 
 
     const series = days.map((d) => ({ day: d.day, bestCents: d.best_cents }));
     const image = imageByHotel.get(picked.hotel_id);
+    const photo = hotelPhoto(picked.hotel_slug);
     return {
       stayId: picked.stay_id,
       hotel: {
@@ -149,9 +148,9 @@ export async function getFeaturedStay(now = new Date()): Promise<FeaturedStay | 
         citySlug: picked.city_slug,
         cityName: { de: picked.city_name_de, en: picked.city_name_en },
         image:
-          image?.image_url && image.image_credit
+          photo && image?.image_credit
             ? {
-                url: image.image_url,
+                url: photo[160].src,
                 credit: image.image_credit,
                 sourceUrl: image.image_source_url,
               }

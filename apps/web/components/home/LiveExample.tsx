@@ -104,7 +104,7 @@ export async function LiveExample({ locale }: { locale: Locale }) {
       >
         <header className="flex items-center gap-4 border-b border-line p-5 lg:px-8">
           {image ? (
-            // eslint-disable-next-line @next/next/no-img-element -- licensed Wikimedia photo, tiny thumbnail
+            // eslint-disable-next-line @next/next/no-img-element -- licensed photo, self-hosted 160 px thumbnail (C-011c)
             <img
               src={image.url}
               alt=""
@@ -112,9 +112,6 @@ export async function LiveExample({ locale }: { locale: Locale }) {
               height={56}
               loading="lazy"
               decoding="async"
-              // No cookies and no referrer to the third-party image host (D-15); C-011c self-hosts.
-              crossOrigin="anonymous"
-              referrerPolicy="no-referrer"
               className="bg-placeholder size-14 shrink-0 rounded-cell object-cover"
             />
           ) : (
