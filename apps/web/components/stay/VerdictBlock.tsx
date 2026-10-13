@@ -77,6 +77,7 @@ export function VerdictBlock({
       <div className="flex flex-col gap-2">
         <VerdictPrice
           cents={stats.nowCents}
+          locale={locale}
           restLine={[
             t('totalPrice', { perNight: price(Math.round(stats.nowCents / nights)) }),
             t('totalStay', { nights, adults }),

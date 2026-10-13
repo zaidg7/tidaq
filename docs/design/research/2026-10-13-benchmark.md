@@ -5,6 +5,7 @@
 ## 1. Pattern library
 
 ### (a) Homepage hero and search card
+
 - **What the leaders do:**
   - Airbnb uses one pill-shaped search bar split into Where / When / Who. It is about 64 px tall with a round brand-color search button at the end ([getdesign.md](https://getdesign.md/design-md/airbnb/preview), a secondary source).
   - A Pratt critique of Hopper found the homepage confusing: users couldn't tell whether "search" or "add watch" was the main action ([Pratt IxD](https://ixd.prattsi.org/2020/02/design-critique-hopper/)).
@@ -20,6 +21,7 @@
   - The proof row uses real counts only: "25 Checkout-Tests pro Anbieter · täglich geprüft".
 
 ### (b) Verdict block ("is this a good price?")
+
 - **What the leaders do:**
   - Google Flights rates prices as Low / Typical / High on a bar colored green / yellow / red, with a 60-day graph underneath ([Tom's Guide](https://tomsguide.com/how-to/google-flights-has-a-new-tool-to-find-you-the-cheapest-airfare-every-time)).
   - Google Hotels places the price on a green-to-red line against the hotel's "typical price" ([SEJ](https://www.searchenginejournal.com/google-adds-price-insights-to-hotel-flights-searches/267225/)).
@@ -37,6 +39,7 @@
   - The verdict always uses the **cheapest provider's total price**.
 
 ### (c) Price history chart
+
 - **What the leaders do:**
   - Robinhood and Coinbase let you press and drag ("scrub") along the chart. While you drag, the big header number changes to the price under your finger. Coinbase's Scrubber shows a dotted vertical line, a dot on the line with a label above it, and fades the part of the chart after that point ([Coinbase CDS](https://cds.coinbase.com/components/charts/Scrubber/), [Robinhood Spark](https://p.codekk.com/detail/Android/robinhood/spark)).
   - Libraries such as react-native-wagmi-charts give a short vibration when scrubbing starts and whenever the selected point changes.
@@ -54,6 +57,7 @@
   - **Fewer than 7 points:** show the points as dots and leave the empty part of the chart as a faint dashed band with "Hier entsteht dein Verlauf".
 
 ### (d) Booking-site comparison rows
+
 - **What the leaders get wrong:**
   - Australia's consumer regulator (ACCC) said trivago highlighted a price that often wasn't the cheapest, ranked offers by how much each site paid per click, and used strike-through prices that compared different room types. A NZ survey found the highlighted deal was more expensive about half the time, and the "More deals" link was in small type ([Consumer NZ](https://consumer.org.nz/articles/trivago-how-to-find-the-hidden-deals), [Travel Weekly](https://travelweekly.com.au/accc-takes-aim-at-trivago-over-misleading-hotel-prices/)).
 - **German law:**
@@ -70,6 +74,7 @@
   - On mobile, each row becomes a two-line card.
 
 ### (e) Price alert / watch
+
 - **What the leaders do:**
   - Google uses a "Track prices" toggle and emails on a "significant" change, without defining what that means ([TPG](https://thepointsguy.com/news/google-hotels-price-tracking/)).
   - Skyscanner requires an account.
@@ -83,6 +88,7 @@
   - One-click unsubscribe.
 
 ### (f) Mobile sticky bar
+
 - **Layout:** 64 px tall plus `env(safe-area-inset-bottom)`, white with a 1 px `--line` top border. Left: price (17 px, weight 800) with the StateChip. Right: pill button "Preis beobachten".
 - **Behavior:**
   - Appears only after the hero price scrolls out of view (IntersectionObserver).
@@ -91,6 +97,7 @@
 - **Avoid:** A second "Jetzt buchen" button. The bar has one CTA.
 
 ### (g) Loading and "collecting data"
+
 - **Evidence:** Reported thresholds (attributed to NN/g, secondhand) are an indicator after about 1 s and determinate progress for waits over 10 s. Skeletons suit familiar layouts and short waits only ([Carbon](https://carbondesignsystem.com/patterns/loading-pattern)). A Viget study found skeletons performed worse than spinners.
 - **Tidaq:**
   - Render stay pages on the server so most visits need no skeleton.
@@ -99,15 +106,17 @@
   - Collecting state: a 7-segment progress bar labelled "Tag 3 von 7", plus "Erste Einschätzung ab Sa, 17. Okt." and a "Preis beobachten" button.
 
 ### (h) Trust and methodology
+
 - **What the leaders do:**
   - Wise: "We have nothing to hide", and it recommends whichever provider leaves the recipient with the most money, "whether or not that's us" ([Wise](https://wise.com/gb/mid-market-rate/)).
   - KAYAK admits its forecasts can be wrong and shows its confidence.
 - **Tidaq:**
   - Every number gets a small "ⓘ" popover. Example: "24 von 25 Tests stimmten · letzter Test 2. Okt. 2026 · Was zählt als Treffer?"
   - The popover links to a test log with dated screenshots (PLAN §8).
-  - The methodology page lists sample sizes, what counts as a match (for example ≤ 1 € difference), how often prices are checked, and what Tidaq does *not* know.
+  - The methodology page lists sample sizes, what counts as a match (for example ≤ 1 € difference), how often prices are checked, and what Tidaq does _not_ know.
 
 ## 2. Anti-patterns to avoid
+
 1. A highlighted "deal" that isn't the cheapest, or ranking by commission (trivago/ACCC).
 2. Strike-through or "−30 %" comparisons across different room types or against invented "was" prices.
 3. Countdowns, "Nur noch 1 Zimmer!", "12 Personen sehen sich das an".
@@ -121,17 +130,17 @@
 
 ## 3. Ten ideas, ranked by impact/effort
 
-| # | Idea | Impact | Effort |
-|---|---|---|---|
-| 1 | Range bar with today's dot plus "Günstiger als an 52 von 60 Tagen" | High | Low |
-| 2 | Guarded y-domain (min span ±6 %, empty bottom third) and no spline | High | Low |
-| 3 | "Sortiert nach Gesamtpreis" line plus the commission footnote under the table | High | Low |
-| 4 | "Zuletzt geprüft vor 3 Std." on the verdict and on every row | High | Low |
-| 5 | Two alert options (any drop ≥ 2 % / under X €) with in-place confirmation | High | Medium |
-| 6 | Touch and keyboard scrub that updates the header price (finance-app feel) | High | Medium |
-| 7 | "ⓘ" trust popovers linked to the dated test log | High | Medium |
-| 8 | Sticky bar with appear/hide rules and safe-area padding | Medium | Low |
-| 9 | Collecting state with a 7-segment bar and the date of the first verdict | Medium | Low |
-| 10 | First-fetch progress with a checkmark per provider in place of a spinner | Medium | Medium |
+| #   | Idea                                                                          | Impact | Effort |
+| --- | ----------------------------------------------------------------------------- | ------ | ------ |
+| 1   | Range bar with today's dot plus "Günstiger als an 52 von 60 Tagen"            | High   | Low    |
+| 2   | Guarded y-domain (min span ±6 %, empty bottom third) and no spline            | High   | Low    |
+| 3   | "Sortiert nach Gesamtpreis" line plus the commission footnote under the table | High   | Low    |
+| 4   | "Zuletzt geprüft vor 3 Std." on the verdict and on every row                  | High   | Low    |
+| 5   | Two alert options (any drop ≥ 2 % / under X €) with in-place confirmation     | High   | Medium |
+| 6   | Touch and keyboard scrub that updates the header price (finance-app feel)     | High   | Medium |
+| 7   | "ⓘ" trust popovers linked to the dated test log                               | High   | Medium |
+| 8   | Sticky bar with appear/hide rules and safe-area padding                       | Medium | Low    |
+| 9   | Collecting state with a 7-segment bar and the date of the first verdict       | Medium | Low    |
+| 10  | First-fetch progress with a checkmark per provider in place of a spinner      | Medium | Medium |
 
 **Gaps:** I could not verify the exact current wording and spacing of Google's or Hopper's UIs from text sources. A 15-minute look at the live products on a phone would confirm them before C-tasks lock the copy.

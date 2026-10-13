@@ -4,8 +4,32 @@
     "description": "Price history for luxury hotels: is today a low or a high?"
   },
   "home": {
-    "title": "Tidaq is coming soon",
-    "intro": "Soon you'll see how the price of your luxury hotel stay is moving."
+    "eyebrow": "Five-star hotels",
+    "title": "Is your hotel price <hi>low</hi> or high right now?",
+    "lead": "Every morning we check {hotels} five-star hotels in {cities} cities. You see the history, the low and the cheapest site.",
+    "leadNoData": "Every morning we check the prices of five-star hotels. You see the history, the low and the cheapest site.",
+    "liveEyebrow": "Live · as of {time}",
+    "liveTitle": "Is now a good time to book?",
+    "liveText": "A real stay from our data, updated this morning. Every trip looks like this on Tidaq.",
+    "sampleText": "We don't have live data right now, so this is an example. Every trip looks like this on Tidaq.",
+    "sampleBadge": "Sample data",
+    "stayMeta": "{dates} · {adults, plural, one {# adult} other {# adults}}",
+    "offersTitle": "Prices by site",
+    "cheapest": "Cheapest",
+    "direct": "Hotel direct",
+    "offersNote": "Total for the whole stay when we checked. It can differ at checkout.",
+    "offersEmpty": "Today we have no reviewed site with a price for these dates.",
+    "photoCredit": "Photo: {credit}",
+    "liveEyebrowNoTime": "Live",
+    "collectingTitle": "A real stay, checked fresh every morning",
+    "collectingText": "{hotel}, {dates}. Since {since} we've checked this stay every morning. From the 7th day with a price we'll tell you whether the price is low right now.",
+    "changeDown": "{amount} cheaper than yesterday",
+    "changeUp": "{amount} pricier than yesterday",
+    "changeSame": "Same price as yesterday",
+    "gap": "{provider} is {amount} cheaper today than the next site.",
+    "firstDays": "The first 7 days · best price in €",
+    "same": "{price} each",
+    "sampleEyebrow": "Example"
   },
   "localeSwitch": {
     "label": "Language",
@@ -88,7 +112,7 @@
       "privacy": "Privacy"
     },
     "copyright": "© {year} Tidaq",
-    "source": "Prices collected daily from booking sites. No cookies."
+    "source": "Prices daily from Google Hotels. No cookies."
   },
   "notFound": {
     "meta": "Page not found",
@@ -109,7 +133,7 @@
     "empty": "No prices for this stay yet.",
     "low": "Low {price}",
     "avgLegend": "30-day avg: {price}",
-    "building": "Your price history starts here",
+    "building": "The price history starts here",
     "stale": "No data since {since}",
     "scrub": "See the price on a day, choose with the arrow keys",
     "noPrice": "no price",
@@ -148,5 +172,24 @@
     "close": "Close",
     "watchSaved": "Saved: you're now watching this price.",
     "loading": "Loading prices"
+  },
+  "search": {
+    "label": "Search prices",
+    "hotel": "Hotel",
+    "hotelPlaceholder": "Choose a hotel",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "guests": "Guests",
+    "submit": "See prices",
+    "note": "Free · no account · no cookies",
+    "nightsOne": "1 night",
+    "nightsOther": "{n} nights",
+    "hotelMissing": "Choose a hotel.",
+    "datesMissing": "Choose check-in and check-out.",
+    "order": "Check-out must be after check-in.",
+    "tooLong": "30 nights max. Pick a shorter stay.",
+    "past": "That date has passed. Pick a check-in from today.",
+    "adults": "{n, plural, one {# adult} other {# adults}}",
+    "datePlaceholder": "Choose date"
   }
 }

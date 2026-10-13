@@ -11,6 +11,7 @@ Total for week 1: **about 2 hours** (Z-01 to Z-03 are already done). After that:
 ## Week 1 (Mon 12 – Sun 18 Oct 2026)
 
 ### Z-01 · Create the GitHub repo and give Claude access ✅ DONE (12 Oct)
+
 1. Open github.com/new
 2. Owner `zaidg7`, name `tidaq`, **Private**. Leave "Add a README" **unticked** (the repo must be empty).
 3. Create repository.
@@ -24,7 +25,9 @@ Total for week 1: **about 2 hours** (Z-01 to Z-03 are already done). After that:
 ### Z-03 · Domain ✅ DONE (12 Oct): tidaq.com bought at Namecheap.
 
 ### Z-03b · Point tidaq.com to Cloudflare ✅ DONE (12 Oct): zone active
+
 The domain stays at Namecheap; only the DNS moves to Cloudflare (needed for the website, emails and Google).
+
 1. Namecheap → Domain List → `tidaq.com` → Manage → **Advanced DNS**: if **DNSSEC** is on, turn it off first.
 2. Cloudflare dashboard → **Add a domain** (or "Add site") → `tidaq.com` → choose the **Free** plan → continue. Cloudflare shows **two nameservers** (like `xxx.ns.cloudflare.com`).
 3. Namecheap → `tidaq.com` → Manage → **Nameservers** → choose **Custom DNS** → paste both Cloudflare nameservers → save (green check).
@@ -32,41 +35,48 @@ The domain stays at Namecheap; only the DNS moves to Cloudflare (needed for the 
 5. Optional, later: turn DNSSEC on again inside Cloudflare (DNS → Settings) and add the DS record it shows at Namecheap.
 
 ### Z-04 · Accounts and keys (40 min)
+
 **Cloudflare (account ✅, domain active ✅)**
+
 1. Workers & Pages → open it once so Workers is activated (free plan for now).
 2. My Profile → API Tokens → Create Token → template **Edit Cloudflare Workers** → All accounts / your account, zone `tidaq.com` → Create. Copy the token.
 3. Copy your **Account ID** (Workers & Pages overview, right sidebar).
 4. Later, only if a session asks in BLOCKERS: Workers Paid plan ($5/month).
 
 **Supabase** (decided 12 Oct: use your existing **Pro organization**, about +$10/month for the extra project)
+
 1. supabase.com → your **Pro organization** → New project → name `tidaq`, region **Frankfurt (eu-central-1)**, compute **Micro**. Save the database password in your password manager.
    (Don't create a new free organization: the free plan's 500 MB fills within weeks and free projects pause.)
 2. Project Settings → API: copy **Project URL**, **anon/publishable key** and **service_role/secret key**.
 
 **DataForSEO** (cheapest legit source: about $0.0008 per hotel lookup)
-1. dataforseo.com → sign up, verify email. Onboarding form: **How will you use it:** only *Building SaaS Tool*. **Integration:** *REST API*. **Description:** "Price tracker for luxury hotel stays in Europe. Daily Google Hotels prices per stay via the Business Data API (Hotel Info, Hotel Searches), standard queue, ~300 tasks/day."
+
+1. dataforseo.com → sign up, verify email. Onboarding form: **How will you use it:** only _Building SaaS Tool_. **Integration:** _REST API_. **Description:** "Price tracker for luxury hotel stays in Europe. Daily Google Hotels prices per stay via the Business Data API (Hotel Info, Hotel Searches), standard queue, ~300 tasks/day."
 2. **Don't pay yet.** You get $1 free credit, enough for the test task C-010. Top up the **$50 minimum** only when the session's spike report says the data works (it will ask in BLOCKERS). $50 lasts about 7 months at our lean rate.
 3. Dashboard → API Access: copy the **API login** and **API password** (different from your account password) into GitHub secrets.
 
 **Put the keys into GitHub** (repo `tidaq` → Settings → Secrets and variables → Actions → New repository secret). One secret per line, exact names:
 
-| Secret name | Value |
-|---|---|
-| `CLOUDFLARE_API_TOKEN` | the Cloudflare token |
-| `CLOUDFLARE_ACCOUNT_ID` | your Account ID |
-| `SUPABASE_URL` | Project URL |
-| `SUPABASE_ANON_KEY` | anon/publishable key |
+| Secret name                 | Value                   |
+| --------------------------- | ----------------------- |
+| `CLOUDFLARE_API_TOKEN`      | the Cloudflare token    |
+| `CLOUDFLARE_ACCOUNT_ID`     | your Account ID         |
+| `SUPABASE_URL`              | Project URL             |
+| `SUPABASE_ANON_KEY`         | anon/publishable key    |
 | `SUPABASE_SERVICE_ROLE_KEY` | service_role/secret key |
-| `DATAFORSEO_LOGIN` | API login |
-| `DATAFORSEO_PASSWORD` | API password |
+| `DATAFORSEO_LOGIN`          | API login               |
+| `DATAFORSEO_PASSWORD`       | API password            |
 
 ### Z-05 · Resend for emails (10 min)
+
 1. resend.com → sign up → Domains → Add domain `tidaq.com` → follow the Cloudflare DNS steps (Resend can add the records automatically if you connect Cloudflare).
 2. API Keys → Create → "Sending access" → copy.
 3. Add GitHub secret `RESEND_API_KEY`.
 
 ### Z-06 · Claude cloud environment settings (5 min)
+
 Network access is already **Full** ✅. Add **one network secret** for DataForSEO: claude.ai/code → environment `tidaq` → Edit → Network secrets → **Add secret**:
+
 - **Name:** `DataForSEO`
 - **Secret type / Credential type:** **Basic** if the list offers it → username = API login, password = API password.
 - If there is no Basic option: keep **Bearer**, and in the header row set Name `Authorization`, Prefix `Basic`, Value = your login and password in Base64. Make that value in Windows PowerShell:
@@ -76,6 +86,7 @@ Network access is already **Full** ✅. Add **one network secret** for DataForSE
 - Save (Add/Connect). Supabase, Cloudflare and Resend need nothing here: Supabase goes through your claude.ai connector, deploys use the GitHub secrets.
 
 ### Z-07 · Set up your PC for the LOCAL session (30 min, once)
+
 1. Install **Git for Windows** (git-scm.com) with default options.
 2. Install **Node.js 22 LTS** (nodejs.org). Then open PowerShell and run `corepack enable`.
 3. Install the **Claude desktop app** (claude.ai/download) and sign in. Claude Code is inside it.
@@ -84,12 +95,15 @@ Network access is already **Full** ✅. Add **one network secret** for DataForSE
 6. Open the `tidaq` folder in Claude Code and paste the LOCAL start prompt (PLAN §14). The LOCAL session can help with anything that fails.
 
 ### How to "link" the accounts to Claude
+
 There are three places, and each has a different job. Never paste keys into a chat.
+
 1. **GitHub secrets** (Z-04/Z-05): the deploy pipeline uses them. That's the main one.
 2. **Claude cloud environment** (Z-06): allowed domains + a few variables so cloud sessions can test against the real services.
 3. **claude.ai connectors** (Settings → Connectors): the **Supabase** connector is already connected to your account. Make sure it can see your **Pro organization**, so sessions can apply database changes and check data directly. GitHub is connected too. Nothing else is needed.
 
 ### Z-08 · Every Sunday: 15-minute review
+
 Open the newest **Weekly summary** issue on GitHub (you'll get a notification), do the listed steps, close it.
 
 ---
@@ -97,20 +111,26 @@ Open the newest **Weekly summary** issue on GitHub (you'll get a notification), 
 ## Weeks 2–7 (19 Oct – 29 Nov)
 
 ### Z-07b · Checkout audit sessions (2–3× a week, 30–45 min each). Your most important job before launch.
+
 With the LOCAL session (task L-033): Claude in Chrome does the clicking and reading; you watch, approve sites when asked and make sure nothing gets booked. Goal: 150 tests by 29 Nov. **Never enter payment or personal data.**
 Film a few of these sessions (screen recording + your voice). That's your launch content.
 
 ### Z-09 · Google Search Console (5 min, when a session asks)
+
 search.google.com/search-console → add property `tidaq.com` (Domain) → verify via Cloudflare DNS (Search Console offers a Cloudflare button).
 
 ### Z-10 · Reserve social handles (10 min, this week if possible)
+
 TikTok, Instagram, YouTube, X: `@tidaq` (or `@tidaq.de` / `@tidaqhotels` if taken). Use the same profile picture (the session makes one from the logo).
 
 ### Z-12 · Read the legal pages once (20 min, week of 23 Nov)
+
 Read `/impressum`, `/datenschutz`, `/affiliate-hinweis`, `/ranking` on staging. Check your name, address and email. If you have a Steuernummer, add it as the GitHub issue comment the session asks for (it's public on the Impressum anyway).
 
 ### Z-13 · Content (your part, from launch week)
+
 The sessions write scripts and make the charts. You record and post. Start with 3 videos in launch week:
+
 1. "Ich habe 150 Hotel-Checkouts getestet. Das ist passiert."
 2. "Dieses 5-Sterne-Hotel ist gerade 14 % günstiger als sonst" (live chart)
 3. "Booking vs. Hotel direkt: wer ist wirklich günstiger?"
@@ -120,22 +140,25 @@ The sessions write scripts and make the charts. You record and post. Start with 
 ## After launch (Dec 2026 onward)
 
 ### Z-11 · Affiliate programs (60 min total, spread out; after the site is live with content)
+
 The session prepares the application texts and exact links in a BLOCKERS entry. You sign up because it needs your identity and tax details:
+
 - Awin publisher account → apply to **Booking.com** (or CJ if Booking assigns that)
 - **Expedia Group** affiliate program (Expedia, Hotels.com)
 - **Trip.com** and **Agoda** affiliate programs
-Then put each affiliate ID where the session tells you (usually a GitHub secret).
+  Then put each affiliate ID where the session tells you (usually a GitHub secret).
 
 ### Z-14 · Finances (ongoing)
+
 Keep invoices from Cloudflare, DataForSEO, Resend and later affiliate payouts for your Kleinunternehmer bookkeeping. Commissions are business income.
 
 ---
 
 ## Your weekly time budget
 
-| Week | What | Time |
-|---|---|---|
-| 12–18 Oct | Z-03b to Z-07, Z-10 (Z-01 to Z-03 done ✅) | ~2 h |
-| 19 Oct – 29 Nov | audit sessions, Sunday review, Z-09, Z-12 | ~1.5–2.5 h/week |
-| Launch week (30 Nov) | Z-13 videos, posting | ~3 h |
-| Dec onward | Sunday review, content, Z-11 | ~2–3 h/week |
+| Week                 | What                                       | Time            |
+| -------------------- | ------------------------------------------ | --------------- |
+| 12–18 Oct            | Z-03b to Z-07, Z-10 (Z-01 to Z-03 done ✅) | ~2 h            |
+| 19 Oct – 29 Nov      | audit sessions, Sunday review, Z-09, Z-12  | ~1.5–2.5 h/week |
+| Launch week (30 Nov) | Z-13 videos, posting                       | ~3 h            |
+| Dec onward           | Sunday review, content, Z-11               | ~2–3 h/week     |

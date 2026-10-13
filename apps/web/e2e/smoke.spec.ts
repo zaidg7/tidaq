@@ -11,8 +11,20 @@ function trackErrors(page: Page): string[] {
 }
 
 const cases = [
-  { path: '/', lang: 'de', heading: 'Tidaq kommt bald', switchTo: 'English', target: '/en' },
-  { path: '/en', lang: 'en', heading: 'Tidaq is coming soon', switchTo: 'Deutsch', target: '/' },
+  {
+    path: '/',
+    lang: 'de',
+    heading: 'Ist dein Hotelpreis gerade tief oder hoch?',
+    switchTo: 'English',
+    target: '/en',
+  },
+  {
+    path: '/en',
+    lang: 'en',
+    heading: 'Is your hotel price low or high right now?',
+    switchTo: 'Deutsch',
+    target: '/',
+  },
 ] as const;
 
 for (const c of cases) {

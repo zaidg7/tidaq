@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { CHART_SCRUB_EVENT, type ChartScrubDetail } from '@/components/chart/ChartScrub';
-import { Price } from '@/components/ui/Price';
+import type { Locale } from '@tidaq/core';
+import { PriceText } from '@/components/ui/PriceText';
 
 type Props = {
   cents: number;
+  locale: Locale;
   /** ["gesamt · 592 € pro Nacht", "2 Nächte, 2 Erwachsene"]: breaks only between the parts. */
   restLine: [string, string];
   /** Templates with `{date}`, already translated on the server. */
@@ -17,7 +19,7 @@ type Props = {
  * The XL price of the verdict block. While the chart in the same `[data-scrub-scope]` is
  * scrubbed it shows that day's price, and snaps back on release (CRAFT.md §3 Interaction).
  */
-export function VerdictPrice({ cents, restLine, scrubbedLine, noPriceLine }: Props) {
+export function VerdictPrice({ cents, locale, restLine, scrubbedLine, noPriceLine }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const [scrub, setScrub] = useState<ChartScrubDetail>(null);
 
@@ -40,7 +42,8 @@ export function VerdictPrice({ cents, restLine, scrubbedLine, noPriceLine }: Pro
         // A day without a price never borrows today's price.
         <span className="text-price-xl text-muted-ink">–</span>
       ) : (
-        <Price
+        <PriceText
+          locale={locale}
           cents={scrub?.cents ?? cents}
           size="xl"
           className={scrub ? 'text-accent' : undefined}

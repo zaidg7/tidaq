@@ -14,34 +14,34 @@
 
 ## Numbers
 
-| What | Result |
-|---|---|
-| Cost of the whole spike | **$0.0136** (15 tasks; balance $1.00 → $0.9864) |
-| Price per task | $0.0008 (Hotel Info, Hotel Searches), $0.0016 with `load_prices_by_dates` |
-| Failed tasks are still billed | Yes: the 7 name-based tasks failed and cost $0.0064 |
-| Latency (standard queue) | All tasks ready in **< 4 minutes** (docs promise up to 45 min) |
-| `task_get` / `tasks_ready` | Free, ~250–350 ms per call |
-| Hotel Info by `keyword` | **7 of 7 failed**: status `40102 No Search Results` |
-| Hotel Info by `hotel_identifier` | **7 of 7 OK** |
-| Booking sites per hotel and stay | 25–33 entries (avg 29), of which 3–4 are Google ads; **21–29 organic** (avg 25) |
-| Official hotel site included | **7 of 7** (`official_site: true`, booking engine domains like `linkcenter.derbysoftca…`, `marriottclk.koddi.com`) |
-| Free-cancellation date given | 0–8 sites per stay (`free_cancellation_until`) |
+| What                             | Result                                                                                                             |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Cost of the whole spike          | **$0.0136** (15 tasks; balance $1.00 → $0.9864)                                                                    |
+| Price per task                   | $0.0008 (Hotel Info, Hotel Searches), $0.0016 with `load_prices_by_dates`                                          |
+| Failed tasks are still billed    | Yes: the 7 name-based tasks failed and cost $0.0064                                                                |
+| Latency (standard queue)         | All tasks ready in **< 4 minutes** (docs promise up to 45 min)                                                     |
+| `task_get` / `tasks_ready`       | Free, ~250–350 ms per call                                                                                         |
+| Hotel Info by `keyword`          | **7 of 7 failed**: status `40102 No Search Results`                                                                |
+| Hotel Info by `hotel_identifier` | **7 of 7 OK**                                                                                                      |
+| Booking sites per hotel and stay | 25–33 entries (avg 29), of which 3–4 are Google ads; **21–29 organic** (avg 25)                                    |
+| Official hotel site included     | **7 of 7** (`official_site: true`, booking engine domains like `linkcenter.derbysoftca…`, `marriottclk.koddi.com`) |
+| Free-cancellation date given     | 0–8 sites per stay (`free_cancellation_until`)                                                                     |
 
 ## What each booking site entry contains
 
 `result[0].prices.items[]` (`type: hotel_info_price`):
 
-| Field | Meaning | Notes |
-|---|---|---|
-| `title` | Site name: `Booking.com`, `Expedia.de`, `CHECK24.de`, `Hotels.com`, `Trip.com`, `Agoda`, `trivago DEALS`, `Super.com`, … | Map providers by **domain**, not title (titles vary, e.g. the hotel's own name) |
-| `domain` | `www.booking.com`, `www.expedia.de`, `de.hotels.com`, `de.trip.com`, `hotel.check24.de`, … | `google.de` on ads |
-| `url` | Deep link to the site | Long tracking URLs; use as outbound target (C-026) |
-| `price` | **Integer EUR per night**, no cents | See "Per night vs total" |
-| `currency` | `EUR` | As requested |
-| `is_paid` | Google ad | Ads duplicate an organic entry of the same site |
-| `official_site` | Hotel's own website | Can appear twice (ad + organic) |
-| `free_cancellation_until` | UTC datetime or null | Only some sites |
-| `offers[]` | Room offers: `title` (room name), `price`, `max_visitors` | **Only on ad entries** (3–4 per stay) |
+| Field                     | Meaning                                                                                                                  | Notes                                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| `title`                   | Site name: `Booking.com`, `Expedia.de`, `CHECK24.de`, `Hotels.com`, `Trip.com`, `Agoda`, `trivago DEALS`, `Super.com`, … | Map providers by **domain**, not title (titles vary, e.g. the hotel's own name) |
+| `domain`                  | `www.booking.com`, `www.expedia.de`, `de.hotels.com`, `de.trip.com`, `hotel.check24.de`, …                               | `google.de` on ads                                                              |
+| `url`                     | Deep link to the site                                                                                                    | Long tracking URLs; use as outbound target (C-026)                              |
+| `price`                   | **Integer EUR per night**, no cents                                                                                      | See "Per night vs total"                                                        |
+| `currency`                | `EUR`                                                                                                                    | As requested                                                                    |
+| `is_paid`                 | Google ad                                                                                                                | Ads duplicate an organic entry of the same site                                 |
+| `official_site`           | Hotel's own website                                                                                                      | Can appear twice (ad + organic)                                                 |
+| `free_cancellation_until` | UTC datetime or null                                                                                                     | Only some sites                                                                 |
+| `offers[]`                | Room offers: `title` (room name), `price`, `max_visitors`                                                                | **Only on ad entries** (3–4 per stay)                                           |
 
 Hotel-level fields worth keeping for the catalog (C-011): `title`, `stars` (**unreliable**: 0 for Waldorf Astoria Berlin), `address`, `location.latitude/longitude`, `check_url`, `reviews.value`, `about.url` (official website).
 

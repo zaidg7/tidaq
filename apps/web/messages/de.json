@@ -4,8 +4,32 @@
     "description": "Preisverlauf für Luxushotels: Siehst du gerade einen Tiefpunkt oder einen Höchststand?"
   },
   "home": {
-    "title": "Tidaq kommt bald",
-    "intro": "Wir zeigen dir bald, wie sich der Preis deines Luxushotels entwickelt."
+    "eyebrow": "Fünf-Sterne-Hotels",
+    "title": "Ist dein Hotelpreis gerade <hi>tief</hi> oder hoch?",
+    "lead": "Jeden Morgen prüfen wir {hotels} Fünf-Sterne-Hotels in {cities} Städten. Du siehst den Verlauf, den Tiefpunkt und den günstigsten Anbieter.",
+    "leadNoData": "Jeden Morgen prüfen wir die Preise von Fünf-Sterne-Hotels. Du siehst den Verlauf, den Tiefpunkt und den günstigsten Anbieter.",
+    "liveEyebrow": "Live · Stand {time}",
+    "liveTitle": "Ist jetzt ein guter Moment zum Buchen?",
+    "liveText": "Ein echter Aufenthalt aus unseren Daten, heute früh aktualisiert. So sieht jede Reise bei Tidaq aus.",
+    "sampleText": "Gerade fehlen uns Live-Daten, deshalb siehst du hier ein Beispiel. So sieht jede Reise bei Tidaq aus.",
+    "sampleBadge": "Beispieldaten",
+    "stayMeta": "{dates} · {adults, plural, one {# Erwachsener} other {# Erwachsene}}",
+    "offersTitle": "Preise je Anbieter",
+    "cheapest": "Günstigster",
+    "direct": "Hotel direkt",
+    "offersNote": "Gesamtpreis für den ganzen Aufenthalt bei der Abfrage. An der Kasse kann er abweichen.",
+    "offersEmpty": "Heute haben wir keinen geprüften Anbieter mit Preis für diese Daten.",
+    "photoCredit": "Foto: {credit}",
+    "liveEyebrowNoTime": "Live",
+    "collectingTitle": "Ein echter Aufenthalt, jeden Morgen neu geprüft",
+    "collectingText": "{hotel}, {dates}. Seit {since} prüfen wir diesen Aufenthalt jeden Morgen. Ab dem 7. Tag mit Preis sagen wir dir, ob der Preis gerade tief ist.",
+    "changeDown": "{amount} günstiger als gestern",
+    "changeUp": "{amount} teurer als gestern",
+    "changeSame": "Gleicher Preis wie gestern",
+    "gap": "{provider} ist heute {amount} günstiger als der nächste Anbieter.",
+    "firstDays": "Die ersten 7 Tage · bester Preis in €",
+    "same": "je {price}",
+    "sampleEyebrow": "Beispiel"
   },
   "localeSwitch": {
     "label": "Sprache",
@@ -88,7 +112,7 @@
       "privacy": "Datenschutz"
     },
     "copyright": "© {year} Tidaq",
-    "source": "Preise täglich von Buchungsseiten erfasst. Ohne Cookies."
+    "source": "Preise täglich aus Google Hotels. Ohne Cookies."
   },
   "notFound": {
     "meta": "Seite nicht gefunden",
@@ -109,7 +133,7 @@
     "empty": "Noch keine Preise für diesen Aufenthalt.",
     "low": "Tief {price}",
     "avgLegend": "Ø 30 Tage: {price}",
-    "building": "Hier entsteht dein Verlauf",
+    "building": "Hier entsteht der Verlauf",
     "stale": "Keine Daten seit {since}",
     "scrub": "Preis an einem Tag ansehen, mit den Pfeiltasten wählen",
     "noPrice": "kein Preis",
@@ -148,5 +172,24 @@
     "close": "Schließen",
     "watchSaved": "Gespeichert: Du beobachtest jetzt diesen Preis.",
     "loading": "Preise werden geladen"
+  },
+  "search": {
+    "label": "Preise suchen",
+    "hotel": "Hotel",
+    "hotelPlaceholder": "Hotel wählen",
+    "checkIn": "Anreise",
+    "checkOut": "Abreise",
+    "guests": "Gäste",
+    "submit": "Preise ansehen",
+    "note": "Kostenlos · ohne Konto · ohne Cookies",
+    "nightsOne": "1 Nacht",
+    "nightsOther": "{n} Nächte",
+    "hotelMissing": "Wähl ein Hotel.",
+    "datesMissing": "Wähl Anreise und Abreise.",
+    "order": "Die Abreise muss nach der Anreise liegen.",
+    "tooLong": "Höchstens 30 Nächte. Wähl einen kürzeren Zeitraum.",
+    "past": "Dieses Datum ist schon vorbei. Wähl eine Anreise ab heute.",
+    "adults": "{n, plural, one {# Erwachsener} other {# Erwachsene}}",
+    "datePlaceholder": "Datum wählen"
   }
 }
