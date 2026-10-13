@@ -274,14 +274,22 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
             providerByDay={Object.fromEntries(series.map((p) => [p.day, 'Booking.com']))}
           />
         </Card>
-        <Card className="w-full md:w-[calc(50%-6px)]">
-          <p className="text-h3">Erst 4 Tage</p>
-          <PriceChart className="mt-4" series={series.slice(-4)} from={from} to={to} />
-        </Card>
-        <Card className="w-full md:w-[calc(50%-6px)]">
-          <p className="text-h3">Noch keine Daten</p>
-          <PriceChart className="mt-4" series={[]} from={from} to={to} />
-        </Card>
+        {(
+          [
+            ['Erst 4 Tage', series.slice(-4)],
+            ['Noch keine Daten', []],
+            ['Seit 5 Tagen keine Daten', series.slice(0, -5)],
+            [
+              'Ausreißer (5.200 €)',
+              series.map((p, i) => (i === 30 ? { ...p, bestCents: 520_000 } : p)),
+            ],
+          ] as const
+        ).map(([title, s]) => (
+          <Card key={title} className="w-full md:w-[calc(50%-6px)]">
+            <p className="text-h3">{title}</p>
+            <PriceChart className="mt-4" series={s} from={from} to={to} avgCents={avg} />
+          </Card>
+        ))}
         {live && (
           <Card variant="float" className="w-full">
             <p className="text-h3">Live: {live.hotel.name}</p>

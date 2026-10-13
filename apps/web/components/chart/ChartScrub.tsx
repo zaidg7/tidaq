@@ -1,126 +1,200 @@
 'use client';
 
-import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import { useLayoutEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 
-export type ScrubPoint = {
-  /** Position as fractions of the chart box (shared with the server SVG). */
+/** One calendar day of the chart; `price` is null on days without data. */
+export type ScrubDay = {
+  /** Position as fractions of the plot box (shared with the server SVG). */
   x: number;
-  y: number;
+  y: number | null;
   date: string;
-  price: string;
+  cents: number | null;
+  price: string | null;
   provider: string | null;
 };
 
-type Props = { points: ScrubPoint[]; label: string; lastIndex: number };
+type Props = {
+  days: ScrubDay[];
+  /** The day shown at rest (the latest price). */
+  restIndex: number;
+  labels: { slider: string; noPrice: string; today: string | null };
+};
+
+/** Fired on the chart while scrubbing (detail = the day) and on release (detail = null). */
+export const CHART_SCRUB_EVENT = 'tidaq:chartscrub';
+export type ChartScrubDetail = { date: string; cents: number | null } | null;
+
+/** Horizontal travel before a touch counts as scrubbing (vertical scroll stays free). */
+const TOUCH_THRESHOLD = 8;
 
 /**
- * The tooltip hugs the point: above it, or below it near the top edge; it shifts left or right
- * near the sides so it never leaves the chart.
+ * Interaction layer over the server-rendered chart (CRAFT.md §3 Price chart). Steps by calendar
+ * day, so gaps stay visible ("kein Preis"). Mouse: hover. Touch: scrub after 8 px of horizontal
+ * travel, snaps back on release. Keyboard: ←/→ day, PageUp/PageDown week, Home/End, Esc.
+ * The readout chip sits in the reserved row above the plot, so it never covers the data.
  */
-function tooltipStyle(p: ScrubPoint) {
-  const x = p.x > 0.75 ? '-100%' : p.x < 0.25 ? '0%' : '-50%';
-  const y = p.y < 0.35 ? '16px' : 'calc(-100% - 16px)';
-  return { left: `${p.x * 100}%`, top: `${p.y * 100}%`, transform: `translate(${x}, ${y})` };
-}
-
-/**
- * Interaction layer over the server-rendered chart (CRAFT.md §3 Price chart): pointer and touch
- * scrub (vertical page scroll stays free via `touch-action: pan-y`), ←/→ by day, Home/End, a dark
- * tooltip and a live readout. It only positions in percent, so it fits both SVG sizes.
- */
-export function ChartScrub({ points, label, lastIndex }: Props) {
+export function ChartScrub({ days, restIndex, labels }: Props) {
   const box = useRef<HTMLDivElement>(null);
+  const chip = useRef<HTMLDivElement>(null);
+  const touch = useRef<{ x: number; y: number; scrubbing: boolean } | null>(null);
   const [active, setActive] = useState<number | null>(null);
-  const [keyboard, setKeyboard] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [touchScrub, setTouchScrub] = useState(false);
+  const [chipLeft, setChipLeft] = useState(0);
 
-  const nearest = (clientX: number) => {
+  const describe = (i: number) => {
+    const d = days[i];
+    if (!d) return '';
+    if (!d.price) return `${d.date}: ${labels.noPrice}`;
+    const today = i === restIndex && labels.today ? `, ${labels.today}` : '';
+    return `${d.date}: ${d.price}${d.provider ? `, ${d.provider}` : ''}${today}`;
+  };
+
+  const select = (i: number | null) => {
+    setActive(i);
+    const d = i === null ? null : days[i];
+    const detail: ChartScrubDetail = d ? { date: d.date, cents: d.cents } : null;
+    box.current?.dispatchEvent(new CustomEvent(CHART_SCRUB_EVENT, { bubbles: true, detail }));
+  };
+
+  const dayAt = (clientX: number) => {
     const rect = box.current?.getBoundingClientRect();
-    if (!rect || rect.width === 0) return null;
+    if (!rect || rect.width === 0 || days.length === 0) return null;
     const fx = (clientX - rect.left) / rect.width;
     let best = 0;
-    for (let i = 1; i < points.length; i++) {
-      if (Math.abs((points[i]?.x ?? 0) - fx) < Math.abs((points[best]?.x ?? 0) - fx)) best = i;
+    for (let i = 1; i < days.length; i++) {
+      if (Math.abs((days[i]?.x ?? 0) - fx) < Math.abs((days[best]?.x ?? 0) - fx)) best = i;
     }
     return best;
   };
 
-  const onPointer = (e: PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === 'mouse' || e.buttons > 0 || e.type === 'pointerdown') {
-      setKeyboard(false);
-      setActive(nearest(e.clientX));
+  const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse') return;
+    touch.current = { x: e.clientX, y: e.clientY, scrubbing: false };
+  };
+
+  const onPointerMove = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse') {
+      select(dayAt(e.clientX));
+      return;
     }
+    const t = touch.current;
+    if (!t) return;
+    if (!t.scrubbing) {
+      const dx = Math.abs(e.clientX - t.x);
+      const dy = Math.abs(e.clientY - t.y);
+      if (dx < TOUCH_THRESHOLD || dx <= dy) return;
+      t.scrubbing = true;
+      setTouchScrub(true);
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+    select(dayAt(e.clientX));
+  };
+
+  const endTouch = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse') return;
+    touch.current = null;
+    setTouchScrub(false);
+    select(null);
   };
 
   const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
-    const current = active ?? lastIndex;
-    const next =
-      e.key === 'ArrowLeft'
-        ? Math.max(0, current - 1)
-        : e.key === 'ArrowRight'
-          ? Math.min(lastIndex, current + 1)
-          : e.key === 'Home'
-            ? 0
-            : e.key === 'End'
-              ? lastIndex
-              : null;
-    if (next === null) return;
+    const last = days.length - 1;
+    const current = active ?? restIndex;
+    const moves: Record<string, number> = {
+      ArrowLeft: current - 1,
+      ArrowRight: current + 1,
+      PageUp: current - 7,
+      PageDown: current + 7,
+      Home: 0,
+      End: last,
+    };
+    if (e.key === 'Escape') {
+      if (active !== null) {
+        e.preventDefault();
+        select(null);
+      }
+      return;
+    }
+    const next = moves[e.key];
+    if (next === undefined) return;
     e.preventDefault();
-    setKeyboard(true);
-    setActive(next);
+    select(Math.max(0, Math.min(last, next)));
   };
 
-  const point = active === null ? null : points[active];
-  const readout = point
-    ? `${point.date}: ${point.price}${point.provider ? `, ${point.provider}` : ''}`
-    : '';
+  const day = active === null ? null : days[active];
+
+  // Keep the chip inside the chart: centre it on the crosshair, then clamp to the edges.
+  useLayoutEffect(() => {
+    const w = box.current?.offsetWidth ?? 0;
+    const c = chip.current?.offsetWidth ?? 0;
+    if (!day) return;
+    setChipLeft(Math.max(0, Math.min(w - c, day.x * w - c / 2)));
+  }, [day]);
+
+  const shown = active ?? restIndex;
+  const valuetext = describe(shown);
 
   return (
-    <div
-      ref={box}
-      role="slider"
-      tabIndex={0}
-      aria-label={label}
-      aria-valuemin={0}
-      aria-valuemax={lastIndex}
-      aria-valuenow={active ?? lastIndex}
-      aria-valuetext={readout || undefined}
-      className="absolute inset-0 cursor-crosshair touch-pan-y rounded-cell focus-visible:outline-offset-4"
-      onPointerMove={onPointer}
-      onPointerDown={onPointer}
-      onPointerLeave={() => !keyboard && setActive(null)}
-      onPointerUp={(e) => e.pointerType !== 'mouse' && setActive(null)}
-      onPointerCancel={() => setActive(null)}
-      onKeyDown={onKey}
-      onBlur={() => setActive(null)}
-    >
-      {point && (
-        <>
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute top-[8%] bottom-[14%] w-px bg-line-strong"
-            style={{ left: `${point.x * 100}%` }}
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-surface bg-accent shadow-float"
-            style={{ left: `${point.x * 100}%`, top: `${point.y * 100}%` }}
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute z-10 flex flex-col gap-0.5 rounded-[12px] bg-fg px-3 py-2.5 whitespace-nowrap text-white shadow-hover"
-            style={tooltipStyle(point)}
-          >
-            <span className="text-[12px] font-semibold text-[#c9bef5]">{point.date}</span>
-            <span className="text-[15px] leading-tight font-extrabold tabular-nums">
-              {point.price}
-            </span>
-            {point.provider && <span className="text-[12px] text-white/80">{point.provider}</span>}
-          </div>
-        </>
-      )}
+    <>
+      <div
+        ref={box}
+        role="slider"
+        tabIndex={0}
+        aria-label={labels.slider}
+        aria-valuemin={0}
+        aria-valuemax={days.length - 1}
+        aria-valuenow={shown}
+        aria-valuetext={valuetext}
+        className="absolute inset-0 cursor-crosshair touch-pan-y rounded-cell focus-visible:outline-offset-4"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endTouch}
+        onPointerCancel={endTouch}
+        onPointerLeave={(e) => e.pointerType === 'mouse' && !focused && select(null)}
+        onKeyDown={onKey}
+        onFocus={() => setFocused(true)}
+        onBlur={() => {
+          setFocused(false);
+          select(null);
+        }}
+      >
+        {day && (
+          <>
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute top-[8%] bottom-[14%] w-px bg-line-strong"
+              style={{ left: `${day.x * 100}%` }}
+            />
+            {day.y !== null && (
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-surface bg-accent ring-1 ring-accent"
+                style={{ left: `${day.x * 100}%`, top: `${day.y * 100}%` }}
+              />
+            )}
+            <div
+              ref={chip}
+              aria-hidden="true"
+              className="pointer-events-none absolute -top-9 flex h-8 items-center gap-2 rounded-full bg-ink-surface px-3 text-[12.5px] whitespace-nowrap text-white shadow-hover"
+              style={{ left: chipLeft }}
+            >
+              <span className="font-semibold text-ink-muted">{day.date}</span>
+              {day.price ? (
+                <span className="text-[14px] font-extrabold tabular-nums">{day.price}</span>
+              ) : (
+                <span className="font-semibold">{labels.noPrice}</span>
+              )}
+              {day.provider && day.price && <span className="text-white/80">{day.provider}</span>}
+            </div>
+          </>
+        )}
+      </div>
+      {/* Outside the slider (its children are presentational). Speaks touch scrubbing only;
+          keyboard users hear aria-valuetext. */}
       <span className="sr-only" aria-live="polite">
-        {keyboard ? readout : ''}
+        {day && touchScrub ? describe(active as number) : ''}
       </span>
-    </div>
+    </>
   );
 }

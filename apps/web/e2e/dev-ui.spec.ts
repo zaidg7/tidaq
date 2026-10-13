@@ -62,31 +62,45 @@ test.describe('/dev/ui', () => {
     await expect(page.getByRole('button', { name: 'Menü öffnen' })).toBeVisible();
   });
 
-  test('price chart: keyboard readout and table fallback', async ({ page }) => {
+  test('price chart: keyboard readout by day and table fallback', async ({ page }) => {
     await page.goto('/dev/ui');
-    const chart = page.locator('#preisverlauf').getByRole('slider').first();
-    await expect(page.locator('#preisverlauf').getByRole('img').first()).toHaveAccessibleName(
+    const section = page.locator('#preisverlauf');
+    const chart = section.getByRole('slider').first();
+    await expect(section.getByRole('img').first()).toHaveAccessibleName(
       /^Preisverlauf über 58 Tage: Tief/,
     );
+    // At rest the slider already names today's price.
+    await expect(chart).toHaveAttribute(
+      'aria-valuetext',
+      /^13\. Okt\.: [\d.]+\s€, Booking\.com, heute$/,
+    );
     await chart.focus();
-    await page.keyboard.press('End');
-    await expect(chart).toHaveAttribute('aria-valuetext', /^13\. Okt\.: [\d.]+\s€, Booking\.com$/);
     await page.keyboard.press('Home');
     await expect(chart).toHaveAttribute('aria-valuetext', /^15\. Aug\.: /);
-    await page.keyboard.press('ArrowRight');
-    await expect(chart).toHaveAttribute('aria-valuenow', '1');
+    // Day 22 and 23 have no price: the slider steps by day and says so.
+    for (let i = 0; i < 22; i++) await page.keyboard.press('ArrowRight');
+    await expect(chart).toHaveAttribute('aria-valuetext', '6. Sept.: kein Preis');
+    await page.keyboard.press('PageDown');
+    await expect(chart).toHaveAttribute('aria-valuenow', '29');
+    await page.keyboard.press('Escape');
+    await expect(chart).toHaveAttribute('aria-valuenow', '59');
 
-    const table = page.locator('#preisverlauf details').first();
+    const table = section.locator('details').first();
     await table.getByText('Als Tabelle anzeigen').click();
-    await expect(table.locator('tbody tr')).toHaveCount(58);
+    await expect(table.getByText('Tabelle ausblenden')).toBeVisible();
+    await expect(table.locator('tbody tr')).toHaveCount(60);
     await expect(table.locator('tbody tr').first()).toContainText('13. Okt.');
+    await expect(table.locator('tbody tr').filter({ hasText: 'kein Preis' })).toHaveCount(2);
   });
 
-  test('price chart: sparse and empty states', async ({ page }) => {
+  test('price chart: sparse, empty, stale and outlier states', async ({ page }) => {
     await page.goto('/dev/ui');
-    await expect(page.getByText('Hier entsteht dein Verlauf')).toHaveCount(2);
+    const section = page.locator('#preisverlauf');
+    await expect(section.getByText('Hier entsteht dein Verlauf')).toHaveCount(1);
     await expect(
-      page.getByRole('img', { name: 'Noch keine Preise für diesen Aufenthalt.' }),
+      section.getByRole('img', { name: 'Noch keine Preise für diesen Aufenthalt.' }),
     ).toBeVisible();
+    await expect(section.getByText('Keine Daten seit 8. Okt.')).toBeVisible();
+    await expect(section.getByText(/↑\s5\.200\s€/)).toBeVisible();
   });
 });

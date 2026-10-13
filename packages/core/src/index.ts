@@ -16,8 +16,10 @@ export {
   areaPath,
   CHART,
   chartGeometry,
+  gridTicks,
   linePath,
-  niceStep,
+  type ChartBand,
+  type ChartDay,
   type ChartGeometry,
   type ChartPoint,
 } from './chart';

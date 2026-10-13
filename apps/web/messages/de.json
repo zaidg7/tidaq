@@ -108,11 +108,16 @@
     "summary": "Preisverlauf über {days} Tage: Tief {low} am {lowDay}, zuletzt {last} am {lastDay}.",
     "empty": "Noch keine Preise für diesen Aufenthalt.",
     "low": "Tief {price}",
-    "avg": "Ø {price}",
+    "avgLegend": "Ø 30 Tage: {price}",
     "building": "Hier entsteht dein Verlauf",
+    "stale": "Keine Daten seit {since}",
     "scrub": "Preis an einem Tag ansehen, mit den Pfeiltasten wählen",
+    "noPrice": "kein Preis",
+    "today": "heute",
     "table": "Als Tabelle anzeigen",
+    "tableHide": "Tabelle ausblenden",
     "date": "Datum",
-    "price": "Bester Preis"
+    "price": "Bester Preis",
+    "provider": "Anbieter"
   }
 }

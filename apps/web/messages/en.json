@@ -108,11 +108,16 @@
     "summary": "Price history over {days} days: low {low} on {lowDay}, latest {last} on {lastDay}.",
     "empty": "No prices for this stay yet.",
     "low": "Low {price}",
-    "avg": "Avg {price}",
+    "avgLegend": "30-day avg: {price}",
     "building": "Your price history starts here",
+    "stale": "No data since {since}",
     "scrub": "See the price on a day, choose with the arrow keys",
+    "noPrice": "no price",
+    "today": "today",
     "table": "Show as table",
+    "tableHide": "Hide table",
     "date": "Date",
-    "price": "Best price"
+    "price": "Best price",
+    "provider": "Provider"
   }
 }
