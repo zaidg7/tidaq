@@ -18,7 +18,14 @@ export function hasServiceRole(): boolean {
   return config() !== null;
 }
 
-async function call(path: string, init: { method: 'GET' | 'POST' | 'PATCH'; body?: object }) {
+type CallInit = {
+  method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
+  body?: object;
+  /** PostgREST `Prefer` header; default `return=minimal`. */
+  prefer?: string;
+};
+
+async function call(path: string, init: CallInit) {
   const cfg = config();
   if (!cfg) throw new Error('Supabase service role is not configured');
   const res = await fetch(`${cfg.url}/rest/v1/${path}`, {
@@ -28,7 +35,7 @@ async function call(path: string, init: { method: 'GET' | 'POST' | 'PATCH'; body
       authorization: `Bearer ${cfg.key}`,
       'content-type': 'application/json',
       accept: 'application/json',
-      prefer: 'return=minimal',
+      prefer: init.prefer ?? 'return=minimal',
     },
     body: init.body ? JSON.stringify(init.body) : undefined,
     signal: AbortSignal.timeout(TIMEOUT_MS),
@@ -40,6 +47,21 @@ async function call(path: string, init: { method: 'GET' | 'POST' | 'PATCH'; body
   }
   const text = await res.text();
   return text ? (JSON.parse(text) as unknown) : null;
+}
+
+/**
+ * PostgREST call with the service role. With a schema the JSON answer is validated and
+ * returned; without one the answer is ignored (writes).
+ */
+export async function serviceRest<T extends z.ZodType>(
+  path: string,
+  schema: T,
+  init?: CallInit,
+): Promise<z.infer<T>>;
+export async function serviceRest(path: string, schema: null, init: CallInit): Promise<void>;
+export async function serviceRest(path: string, schema: z.ZodType | null, init?: CallInit) {
+  const data = await call(path, init ?? { method: 'GET' });
+  if (schema) return schema.parse(data);
 }
 
 const count = z.coerce.number().int();

@@ -1,3 +1,4 @@
+import type { AuditTest } from './audit';
 import type { AdminHealth } from './db';
 
 /**
@@ -60,3 +61,49 @@ export const adminHealthFixture: AdminHealth = {
     },
   ],
 };
+
+export const auditOptionsFixture = {
+  hotels: [
+    { id: 1, name: 'Hotel Adlon Kempinski' },
+    { id: 16, name: 'Villa Kennedy' },
+  ],
+  providers: [
+    { id: 1, name: 'Booking.com' },
+    { id: 2, name: 'Expedia' },
+  ],
+};
+
+export const auditTestsFixture: AuditTest[] = [
+  {
+    id: 2,
+    provider_id: 2,
+    hotel_id: 1,
+    check_in: '2026-12-04',
+    check_out: '2026-12-06',
+    adults: 2,
+    listed_cents: 118_400,
+    checkout_cents: 128_900,
+    outcome: 'higher',
+    extras: ['city_tax', 'fees'],
+    notes: null,
+    tested_at: '2026-10-13T11:40:00Z',
+    providers: { name: 'Expedia' },
+    hotels: { name: 'Hotel Adlon Kempinski' },
+  },
+  {
+    id: 1,
+    provider_id: 1,
+    hotel_id: 1,
+    check_in: '2026-12-04',
+    check_out: '2026-12-06',
+    adults: 2,
+    listed_cents: 118_400,
+    checkout_cents: 118_400,
+    outcome: 'match',
+    extras: [],
+    notes: null,
+    tested_at: '2026-10-13T11:35:00Z',
+    providers: { name: 'Booking.com' },
+    hotels: { name: 'Hotel Adlon Kempinski' },
+  },
+];

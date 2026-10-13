@@ -1,6 +1,7 @@
 import { LogOut } from 'lucide-react';
 import { Dashboard } from '@/components/admin/Dashboard';
-import { Button } from '@/components/ui/Button';
+import Link from 'next/link';
+import { Button, buttonClasses } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { getAdminHealth, hasServiceRole } from '@/lib/admin/db';
 import { requireAdmin } from '@/lib/admin/session';
@@ -17,11 +18,14 @@ export default async function AdminHome({ searchParams }: Props) {
 
   return (
     <AdminFrame wide>
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-col gap-1">
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="mr-auto flex flex-col gap-1">
           <h1 className="text-h2">Übersicht</h1>
           <p className="text-meta text-muted-ink">Angemeldet als {email}</p>
         </div>
+        <Link href="/admin/audit" className={buttonClasses({ variant: 'primary', size: 'sm' })}>
+          Kassen-Check eintragen
+        </Link>
         <form method="post" action="/admin/auth/logout">
           <Button
             type="submit"
