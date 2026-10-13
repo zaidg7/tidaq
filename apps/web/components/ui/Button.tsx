@@ -13,16 +13,22 @@ interface ButtonStyle {
 }
 
 const SIZES: Record<ButtonSize, string> = {
-  sm: 'h-9 px-4 text-[14px] gap-2',
+  // sm is 36 px tall; the ::after band keeps the touch target at 44 px.
+  sm: 'h-9 px-4 text-[14px] gap-2 after:absolute after:-inset-y-1 after:inset-x-0 after:content-[""]',
   md: 'h-11 px-5 text-[15px] gap-2',
-  lg: 'h-[52px] px-6 text-[16px] gap-2.5',
+  lg: 'h-[52px] px-6 text-[16px] gap-2',
 };
 
 const VARIANTS: Record<ButtonVariant, string> = {
+  // The gradient stays; hover/press darken it through a ::before overlay (opacity animates,
+  // background-image would snap). isolate + -z-10 keeps the overlay under the label.
   primary: cn(
-    'bg-accent-gradient text-accent-ink',
-    'hover:-translate-y-px hover:bg-none hover:bg-accent-hover hover:shadow-button',
-    'active:translate-y-0 active:scale-[0.98] active:bg-none active:bg-accent-press active:shadow-none',
+    'isolate bg-accent-gradient text-accent-ink',
+    'before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-[#3b1fa8] before:opacity-0',
+    'before:transition-opacity before:duration-[180ms] before:content-[""]',
+    'hover:-translate-y-px hover:shadow-button hover:before:opacity-[0.18]',
+    'active:translate-y-0 active:scale-[0.98] active:before:opacity-[0.28]',
+    'motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100',
   ),
   ghost: cn(
     'border border-line bg-surface text-fg',

@@ -7,6 +7,7 @@ import {
   ArrowUpRight,
   Bell,
   CalendarDays,
+  Mail,
   MapPin,
   Menu,
   Search,
@@ -34,7 +35,7 @@ export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="flex flex-col gap-3 border-t border-line py-8">
+    <section id={title.toLowerCase()} className="flex flex-col gap-3 border-t border-line py-8">
       <h2 className="text-h3">{title}</h2>
       <div className="flex flex-wrap items-start gap-3">{children}</div>
     </section>
@@ -51,7 +52,7 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
   setRequestLocale(locale);
 
   return (
-    <main className="mx-auto max-w-[1080px] px-[18px] py-10 md:px-7">
+    <main className="mx-auto max-w-[1080px] px-5 py-10 md:px-7">
       <p className="text-eyebrow text-muted">Soft Modern · /dev/ui</p>
       <h1 className="text-display mt-2">Komponenten</h1>
       <p className="mt-3 max-w-[65ch] text-muted">
@@ -63,7 +64,7 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
         <Logo />
         <Logo size="lg" />
         <div className="rounded-card bg-fg px-4 py-3 text-surface">
-          <Logo className="text-surface" />
+          <Logo className="text-surface" onDark />
         </div>
         {/* eslint-disable-next-line @next/next/no-img-element -- static SVG, nothing to optimise */}
         <img src="/icon.svg" alt="Favicon" width={44} height={44} className="rounded-cell" />
@@ -71,13 +72,13 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
 
       <Section title="Typografie">
         <div className="flex w-full flex-col gap-3">
-          <p className="text-display">
-            Siehst du gerade einen <span className="text-accent">Tiefpunkt</span>?
+          <p className="text-display max-w-[16ch]">
+            Ist dein Hotelpreis gerade <span className="text-accent">tief</span> oder hoch?
           </p>
           <p className="text-h2">Wie Tidaq funktioniert</p>
           <p className="text-title">Hotel Adlon Kempinski Berlin</p>
           <p className="text-h3">Preisverlauf der letzten 60 Tage</p>
-          <p className="text-lead max-w-[56ch] text-muted-ink">
+          <p className="text-lead max-w-[30em] text-muted-ink">
             Wir prüfen jeden Tag die Preise deines Hotels bei vielen Buchungsseiten und zeigen dir,
             ob der Preis gerade günstig ist.
           </p>
@@ -193,7 +194,7 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
             <TextField
               id="dev-guests"
               label="Gäste"
-              defaultValue="2 Erwachsene"
+              defaultValue="2 Gäste"
               leading={<Icon icon={Users} size={18} />}
             />
           </div>
@@ -202,6 +203,7 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
             label="E-Mail"
             type="email"
             placeholder="du@beispiel.de"
+            leading={<Icon icon={Mail} size={18} />}
             hint="Wir schicken dir nur Preis-Alarme. Abmelden geht mit einem Klick."
           />
           <TextField
@@ -209,6 +211,7 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
             label="E-Mail"
             type="email"
             defaultValue="name@beispiel"
+            leading={<Icon icon={Mail} size={18} />}
             error="Bitte prüf die E-Mail-Adresse, da fehlt etwas nach dem @."
           />
         </div>
@@ -245,7 +248,8 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
       <Section title="Preise und Abweichung">
         <div className="flex flex-col gap-2">
           <Price cents={118_400} size="xl" />
-          <PriceDelta ratio={-0.05} />
+          <p className="text-meta text-muted-ink">gesamt · 592 € pro Nacht · 2 Nächte, 2 Gäste</p>
+          <PriceDelta ratio={-0.05} className="mt-2" />
           <PriceDelta ratio={0.04} />
           <PriceDelta ratio={0.001} />
           <PriceDelta ratio={-0.12} since="1. Okt." />
@@ -267,26 +271,28 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
       </Section>
 
       <Section title="Karten">
-        <Card className="w-full max-w-[320px] p-5">
+        <Card className="w-full max-w-[320px]">
           <p className="text-h3">Flache Karte</p>
           <p className="text-meta mt-1 text-muted-ink">1 px Rand, kein Schatten.</p>
         </Card>
-        <Card variant="float" className="w-full max-w-[320px] p-5">
+        <Card variant="float" className="w-full max-w-[320px]">
           <p className="text-h3">Schwebende Karte</p>
           <p className="text-meta mt-1 text-muted-ink">
             Zweilagiger Schatten für Suche und Preis-Panel.
           </p>
         </Card>
-        <Card variant="float" radius="search" className="w-full max-w-[320px] p-5">
+        <Card variant="float" radius="search" className="w-full max-w-[320px]">
           <p className="text-h3">Suchkarte</p>
           <p className="text-meta mt-1 text-muted-ink">Radius 26 px.</p>
         </Card>
-        <Card interactive className="w-full max-w-[320px] overflow-hidden">
+        <Card interactive padded={false} className="w-full max-w-[320px] overflow-hidden">
           <div className="bg-placeholder h-[130px]" />
-          <div className="p-4">
-            <p className="text-h3">Platzhalter-Bild</p>
-            <p className="text-meta text-muted-ink">
-              Hover hebt die Karte an. Ohne lizenziertes Foto.
+          <div className="p-5 lg:p-6">
+            <a href="#karten" className="text-h3 after:absolute after:inset-0">
+              Platzhalter-Bild
+            </a>
+            <p className="text-meta mt-1 text-muted-ink">
+              Die ganze Karte ist ein Link: Hover hebt sie an, Tab zeigt den Fokus.
             </p>
           </div>
         </Card>

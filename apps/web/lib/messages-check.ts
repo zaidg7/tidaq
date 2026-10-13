@@ -14,4 +14,5 @@ export const enMatchesDe: Same<Keys<typeof de>, Keys<typeof en>> = true;
 // `soon` is the extra note shown within 7 days of check-in.
 export const adviceHasCopy: Same<AdviceKey | 'soon', keyof (typeof de)['advice']> = true;
 export const statesHaveCopy: Same<StayState, keyof (typeof de)['state']> = true;
+export const shortStatesHaveCopy: Same<StayState, keyof (typeof de)['stateShort']> = true;
 export const trendsHaveCopy: Same<Trend, keyof (typeof de)['trend']> = true;

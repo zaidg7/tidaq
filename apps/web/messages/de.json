@@ -24,7 +24,7 @@
   },
   "state": {
     "collecting": "Daten werden gesammelt ({days}/{needed})",
-    "near_low": "Nahe Tiefpunkt",
+    "near_low": "Nah am Tiefpunkt",
     "good": "Guter Preis",
     "normal": "Normal",
     "high": "Gerade teuer"
@@ -50,5 +50,12 @@
   },
   "logo": {
     "label": "Tidaq, zur Startseite"
+  },
+  "stateShort": {
+    "collecting": "{days}/{needed} Tage",
+    "near_low": "Nah am Tief",
+    "good": "Guter Preis",
+    "normal": "Normal",
+    "high": "Teuer"
   }
 }

@@ -50,5 +50,12 @@
   },
   "logo": {
     "label": "Tidaq, go to the home page"
+  },
+  "stateShort": {
+    "collecting": "{days}/{needed} days",
+    "near_low": "Near the low",
+    "good": "Good price",
+    "normal": "Normal",
+    "high": "Pricey"
   }
 }

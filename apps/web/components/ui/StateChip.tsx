@@ -15,7 +15,7 @@ function ProgressRing({ value }: { value: number }) {
   const r = 4.5;
   const c = 2 * Math.PI * r;
   return (
-    <svg viewBox="0 0 12 12" className="size-3 shrink-0 -rotate-90" aria-hidden="true">
+    <svg viewBox="0 0 12 12" className="size-3 shrink-0 -rotate-90 text-warn" aria-hidden="true">
       <circle
         cx="6"
         cy="6"
@@ -43,20 +43,20 @@ type Props = {
   state: StayState;
   /** Days with data, shown while collecting ("3/7"). */
   daysTracked?: number;
-  /** `sm` for the sticky bar and lists. */
+  /** `sm` for the sticky bar and lists: 22 px tall (= Badge) with short labels ("3/7 Tage"). */
   size?: 'sm' | 'md';
   className?: string;
 };
 
 /** Price state pill with a coloured dot, or a progress ring while collecting. */
 export function StateChip({ state, daysTracked = 0, size = 'md', className }: Props) {
-  const t = useTranslations('state');
+  const t = useTranslations(size === 'sm' ? 'stateShort' : 'state');
   const days = Math.max(0, Math.min(daysTracked, STATS.minDays));
   return (
     <span
       className={cn(
         'inline-flex items-center gap-1.5 rounded-full font-bold whitespace-nowrap',
-        size === 'sm' ? 'h-6 px-2 text-[12px]' : 'h-7 px-2.5 text-[12.5px]',
+        size === 'sm' ? 'h-[22px] px-2 text-[12px]' : 'h-7 px-2.5 text-[12.5px]',
         TONES[state].chip,
         className,
       )}

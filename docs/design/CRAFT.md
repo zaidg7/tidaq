@@ -97,12 +97,13 @@ Plus Jakarta Sans as a **variable font**: one file, weights 200–800, self-host
 **Button**
 - Heights 36 / 44 / 52; padding-x 16 / 20 / 24; gap 8; icon 16/18.
 - Primary:
-  - hover: `--accent-hover`, −1 px lift, `0 8px 20px -8px rgba(106,73,224,.6)`
-  - active: `--accent-press`, scale .98
+  - hover: the gradient stays and darkens through an overlay (18 %, animated opacity; swapping `background-image` would snap), −1 px lift, `0 8px 20px -8px rgba(106,73,224,.6)` plus the inset white edge
+  - active: overlay 28 %, scale .98; no lift or scale under reduced motion
   - disabled: `--line` background, `#8A84A3` text, no shadow
   - loading: same width, hidden label, 16 px spinner, `aria-busy`
 - Ghost: `--surface` background, `--line` border. Hover `--line-strong` border on `--surface-2`.
 - Subtle: accent text, hover `--accent-soft`.
+- sm (36 px) keeps a 44 px touch target with an invisible ::after band.
 - IconButton: 44 px circle.
 - Focus: 2 px accent outline, 2 px offset.
 
@@ -111,6 +112,8 @@ Plus Jakarta Sans as a **variable font**: one file, weights 200–800, self-host
 - Hover: `--line-strong`.
 - Focus-within: white background, accent border, `0 0 0 4px rgba(106,73,224,.14)`, no outer outline.
 - Error: `--bad` border and halo, then a row with AlertCircle 14 px and 13 px 600 `--bad-ink` text.
+- Fields stacked in one form either all have a leading icon or none, so labels line up.
+- Half-width values must fit at 390 px (about 95 px of text): "2 Gäste", not "2 Erwachsene"; hide leading icons in half-width segments below 400 px.
 - The search card is **one segmented group**: Hotel (MapPin) full width, then Daten (CalendarDays) | Gäste (Users); 1 px inner dividers. The active segment turns white with an inset accent ring.
 - Then an lg block button **"Preise ansehen"** Δ. Below it, 12.5 px muted: "Kostenlos · ohne Konto · ohne Cookies".
 
@@ -118,6 +121,7 @@ Plus Jakarta Sans as a **variable font**: one file, weights 200–800, self-host
 - Height 36 (44 px hit area), padding-x 14, 13.5 px 600.
 - Off: white background, `--line` border, `--muted-ink` text.
 - On: `--accent-soft` background, accent border, `--fg` text, leading Check icon (a non-colour cue).
+- On and off have the **same width** (off: 20 px each side; on: 8 left, then the 14 px icon and a 4 px gap, 14 right), so a row never reflows on tap. No wrapping.
 
 **Badge**
 - Sentence case, 12 px 600, height 22, padding-x 8, radius **8** Δ, solid soft tints.
@@ -126,6 +130,7 @@ Plus Jakarta Sans as a **variable font**: one file, weights 200–800, self-host
 **StateChip**
 - Pill, height 28, padding-x 10, 12.5 px 700, a leading 6 px dot in the base colour on the soft tint.
 - `collecting`: a 12 px progress ring instead of the dot (3/7 arc, `--warn`). No pulsing.
+- **sm** (sticky bar, lists): height 22 (= Badge), 12 px, short labels: "3/7 Tage", "Nah am Tief", "Guter Preis", "Normal", "Teuer". md labels: "Nah am Tiefpunkt", "Guter Preis", "Normal", "Gerade teuer", "Daten werden gesammelt (3/7)".
 
 **PriceDelta**
 - Icon (TrendingDown/Up/Minus 14 px), then "**−5 %** unter dem 30-Tage-Schnitt": number 700, rest 500.
@@ -169,14 +174,15 @@ Plus Jakarta Sans as a **variable font**: one file, weights 200–800, self-host
 - Mobile: two-line card rows; the whole row is the tap target.
 
 **TrustScore ("Preistreue")**
-- Box radius 10, height 28: number 14 px 800, then "/100" at 11 px 600 at 70 % of the text colour, then a 3 px × 36 px bar.
-- Sample line at 12.5 px muted: "24 von 25 Tests stimmten".
-- Under 5 tests: a dashed box with "–" and "Noch zu wenig Tests (3)".
+- One geometry for every state, so table columns line up: a box (radius 10, height **28**) on top, a 12.5 px `--muted-ink` line below, max width 132.
+- Scored: in the box, number 14 px 800 + "/100" 11 px 600 (full ink colour: any opacity fails AA), then a 3 × 36 px bar, in one row. Below: "24 von 25 Tests stimmten".
+- Under 5 tests: the same box dashed with "–"; below: "Noch zu wenig Tests (3)" or "Noch nicht getestet".
 
 **Logo**
 - SVG wordmark `tidaq.` from Jakarta 800 outlines at −0.04em (fontTools, so it never waits for the web font), 24 px desktop / 22 px mobile, in `--fg`.
 - The q's descender curls right and ends next to an accent dot: the same "today" dot as in the chart. A longer wave was tried at 22 px and turned into a squiggle, so the curl stays short and clean.
 - Favicon: white `q.` on a `#7A5CF0→#5B3BD1` rounded square. A white "t" was dropped: it looks like Tumblr's icon.
+- On dark surfaces the dot uses the light accent `#9C85FF` (`onDark`).
 
 **Navbar**
 - Sticky. Height 60 mobile / 72 desktop.
