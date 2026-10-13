@@ -176,7 +176,6 @@
   "search": {
     "label": "Search prices",
     "hotel": "Hotel",
-    "hotelPlaceholder": "Choose a hotel",
     "checkIn": "Check-in",
     "checkOut": "Check-out",
     "guests": "Guests",
@@ -190,7 +189,13 @@
     "tooLong": "30 nights max. Pick a shorter stay.",
     "past": "That date has passed. Pick a check-in from today.",
     "adults": "{n, plural, one {# adult} other {# adults}}",
-    "datePlaceholder": "Choose date"
+    "datePlaceholder": "Choose date",
+    "hotelSearchPlaceholder": "Hotel or city",
+    "noMatch": "No hotel found. Try a city like Berlin or Vienna.",
+    "resultsOne": "1 hotel found",
+    "resultsOther": "{n} hotels found",
+    "clear": "Clear",
+    "listLabel": "Hotels"
   },
   "how": {
     "eyebrow": "How it works",
