@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import type { Locale } from '@tidaq/core';
 import { getCatalog } from '@/lib/data/catalog';
 import { berlinToday } from '@/lib/today';
+import { searchCardProps } from '@/lib/searchCardProps';
 import { SearchCard } from './SearchCard';
 
 /** The soft falling hairline under the accent word (CRAFT.md §4.1): the price going down. */
@@ -32,8 +33,7 @@ function Hairline() {
  */
 export async function Hero({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'home' });
-  const ts = await getTranslations({ locale, namespace: 'search' });
-  const catalog = await getCatalog();
+  const [catalog, searchProps] = await Promise.all([getCatalog(), searchCardProps(locale)]);
   const hotels = catalog?.hotels.length ?? 0;
   const cities = catalog?.cityCount ?? 0;
 
@@ -62,27 +62,9 @@ export async function Hero({ locale }: { locale: Locale }) {
               name: h.name,
               city: h.city.name[locale],
             }))}
-            guestOptions={[1, 2, 3, 4].map((n) => ts('adults', { n }))}
             today={berlinToday()}
             locale={locale}
-            labels={{
-              label: ts('label'),
-              hotel: ts('hotel'),
-              hotelPlaceholder: ts('hotelPlaceholder'),
-              checkIn: ts('checkIn'),
-              checkOut: ts('checkOut'),
-              datePlaceholder: ts('datePlaceholder'),
-              guests: ts('guests'),
-              submit: ts('submit'),
-              note: ts('note'),
-              nightsOne: ts('nightsOne'),
-              nightsOther: ts('nightsOther', { n: '{n}' }),
-              hotelMissing: ts('hotelMissing'),
-              datesMissing: ts('datesMissing'),
-              order: ts('order'),
-              tooLong: ts('tooLong'),
-              past: ts('past'),
-            }}
+            {...searchProps}
           />
         </div>
       </div>

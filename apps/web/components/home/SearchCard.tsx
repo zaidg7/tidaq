@@ -6,13 +6,13 @@ import { localizedPath, type Locale } from '@tidaq/core';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
+import { HotelCombobox, type ComboboxLabels } from './HotelCombobox';
 
 export type SearchHotel = { slug: string; name: string; city: string };
 
 type Labels = {
   label: string;
   hotel: string;
-  hotelPlaceholder: string;
   checkIn: string;
   checkOut: string;
   datePlaceholder: string;
@@ -27,6 +27,7 @@ type Labels = {
   order: string;
   tooLong: string;
   past: string;
+  combobox: ComboboxLabels;
 };
 
 type Props = {
@@ -62,8 +63,8 @@ function shortDate(value: string, locale: Locale): string {
 /**
  * Homepage search (CRAFT.md §3 search card): one segmented group, hotel on top, dates below,
  * guests, a full-width "Preise ansehen". Real form controls underneath (native date pickers, a
- * grouped select) for keyboard, screen readers and every phone, with our own display on top.
- * C-021 adds autocomplete and a range picker. Opens the stay page (C-022).
+ * select) for keyboard, screen readers and every phone, with our own display on top. The hotel
+ * field is an autocomplete (C-021a); C-021b adds the date range picker. Opens the stay page (C-022).
  */
 export function SearchCard({ hotels, guestOptions, today, locale, labels }: Props) {
   const id = useId();
@@ -72,11 +73,9 @@ export function SearchCard({ hotels, guestOptions, today, locale, labels }: Prop
   const [checkOut, setCheckOut] = useState('');
   const [adults, setAdults] = useState(2);
   const [submitted, setSubmitted] = useState(false);
+  const [listOpen, setListOpen] = useState(false);
 
   const nights = checkIn && checkOut ? nightsBetween(checkIn, checkOut) : null;
-  const byCity = new Map<string, SearchHotel[]>();
-  for (const h of hotels) byCity.set(h.city, [...(byCity.get(h.city) ?? []), h]);
-  const hotelName = hotels.find((h) => h.slug === hotel)?.name;
 
   const problem = (): { field: Field; text: string } | null => {
     if (!hotel) return { field: 'hotel', text: labels.hotelMissing };
@@ -120,32 +119,24 @@ export function SearchCard({ hotels, guestOptions, today, locale, labels }: Prop
       aria-label={labels.label}
       className="scroll-mt-24 rounded-search border border-accent/10 bg-surface p-4 shadow-float md:p-5"
     >
-      <div className="overflow-hidden rounded-card border border-line bg-field">
+      <div className="rounded-card border border-line bg-field">
         <Segment
           icon={MapPin}
           label={labels.hotel}
           htmlFor={`${id}-hotel`}
           invalid={error?.field === 'hotel'}
+          className={cn('rounded-t-card', listOpen && 'z-20')}
         >
-          <Display value={hotelName} placeholder={labels.hotelPlaceholder} chevron />
-          <select
+          <HotelCombobox
             id={`${id}-hotel`}
+            hotels={hotels}
             value={hotel}
-            onChange={(e) => setHotel(e.target.value)}
-            className="control"
-            {...aria('hotel')}
-          >
-            <option value="">{labels.hotelPlaceholder}</option>
-            {[...byCity].map(([city, list]) => (
-              <optgroup key={city} label={city}>
-                {list.map((h) => (
-                  <option key={h.slug} value={h.slug}>
-                    {h.name}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
+            onChange={setHotel}
+            labels={labels.combobox}
+            invalid={error?.field === 'hotel'}
+            describedBy={error?.field === 'hotel' ? errorId : undefined}
+            onOpenChange={setListOpen}
+          />
         </Segment>
         <div className="grid grid-cols-2 border-t border-line">
           <Segment
@@ -192,7 +183,12 @@ export function SearchCard({ hotels, guestOptions, today, locale, labels }: Prop
           </Segment>
         </div>
         <div className="border-t border-line">
-          <Segment icon={Users} label={labels.guests} htmlFor={`${id}-guests`}>
+          <Segment
+            className="rounded-b-card"
+            icon={Users}
+            label={labels.guests}
+            htmlFor={`${id}-guests`}
+          >
             <Display value={guestOptions[adults - 1]} placeholder="" chevron />
             <select
               id={`${id}-guests`}

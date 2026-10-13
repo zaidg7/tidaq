@@ -176,7 +176,6 @@
   "search": {
     "label": "Preise suchen",
     "hotel": "Hotel",
-    "hotelPlaceholder": "Hotel wählen",
     "checkIn": "Anreise",
     "checkOut": "Abreise",
     "guests": "Gäste",
@@ -190,7 +189,13 @@
     "tooLong": "Höchstens 30 Nächte. Wähl einen kürzeren Zeitraum.",
     "past": "Dieses Datum ist schon vorbei. Wähl eine Anreise ab heute.",
     "adults": "{n, plural, one {# Erwachsener} other {# Erwachsene}}",
-    "datePlaceholder": "Datum wählen"
+    "datePlaceholder": "Datum wählen",
+    "hotelSearchPlaceholder": "Hotel oder Stadt",
+    "noMatch": "Kein Hotel gefunden. Versuch eine Stadt wie Berlin oder Wien.",
+    "resultsOne": "1 Hotel gefunden",
+    "resultsOther": "{n} Hotels gefunden",
+    "clear": "Eingabe löschen",
+    "listLabel": "Hotels"
   },
   "how": {
     "eyebrow": "So funktioniert’s",

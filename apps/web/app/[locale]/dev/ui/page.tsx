@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { addDays, computeStayStats, stayStates, verdictFacts, type Locale } from '@tidaq/core';
 import { ToastDemo } from '@/components/dev/ToastDemo';
+import { SearchCard } from '@/components/home/SearchCard';
+import { searchCardProps } from '@/lib/searchCardProps';
 import { CollectingState } from '@/components/stay/CollectingState';
 import { VerdictBlock } from '@/components/stay/VerdictBlock';
 import { PriceChart } from '@/components/chart/PriceChart';
@@ -37,6 +39,15 @@ import { sampleSeries } from '@/lib/sampleStay';
 
 // APP_ENV is read per request (connection() below): the page must never render on production.
 export const dynamic = 'force-dynamic';
+
+/** Sample catalog for the search card (CI has no database). */
+const DEV_HOTELS = [
+  { slug: 'hotel-adlon-kempinski-berlin', name: 'Hotel Adlon Kempinski', city: 'Berlin' },
+  { slug: 'hotel-de-rome-berlin', name: 'Hotel de Rome', city: 'Berlin' },
+  { slug: 'hotel-bayerischer-hof-muenchen', name: 'Hotel Bayerischer Hof', city: 'München' },
+  { slug: 'baur-au-lac-zuerich', name: 'Baur au Lac', city: 'Zürich' },
+  { slug: 'the-dolder-grand-zuerich', name: 'The Dolder Grand', city: 'Zürich' },
+];
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
@@ -232,6 +243,17 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
             defaultValue="name@beispiel"
             leading={<Icon icon={Mail} size={18} />}
             error="Bitte prüf die E-Mail-Adresse, da fehlt etwas nach dem @."
+          />
+        </div>
+      </Section>
+
+      <Section title="Suche">
+        <div className="w-full max-w-[560px]">
+          <SearchCard
+            hotels={DEV_HOTELS}
+            today="2026-10-13"
+            locale={locale}
+            {...await searchCardProps(locale)}
           />
         </div>
       </Section>
