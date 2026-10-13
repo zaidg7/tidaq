@@ -824,6 +824,7 @@ export type Database = {
     Functions: {
       collector_ingest: { Args: { payload: Json }; Returns: Json }
       prune_raw_snapshots: { Args: { older_than?: string }; Returns: number }
+      rebuild_stay_daily: { Args: { p_stay_ids?: number[] }; Returns: number }
     }
     Enums: {
       [_ in never]: never
