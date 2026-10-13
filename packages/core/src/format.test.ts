@@ -6,6 +6,7 @@ import {
   formatPrice,
   isLocale,
   locales,
+  priceParts,
 } from './format';
 
 // Intl puts a no-break space (U+00A0) between amount and € in German.
@@ -114,5 +115,18 @@ describe('isLocale', () => {
   it('defaults to German', () => {
     expect(defaultLocale).toBe('de');
     expect(locales).toEqual(['de', 'en']);
+  });
+});
+
+describe('priceParts', () => {
+  it('splits German and English prices into amount and currency position', () => {
+    expect(priceParts(118_400, 'de')).toEqual({ amount: '1.184', currencyFirst: false });
+    expect(priceParts(118_400, 'en')).toEqual({ amount: '1,184', currencyFirst: true });
+    expect(priceParts(0, 'de')).toEqual({ amount: '0', currencyFirst: false });
+  });
+
+  it('uses a real minus sign for negative amounts', () => {
+    expect(priceParts(-8_400, 'de').amount).toBe('−84');
+    expect(priceParts(-8_400, 'en').amount).toBe('−84');
   });
 });

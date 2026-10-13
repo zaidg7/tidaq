@@ -3,10 +3,12 @@ export {
   formatDateRange,
   formatPercent,
   formatPrice,
+  priceParts,
   isLocale,
   locales,
   type Locale,
   type PercentOptions,
+  type PriceParts,
 } from './format';
 export { addDays, daysBetween, nights, parseIsoDate, toIsoDate, weekday } from './dates';
 export {

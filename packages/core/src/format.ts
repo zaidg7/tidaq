@@ -33,6 +33,23 @@ export function formatPrice(cents: number, locale: Locale): string {
   return formatter.format(cents / 100);
 }
 
+export interface PriceParts {
+  /** Grouped whole euros: `1.184` (de), `1,184` (en). Negative amounts carry a real minus `−`. */
+  amount: string;
+  /** English puts `€` first (`€1,184`), German after a space (`1.184 €`). */
+  currencyFirst: boolean;
+}
+
+/**
+ * The parts of `formatPrice` for typeset display (small €, narrow no-break space; CRAFT.md §2).
+ * Joined back (`amount + ' €'` / `'€' + amount`) they equal `formatPrice` apart from the space.
+ */
+export function priceParts(cents: number, locale: Locale): PriceParts {
+  const formatted = formatPrice(cents, locale);
+  const amount = formatted.replace(/[€\s\u00a0\u202f]/g, '').replace(/^-/, '−');
+  return { amount, currencyFirst: locale === 'en' };
+}
+
 // Own month names instead of Intl: ICU versions differ between Node, CI and workerd
 // (e.g. spacing around the dash, "Sep" vs "Sept"), and SSR output must be identical everywhere.
 const MONTHS: Record<Locale, readonly string[]> = {

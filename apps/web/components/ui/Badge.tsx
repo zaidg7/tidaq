@@ -4,21 +4,21 @@ import { cn } from '@/lib/cn';
 export type BadgeTone = 'neutral' | 'accent' | 'good' | 'bad' | 'warn';
 
 const TONES: Record<BadgeTone, string> = {
-  neutral: 'bg-line text-muted-ink',
+  neutral: 'bg-neutral-soft text-muted-ink',
   accent: 'bg-accent-soft text-accent',
-  good: 'bg-good/15 text-good-ink',
-  bad: 'bg-bad/15 text-bad-ink',
-  warn: 'bg-warn/15 text-warn-ink',
+  good: 'bg-good-soft text-good-ink',
+  bad: 'bg-bad-soft text-bad-ink',
+  warn: 'bg-warn-soft text-warn-ink',
 };
 
 type Props = HTMLAttributes<HTMLSpanElement> & { tone?: BadgeTone };
 
-/** Small label (radius 10), e.g. "Offizielle Seite" or "Anzeige". */
+/** Small sentence-case label (CRAFT.md §3 Badge), e.g. "Günstigster" or "Partnerlink". */
 export function Badge({ tone = 'neutral', className, ...rest }: Props) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-badge px-2 py-0.5 text-[11px] font-bold tracking-[0.04em] uppercase',
+        'inline-flex h-[22px] items-center rounded-chip-sm px-2 text-[12px] font-semibold whitespace-nowrap',
         TONES[tone],
         className,
       )}

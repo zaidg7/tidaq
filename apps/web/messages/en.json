@@ -35,16 +35,27 @@
     "rising": "rising"
   },
   "priceDelta": {
-    "below": "{percent} below the 30-day average",
-    "above": "{percent} above the 30-day average",
-    "same": "Right at the 30-day average"
+    "below": "<b>{percent}</b> below the 30-day average",
+    "above": "<b>{percent}</b> above the 30-day average",
+    "belowSince": "<b>{percent}</b> below the average since {since}",
+    "aboveSince": "<b>{percent}</b> above the average since {since}",
+    "same": "Right at the 30-day average",
+    "sameSince": "Right at the average since {since}"
   },
   "trust": {
-    "insufficient": "Not enough tests yet",
+    "insufficient": "Not enough tests yet ({tests})",
+    "untested": "Not tested yet",
     "sample": "{matches} of {tests} tests matched",
-    "scoreLabel": "Trust score {score} out of 100"
+    "scoreLabel": "Price accuracy {score} out of 100"
   },
   "logo": {
     "label": "Tidaq, go to the home page"
+  },
+  "stateShort": {
+    "collecting": "{days}/{needed} days",
+    "near_low": "Near the low",
+    "good": "Good price",
+    "normal": "Normal",
+    "high": "Pricey"
   }
 }

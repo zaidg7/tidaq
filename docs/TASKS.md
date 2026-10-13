@@ -34,12 +34,14 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-019 | Web data layer (public reads) and best price from reviewed providers | CLOUD | S | C-013b | DONE |
 | **Phase 2: MVP website** (weeks 44–47, target Sun 22 Nov) |||||
 | C-006a | Design tokens, font, base components, /dev/ui | CLOUD | M | C-001 | DONE |
-| C-006b | Sparkline, Skeleton, EmptyState, visual regression at 390/1280 | CLOUD | S | C-006a | TODO |
-| C-020a | App shell: layout, navbar, footer, locale switch, admin auth | CLOUD | M | C-006a, C-007 | TODO |
-| C-016 | Admin: data health and budget dashboard | CLOUD | M | C-013b, C-020a | TODO |
-| C-032 | Trust audit tool and provider scores (early, so the audit starts in week 45) | CLOUD | M | C-020a, C-004 | TODO |
+| C-006b | Craft pass: CRAFT.md spec, refined tokens and components, logo, icons | CLOUD | M | C-006a | DONE |
+| C-020a | App shell: navbar, footer, locale switch, 404/500, robots | CLOUD | M | C-006b, C-007 | TODO |
+| C-006c | Price chart, RangeBar, Skeleton, EmptyState, Toast, visual regression | CLOUD | M | C-006b | TODO |
+| C-020b | Homepage (reference design, real live example) | CLOUD | L | C-020a, C-006c, C-015, C-019 | TODO |
+| C-020c | Admin auth: Supabase magic link, `/admin` guard | CLOUD | S | C-020a | TODO |
+| C-016 | Admin: data health and budget dashboard | CLOUD | M | C-013b, C-020c | TODO |
+| C-032 | Trust audit tool and provider scores (early, so the audit starts in week 45) | CLOUD | M | C-020c, C-004 | TODO |
 | L-033 | Checkout audit with Claude in Chrome (150 tests, recurring until launch) | LOCAL | L (recurring) | C-032, Z-07 | TODO |
-| C-020b | Homepage (reference design, real live example) | CLOUD | L | C-020a, C-015 | TODO |
 | C-021 | Search: autocomplete, date range picker, guests | CLOUD | M | C-020a, C-011 | TODO |
 | C-022 | Stay page with chart, stats, advice, provider table | CLOUD | L | C-020a, C-015, C-013b | TODO |
 | C-023 | Hotel page with price calendar | CLOUD | M | C-022 | TODO |
@@ -180,11 +182,13 @@ Notes: staging works since 12 Oct: https://tidaq-web-staging.tidaq.workers.dev (
 - [ ] Prod deploy procedure documented in README and tested once (placeholder page on tidaq.com)
 
 ### C-006 · Design tokens and base components
-Owner: CLOUD · Size: L (split a/b) · Depends on: C-001 · Status: a DONE, b TODO · PR: a = [#21](https://github.com/zaidg7/tidaq/pull/21)
+Owner: CLOUD · Size: L (split a/b/c) · Depends on: C-001 · Status: a DONE, b DONE, c TODO · PR: a = [#21](https://github.com/zaidg7/tidaq/pull/21), b = [#23](https://github.com/zaidg7/tidaq/pull/23)
 
 **C-006a notes (DONE):** tokens in `apps/web/app/globals.css` (raw values on `:root`, dark set under `[data-theme='dark']`, Tailwind 4 `@theme inline` → `bg-surface`, `text-muted`, `rounded-card`, `shadow-float`, `ease-soft` …; type roles as `.text-display/.text-h2/.text-h3/.text-price-xl/.text-meta/.text-eyebrow`). **AA fix:** DESIGN.md's good/bad/warn as small text and muted-on-line miss 4.5:1, so small text uses new ink tokens (`text-good-ink` etc., documented in DESIGN.md §2). Plus Jakarta Sans 500/700/800 via `next/font` (`lib/fonts.ts`; buttons use 700 since 600 isn't loaded). Components in `components/ui/`: Logo, Button (+ `buttonClasses` for links), TextField, Chip, Card, Badge, StateChip, Price, PriceDelta, TrustScore; favicon `app/icon.svg`. Core: `trustLevel` (`trust.ts`, thresholds 85/60, < 5 tests → "Noch zu wenig Tests"), `relativeChange` (`stats.ts`). State labels now follow DESIGN.md ("Guter Preis", "Gerade teuer", "Daten werden gesammelt (3/7)"). `/dev/ui` (+ `/en/dev/ui`): every component and state, noindex, `notFound()` when `APP_ENV=production` (rendered per request via `connection()`). E2E: `e2e/dev-ui.spec.ts` (renders, font + background, focus ring, aria-describedby on field errors). Checked at 390 and 1280 px: no horizontal scroll.
 
-**C-006b (TODO):** Sparkline, Skeleton, EmptyState (DESIGN.md §3); Playwright screenshot test of `/dev/ui` at 390 and 1280 px (generate baselines in CI's Linux image, e.g. a `--update-snapshots` workflow run, because font rendering differs between machines).
+**C-006b notes (DONE):** Zaid asked for a design level "like a team of the best graphic designers". Three expert reviews (art direction, benchmark of Linear/Stripe/Airbnb/Hopper/Google Flights, UX + German copy) are in `docs/design/research/2026-10-13-*.md`; their synthesis is **`docs/design/CRAFT.md`**, which now wins over DESIGN.md where they differ (DESIGN.md marks the changes). Delivered: new tokens (surface-2, line-strong, accent-hover/press, solid soft tints, disabled ink, two-layer violet shadows, radii scale, eases), variable Jakarta (any weight, latin-ext), type roles (display/h2/title/h3/lead/price-xl/meta/eyebrow), Lucide icons via `Icon` (stroke 1.75, 2 at ≤ 16 px), refined Button (sizes sm/md/lg, gradient primary, loading, leading icon, IconButton), TextField (leading icon, halo focus, error row), Chip (check icon, 44 px hit area), Badge, StateChip (progress ring), Price (typeset €, core `priceParts`), PriceDelta (icon + bold %, "seit …" variant), TrustScore ("Preistreue", bar, dashed box under 5 tests), Card (flat/float/interactive), logo `tidaq.` drawn from the font outlines (q curls into the accent "today" dot) and favicon `q.` on the violet gradient. Reviewed with screenshots at 390/1280 and a design-critic pass; applied: TrustScore one 28 px geometry and AA "/100", StateChip `sm` 22 px with short labels (`stateShort`), equal-width chips, gradient-keeping button hover, 44 px target for sm buttons, reduced-motion lifts, Card padding/focus/wrapping, "Nah am Tiefpunkt". Deliberately kept: the short q curl (a wave turned into a squiggle at 22 px) and the `q.` favicon (a white t looks like Tumblr). For the next UI tasks: build to CRAFT.md §3, and run the same screenshot + critic loop (CRAFT §6) before merging.
+
+**C-006c (TODO):** PriceChart (CRAFT.md §3: accent line, guarded y-domain, low/today markers, dark tooltip, scrub + keyboard, table fallback), RangeBar, Skeleton, EmptyState (collecting 7-segment bar), Toast; Playwright screenshot test of `/dev/ui` at 390 and 1280 px (generate baselines in CI's Linux image, e.g. a `--update-snapshots` workflow run, because font rendering differs between machines).
 
 **Goal:** the Soft Modern design system from `docs/DESIGN.md` as code.
 
@@ -358,10 +362,10 @@ Notes: `computeStayStats(series, today, checkIn)` in `packages/core/src/stats.ts
 - [x] ≥ 95 % coverage on stats.ts; outputs match PLAN §8.1 examples
 
 ### C-016 · Admin: data health and budget
-Owner: CLOUD · Size: M · Depends on: C-013, C-020a · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-013, C-020c · Status: TODO · PR: –
 
 **Steps**
-1. `/admin` (auth from C-020a): last 14 collector runs (tasks, cost, errors), month-to-date cost vs budget, coverage (active hotels, stays, % stays with today's data), unknown providers to map, hotels with no data in 3 days.
+1. `/admin` (auth from C-020c): last 14 collector runs (tasks, cost, errors), month-to-date cost vs budget, coverage (active hotels, stays, % stays with today's data), unknown providers to map, hotels with no data in 3 days.
 2. Buttons: "Run collector now (staging)", "Deactivate hotel".
 3. Approving a pending provider (unknown provider list) must call SQL `rebuild_stay_daily(null)` afterwards, so best prices include it (C-019).
 
@@ -372,24 +376,29 @@ Owner: CLOUD · Size: M · Depends on: C-013, C-020a · Status: TODO · PR: –
 
 ## Phase 2: MVP website
 
-### C-020a · App shell and admin auth
-Owner: CLOUD · Size: M · Depends on: C-006, C-007 · Status: TODO · PR: –
+### C-020a · App shell
+Owner: CLOUD · Size: M · Depends on: C-006b, C-007 · Status: TODO · PR: –
 
 **Steps**
-1. Root layout per DESIGN.md: navbar (logo, links Preisverlauf · Vertrauens-Check · Deals · So funktioniert's, CTA), footer (legal links, affiliate note, locale switch, © 2026 Tidaq).
+1. Root layout per CRAFT.md §3: navbar (logo, links Hotels · Deals · Kassen-Check · So funktioniert's, CTA "Preise ansehen", scroll state, mobile top sheet), footer (columns, legal links, affiliate note, locale switch, © 2026 Tidaq).
 2. 404 and error pages in brand style.
-3. Admin auth: Supabase magic link to an email in `ADMIN_EMAILS`; middleware protects `/admin/*`.
-4. `robots` noindex on staging.
+3. `robots` noindex on staging.
+4. Locale switch as plain server-rendered links: the current client `LocaleSwitch` puts ~100 kB of JS on `/` (build output), which would hurt Lighthouse.
+
+### C-020c · Admin auth
+Owner: CLOUD · Size: S · Depends on: C-020a · Status: TODO · PR: –
+
+Split from C-020a so the public site ships first. Supabase magic link to an email in `ADMIN_EMAILS`; middleware protects `/admin/*`; no cookies on public pages.
 
 **Done when**
 - [ ] Shell works at 390 px and 1280 px; Lighthouse a11y ≥ 95
 
 ### C-020b · Homepage
-Owner: CLOUD · Size: L · Depends on: C-020a, C-015 · Status: TODO · PR: –
+Owner: CLOUD · Size: L · Depends on: C-020a, C-006c, C-015, C-019 · Status: TODO · PR: –
 
 **Steps**
 1. Build the homepage section by section like `docs/design/reference-homepage.html` (Soft Modern variant): hero + search card, live example panel, how it works (3 steps), trust teaser with figures, deals of the week, final CTA, footer.
-2. The live example uses a real featured stay (config: the stay with the most data and an interesting state); falls back to a static example labeled "Beispiel" if data is missing.
+2. The live example uses a real featured stay: `getFeaturedStay()` (C-019, `apps/web/lib/data/featured.ts`); falls back to a static example labeled "Beispiel" if data is missing.
 3. Copy from the reference, refined; DE and EN.
 
 **Done when**
@@ -490,7 +499,7 @@ Owner: CLOUD · Size: M · Depends on: C-030, C-013 · Status: TODO · PR: –
 After each collector run: evaluate active, confirmed watches against triggers (PLAN §9), throttle to 1 email/watch/day, send via Resend with the price, state, mini chart (OG image URL), best trusted provider and the manage/unsubscribe link (List-Unsubscribe header). Record in `alerts_sent`. Unit tests for every trigger and the throttle.
 
 ### C-032 · Trust audit tool
-Owner: CLOUD · Size: M · Depends on: C-020a, C-004 (scheduled early in Phase 2) · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-020c, C-004 (scheduled early in Phase 2) · Status: TODO · PR: –
 
 **Steps**
 1. `/admin/audit`: a fast mobile-friendly form: pick hotel + stay (prefilled from tracked stays), provider, listed price (as shown on Google Hotels), checkout total, outcome, extras (chips: Citytax extra, Frühstück fehlt, anderes Zimmer, Gebühren, nicht buchbar), screenshot upload (private Storage bucket), notes.
