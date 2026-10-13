@@ -14,5 +14,9 @@ select
   has_table_privilege('anon', 'public.v_stay_public', 'select') as anon_can_read_v_stay_public,
   not has_function_privilege('anon', 'public.prune_raw_snapshots(interval)', 'execute')
     as anon_cannot_prune,
+  not has_function_privilege('anon', 'public.admin_health(integer)', 'execute')
+    as anon_cannot_read_admin_health,
+  not has_function_privilege('authenticated', 'public.admin_health(integer)', 'execute')
+    as auth_cannot_read_admin_health,
   (select count(*) = 0 from pg_tables where schemaname = 'public' and not rowsecurity)
     as all_tables_have_rls;

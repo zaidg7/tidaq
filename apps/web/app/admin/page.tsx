@@ -1,13 +1,19 @@
 import { LogOut } from 'lucide-react';
+import { Dashboard } from '@/components/admin/Dashboard';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
+import { getAdminHealth, hasServiceRole } from '@/lib/admin/db';
 import { requireAdmin } from '@/lib/admin/session';
 import { AdminFrame } from './AdminFrame';
 
-/** Admin start page. C-016 adds data health and budget, C-032 the checkout audit. */
-export default async function AdminHome() {
+type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
+
+/** Admin start page: data health and budget (C-016). C-032 adds the checkout audit. */
+export default async function AdminHome({ searchParams }: Props) {
   const { email } = await requireAdmin('/admin');
+  const params = await searchParams;
+  const flag = (k: 'ok' | 'fail') => (typeof params[k] === 'string' ? `${k}:${params[k]}` : null);
+  const budget = Number(process.env.MONTHLY_BUDGET_USD ?? 12);
 
   return (
     <AdminFrame wide>
@@ -27,12 +33,18 @@ export default async function AdminHome() {
           </Button>
         </form>
       </div>
-      <Card className="flex flex-col gap-2">
-        <h2 className="text-title">Kommt als Nächstes</h2>
+      {hasServiceRole() ? (
+        <Dashboard
+          health={await getAdminHealth()}
+          monthlyBudgetUsd={Number.isFinite(budget) ? budget : 12}
+          now={new Date()}
+          flash={flag('fail') ?? flag('ok') ?? undefined}
+        />
+      ) : (
         <p className="text-muted-ink">
-          Datenqualität und Budget (C-016), Kassen-Check (C-032), Hotelkatalog.
+          Für die Übersicht fehlt hier der Service-Schlüssel (SUPABASE_SERVICE_ROLE_KEY).
         </p>
-      </Card>
+      )}
     </AdminFrame>
   );
 }

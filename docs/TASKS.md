@@ -43,7 +43,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-020b2                                                         | Homepage: how it works, Kassen-Check teaser, deals, final CTA                | CLOUD | M             | C-020b1                           | DONE           |
 | C-006e                                                          | Visual regression screenshots of /dev/ui in CI                               | CLOUD | S             | C-006d                            | DONE           |
 | C-020c                                                          | Admin auth: Supabase magic link, `/admin` guard                              | CLOUD | S             | C-020a                            | DONE           |
-| C-016                                                           | Admin: data health and budget dashboard                                      | CLOUD | M             | C-013b, C-020c                    | TODO           |
+| C-016                                                           | Admin: data health and budget dashboard                                      | CLOUD | M             | C-013b, C-020c                    | DONE           |
+| C-013e                                                          | Villa Kennedy (Frankfurt) gets no prices: check its DataForSEO hotel ID      | CLOUD | S             | C-013b                            | TODO           |
 | C-032                                                           | Trust audit tool and provider scores (early, so the audit starts in week 45) | CLOUD | M             | C-020c, C-004                     | TODO           |
 | L-033                                                           | Checkout audit with Claude in Chrome (150 tests, recurring until launch)     | LOCAL | L (recurring) | C-032, Z-07                       | TODO           |
 | C-021                                                           | Search: autocomplete, date range picker, guests                              | CLOUD | M             | C-020a, C-011                     | TODO           |
@@ -419,7 +420,9 @@ Notes: `computeStayStats(series, today, checkIn)` in `packages/core/src/stats.ts
 
 ### C-016 · Admin: data health and budget
 
-Owner: CLOUD · Size: M · Depends on: C-013, C-020c · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-013, C-020c · Status: DONE · PR: [#32](https://github.com/zaidg7/tidaq/pull/32)
+
+**C-016 notes (DONE):** SQL `admin_health(p_days)` (migration `20261013140140`, service role only, checked in `supabase/tests/rls_check.sql`) returns everything in one call: production runs per German day, month cost, coverage today/yesterday, hotels without prices for 3 days, inactive hotels, pending providers (top 25 by offers in 14 days). Core `healthVerdict` (`health.ts`) turns it into ok / warn / bad plus reasons (no run for 26 h, coverage < 50 % bad / < 90 % warn, judged on today's prices from 09:00 Berlin and yesterday's before, errors, budget-guard skips, ≥ 80 % / 100 % of `MONTHLY_BUDGET_USD`, stale hotels). `/admin` renders `components/admin/Dashboard.tsx` with data from `lib/admin/db.ts` (service role, Zod). Buttons are server actions (`app/admin/actions.ts`, `requireAdmin()` first): approve provider (+ `rebuild_stay_daily(null)`), deactivate / activate hotel, start a staging collector run (`COLLECTOR_STAGING_URL` + run token from core `runToken`, moved there from the collector). Preview with made-up data: `/dev/admin` (never on production). Web vars `MONTHLY_BUDGET_USD`, `COLLECTOR_STAGING_URL` in `apps/web/wrangler.jsonc`. Usable once B-007 is done.
 
 **Steps**
 
@@ -429,7 +432,13 @@ Owner: CLOUD · Size: M · Depends on: C-013, C-020c · Status: TODO · PR: –
 
 **Done when**
 
-- [ ] Zaid can see on his phone in 10 seconds whether data is healthy
+- [x] Zaid can see on his phone in 10 seconds whether data is healthy
+
+### C-013e · Villa Kennedy gets no prices
+
+Owner: CLOUD · Size: S · Depends on: C-013b · Status: TODO · PR: –
+
+Found by the C-016 dashboard on 13 Oct: Villa Kennedy (Frankfurt, hotel id 16) has active stays but no price on any day, while the other 35 active hotels have prices. Check its `dfs_hotel_identifier` with one DataForSEO hotel search call (through the budget guard), compare with the stored ID, fix the ID with a data migration, or deactivate it in `/admin` if DataForSEO doesn't list it.
 
 ---
 

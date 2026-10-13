@@ -17,14 +17,25 @@
     { "pattern": "tidaq.com", "custom_domain": true },
     { "pattern": "www.tidaq.com", "custom_domain": true },
   ],
-  "vars": { "APP_ENV": "production", "ADMIN_EMAILS": "zaidghazal216@gmail.com" },
+  "vars": {
+    "APP_ENV": "production",
+    "ADMIN_EMAILS": "zaidghazal216@gmail.com",
+    // Admin dashboard (C-016): same value as the collector's budget; staging collector for "run now".
+    "MONTHLY_BUDGET_USD": "12",
+    "COLLECTOR_STAGING_URL": "https://tidaq-collector-staging.tidaq.workers.dev",
+  },
   "env": {
     "staging": {
       "name": "tidaq-web-staging",
       "workers_dev": true,
       "routes": [],
       "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "tidaq-web-staging" }],
-      "vars": { "APP_ENV": "staging", "ADMIN_EMAILS": "zaidghazal216@gmail.com" },
+      "vars": {
+        "APP_ENV": "staging",
+        "ADMIN_EMAILS": "zaidghazal216@gmail.com",
+        "MONTHLY_BUDGET_USD": "12",
+        "COLLECTOR_STAGING_URL": "https://tidaq-collector-staging.tidaq.workers.dev",
+      },
     },
   },
 }
