@@ -52,7 +52,7 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
   setRequestLocale(locale);
 
   return (
-    <main className="mx-auto max-w-[1080px] px-5 py-10 md:px-7">
+    <div className="mx-auto w-full max-w-[1080px] px-5 py-10 md:px-7">
       <p className="text-eyebrow text-muted">Soft Modern · /dev/ui</p>
       <h1 className="text-display mt-2">Komponenten</h1>
       <p className="mt-3 max-w-[65ch] text-muted">
@@ -297,6 +297,6 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
           </div>
         </Card>
       </Section>
-    </main>
+    </div>
   );
 }

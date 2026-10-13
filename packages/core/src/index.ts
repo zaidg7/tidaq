@@ -10,6 +10,7 @@ export {
   type PercentOptions,
   type PriceParts,
 } from './format';
+export { localizedPath, splitLocale } from './paths';
 export { addDays, daysBetween, nights, parseIsoDate, toIsoDate, weekday } from './dates';
 export {
   buildGrid,

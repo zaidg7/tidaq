@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
+import { Footer } from '@/components/shell/Footer';
+import { Navbar } from '@/components/shell/Navbar';
 import { routing } from '@/i18n/routing';
 import { jakarta } from '@/lib/fonts';
 import '../globals.css';
@@ -28,11 +30,19 @@ export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
+  // Client components get only the error page copy; everything else renders on the server.
+  const { error } = await getMessages();
 
   return (
     <html lang={locale} className={jakarta.variable}>
-      <body>
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+      <body className="flex min-h-dvh flex-col">
+        <NextIntlClientProvider messages={{ error }}>
+          <Navbar locale={locale} />
+          <main id="inhalt" tabIndex={-1} className="flex flex-1 flex-col outline-none">
+            {children}
+          </main>
+          <Footer locale={locale} />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

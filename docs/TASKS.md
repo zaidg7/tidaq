@@ -35,7 +35,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | **Phase 2: MVP website** (weeks 44–47, target Sun 22 Nov) |||||
 | C-006a | Design tokens, font, base components, /dev/ui | CLOUD | M | C-001 | DONE |
 | C-006b | Craft pass: CRAFT.md spec, refined tokens and components, logo, icons | CLOUD | M | C-006a | DONE |
-| C-020a | App shell: navbar, footer, locale switch, 404/500, robots | CLOUD | M | C-006b, C-007 | TODO |
+| C-020a | App shell: navbar, footer, locale switch, 404/500, robots | CLOUD | M | C-006b, C-007 | DONE |
 | C-006c | Price chart, RangeBar, Skeleton, EmptyState, Toast, visual regression | CLOUD | M | C-006b | TODO |
 | C-020b | Homepage (reference design, real live example) | CLOUD | L | C-020a, C-006c, C-015, C-019 | TODO |
 | C-020c | Admin auth: Supabase magic link, `/admin` guard | CLOUD | S | C-020a | TODO |
@@ -377,7 +377,9 @@ Owner: CLOUD · Size: M · Depends on: C-013, C-020c · Status: TODO · PR: –
 ## Phase 2: MVP website
 
 ### C-020a · App shell
-Owner: CLOUD · Size: M · Depends on: C-006b, C-007 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-006b, C-007 · Status: DONE · PR: [#24](https://github.com/zaidg7/tidaq/pull/24)
+
+**Notes (DONE):** `components/shell/` = Navbar (server; sticky, frosted after 64 px via a CSS scroll-driven animation, no JS; skip link; desktop links with current-page dot, DE/EN, search icon, CTA; mobile: logo, search, menu), MobileMenu (modal `<dialog>` top sheet: native focus trap and Esc), NavLinks + LocaleLinks (tiny client parts, labels from the server, no i18n runtime in the browser), Footer (3 columns), StatusPage. All routes in `lib/routes.ts`; core `localizedPath`/`splitLocale` (tested). Branded 404 (`[locale]/not-found.tsx` + `[...rest]` catch-all, real 404 status) and error boundary (reads only the `error` messages the layout passes to the client provider). `app/robots.ts`: staging disallows all; production allows (pages stay `noindex` until C-041/C-044). `/` first-load JS 216 → 104 kB. The search icon and CTA point to `/#suche` (the hero search card in C-020b must have `id="suche"`). Nav/footer link to pages that don't exist yet (404 until built): `/hotels` (C-024), `/kassen-check` (C-042), `/methodik` (C-034), `/ranking`, `/impressum`, `/datenschutz`, `/affiliate-hinweis` (C-027). Note `lib/cn.ts` doesn't merge conflicting classes: wrap instead of overriding `hidden`/`absolute`.
 
 **Steps**
 1. Root layout per CRAFT.md §3: navbar (logo, links Hotels · Deals · Kassen-Check · So funktioniert's, CTA "Preise ansehen", scroll state, mobile top sheet), footer (columns, legal links, affiliate note, locale switch, © 2026 Tidaq).
@@ -400,6 +402,8 @@ Owner: CLOUD · Size: L · Depends on: C-020a, C-006c, C-015, C-019 · Status: T
 1. Build the homepage section by section like `docs/design/reference-homepage.html` (Soft Modern variant): hero + search card, live example panel, how it works (3 steps), trust teaser with figures, deals of the week, final CTA, footer.
 2. The live example uses a real featured stay: `getFeaturedStay()` (C-019, `apps/web/lib/data/featured.ts`); falls back to a static example labeled "Beispiel" if data is missing.
 3. Copy from the reference, refined; DE and EN.
+
+**Perf baseline (measured in C-020a, Lighthouse 12 mobile on a local `next start`, placeholder home with the shell):** performance 88, accessibility 100, best practices 100, SEO 63 (only the intended pre-launch `noindex`). TBT 430 ms is mostly the React/Next runtime (~119 KiB unused JS); LCP 2.4 s is the hero text. To reach ≥ 90 with real content: keep client components tiny (chart scrub can be one small island), no client-side data fetching, let the live example render on the server, check the font and CSS on the critical path.
 
 **Done when**
 - [ ] Side-by-side with the reference: same structure and feel; real data visible
@@ -445,7 +449,7 @@ Owner: CLOUD · Size: M · Depends on: C-022 · Status: TODO · PR: –
 
 ### C-024 · City pages
 Owner: CLOUD · Size: S · Depends on: C-023 · Status: TODO · PR: –
-`/stadt/[city]`: hotel cards with photo, cheapest upcoming stay, state chip. SEO title and intro text (DE/EN). Links from footer and home.
+`/stadt/[city]`: hotel cards with photo, cheapest upcoming stay, state chip. SEO title and intro text (DE/EN). Links from footer and home. Also `/hotels` (navbar "Hotels", footer "Alle Hotels", added in C-020a): all hotels grouped by city.
 
 ### C-025 · Deals page
 Owner: CLOUD · Size: S · Depends on: C-022 · Status: TODO · PR: –
@@ -541,11 +545,11 @@ Run through the full journey on Zaid's PC (Chrome, Edge) and his iPhone 15 (Safa
 
 ### C-041 · Launch hardening
 Owner: CLOUD · Size: M · Depends on: C-031 · Status: TODO · PR: –
-Lighthouse ≥ 90 (mobile) on home, stay, hotel; axe accessibility checks in Playwright; error monitoring (Workers Logs + a daily error digest email to Zaid, or Sentry free if the connector is set up); Supabase backups confirmed (daily on free plan; document restore); 404/500 pages; security headers (CSP, HSTS, Referrer-Policy); rate limits on API routes.
+Lighthouse ≥ 90 (mobile) on home, stay, hotel; axe accessibility checks in Playwright; error monitoring (Workers Logs + a daily error digest email to Zaid, or Sentry free if the connector is set up); Supabase backups confirmed (daily on free plan; document restore); remove the pre-launch `robots: noindex` from `app/[locale]/layout.tsx` metadata (404/500 pages exist since C-020a); security headers (CSP, HSTS, Referrer-Policy); rate limits on API routes.
 
 ### C-042 · Trust report page
 Owner: CLOUD · Size: S · Depends on: L-033, C-034 · Status: TODO · PR: –
-`/report/checkout-test-2026`: "Wir haben {n} Checkouts getestet": charts of match rate per provider, average markup, most common extras, methodology link, dated. Shareable OG image. This is the launch story.
+`/report/checkout-test-2026`, plus `/kassen-check` (navbar link since C-020a) as the stable entry that shows or links the latest report: "Wir haben {n} Checkouts getestet": charts of match rate per provider, average markup, most common extras, methodology link, dated. Shareable OG image. This is the launch story.
 
 ### C-043 · Launch content pack
 Owner: CLOUD · Size: S · Depends on: C-042 · Status: TODO · PR: –

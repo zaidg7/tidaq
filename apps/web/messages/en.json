@@ -57,5 +57,51 @@
     "good": "Good price",
     "normal": "Normal",
     "high": "Pricey"
+  },
+  "nav": {
+    "label": "Main navigation",
+    "home": "Tidaq, go to the home page",
+    "skip": "Skip to content",
+    "hotels": "Hotels",
+    "deals": "Deals",
+    "checkoutCheck": "Checkout check",
+    "method": "How it works",
+    "search": "Search hotels",
+    "cta": "See prices",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu",
+    "menuTitle": "Menu"
+  },
+  "footer": {
+    "tagline": "Price history for luxury hotels, so you know whether a price is good right now.",
+    "explore": "Explore",
+    "transparency": "Transparency",
+    "legal": "Legal",
+    "links": {
+      "hotels": "All hotels",
+      "deals": "Deals",
+      "method": "How it works",
+      "checkoutCheck": "Checkout check",
+      "ranking": "How we sort",
+      "affiliate": "Affiliate disclosure",
+      "imprint": "Imprint",
+      "privacy": "Privacy"
+    },
+    "copyright": "© {year} Tidaq",
+    "source": "Prices collected daily from booking sites. No cookies."
+  },
+  "notFound": {
+    "meta": "Page not found",
+    "eyebrow": "Error 404",
+    "title": "This page doesn't exist",
+    "text": "The address may have changed, or the page isn't live yet. You'll find all hotels on the home page.",
+    "home": "Go to the home page"
+  },
+  "error": {
+    "eyebrow": "Error",
+    "title": "Something went wrong",
+    "text": "The page couldn't load just now. Please try again in a moment.",
+    "retry": "Try again",
+    "home": "Go to the home page"
   }
 }

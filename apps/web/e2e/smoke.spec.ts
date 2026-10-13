@@ -27,7 +27,7 @@ for (const c of cases) {
 
   test(`locale switch on ${c.path} keeps the page`, async ({ page }) => {
     await page.goto(c.path);
-    await page.getByRole('link', { name: c.switchTo }).click();
+    await page.getByRole('contentinfo').getByRole('link', { name: c.switchTo }).click();
     await expect(page).toHaveURL(new RegExp(`${c.target === '/' ? '/$' : '/en$'}`));
   });
 }
