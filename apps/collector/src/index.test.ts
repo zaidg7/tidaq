@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
-import { runToken, safeEqual } from './auth';
+import { runToken } from '@tidaq/core';
 import type { FetchFn } from './dataforseo';
 import { createWorker, CRON_COLLECT, CRON_DAILY, CRON_EVENING, CRON_MORNING } from './index';
 import { testEnv } from './test/env';
@@ -173,17 +173,6 @@ describe('collector scheduled', () => {
     await expect(worker.scheduled(controller(CRON_MORNING), testEnv())).rejects.toThrow(
       'SUPABASE_URL',
     );
-  });
-});
-
-describe('auth', () => {
-  it('derives a stable 64-char hex token and compares safely', async () => {
-    const a = await runToken('k');
-    expect(a).toMatch(/^[0-9a-f]{64}$/);
-    expect(await runToken('k')).toBe(a);
-    expect(await runToken('other')).not.toBe(a);
-    expect(safeEqual(a, a)).toBe(true);
-    expect(safeEqual(a, a.slice(0, 63))).toBe(false);
   });
 });
 

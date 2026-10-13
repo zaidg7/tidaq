@@ -21,6 +21,7 @@ export {
   randomVerifier,
   safeAdminPath,
 } from './admin';
+export { RUN_TOKEN_MESSAGE, runToken, safeEqual } from './runToken';
 export {
   areaPath,
   CHART,

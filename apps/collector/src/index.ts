@@ -1,4 +1,4 @@
-import { safeEqual, runToken } from './auth';
+import { runToken, safeEqual } from '@tidaq/core';
 import { runCollect } from './collect';
 import type { FetchFn } from './dataforseo';
 import type { Env } from './env';

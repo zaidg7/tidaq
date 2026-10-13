@@ -1,3 +1,5 @@
+/** Manual collector runs (`POST /run`, C-013) and the admin "run now" button (C-016). */
+
 /** Message signed to derive the manual-run token. Changing it invalidates old tokens. */
 export const RUN_TOKEN_MESSAGE = 'tidaq-collector-run';
 
