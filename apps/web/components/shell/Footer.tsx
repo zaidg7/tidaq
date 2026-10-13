@@ -4,7 +4,8 @@ import { Logo } from '@/components/ui/Logo';
 import { routes, type RouteKey } from '@/lib/routes';
 import { LocaleLinks } from './LocaleLinks';
 
-type Column = { title: 'explore' | 'transparency' | 'legal'; links: RouteKey[] };
+type FooterLink = Exclude<RouteKey, 'home' | 'search'>;
+type Column = { title: 'explore' | 'transparency' | 'legal'; links: FooterLink[] };
 
 const COLUMNS: Column[] = [
   { title: 'explore', links: ['hotels', 'deals'] },

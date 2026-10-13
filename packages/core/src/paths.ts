@@ -5,11 +5,15 @@ import { defaultLocale, isLocale, type Locale } from './format';
  * Shared by server and client so a language link needs no i18n runtime in the browser.
  */
 
-/** Splits `/en/hotels/adlon` into `{ locale: 'en', path: '/hotels/adlon' }`. */
+/**
+ * Splits `/en/hotels/adlon` into `{ locale: 'en', path: '/hotels/adlon' }`. A `/de` prefix is
+ * stripped too: the middleware rewrites German pages to `/de/…` internally, and Next's
+ * `usePathname()` can report that internal path.
+ */
 export function splitLocale(pathname: string): { locale: Locale; path: string } {
   const clean = pathname.startsWith('/') ? pathname : `/${pathname}`;
   const [, first = '', ...rest] = clean.split('/');
-  if (isLocale(first) && first !== defaultLocale) {
+  if (isLocale(first)) {
     return { locale: first, path: `/${rest.join('/')}` };
   }
   return { locale: defaultLocale, path: clean };

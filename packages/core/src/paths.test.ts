@@ -15,7 +15,12 @@ describe('splitLocale', () => {
 
   it('does not mistake look-alike segments for a locale', () => {
     expect(splitLocale('/english')).toEqual({ locale: 'de', path: '/english' });
-    expect(splitLocale('/de/x')).toEqual({ locale: 'de', path: '/de/x' });
+    expect(splitLocale('/deals')).toEqual({ locale: 'de', path: '/deals' });
+  });
+
+  it('strips the internal German prefix', () => {
+    expect(splitLocale('/de')).toEqual({ locale: 'de', path: '/' });
+    expect(splitLocale('/de/hotels')).toEqual({ locale: 'de', path: '/hotels' });
   });
 });
 
@@ -30,6 +35,8 @@ describe('localizedPath', () => {
   it('keeps the locale when it is already right', () => {
     expect(localizedPath('/en/deals', 'en')).toBe('/en/deals');
     expect(localizedPath('/deals', 'de')).toBe('/deals');
+    expect(localizedPath('/de/deals', 'en')).toBe('/en/deals');
+    expect(localizedPath('/de', 'de')).toBe('/');
   });
 
   it('drops trailing slashes', () => {

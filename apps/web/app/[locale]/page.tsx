@@ -2,7 +2,6 @@ import { use } from 'react';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import type { Locale } from '@tidaq/core';
-import { LocaleSwitch } from '@/components/LocaleSwitch';
 
 export default function Home({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = use(params);
@@ -10,10 +9,9 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
   const t = useTranslations('home');
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6 text-center">
-      <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
-      <p>{t('intro')}</p>
-      <LocaleSwitch />
-    </main>
+    <div className="flex flex-1 flex-col items-center justify-center gap-4 px-5 py-24 text-center">
+      <h1 className="text-h2">{t('title')}</h1>
+      <p className="text-lead max-w-[30em] text-muted-ink">{t('intro')}</p>
+    </div>
   );
 }

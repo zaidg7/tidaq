@@ -28,15 +28,12 @@ export async function Navbar({ locale }: { locale: Locale }) {
 
   return (
     <header className="site-header sticky top-0 z-40 border-b border-transparent">
-      <a
-        href="#inhalt"
-        className={cn(
-          buttonClasses({ size: 'sm' }),
-          'absolute top-3 left-3 z-50 -translate-y-20 focus-visible:translate-y-0',
-        )}
-      >
-        {t('skip')}
-      </a>
+      {/* `cn` doesn't merge conflicting classes, so the wrapper owns position and visibility. */}
+      <div className="absolute top-3 left-3 z-50 -translate-y-24 focus-within:translate-y-0">
+        <a href="#inhalt" className={buttonClasses({ size: 'sm' })}>
+          {t('skip')}
+        </a>
+      </div>
       <div className="mx-auto flex h-[60px] max-w-[1080px] items-center gap-2 px-5 md:px-7 lg:h-[72px]">
         <a
           href={localizedPath(routes.home, locale)}
@@ -62,12 +59,11 @@ export async function Navbar({ locale }: { locale: Locale }) {
         >
           <Icon icon={Search} />
         </a>
-        <a
-          href={localizedPath(routes.search, locale)}
-          className={cn(buttonClasses({ size: 'sm' }), 'ml-1 hidden lg:inline-flex')}
-        >
-          {t('cta')}
-        </a>
+        <span className="ml-1 hidden lg:block">
+          <a href={localizedPath(routes.search, locale)} className={buttonClasses({ size: 'sm' })}>
+            {t('cta')}
+          </a>
+        </span>
         <MobileMenu
           items={items}
           locale={locale}
