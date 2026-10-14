@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { localizedPath } from './paths';
-import { ADULTS, parseStayParams, stayPath } from './stayParams';
+import { ADULTS, hotelPath, parseStayParams, stayPath } from './stayParams';
 
 describe('parseStayParams', () => {
   it('reads a valid stay with adults', () => {
@@ -70,5 +70,11 @@ describe('stayPath', () => {
     expect(path).toBe('/hotel/hotel-adlon-kempinski-berlin/2026-12-04--2026-12-06?adults=2');
     expect(localizedPath(path, 'en')).toBe(`/en${path}`);
     expect(localizedPath(path, 'de')).toBe(path);
+  });
+});
+
+describe('hotelPath', () => {
+  it('is the stay path without the dates', () => {
+    expect(hotelPath('aman-tokyo')).toBe('/hotel/aman-tokyo');
   });
 });

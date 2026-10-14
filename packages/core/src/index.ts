@@ -29,11 +29,23 @@ export {
 export {
   ADULTS,
   parseStayParams,
+  hotelPath,
   stayPath,
   type StayParams,
   type StayParamsResult,
 } from './stayParams';
 export { parseEuroCents } from './money';
+export {
+  BEST_STAY_KINDS,
+  cheapestStays,
+  PRICE_LEVELS,
+  priceLevels,
+  stayFromNights,
+  type BestStay,
+  type BestStayKind,
+  type NightPrice,
+  type StayTotal,
+} from './hotelCalendar';
 export {
   accuracyShare,
   inNightGrid,
@@ -205,3 +217,4 @@ export {
   type OutboundHotel,
   type OutboundStay,
 } from './outbound';
+export { hotelJsonLd, jsonLdString, SITE_ORIGIN, type HotelJsonLdInput } from './structuredData';

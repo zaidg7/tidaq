@@ -7,6 +7,9 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     await page.goto('/dev/stay/tracked');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Hotel Adlon Kempinski');
     await expect(page.getByText('4.–6. Dez. 2026 · 2 Nächte · 2 Erwachsene')).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Preise jeder Nacht in diesem Hotel' }),
+    ).toHaveAttribute('href', '/hotel/hotel-adlon-kempinski-berlin');
     await expect(page.getByText('Guter Preis').first()).toBeVisible();
 
     await expect(page.getByRole('term')).toHaveText(['Tief', 'Ø 30 Tage', 'Hoch']);
