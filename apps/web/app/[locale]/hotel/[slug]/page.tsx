@@ -2,7 +2,14 @@ import { cache } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { hotelJsonLd, hotelPath, jsonLdString, localizedPath, type Locale } from '@tidaq/core';
+import {
+  alternatesFor,
+  hotelJsonLd,
+  hotelPath,
+  jsonLdString,
+  localizedPath,
+  type Locale,
+} from '@tidaq/core';
 import { HotelView } from '@/components/hotel/HotelView';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
@@ -36,7 +43,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   return {
     title: t('metaTitle', { hotel: hotel.name }),
     description: t('metaDescription', { hotel: hotel.name, city }),
-    alternates: { canonical: localizedPath(hotelPath(slug), locale) },
+    alternates: alternatesFor(hotelPath(slug), locale),
   };
 }
 

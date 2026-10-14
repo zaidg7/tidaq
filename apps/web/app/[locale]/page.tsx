@@ -1,5 +1,6 @@
-import { setRequestLocale } from 'next-intl/server';
-import type { Locale } from '@tidaq/core';
+import type { Metadata } from 'next';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { alternatesFor, jsonLdString, siteJsonLd, type Locale } from '@tidaq/core';
 import { CheckoutTeaser } from '@/components/home/CheckoutTeaser';
 import { Deals } from '@/components/home/Deals';
 import { FinalCta } from '@/components/home/FinalCta';
@@ -10,11 +11,24 @@ import { LiveExample } from '@/components/home/LiveExample';
 // Live prices change every morning: render per request (no build-time snapshot).
 export const dynamic = 'force-dynamic';
 
-export default async function Home({ params }: { params: Promise<{ locale: Locale }> }) {
+type Props = { params: Promise<{ locale: Locale }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return { alternates: alternatesFor('/', locale) };
+}
+
+export default async function Home({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: 'meta' });
   return (
     <>
+      <script
+        type="application/ld+json"
+        // Escaped by jsonLdString: no `<` can end the script early.
+        dangerouslySetInnerHTML={{ __html: jsonLdString(siteJsonLd(t('description'), locale)) }}
+      />
       <Hero locale={locale} />
       <LiveExample locale={locale} />
       <HowItWorks locale={locale} />
