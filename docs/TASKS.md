@@ -944,7 +944,7 @@ Owner: CLOUD · Size: S · Depends on: C-042 · Status: TODO · PR: –
 ### C-044 · Go live
 
 Owner: CLOUD · Size: S · Depends on: C-041, L-040, Z-12 · Status: TODO · PR: –
-Final launch checklist (below), production deploy to tidaq.com, collector prod caps set, Search Console sitemap submitted, smoke test in production, announce in the weekly summary issue. **Alerts:** set the production collector's `ALERTS_DRY_RUN` to `"false"` (`apps/collector/wrangler.jsonc`) in the launch PR; until then no alert email reaches users (C-031a).
+Final launch checklist (below), production deploy to tidaq.com, collector prod caps set, Search Console sitemap submitted, smoke test in production, announce in the weekly summary issue. **Alerts:** set the production collector's `ALERTS_DRY_RUN` to `"false"` (`apps/collector/wrangler.jsonc`) in the launch PR; until then no alert email reaches users (C-031a). **Indexing:** the production web deploy is what makes tidaq.com indexable (C-041b); after it, `curl -sI https://tidaq.com/` must show **no** `X-Robots-Tag` and `/robots.txt` must allow crawling, then submit the sitemap in Search Console (Z-09).
 
 ---
 
