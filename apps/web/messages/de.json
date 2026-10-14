@@ -235,7 +235,17 @@
     "eyebrow": "Gerade gefallen",
     "title": "Fünf-Sterne-Deals dieser Woche",
     "meta": "{dates} · {adults, plural, one {# Erwachsener} other {# Erwachsene}}",
-    "all": "Alle Deals"
+    "all": "Alle Deals",
+    "pageTitle": "Fünf-Sterne-Hotels, die gerade günstiger sind",
+    "intro": "Aufenthalte, deren heutiger Preis mindestens {pct} % unter ihrem eigenen 30-Tage-Schnitt liegt. Nur mit mindestens {days} Tagen Verlauf, pro Hotel der größte Rückgang.",
+    "filterLabel": "Nach Stadt filtern",
+    "allCities": "Alle Städte",
+    "emptyTitle": "Gerade gibt es keine Deals",
+    "emptyText": "Wir zeigen nur echte Rückgänge: mindestens {pct} % unter dem 30-Tage-Schnitt, mit {days} Tagen Verlauf. Gerade erfüllt kein Aufenthalt das. Im Kalender jedes Hotels siehst du trotzdem die günstigsten Nächte.",
+    "emptyCta": "Alle Hotels ansehen",
+    "metaTitle": "Deals: Fünf-Sterne-Hotels unter ihrem Durchschnittspreis | Tidaq",
+    "metaDescription": "Luxushotels, deren Preis gerade deutlich unter dem eigenen 30-Tage-Schnitt liegt. Nur echte Rückgänge, täglich aktualisiert.",
+    "unavailable": "Die Deals sind gerade nicht erreichbar. Versuch es gleich noch einmal."
   },
   "cta": {
     "title": "Finde den richtigen Moment für dein Hotel.",
