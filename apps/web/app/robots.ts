@@ -5,8 +5,8 @@ import { SITE_ORIGIN } from '@tidaq/core';
 export const dynamic = 'force-dynamic';
 
 /**
- * Staging is never crawled. Production allows crawling; until launch every page still carries
- * `noindex` (layout metadata), which C-041 removes.
+ * Staging is never crawled (and its pages send `X-Robots-Tag: noindex`, middleware). Production
+ * allows crawling except admin, outbound redirects and dev pages; it's only deployed at launch.
  */
 export default function robots(): MetadataRoute.Robots {
   if (process.env.APP_ENV !== 'production') {

@@ -13,10 +13,15 @@ export default function middleware(request: NextRequest) {
     return NextResponse.redirect(`https://${CANONICAL_HOST}${pathname}${search}`, 308);
   }
   // The admin area has no locales; its pages guard themselves (lib/admin/session.ts).
-  if (request.nextUrl.pathname === '/admin' || request.nextUrl.pathname.startsWith('/admin/')) {
-    return NextResponse.next();
+  const admin =
+    request.nextUrl.pathname === '/admin' || request.nextUrl.pathname.startsWith('/admin/');
+  const response = admin ? NextResponse.next() : intl(request);
+  // Staging and previews are never indexed (C-041b). A header, not page metadata: APP_ENV is a
+  // Worker var, read per request, while legal pages are prerendered at build time.
+  if (process.env.APP_ENV !== 'production') {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow');
   }
-  return intl(request);
+  return response;
 }
 
 export const config = {
