@@ -283,7 +283,7 @@
     "cheapest": "Günstigster",
     "expected": "an der Kasse ≈ {price}",
     "offersNote": "Gesamtpreis für den ganzen Aufenthalt, wie ihn der Anbieter bei unserer letzten Abfrage gemeldet hat. Mit Preistreue zeigen wir, wie oft der Preis an der Kasse stimmte. Die Reihenfolge hängt nie von Provisionen ab.",
-    "offersUnreviewed": "{n, plural, one {Ein weiterer Anbieter hatte} other {# weitere Anbieter hatten}} einen Preis, ist aber noch nicht von uns geprüft.",
+    "offersUnreviewed": "{n, plural, one {Ein weiterer Anbieter hatte einen Preis, ist aber noch nicht von uns geprüft.} other {# weitere Anbieter hatten einen Preis, sind aber noch nicht von uns geprüft.}}",
     "watchTitle": "Preis beobachten",
     "watchText": "Wir schreiben dir eine E-Mail, wenn der Preis für diesen Aufenthalt fällt. Kostenlos, abmelden mit einem Klick.",
     "watchSoon": "Bald verfügbar"

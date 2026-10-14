@@ -7,9 +7,10 @@ import {
   type Locale,
   type StayOffer,
 } from '@tidaq/core';
+import { Hotel } from 'lucide-react';
+import { Icon } from '@/components/ui/Icon';
 import { Badge } from '@/components/ui/Badge';
 import { TrustScore } from '@/components/ui/TrustScore';
-import { cn } from '@/lib/cn';
 import { routes } from '@/lib/routes';
 
 type Props = {
@@ -76,13 +77,13 @@ export function ProviderTable({ offers, unreviewed, day, today, className }: Pro
           {ranked.map((o) => (
             <li
               key={o.providerId}
-              className="grid min-h-[72px] grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 px-4 py-3 transition-colors duration-[180ms] ease-soft hover:bg-surface-2 sm:grid-cols-[32px_minmax(0,1fr)_120px_132px] sm:px-5"
+              className="grid min-h-[72px] grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 px-4 py-3 sm:grid-cols-[32px_minmax(0,1fr)_120px_176px] sm:px-5"
             >
               <span
                 aria-hidden="true"
                 className="grid size-8 place-items-center rounded-[10px] bg-surface-2 text-[12px] font-bold text-muted-ink ring-1 ring-line"
               >
-                {monogram(o.isDirect ? t('direct') : o.name)}
+                {o.isDirect ? <Icon icon={Hotel} size={16} /> : monogram(o.name)}
               </span>
               <span className="flex min-w-0 flex-col">
                 <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -109,7 +110,8 @@ export function ProviderTable({ offers, unreviewed, day, today, className }: Pro
                 score={o.trust?.score ?? null}
                 tests={o.trust?.tests ?? 0}
                 matches={o.trust?.matches ?? 0}
-                className={cn('col-span-2 col-start-2 sm:col-span-1 sm:col-start-auto')}
+                // Phones: box and note side by side under the name, so rows stay short.
+                className="col-span-2 col-start-2 max-sm:max-w-none max-sm:flex-row max-sm:items-center max-sm:gap-2 sm:col-span-1 sm:col-start-auto sm:max-w-[176px]"
               />
             </li>
           ))}

@@ -283,7 +283,7 @@
     "cheapest": "Cheapest",
     "expected": "at checkout ≈ {price}",
     "offersNote": "Total price for the whole stay, as the provider reported it at our latest check. Price accuracy shows how often the checkout price matched. Commissions never affect the order.",
-    "offersUnreviewed": "{n, plural, one {One more provider had} other {# more providers had}} a price but isn't checked by us yet.",
+    "offersUnreviewed": "{n, plural, one {One more provider had a price but isn’t checked by us yet.} other {# more providers had a price but aren’t checked by us yet.}}",
     "watchTitle": "Watch this price",
     "watchText": "We'll email you when the price for this stay drops. Free, unsubscribe with one click.",
     "watchSoon": "Coming soon"
