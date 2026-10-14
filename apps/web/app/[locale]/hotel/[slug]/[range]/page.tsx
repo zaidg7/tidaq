@@ -5,6 +5,7 @@ import { notFound, redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import {
+  alternatesFor,
   formatDateRange,
   localizedPath,
   parseStayParams,
@@ -70,9 +71,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       hotel: result.data.hotel.name,
       dates: formatDateRange(p.checkIn, p.checkOut, locale),
     }),
-    alternates: {
-      canonical: localizedPath(stayPath(slug, p.checkIn, p.checkOut, p.adults), locale),
-    },
+    alternates: alternatesFor(stayPath(slug, p.checkIn, p.checkOut, p.adults), locale),
   };
 }
 

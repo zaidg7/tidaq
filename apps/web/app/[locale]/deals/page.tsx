@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { localizedPath, type Locale } from '@tidaq/core';
+import { alternatesFor, localizedPath, type Locale } from '@tidaq/core';
 import { DealsView } from '@/components/deals/DealsView';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
@@ -24,10 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t('metaTitle'),
     description: t('metaDescription'),
     // Filtered views are the same page: one canonical URL.
-    alternates: {
-      canonical: localizedPath(routes.deals, locale),
-      languages: { de: localizedPath(routes.deals, 'de'), en: localizedPath(routes.deals, 'en') },
-    },
+    alternates: alternatesFor(routes.deals, locale),
   };
 }
 

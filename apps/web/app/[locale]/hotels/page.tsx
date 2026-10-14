@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { localizedPath, type Locale } from '@tidaq/core';
+import { alternatesFor, localizedPath, type Locale } from '@tidaq/core';
 import { HotelDirectory } from '@/components/city/HotelDirectory';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
@@ -18,10 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t('metaTitle'),
     description: t('metaDescription'),
-    alternates: {
-      canonical: localizedPath(routes.hotels, locale),
-      languages: { de: localizedPath(routes.hotels, 'de'), en: localizedPath(routes.hotels, 'en') },
-    },
+    alternates: alternatesFor(routes.hotels, locale),
   };
 }
 

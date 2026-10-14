@@ -80,7 +80,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | DONE           |
 | C-024b                                                          | Search card: a city option opens the city page                               | CLOUD | S             | C-024                             | DONE           |
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | DONE           |
-| C-028                                                           | SEO foundation and dynamic OG images                                         | CLOUD | M             | C-022                             | TODO           |
+| C-028a                                                          | SEO: canonical, hreflang, sitemap, site JSON-LD                              | CLOUD | S             | C-022                             | DONE           |
+| C-028b                                                          | Dynamic OG images for stay, hotel and city pages                             | CLOUD | S             | C-028a                            | TODO           |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | TODO           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030                                                           | Watch flow with double opt-in and manage/unsubscribe                         | CLOUD | M             | C-022, Z-05                       | TODO           |
@@ -757,8 +758,15 @@ Owner: CLOUD · Size: M · Depends on: C-020a · Status: TODO · PR: –
 
 ### C-028 · SEO foundation and OG images
 
-Owner: CLOUD · Size: M · Depends on: C-022 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-022 · Status: split into C-028a (DONE) and C-028b (OG images, TODO) · PR: –
 Metadata per page (DE/EN), hreflang, canonical, sitemap index per locale, robots (staging noindex), JSON-LD (Organization, Hotel), dynamic OG images for stay and hotel pages (price, sparkline, state chip, brand) via `next/og` (check Workers compatibility; fall back to a pre-rendered image route). Google Search Console verification via DNS (Z-09).
+
+**C-028a notes (DONE):** Core `alternatesFor(path, locale)` gives every page its canonical plus `de`, `en` and `x-default` (German) alternates; used by home, hotel, stay, city, `/hotels`, `/deals` and the legal pages. The locale layout sets `metadataBase` = `https://tidaq.com` (core `SITE_ORIGIN`), so all of these are absolute, plus Open Graph defaults (site name, `de_DE`/`en_GB`) and `summary_large_image`. The homepage has Organization + WebSite JSON-LD (core `siteJsonLd`). `/sitemap.xml` (`app/sitemap.ts`): static pages, every city and hotel page, each in DE and EN with hreflang; no stay pages (endless dates). `robots.txt` names the sitemap in production. Pages stay `noindex` until C-041. Search Console verification is Z-09.
+
+### C-028b · Dynamic OG images
+
+Owner: CLOUD · Size: S · Depends on: C-028a · Status: TODO · PR: –
+`next/og` images (1200×630) for stay, hotel and city pages: brand, hotel/city name, today's price or cheapest weekend, a small sparkline for stays. Check the Workers bundle size and CPU (fall back to a pre-rendered route if `next/og` doesn't run on Workers). Default image for all other pages.
 
 ### C-029 · Analytics events
 

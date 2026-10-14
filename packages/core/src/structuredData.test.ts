@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { hotelJsonLd, jsonLdString } from './structuredData';
+import { hotelJsonLd, jsonLdString, siteJsonLd } from './structuredData';
 
 describe('hotelJsonLd', () => {
   const base = {
@@ -34,5 +34,24 @@ describe('jsonLdString', () => {
     const s = jsonLdString({ name: '</script><b>' });
     expect(s).not.toContain('<');
     expect(JSON.parse(s)).toEqual({ name: '</script><b>' });
+  });
+});
+
+describe('siteJsonLd', () => {
+  it('describes Tidaq as organization and website, linked by id', () => {
+    const data = siteJsonLd('Preisverlauf für Luxushotels', 'de') as {
+      '@graph': Record<string, unknown>[];
+    };
+    const [org, site] = data['@graph'];
+    expect(org).toMatchObject({
+      '@type': 'Organization',
+      name: 'Tidaq',
+      url: 'https://tidaq.com/',
+    });
+    expect(site).toMatchObject({
+      '@type': 'WebSite',
+      inLanguage: 'de',
+      publisher: { '@id': org?.['@id'] },
+    });
   });
 });
