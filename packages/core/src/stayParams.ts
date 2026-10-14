@@ -61,3 +61,8 @@ export function parseStayParams(range: string, adults?: string | string[]): Stay
 export function stayPath(slug: string, checkIn: string, checkOut: string, adults: number): string {
   return `/hotel/${slug}/${checkIn}--${checkOut}?adults=${adults}`;
 }
+
+/** The hotel page path without locale prefix: `/hotel/adlon` (C-023a). */
+export function hotelPath(slug: string): string {
+  return `/hotel/${slug}`;
+}
