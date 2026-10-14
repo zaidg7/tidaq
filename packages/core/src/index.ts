@@ -57,7 +57,7 @@ export {
 } from './nightGrid';
 export { expectedCheckoutCents, rankOffers, type RankedOffer, type StayOffer } from './offers';
 export { toCsv } from './csv';
-export { foldText, matchHotels, type SearchableHotel } from './search';
+export { foldText, matchesCity, matchHotels, type SearchableHotel } from './search';
 export {
   STAY_LIMITS,
   dayDiff,

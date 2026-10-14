@@ -1,6 +1,8 @@
 import 'server-only';
 import { getTranslations } from 'next-intl/server';
-import type { Locale } from '@tidaq/core';
+import { cityIn, cityPath, localizedPath, type Locale } from '@tidaq/core';
+import type { SearchHotel } from '@/components/home/SearchCard';
+import type { CatalogHotel } from '@/lib/data/catalog';
 
 /**
  * The translated strings and guest options for `SearchCard` (a client component without
@@ -51,4 +53,25 @@ export async function searchCardProps(locale: Locale) {
       past: ts('past'),
     },
   };
+}
+
+/**
+ * The search card's hotel list in the page language, each with its city page link and the
+ * "Alle Hotels in …" label for the combobox's city option (C-024b).
+ */
+export async function searchHotels(
+  hotels: readonly CatalogHotel[],
+  locale: Locale,
+): Promise<SearchHotel[]> {
+  const ts = await getTranslations({ locale, namespace: 'search' });
+  return hotels.map((h) => {
+    const city = h.city.name[locale];
+    return {
+      slug: h.slug,
+      name: h.name,
+      city,
+      cityHref: localizedPath(cityPath(h.city.slug), locale),
+      cityAll: ts('cityAll', { where: cityIn(h.city.slug, city, locale) }),
+    };
+  });
 }

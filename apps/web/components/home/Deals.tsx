@@ -1,8 +1,6 @@
 import { getTranslations } from 'next-intl/server';
-import { formatDateRange, localizedPath, type Locale } from '@tidaq/core';
-import { Card } from '@/components/ui/Card';
-import { Price } from '@/components/ui/Price';
-import { PriceDelta } from '@/components/ui/PriceDelta';
+import { localizedPath, type Locale } from '@tidaq/core';
+import { DealCard, dealMetaValues } from '@/components/deals/DealCard';
 import { getDeals } from '@/lib/data/deals';
 import { routes } from '@/lib/routes';
 
@@ -37,39 +35,7 @@ export async function Deals({ locale }: { locale: Locale }) {
       <ul className="mt-8 grid gap-4 md:grid-cols-3">
         {deals.map((d) => (
           <li key={d.stayId}>
-            <Card interactive padded={false} className="h-full overflow-hidden">
-              {d.imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element -- licensed photo, self-hosted (C-011c), already sized
-                <img
-                  src={d.imageUrl}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  className="bg-placeholder aspect-[16/10] w-full object-cover"
-                />
-              ) : (
-                <div aria-hidden="true" className="bg-placeholder aspect-[16/10] w-full" />
-              )}
-              <div className="p-5">
-                <a
-                  href={localizedPath(`/hotel/${d.hotelSlug}/${d.checkIn}--${d.checkOut}`, locale)}
-                  className="text-h3 after:absolute after:inset-0"
-                >
-                  {d.hotelName}
-                </a>
-                <p className="text-meta mt-1 text-muted-ink">
-                  {d.cityName[locale]} ·{' '}
-                  {t('meta', {
-                    dates: formatDateRange(d.checkIn, d.checkOut, locale),
-                    adults: d.adults,
-                  })}
-                </p>
-                <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                  <Price cents={d.nowCents} size="lg" />
-                  <PriceDelta ratio={d.drop} />
-                </div>
-              </div>
-            </Card>
+            <DealCard deal={d} locale={locale} meta={t('meta', dealMetaValues(d, locale))} />
           </li>
         ))}
       </ul>

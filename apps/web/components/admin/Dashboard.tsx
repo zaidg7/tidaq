@@ -306,7 +306,7 @@ export function Dashboard({ health, monthlyBudgetUsd, now, flash }: Props) {
 
       <Section
         title="Neue Buchungsseiten"
-        hint="Google zeigt diese Seiten, wir zählen sie aber erst nach deiner Freigabe für den Bestpreis. Gib nur Seiten frei, die du kennst und für seriös hältst."
+        hint="Unsere Preisquelle zeigt diese Seiten, wir zählen sie aber erst nach deiner Freigabe für den Bestpreis. Gib nur Seiten frei, die du kennst und für seriös hältst."
       >
         {health.pending_providers.length === 0 ? (
           <Empty>Nichts zu prüfen.</Empty>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { foldText, matchHotels } from './search';
+import { foldText, matchesCity, matchHotels } from './search';
 
 const hotels = [
   { slug: 'baur-au-lac', name: 'Baur au Lac', city: 'Zürich' },
@@ -55,5 +55,17 @@ describe('matchHotels', () => {
   it('falls back to substrings and returns nothing for nonsense', () => {
     expect(slugs('lon')).toEqual(['adlon']);
     expect(slugs('xyz')).toEqual([]);
+  });
+});
+
+describe('matchesCity', () => {
+  it('matches word prefixes of the city, with or without umlauts', () => {
+    expect(matchesCity('zuer', 'Zürich')).toBe(true);
+    expect(matchesCity('Zurich', 'Zürich')).toBe(true);
+    expect(matchesCity('new y', 'New York')).toBe(true);
+    expect(matchesCity('york', 'New York')).toBe(true);
+    expect(matchesCity('adlon', 'Berlin')).toBe(false);
+    expect(matchesCity('', 'Berlin')).toBe(false);
+    expect(matchesCity('  ', 'Berlin')).toBe(false);
   });
 });

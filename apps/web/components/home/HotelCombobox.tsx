@@ -1,8 +1,8 @@
 'use client';
 
 import { useId, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { Check, X } from 'lucide-react';
-import { foldText, matchHotels } from '@tidaq/core';
+import { ArrowRight, Check, X } from 'lucide-react';
+import { foldText, matchesCity, matchHotels } from '@tidaq/core';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
 import type { SearchHotel } from './SearchCard';
@@ -16,6 +16,10 @@ export type ComboboxLabels = {
   clear: string;
   listLabel: string;
 };
+
+type Option =
+  | { kind: 'hotel'; key: string; hotel: SearchHotel }
+  | { kind: 'city'; key: string; label: string; href: string };
 
 type Props = {
   id: string;
@@ -34,6 +38,8 @@ type Props = {
  * Hotel autocomplete (C-021a), the ARIA 1.2 combobox pattern: the input keeps focus, the list
  * follows with aria-activedescendant. Accent-insensitive ("zurich" finds Zürich), grouped by
  * city. ↓/↑ move, Enter picks, Esc closes (or clears), a click picks without losing focus.
+ * When the typed text names a city, its group starts with "Alle Hotels in …", which opens the
+ * city page (C-024b).
  */
 export function HotelCombobox({
   id,
@@ -58,19 +64,35 @@ export function HotelCombobox({
   };
 
   // While a hotel is chosen and its name unchanged, show the full list (to switch hotels).
-  const matches = useMemo(
-    () => matchHotels(selected && query === selected.name ? '' : query, hotels),
-    [query, hotels, selected],
-  );
-  const groups = useMemo(() => {
-    const byCity = new Map<string, { hotel: SearchHotel; index: number }[]>();
-    matches.forEach((hotel, index) => {
-      byCity.set(hotel.city, [...(byCity.get(hotel.city) ?? []), { hotel, index }]);
+  const search = selected && query === selected.name ? '' : query;
+  const matches = useMemo(() => matchHotels(search, hotels), [search, hotels]);
+  // Options in list order: per city an optional "all hotels" entry, then its hotels.
+  const { groups, options } = useMemo(() => {
+    const byCity = new Map<string, SearchHotel[]>();
+    for (const hotel of matches) byCity.set(hotel.city, [...(byCity.get(hotel.city) ?? []), hotel]);
+    const options: Option[] = [];
+    const groups = [...byCity].map(([city, list]) => {
+      const first = list[0];
+      const items: { option: Option; index: number }[] = [];
+      const add = (option: Option) => {
+        items.push({ option, index: options.length });
+        options.push(option);
+      };
+      if (first?.cityHref && first.cityAll && matchesCity(search, city)) {
+        add({ kind: 'city', key: `city:${city}`, label: first.cityAll, href: first.cityHref });
+      }
+      for (const hotel of list) add({ kind: 'hotel', key: hotel.slug, hotel });
+      return [city, items] as const;
     });
-    return [...byCity];
-  }, [matches]);
+    return { groups, options };
+  }, [matches, search]);
 
   const optionId = (i: number) => `${listId}-o${i}`;
+
+  const choose = (option: Option) => {
+    if (option.kind === 'hotel') pick(option.hotel);
+    else window.location.assign(option.href);
+  };
 
   const pick = (hotel: SearchHotel) => {
     onChange(hotel.slug);
@@ -86,18 +108,18 @@ export function HotelCombobox({
         e.preventDefault();
         if (!open) {
           setOpen(true);
-          setActive(e.key === 'ArrowDown' ? 0 : matches.length - 1);
+          setActive(e.key === 'ArrowDown' ? 0 : options.length - 1);
           return;
         }
         const step = e.key === 'ArrowDown' ? 1 : -1;
-        setActive((i) => (matches.length ? (i + step + matches.length) % matches.length : -1));
+        setActive((i) => (options.length ? (i + step + options.length) % options.length : -1));
         return;
       }
       case 'Enter': {
-        const hotel = open ? matches[active] : undefined;
-        if (hotel) {
+        const option = open ? options[active] : undefined;
+        if (option) {
           e.preventDefault();
-          pick(hotel);
+          choose(option);
         }
         return;
       }
@@ -207,23 +229,33 @@ export function HotelCombobox({
                 >
                   {city}
                 </li>
-                {items.map(({ hotel, index }) => (
+                {items.map(({ option, index }) => (
                   <li
-                    key={hotel.slug}
+                    key={option.key}
                     id={optionId(index)}
                     role="option"
-                    aria-selected={hotel.slug === value}
+                    aria-selected={option.kind === 'hotel' && option.hotel.slug === value}
                     onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => pick(hotel)}
+                    onClick={() => choose(option)}
                     onMouseMove={() => setActive(index)}
                     className={cn(
-                      'flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-cell px-3 py-2 text-[15px] font-semibold text-fg',
+                      'flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-cell px-3 py-2 text-[15px] font-semibold',
+                      option.kind === 'city' ? 'text-accent' : 'text-fg',
                       index === active && 'bg-accent-soft',
                     )}
                   >
-                    <span className="min-w-0 truncate">{hotel.name}</span>
-                    {hotel.slug === value && (
-                      <Icon icon={Check} size={16} className="shrink-0 text-accent" />
+                    {option.kind === 'city' ? (
+                      <>
+                        <span className="min-w-0 truncate">{option.label}</span>
+                        <Icon icon={ArrowRight} size={16} className="shrink-0" />
+                      </>
+                    ) : (
+                      <>
+                        <span className="min-w-0 truncate">{option.hotel.name}</span>
+                        {option.hotel.slug === value && (
+                          <Icon icon={Check} size={16} className="shrink-0 text-accent" />
+                        )}
+                      </>
                     )}
                   </li>
                 ))}
