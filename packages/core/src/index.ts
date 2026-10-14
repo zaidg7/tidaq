@@ -248,4 +248,5 @@ export {
   type AlertInput,
   type AlertKind,
   type AlertMailData,
+  type AlertMailOffer,
 } from './alerts';

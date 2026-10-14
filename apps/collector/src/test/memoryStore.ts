@@ -1,6 +1,7 @@
 import type { GridStay } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from '../ingest';
 import type {
+  AlertOffer,
   AlertWatch,
   CatalogHotel,
   CollectorStore,
@@ -60,6 +61,8 @@ export function memoryStore(
   const accuracy = new Map<string, NightAccuracyRow>();
   /** Watches for the alert engine (C-031): tests push into it; recorded alerts land below. */
   const alertWatches: AlertWatch[] = [];
+  /** Today's offers per watch id (C-031b). */
+  const alertOffers = new Map<string, AlertOffer[]>();
   const recordedAlerts: {
     watchId: string;
     kind: string;
@@ -309,6 +312,9 @@ export function memoryStore(
     async alertInputs(today) {
       return alertWatches.filter((w) => w.checkIn > today);
     },
+    async alertOffers(watchId) {
+      return alertOffers.get(watchId) ?? [];
+    },
     async recordAlert(watchId, kind, priceCents, resendId) {
       recordedAlerts.push({ watchId, kind, priceCents, resendId });
       const w = alertWatches.find((x) => x.watchId === watchId);
@@ -364,6 +370,7 @@ export function memoryStore(
     officialUrls,
     pruneCalls: () => pruneCalls,
     alertWatches,
+    alertOffers,
     recordedAlerts,
     /** Sets the `posted_at` time for tasks recorded from now on. */
     setClock(iso: string) {

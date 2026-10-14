@@ -89,7 +89,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-030b                                                          | Watch form on the stay page (replaces "Bald verfügbar")                      | CLOUD | S             | C-030a                            | DONE           |
 | C-030c                                                          | Bot protection for the watch form (Turnstile)                                | CLOUD | S             | C-030b, B-016                     | TODO           |
 | C-031a                                                          | Alert engine: triggers, daily job, alert emails                              | CLOUD | M             | C-030a                            | DONE           |
-| C-031b                                                          | Alert emails: mini chart image and best trusted provider                     | CLOUD | S             | C-031a, C-028b                    | TODO           |
+| C-031b                                                          | Alert emails: best trusted provider with its link                            | CLOUD | S             | C-031a                            | DONE           |
 | C-034                                                           | Provider pages and methodology page with live data                           | CLOUD | S             | C-032                             | DONE           |
 | C-034b                                                          | Link the stay table's trust score to the provider page                       | CLOUD | S             | C-034                             | DONE           |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
@@ -837,10 +837,12 @@ After each collector run: evaluate active, confirmed watches against triggers (P
 
 **C-031a notes (DONE):** Core `alerts.ts`: `alertKind` (PLAN §9: target ≤ price, again only 2 % lower; new low under every earlier day and 2 % under the last alert; drop ≥ 5 % since the last alert; state turns `near_low`; one email per watch and Berlin day, strongest reason wins), `alertInputFromSeries` (today's price must be from today; states for today and yesterday via `computeStayStats`), `alertMail` (DE/EN subject and content for `renderMail`). SQL (migration `20261014222316`, service role): `alert_inputs(today)` gives each active watch of a confirmed, subscribed address with check-in after today plus its last 60 days (stay checks, else night sums for 2 adults at reliable hotels), `alert_record` writes `alerts_sent` and the watch's last alert. Collector `alerts.ts` `runAlerts` runs in the daily cron after the daily check (its own try; a crash emails the admins), sends via Resend from `alarm@tidaq.com` with `List-Unsubscribe` one-click, records each sent alert, never logs addresses. **Live only when** `APP_ENV=production`, `ALERTS_DRY_RUN=false` and the key is set: the production collector still has `ALERTS_DRY_RUN=true`, so nothing goes to users until **C-044 switches it to `false`** (dry runs log `alert dry run` with the kind). Tests: core (10) and collector (5, memory store + fake Resend).
 
-### C-031b · Alert emails: chart image and best provider
+### C-031b · Alert emails: best trusted provider
 
-Owner: CLOUD · Size: S · Depends on: C-031a, C-028b · Status: TODO · PR: –
-Add the stay's OG image (C-028b) as the chart in alert emails and the best trusted provider with its "an der Kasse ≈" note (core `rankOffers` on the latest `per_provider`), linking through `/go/…`.
+Owner: CLOUD · Size: S · Depends on: C-031a · Status: DONE · PR: see `[C-031b]`
+Add the best trusted provider with its "an der Kasse ≈" note (core `rankOffers` on the latest `per_provider`), linking through `/go/…`. The chart image in alert emails moved to C-028c: it needs the dynamic share images (C-028b only uses the hotel photo).
+
+**C-031b notes (DONE):** SQL `alert_offers(watch, today)` (migrations `20261014225949` + `20261014230030`, service role): today's per-provider totals of the watched stay, from the real stay check, else the night sums (2 adults), reviewed providers only, with each one's checkout-test record. The collector calls it only for watches with an alert due, ranks with core `rankOffers` and adds "Am günstigsten heute: Booking.com, 1.120 €." (with "An der Kasse erwarten wir nach unseren Tests etwa …" when tests show a markup) and a text link "Zu Booking.com" to `https://tidaq.com/go/…` ("(Partnerlink)" when an affiliate template applies). `MailContent.link` renders it. If the lookup fails, the email goes out without that line. Dry runs log the chosen provider slug, so the production dry run shows it before launch.
 
 ### C-032 · Trust audit tool
 

@@ -104,6 +104,21 @@ export interface AlertMailData {
   lastAlertCents: number | null;
   stayUrl: string;
   manageUrl: string;
+  /**
+   * The first offer of core `rankOffers` on today's prices (C-031b): listed total, the expected
+   * checkout total when our tests show a markup, and the `/go/…` link. Null without offers.
+   */
+  offer?: AlertMailOffer | null;
+}
+
+export interface AlertMailOffer {
+  name: string;
+  isDirect: boolean;
+  totalCents: number;
+  expectedCents: number | null;
+  /** Affiliate link: labelled as a partner link (CLAUDE.md rule 9). */
+  partner: boolean;
+  url: string;
 }
 
 const TEXT = {
@@ -128,6 +143,13 @@ const TEXT = {
     since: (p: string) => `Bei unserer letzten E-Mail waren es ${p}.`,
     hint: 'Preise ändern sich oft mehrmals am Tag. Prüf den Preis auf der Buchungsseite, bevor du buchst.',
     button: 'Preisverlauf ansehen',
+    offer: (who: string, p: string) => `Am günstigsten heute: ${who}, ${p}.`,
+    offerExpected: (who: string, p: string, e: string) =>
+      `Am günstigsten heute: ${who}, ${p} angezeigt. An der Kasse erwarten wir nach unseren Tests etwa ${e}.`,
+    direct: 'direkt beim Hotel',
+    linkTo: (who: string) => `Zu ${who}`,
+    linkDirect: 'Zur Website des Hotels',
+    partner: ' (Partnerlink)',
     preheader: (p: string) => `Jetzt ${p}. Höchstens eine E-Mail pro Tag.`,
     why: 'Du bekommst diese E-Mail, weil du auf tidaq.com einen Preisalarm für diesen Aufenthalt bestätigt hast. Höchstens eine E-Mail pro Tag und Alarm.',
     manage: (u: string) => `Alarme ändern oder abbestellen: ${u}`,
@@ -151,6 +173,13 @@ const TEXT = {
     since: (p: string) => `In our last email it was ${p}.`,
     hint: 'Prices often change several times a day. Check the price on the booking site before you book.',
     button: 'See the price history',
+    offer: (who: string, p: string) => `Cheapest today: ${who}, ${p}.`,
+    offerExpected: (who: string, p: string, e: string) =>
+      `Cheapest today: ${who}, ${p} listed. Based on our tests we expect about ${e} at checkout.`,
+    direct: 'directly with the hotel',
+    linkTo: (who: string) => `Go to ${who}`,
+    linkDirect: "Go to the hotel's website",
+    partner: ' (partner link)',
     preheader: (p: string) => `Now ${p}. At most one email a day.`,
     why: "You're getting this email because you confirmed a price alert for this stay on tidaq.com. At most one email a day per alert.",
     manage: (u: string) => `Change or cancel alerts: ${u}`,
@@ -163,6 +192,7 @@ export function alertMail(d: AlertMailData): { subject: string; content: MailCon
   const price = (c: number) => formatPrice(c, d.locale);
   const now = price(d.nowCents);
   const stay = t.stay(d.hotel, formatDateRange(d.checkIn, d.checkOut, d.locale), d.adults);
+  const o = d.offer ?? null;
   return {
     subject: t.subject[d.kind](d.hotel, now),
     content: {
@@ -172,10 +202,28 @@ export function alertMail(d: AlertMailData): { subject: string; content: MailCon
         t.now(stay, now),
         ...(d.targetCents !== null ? [t.target(price(d.targetCents))] : []),
         ...(d.lastAlertCents !== null ? [t.since(price(d.lastAlertCents))] : []),
+        ...(o ? [offerLine(t, o, price)] : []),
         t.hint,
       ],
       button: { label: t.button, url: d.stayUrl },
+      ...(o && {
+        link: {
+          label: (o.isDirect ? t.linkDirect : t.linkTo(o.name)) + (o.partner ? t.partner : ''),
+          url: o.url,
+        },
+      }),
       footer: [t.why, t.manage(d.manageUrl)],
     },
   };
+}
+
+function offerLine(
+  t: (typeof TEXT)[Locale],
+  o: AlertMailOffer,
+  price: (c: number) => string,
+): string {
+  const who = o.isDirect ? t.direct : o.name;
+  return o.expectedCents === null
+    ? t.offer(who, price(o.totalCents))
+    : t.offerExpected(who, price(o.totalCents), price(o.expectedCents));
 }
