@@ -29,7 +29,8 @@ export function CollectingState({ daysTracked, verdictOn, children, className }:
       <span className="grid size-12 place-items-center rounded-full bg-accent-soft text-accent">
         <Icon icon={ChartSpline} size={24} />
       </span>
-      <h3 className="text-h3 mt-4">{t('title')}</h3>
+      {/* h2: on the stay page it follows the h1 directly (heading order, C-041b). */}
+      <h2 className="text-h3 mt-4">{t('title')}</h2>
       <p className="mt-1 max-w-[34em] text-[15px] text-muted-ink">{t('text')}</p>
       <div className="mt-5 flex w-full max-w-[34em] flex-col gap-2">
         <div

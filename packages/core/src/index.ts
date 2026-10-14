@@ -250,3 +250,4 @@ export {
   type AlertMailData,
   type AlertMailOffer,
 } from './alerts';
+export { clientIp, createRateLimiter } from './rateLimit';
