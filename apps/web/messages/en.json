@@ -447,7 +447,7 @@
           "title": "6. Price alerts by email",
           "text": [
             "This feature is coming soon. Once it exists: when you set up a price alert, we store your email address, the stay you watch, the text of your consent and its time. We first send you an email with a confirmation link (double opt-in). Only after that do you get alerts, and only for what you asked to watch.",
-            "The legal basis is your consent (Art. 6(1)(a) GDPR). You can withdraw it at any time: with the unsubscribe link in every email or by email to us. We then delete your email address. We keep the proof of your consent for as long as we may legally need it.",
+            "The legal basis is your consent (Art. 6(1)(a) GDPR). You can withdraw it at any time: with the unsubscribe link in every email or by email to us. We then delete your email address, all your alerts and the proof of your consent. If you don't confirm an address, we delete it after 7 days.",
             "The emails are sent by the service Resend (USA). Resend processes your email address and the content of the email for this."
           ]
         },
@@ -644,5 +644,53 @@
       "americas": "Americas"
     },
     "unavailable": "The hotel list is unavailable right now. Please try again in a moment."
+  },
+  "watchMail": {
+    "stay": "{hotel}, {dates}, {adults, plural, one {# adult} other {# adults}}",
+    "confirmSubject": "Please confirm your price alert",
+    "confirmPreheader": "One click left, then we'll tell you when the price drops.",
+    "confirmHeading": "Please confirm your price alert",
+    "confirmText": "You want to know when the price for {stay} drops.",
+    "confirmIgnore": "Wasn't you? Just ignore this email. Without confirmation we'll never write again, and we delete your address after 7 days.",
+    "confirmButton": "Confirm alert",
+    "targetText": "We'll write as soon as it's at {target} or below, and when it reaches a new low.",
+    "noTargetText": "We'll write when it drops clearly or reaches a new low.",
+    "addedSubject": "We're now watching {hotel} for you",
+    "addedPreheader": "Your new price alert is active.",
+    "addedHeading": "Your price alert is active",
+    "addedText": "We're now watching the price for {stay}.",
+    "manageButton": "Manage alerts",
+    "footerWhy": "You're getting this email because a price alert for this address was set up on tidaq.com.",
+    "footerManage": "Change or cancel alerts: {url}"
+  },
+  "watch": {
+    "metaTitle": "Price alert | Tidaq",
+    "confirmEyebrow": "Price alert",
+    "confirmTitle": "Confirm your price alert",
+    "confirmText": "One click, then we'll tell you when the price drops.",
+    "confirmButton": "Confirm alert",
+    "invalidTitle": "This link is no longer valid",
+    "invalidText": "Confirmation links are valid for 7 days. Just set up the alert again on your stay's page.",
+    "home": "Go to the homepage",
+    "manageEyebrow": "Price alert",
+    "manageTitle": "Your price alerts",
+    "manageFor": "For {email}",
+    "confirmedNotice": "Thanks, your price alert is confirmed.",
+    "unconfirmedNotice": "This address isn't confirmed yet. Click the link in our email, otherwise we won't send you alerts.",
+    "stay": "{dates} · {adults, plural, one {# adult} other {# adults}}",
+    "target": "Alert at {price} or less",
+    "noTarget": "Alert on a clear drop or a new low",
+    "remove": "Stop",
+    "removeLabel": "Stop the alert for {hotel}, {dates}",
+    "removed": "The alert is stopped.",
+    "empty": "You have no active price alerts right now.",
+    "unsubscribeTitle": "Cancel all alerts",
+    "unsubscribeText": "We delete your email address and all your alerts. This can't be undone.",
+    "unsubscribeButton": "Cancel and delete my address",
+    "unsubscribedTitle": "You're unsubscribed",
+    "unsubscribedText": "We've deleted your email address and all your alerts. You won't get any more emails from us.",
+    "notFoundTitle": "These alerts no longer exist",
+    "notFoundText": "Maybe you already unsubscribed. You can set up new alerts on any stay's page.",
+    "error": "That didn't work just now. Please try again in a moment."
   }
 }

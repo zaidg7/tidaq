@@ -226,3 +226,4 @@ export {
 } from './structuredData';
 export { inlineLinks, type InlinePart } from './inlineLinks';
 export { cityIn, cityPath, groupByRegion, regionOf, REGIONS, type Region } from './places';
+export { escapeHtml, renderMail, type MailContent } from './mailTemplate';

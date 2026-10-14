@@ -16,6 +16,16 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-016 · Turnstile keys for the price-alert form (bot protection)
+
+Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-030c (not urgent: the form has a rate limit and a honeypot until then)
+What I need: a free Cloudflare Turnstile widget, so bots can't use our form to send emails to strangers.
+Steps for Zaid (≈ 4 min):
+
+1. dash.cloudflare.com → account **tidaq** → **Turnstile** → **Add widget**.
+2. Name `tidaq-watch`, hostnames `tidaq.com` and `tidaq-web-staging.tidaq.workers.dev`, mode **Managed**, pre-clearance **No** → Create.
+3. You see a **Site Key** and a **Secret Key**. Store them as GitHub secrets (repo tidaq → Settings → Secrets and variables → Actions → New repository secret): `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY`. Never paste them in a chat or issue.
+   Where to put the result: the two GitHub secrets, then change this Status to DONE.
 ## B-015 · Turn on Cloudflare Web Analytics (cookieless visitor numbers)
 
 Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: nothing urgent (visitor numbers in the weekly summary; needed before launch)

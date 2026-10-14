@@ -20,6 +20,8 @@
   "vars": {
     "APP_ENV": "production",
     "ADMIN_EMAILS": "zaidghazal216@gmail.com",
+    // Price-alert emails (C-030): "false" sends for real; anything else logs only (rule 5).
+    "ALERTS_DRY_RUN": "false",
     // Admin dashboard (C-016): same value as the collector's budget; staging collector for "run now".
     "MONTHLY_BUDGET_USD": "12",
     "COLLECTOR_STAGING_URL": "https://tidaq-collector-staging.tidaq.workers.dev",
@@ -33,6 +35,7 @@
       "vars": {
         "APP_ENV": "staging",
         "ADMIN_EMAILS": "zaidghazal216@gmail.com",
+        "ALERTS_DRY_RUN": "true",
         "MONTHLY_BUDGET_USD": "12",
         "COLLECTOR_STAGING_URL": "https://tidaq-collector-staging.tidaq.workers.dev",
       },

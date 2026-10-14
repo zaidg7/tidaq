@@ -84,7 +84,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-028b                                                          | Dynamic OG images for stay, hotel and city pages                             | CLOUD | S             | C-028a                            | TODO           |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
-| C-030                                                           | Watch flow with double opt-in and manage/unsubscribe                         | CLOUD | M             | C-022, Z-05                       | TODO           |
+| C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
+| C-030b                                                          | Watch form on the stay page (replaces "Bald verfügbar")                      | CLOUD | S             | C-030a                            | TODO           |
+| C-030c                                                          | Bot protection for the watch form (Turnstile)                                | CLOUD | S             | C-030b, B-016                     | TODO           |
 | C-031                                                           | Alert engine and emails                                                      | CLOUD | M             | C-030, C-013b                     | TODO           |
 | C-034                                                           | Provider pages and methodology page with live data                           | CLOUD | S             | C-032                             | TODO           |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
@@ -803,6 +805,18 @@ Owner: CLOUD · Size: M · Depends on: C-022, Z-05 · Status: TODO · PR: –
 
 - [ ] e2e test of the whole flow with the dry-run mailer
 - [ ] Unconfirmed watches never receive alerts; unconfirmed watchers are deleted after 7 days
+
+**C-030a notes (DONE):** SQL (migration `20261014220754_watch_flow`, service role only): `watch_request` validates the address and stay, makes sure a `tracked_stays` row exists (tracked via `request_stay` when there's capacity, otherwise an inactive row the watch can point at), creates or updates the watcher (consent text + time) and the watch (max 10 active, one request per address per minute), deletes unconfirmed addresses older than 7 days, and returns which email to send; `watch_confirm`, `watch_manage`, `watch_remove`, `watch_unsubscribe` (deletes the address and its watches, as the privacy page now says). Random UUID tokens in the links (`watchers.confirm_token`, `manage_token`). Web: `lib/watch/watch.ts` (calls + emails), `lib/mail.ts` (Resend EU, `alarm@tidaq.com`; really sends only when `APP_ENV=production`, `ALERTS_DRY_RUN=false` and `RESEND_API_KEY` is set, else logs the kind without the address; `List-Unsubscribe` one-click header), core `renderMail` (escaped HTML + text, tested). Pages: `/alarm/bestaetigen?token=` (a button confirms, a GET never does), `/alarm/verwalten/[token]` (list, stop one, unsubscribe; noindex, no referrer), `POST /api/watch/unsubscribe?token=` (RFC 8058). Deploy: `RESEND_API_KEY` now also goes to the web Worker; `ALERTS_DRY_RUN` is `false` in production, `true` on staging. e2e `watch.spec.ts` covers the pages; the full flow needs a database, so it is checked by hand on staging (dry run) in C-030b.
+
+### C-030b · Watch form on the stay page
+
+Owner: CLOUD · Size: S · Depends on: C-030a · Status: TODO · PR: –
+Replace the "Bald verfügbar" watch card with the form: email, optional target price, consent checkbox (not pre-ticked; the exact sentence is sent as `consentText`), server action → `requestWatch` with the request's origin; result messages for sent / added / too_soon / too_many / invalid / error; simple in-memory rate limit per IP (not stored) and a honeypot field until C-030c. Sticky mobile bar from DESIGN §4. On staging (dry run) show the confirmation link in the success message so the flow can be tested end to end without email.
+
+### C-030c · Turnstile
+
+Owner: CLOUD · Size: S · Depends on: C-030b, B-016 · Status: TODO · PR: –
+Cloudflare Turnstile on the watch form (site key as a public var, secret as a Worker secret), verified in the server action before `requestWatch`. Privacy page: add Turnstile (Cloudflare) to section 6.
 
 ### C-031 · Alert engine and emails
 
