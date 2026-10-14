@@ -16,6 +16,18 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-011 · GitHub Actions stopped: no CI, no merges, no deploys
+
+Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: every merge and deploy (C-071a waits, the collector deploy for the new stay grid waits)
+What I need: GitHub Actions running again. Since 14:16 UTC on 14 Oct every workflow (CI, Catalog photos) fails within 3 seconds without a runner. That is what GitHub does when the account's free Actions minutes (2,000 a month for private repos) are used up or billing blocks them. The site and the data collection keep running; only code changes are stuck.
+Steps for Zaid (≈ 3 min):
+
+1. github.com → your profile picture → **Settings** → **Billing and licensing** → **Usage**: check that Actions minutes are at the limit (if they're not, tell the session; then it's something else).
+2. **Budgets and alerts** → **New budget** (or edit the Actions budget) → product **Actions** → amount **$5** → keep **Stop usage when budget limit is reached** on → Create. GitHub may ask for a payment method; extra Linux minutes cost $0.008 each, so $5 ≈ 600 minutes, enough until the free minutes reset on 1 Nov.
+   Where to put the result: nothing. Tell the session "budget set" (or change this Status to DONE). The session re-runs CI and merges the waiting PRs.
+
+Alternative without paying: make the repo **public** (Settings → General → Danger zone → Change visibility). Public repos get unlimited free Actions minutes. Secrets stay secret (they live in GitHub/Cloudflare settings, not in the code), but anyone could read and copy the code. My recommendation: the $5 budget.
+
 ## B-010 · Free LiteAPI sandbox key (room types, breakfast, half board)
 
 Status: DONE (14 Oct: GitHub secret `LITEAPI_KEY` and the cloud network secret for `api.liteapi.travel` work; a test call returned 200) · Opened: 2026-10-14 by CLOUD · Blocks: C-072 (room/board/occupancy data, D-43)
@@ -41,7 +53,7 @@ Steps for Zaid (≈ 1 min):
 
 ## B-008 · GitHub Actions minutes: optional safety budget
 
-Status: OPEN · Opened: 2026-10-13 by CLOUD · Blocks: nothing yet. If the 2,000 free minutes run out before 1 Nov, CI stops and no PR can be merged until then.
+Status: SUPERSEDED by B-011 (the minutes ran out on 14 Oct) · Opened: 2026-10-13 by CLOUD · Blocks: see B-011. If the 2,000 free minutes run out before 1 Nov, CI stops and no PR can be merged until then.
 What I need: a decision. CI now uses far fewer minutes (C-002b), and I'm pacing the work, so we should land under the limit. If you want a safety net: extra minutes cost less than 1 cent each, so a $5 cap buys at least 600 minutes. Don't set a $0 budget: that stops CI completely at the limit.
 Steps for Zaid (≈ 2 min, optional):
 
