@@ -2,7 +2,7 @@ import { cache } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { hotelPath, localizedPath, type Locale } from '@tidaq/core';
+import { hotelJsonLd, hotelPath, jsonLdString, localizedPath, type Locale } from '@tidaq/core';
 import { HotelView } from '@/components/hotel/HotelView';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
@@ -44,9 +44,10 @@ export default async function HotelPageRoute(props: Props) {
   const { locale, slug } = await resolve(props);
   setRequestLocale(locale);
   const today = berlinToday();
-  const [result, t] = await Promise.all([
+  const [result, t, th] = await Promise.all([
     load(slug, today),
     getTranslations({ locale, namespace: 'stay' }),
+    getTranslations({ locale, namespace: 'hotel' }),
   ]);
   if (result.kind === 'missing') notFound();
   if (result.kind === 'unavailable') {
@@ -62,5 +63,25 @@ export default async function HotelPageRoute(props: Props) {
       </StatusPage>
     );
   }
-  return <HotelView data={result.data} today={today} />;
+  const { hotel } = result.data;
+  const city = hotel.city.name[locale];
+  const jsonLd = hotelJsonLd({
+    name: hotel.name,
+    path: localizedPath(hotelPath(slug), locale),
+    description: th('jsonLdDescription', { city }),
+    stars: hotel.stars,
+    city,
+    country: hotel.city.country,
+    imagePath: hotel.image?.src ?? null,
+  });
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        // Escaped by jsonLdString: no `<` can end the script early.
+        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
+      />
+      <HotelView data={result.data} today={today} />
+    </>
+  );
 }

@@ -1,9 +1,22 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { CalendarClock, CalendarOff } from 'lucide-react';
-import { localizedPath, NIGHT_GRID, priceLevels, updatedAtParts, type Locale } from '@tidaq/core';
+import {
+  cheapestStays,
+  formatDateRange,
+  formatPrice,
+  localizedPath,
+  NIGHT_GRID,
+  priceLevels,
+  stayPath,
+  updatedAtParts,
+  type BestStay,
+  type BestStayKind,
+  type Locale,
+} from '@tidaq/core';
 import { buttonClasses } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
+import { PriceText } from '@/components/ui/PriceText';
 import type { HotelPage } from '@/lib/data/hotel';
 import { routes } from '@/lib/routes';
 import { PriceCalendar, type CalendarLabels } from './PriceCalendar';
@@ -17,9 +30,9 @@ type Props = {
 };
 
 /**
- * Hotel page (C-023a, DESIGN.md §4): hero with photo and facts → price calendar of every night
- * (night grid, D-42) → pick dates → stay page with the history. C-023b adds the cheapest
- * weekend/midweek stays and structured data.
+ * Hotel page (C-023a, DESIGN.md §4): hero with photo and facts → cheapest upcoming weekend and
+ * midweek stay (C-023b) → price calendar of every night (night grid, D-42) → pick dates → stay
+ * page with the history.
  */
 export function HotelView({ data, today, now }: Props) {
   const t = useTranslations('hotel');
@@ -29,6 +42,18 @@ export function HotelView({ data, today, now }: Props) {
   const city = hotel.city.name[locale];
   const credit = hotel.image?.credit.replace(/^(Foto|Photo):\s*/i, '') ?? '';
   const updated = updatedAt ? updatedAtParts(updatedAt, now ?? new Date(), locale) : null;
+  const providerNames = Object.fromEntries(
+    providers.map((p) => [String(p.id), p.isDirect ? hotel.name : p.name]),
+  );
+  // Totals from single nights mislead at unreliable hotels (C-070d): no highlights there.
+  const best =
+    hotel.active && !nightsUnreliable
+      ? cheapestStays(nights, today, new Set(providers.map((p) => p.id)))
+      : { weekend: null, midweek: null };
+  const bestStays = (['weekend', 'midweek'] as const).flatMap((kind) => {
+    const stay = best[kind];
+    return stay ? [{ kind, stay }] : [];
+  });
 
   const labels: CalendarLabels = {
     prevMonth: t('prevMonth'),
@@ -94,6 +119,27 @@ export function HotelView({ data, today, now }: Props) {
         </div>
       </header>
 
+      {bestStays.length > 0 && (
+        <section aria-labelledby="best-title" className="mt-8">
+          <h2 id="best-title" className="text-h3">
+            {t('bestTitle')}
+          </h2>
+          <ul className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2">
+            {bestStays.map(({ kind, stay }) => (
+              <li key={kind}>
+                <BestStayCard
+                  kind={kind}
+                  stay={stay}
+                  slug={hotel.slug}
+                  provider={providerNames[String(stay.providerId)] ?? ''}
+                  locale={locale}
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {!hotel.active ? (
         <Card variant="float" radius="search" className="mt-8 lg:p-8">
           <Notice icon={CalendarOff} title={t('inactiveTitle')} text={t('inactiveText')}>
@@ -134,9 +180,7 @@ export function HotelView({ data, today, now }: Props) {
             slug={hotel.slug}
             nights={nights}
             levels={priceLevels(nights.map((n) => n.bestCents))}
-            providers={Object.fromEntries(
-              providers.map((p) => [String(p.id), p.isDirect ? hotel.name : p.name]),
-            )}
+            providers={providerNames}
             nightsUnreliable={nightsUnreliable}
             today={today}
             locale={locale}
@@ -151,6 +195,46 @@ export function HotelView({ data, today, now }: Props) {
         </Card>
       )}
     </div>
+  );
+}
+
+function BestStayCard({
+  kind,
+  stay,
+  slug,
+  provider,
+  locale,
+}: {
+  kind: BestStayKind;
+  stay: BestStay;
+  slug: string;
+  provider: string;
+  locale: Locale;
+}) {
+  const t = useTranslations('hotel');
+  return (
+    <Card interactive className="flex h-full flex-col gap-1.5">
+      <p className="text-eyebrow text-accent">
+        {t(kind === 'weekend' ? 'bestWeekend' : 'bestMidweek')}
+      </p>
+      <a
+        href={localizedPath(stayPath(slug, stay.checkIn, stay.checkOut, NIGHT_GRID.adults), locale)}
+        className="font-bold after:absolute after:inset-0"
+      >
+        {formatDateRange(stay.checkIn, stay.checkOut, locale)}
+      </a>
+      <p className="text-meta text-muted-ink">
+        {t('bestFacts', { nights: stay.nights, provider })}
+      </p>
+      <div className="mt-auto flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 pt-2">
+        <PriceText cents={stay.totalCents} locale={locale} size="md" />
+        <span className="text-meta text-muted-ink">
+          {t('perNight', {
+            price: formatPrice(Math.round(stay.totalCents / stay.nights), locale),
+          })}
+        </span>
+      </div>
+    </Card>
   );
 }
 
