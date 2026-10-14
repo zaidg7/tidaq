@@ -74,7 +74,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-060                                                           | Market test: five-star price drops in ~10 holiday destinations               | CLOUD | M             | C-013g                            | TODO           |
 | C-023a                                                          | Hotel page: price calendar of every night, pick dates → stay                 | CLOUD | M             | C-022, C-070b                     | DONE           |
 | C-023b                                                          | Hotel page: cheapest weekend/midweek, structured data, links in              | CLOUD | S             | C-023a                            | DONE           |
-| C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | TODO           |
+| C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | DONE           |
+| L-026                                                           | Check "Zum Angebot" links open the right hotel and dates                     | LOCAL | S             | C-026                             | TODO           |
 | C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | TODO           |
 | C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | TODO           |
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | TODO           |
@@ -714,6 +715,13 @@ Owner: CLOUD · Size: S · Depends on: C-022 · Status: TODO · PR: –
 
 Owner: CLOUD · Size: S · Depends on: C-022 · Status: TODO · PR: –
 `/go/[offerId]`: look up the latest offer URL, apply `providers.affiliate_template` if set, log `outbound_click` (provider, hotel, stay; no IP, no user agent stored), 302 redirect. Links carry `rel="sponsored nofollow noopener"`, open in a new tab. Unit tests for template filling and unknown ids.
+
+**C-026 notes (DONE):** Xotelo has no deep links or offer ids, so the route is `/go/<provider>/<hotel>?in&out&adults&lang` instead of `/go/[offerId]`. SQL `outbound_click` (anon, security definer, migration `20261014185156`) checks the stay (future check-in, ≤ 30 nights, 1–4 adults), reviewed provider and hotel, logs one `events` row `outbound_click` (provider, hotel, dates, adults; nothing about the visitor; max 5,000 logged a day) and returns provider + hotel facts. Core `outboundUrl` builds the provider's own search (Booking.com, Agoda, Trip.com, Hotels.com, Expedia) for "hotel name + English city" with dates and guests, or the hotel's official https website for "Hotel direkt", then applies `providers.affiliate_template` (`{url}` → encoded target; broken or non-https templates are ignored). 302 with `no-store` and `noindex`; nothing to link (past stay, provider without a search, hotel without a website) → back to the stay page; no database → 503 text. Provider table: ghost "Zum Angebot ↗" (`target=_blank`, `rel="sponsored nofollow noopener"`, icon-only at 1024–1279 px), on phones the whole row is the link; rows with an affiliate template say "Partnerlink". CHECK24 and HRS have no search link yet (Awin, C-073). 47 of 82 hotels have no `official_url`, so "Hotel direkt" has no button there. L-026 checks the links by hand in a browser.
+
+### L-026 · Check outbound links by hand
+
+Owner: LOCAL · Size: S · Depends on: C-026 · Status: TODO · PR: –
+On the staging site, open 3 stay pages (a German city, a holiday place, an Asian city) and click every "Zum Angebot". For each provider: does the right hotel come first, with the right dates and 2 adults? Note wrong ones as a fix task (the URL formats live in core `outbound.ts`). Never book, never enter personal data (hard rule 3).
 
 ### C-027 · Legal and transparency pages
 

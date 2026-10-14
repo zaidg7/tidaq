@@ -2,12 +2,16 @@ import { useLocale, useTranslations } from 'next-intl';
 import {
   formatDayMonth,
   formatPrice,
+  goPath,
   localizedPath,
   rankOffers,
   type Locale,
+  type OutboundStay,
   type StayOffer,
 } from '@tidaq/core';
-import { Hotel } from 'lucide-react';
+import { ArrowUpRight, Hotel } from 'lucide-react';
+import { buttonClasses } from '@/components/ui/Button';
+import { cn } from '@/lib/cn';
 import { Icon } from '@/components/ui/Icon';
 import { Badge } from '@/components/ui/Badge';
 import { TrustScore } from '@/components/ui/TrustScore';
@@ -20,6 +24,9 @@ type Props = {
   /** The day these prices are from (the latest collected day), and today (Berlin). */
   day: string | null;
   today: string;
+  /** The stay these prices are for: "Zum Angebot" opens it on the provider's site (C-026). */
+  hotelSlug: string;
+  stay: OutboundStay;
   className?: string;
 };
 
@@ -37,14 +44,25 @@ function monogram(name: string): string {
 /**
  * Provider table (CRAFT.md §3 Provider row, PLAN §8.3): every reviewed provider's latest stay
  * total, sorted by the price you can expect at checkout, with its Preistreue score and, when tests
- * show a markup, "an der Kasse ≈ …". Commission never affects the order. Outbound buttons come
- * with the click-logged links of C-026.
+ * show a markup, "an der Kasse ≈ …". Commission never affects the order. "Zum Angebot ↗" goes
+ * through `/go/…` (C-026: click counted, provider search for these dates, new tab); on phones the
+ * whole row is the link. Past stays get no links.
  */
-export function ProviderTable({ offers, unreviewed, day, today, className }: Props) {
+export function ProviderTable({
+  offers,
+  unreviewed,
+  day,
+  today,
+  hotelSlug,
+  stay,
+  className,
+}: Props) {
   const t = useTranslations('stay');
   const locale = useLocale() as Locale;
   const price = (c: number) => formatPrice(c, locale);
   const ranked = rankOffers(offers);
+  const bookable = stay.checkIn >= today;
+  const hasLinks = bookable && ranked.some((o) => o.link);
   const [first, second] = ranked;
   const cheapestId =
     first && (!second || first.trustedCents < second.trustedCents) ? first.providerId : null;
@@ -77,7 +95,13 @@ export function ProviderTable({ offers, unreviewed, day, today, className }: Pro
           {ranked.map((o) => (
             <li
               key={o.providerId}
-              className="grid min-h-[72px] grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 px-4 py-3 sm:grid-cols-[32px_minmax(0,1fr)_120px_176px] sm:px-5"
+              className={cn(
+                'relative grid min-h-[72px] grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 px-4 py-3 sm:px-5',
+                hasLinks
+                  ? 'sm:grid-cols-[32px_minmax(0,1fr)_120px_160px_auto]'
+                  : 'sm:grid-cols-[32px_minmax(0,1fr)_120px_176px]',
+                bookable && o.link && 'max-sm:hover:bg-surface-2',
+              )}
             >
               <span
                 aria-hidden="true"
@@ -87,13 +111,24 @@ export function ProviderTable({ offers, unreviewed, day, today, className }: Pro
               </span>
               <span className="flex min-w-0 flex-col">
                 <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span className="truncate text-[15px] font-bold">
+                  <span className="min-w-0 text-[15px] leading-tight font-bold">
                     {o.isDirect ? t('direct') : o.name}
                   </span>
+                  {bookable && o.link && (
+                    <Icon
+                      icon={ArrowUpRight}
+                      size={16}
+                      className="-ml-1 shrink-0 text-muted-ink sm:hidden"
+                    />
+                  )}
                   {o.providerId === cheapestId && <Badge tone="good">{t('cheapest')}</Badge>}
                 </span>
-                {o.isDirect && (
-                  <span className="text-[13px] text-muted-ink">{t('directNote')}</span>
+                {(o.isDirect || o.link?.partner) && (
+                  <span className="text-[13px] text-muted-ink">
+                    {[o.isDirect && t('directNote'), o.link?.partner && t('partnerLink')]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </span>
                 )}
               </span>
               <span className="flex flex-col items-end text-right">
@@ -113,6 +148,24 @@ export function ProviderTable({ offers, unreviewed, day, today, className }: Pro
                 // Phones: box and note side by side under the name, so rows stay short.
                 className="col-span-2 col-start-2 max-sm:max-w-none max-sm:flex-row max-sm:items-center max-sm:gap-2 sm:col-span-1 sm:col-start-auto sm:max-w-[176px]"
               />
+              {bookable && o.link && (
+                <a
+                  href={goPath(o.link.slug, hotelSlug, stay, locale)}
+                  target="_blank"
+                  rel="sponsored nofollow noopener"
+                  aria-label={t('toOfferLabel', { provider: o.isDirect ? t('direct') : o.name })}
+                  className={cn(
+                    buttonClasses({ variant: 'ghost', size: 'sm' }),
+                    // Phones: no button, the whole row is the link (CRAFT.md §3 Provider row).
+                    'lg:max-xl:w-9 lg:max-xl:px-0',
+                    'max-sm:absolute max-sm:inset-0 max-sm:h-auto max-sm:rounded-none max-sm:border-0 max-sm:bg-transparent max-sm:z-[1] max-sm:p-0 max-sm:after:hidden',
+                  )}
+                >
+                  {/* 1024–1279 px: the watch card takes the side, so the button is icon-only. */}
+                  <span className="max-sm:sr-only lg:max-xl:sr-only">{t('toOffer')}</span>
+                  <Icon icon={ArrowUpRight} size={16} className="max-sm:hidden" />
+                </a>
+              )}
             </li>
           ))}
         </ul>
