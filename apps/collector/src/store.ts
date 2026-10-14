@@ -19,8 +19,25 @@ export interface StayJob {
   watched: boolean;
 }
 
-/** `request`: queues requested stays (origin `watch`) that have no task yet (C-022c1). */
-export type RunKind = 'morning' | 'evening' | 'collect' | 'manual' | 'request';
+/**
+ * `request`: queues requested stays (origin `watch`) that have no task yet (C-022c1).
+ * `nights`: prices single nights for the night grid (C-070a).
+ */
+export type RunKind = 'morning' | 'evening' | 'collect' | 'manual' | 'request' | 'nights';
+
+/** A (hotel, night) pair still to price today (SQL `night_jobs`, C-070a). */
+export interface NightJob {
+  hotelId: number;
+  xoteloKey: string;
+  /** The night (check-in date); check-out is the next day. */
+  night: string;
+}
+
+/** One batch for SQL `night_ingest`: unknown platforms and per-night rates by provider slug. */
+export interface NightIngestPayload {
+  providers: { slug: string; name: string; domain: string | null; alias: string }[];
+  nights: { hotel_id: number; night: string; day: string; offers: Record<string, number> }[];
+}
 
 export interface RunPatch {
   finishedAt: string;
@@ -103,6 +120,10 @@ export interface CollectorStore {
   upsertStats(rows: readonly StayStatsRow[]): Promise<void>;
   /** Runs started today (UTC) and today's task statuses. */
   dayReport(today: string): Promise<DayReport>;
+  /** Nights without a row for `today`, nearest first (SQL `night_jobs`). */
+  nightJobs(today: string, window: number, limit: number): Promise<NightJob[]>;
+  /** Stores a batch of nights (SQL `night_ingest`). Returns the rows written. */
+  ingestNights(payload: NightIngestPayload): Promise<number>;
   /** Removes raw JSON older than 30 days (SQL `prune_raw_snapshots`, D-19). Returns the count. */
   pruneRaw(): Promise<number>;
 }

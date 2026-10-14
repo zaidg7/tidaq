@@ -234,6 +234,23 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
       return { snapshots: res.snapshots ?? 0, dailyRows: res.daily_rows ?? 0 };
     },
 
+    async nightJobs(today, window, limit) {
+      const rows = check(
+        await db.rpc('night_jobs', { p_today: today, p_window: window, p_limit: limit }),
+        'load night jobs',
+      );
+      return rows.map((r) => ({ hotelId: r.hotel_id, xoteloKey: r.xotelo_key, night: r.night }));
+    },
+
+    async ingestNights(payload) {
+      const res = await db.rpc('night_ingest', {
+        payload:
+          payload as unknown as Database['public']['Functions']['night_ingest']['Args']['payload'],
+      });
+      checkOk(res, 'ingest nights');
+      return Number(res.data ?? 0);
+    },
+
     async dailySeries(stayIds, fromDay) {
       const out: { stayId: number; day: string; bestCents: number }[] = [];
       for (let i = 0; i < stayIds.length; i += ID_CHUNK) {

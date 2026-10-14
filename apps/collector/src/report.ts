@@ -1,6 +1,6 @@
 import { toIsoDate } from '@tidaq/core';
 import type { FetchFn } from './dataforseo';
-import type { Env } from './env';
+import { priceSource, type Env } from './env';
 import { errorLines, sendAdminEmail, type SendResult } from './notify';
 import type { CollectorStore } from './store';
 
@@ -35,6 +35,11 @@ export async function runDailyCheck(opts: {
 
   if (!report.runs.some((r) => r.kind === 'morning' && r.env === env.APP_ENV)) {
     problems.push(`No morning run in ${env.APP_ENV} today.`);
+  }
+  // The night grid (C-070a) runs from 00:00 UTC on the free source; none by now means it is stuck.
+  const nightsOn = priceSource(env) === 'xotelo' && env.NIGHT_WINDOW_DAYS?.trim() !== '0';
+  if (nightsOn && !report.runs.some((r) => r.kind === 'nights' && r.env === env.APP_ENV)) {
+    problems.push(`No night-grid run in ${env.APP_ENV} today.`);
   }
   const stuckBefore = now.getTime() - STUCK_AFTER_MINUTES * 60_000;
   for (const r of report.runs) {
