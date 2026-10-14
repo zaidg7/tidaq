@@ -38,7 +38,7 @@ export const adminHealthFixture: AdminHealth = {
     },
   ],
   stale_hotels: [
-    { id: 16, slug: 'villa-kennedy-frankfurt', name: 'Villa Kennedy', last_day: null },
+    { id: 16, slug: 'the-florentin-frankfurt', name: 'The Florentin', last_day: null },
   ],
   inactive_hotels: [{ id: 2, slug: 'hotel-de-rome-berlin', name: 'Hotel de Rome' }],
   nights: {
@@ -115,7 +115,7 @@ export const adminHealthFixture: AdminHealth = {
 export const auditOptionsFixture = {
   hotels: [
     { id: 1, name: 'Hotel Adlon Kempinski' },
-    { id: 16, name: 'Villa Kennedy' },
+    { id: 16, name: 'The Florentin' },
   ],
   providers: [
     { id: 1, name: 'Booking.com' },

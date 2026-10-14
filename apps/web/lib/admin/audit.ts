@@ -3,7 +3,8 @@ import { providerScore, z } from '@tidaq/core';
 import { serviceRest, serviceStorage } from './db';
 
 /**
- * Checkout audit data (C-032): manual tests of "listed on Google Hotels" vs "total at the
+ * Checkout audit data (C-032): manual tests of "listed price" (the provider's price on our stay
+ * page or Tripadvisor since C-032c; Google Hotels before 15 Oct 2026) vs "total at the
  * checkout", and the provider scores computed from them. Service role, after requireAdmin().
  */
 
