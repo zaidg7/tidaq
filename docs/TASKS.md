@@ -17,6 +17,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-001                                                           | Monorepo scaffold (Next.js + OpenNext + collector + core)                    | CLOUD | M             | Z-01                              | DONE           |
 | C-002                                                           | CI pipeline (lint, typecheck, test, build, e2e smoke)                        | CLOUD | M             | C-001                             | DONE           |
 | C-002b                                                          | CI: spend fewer GitHub Actions minutes                                       | CLOUD | S             | C-002                             | DONE           |
+| C-002c                                                          | CI: no second full run on main, photos workflow manual (minutes)             | CLOUD | S             | C-002b                            | DONE           |
 | C-003                                                           | Session tooling (SessionStart hook, permissions allowlist)                   | CLOUD | S             | C-001                             | DONE           |
 | C-007                                                           | i18n setup (de default, en) and formatting helpers                           | CLOUD | S             | C-001                             | DONE           |
 | C-004                                                           | Supabase schema v1, RLS, seed providers and cities                           | CLOUD | M             | C-001, Z-04                       | DONE           |
@@ -62,7 +63,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-070b                                                          | Stay page: history for any dates from nights + real check of the viewed stay | CLOUD | M             | C-070a, C-022c1                   | DONE           |
 | C-070c                                                          | Night-sum accuracy: daily comparison with real stays, admin + methodology    | CLOUD | S             | C-070a                            | DONE                |
 | C-070d                                                          | Stay page: no night-sum history for hotels where single nights mislead       | CLOUD | S             | C-070c                            | DONE                |
-| C-071                                                           | Catalog: all five-star hotels in the 25 most popular cities (batches)        | CLOUD | L             | C-070a                            | TODO           |
+| C-071a                                                          | Catalog: 25 cities, five-star discovery script, first batch (~50 hotels)     | CLOUD | M             | C-070a                            | DONE           |
+| C-071b                                                          | Catalog: next batches up to ~150 hotels, watch the night run                 | CLOUD | M             | C-071a                            | TODO           |
+| C-071c                                                          | Photos for the new hotels (licensed, self-hosted, C-011c pipeline)           | CLOUD | S             | C-071a                            | DONE           |
 | C-072                                                           | Spike: LiteAPI room/board/occupancy rates (free supplier API)                | CLOUD | M             | B-010                             | DONE           |
 | C-074                                                           | Room-type normalizer prototype (Standard/Deluxe/Suite per hotel)             | CLOUD | M             | C-072, B-012                      | BLOCKED        |
 | C-075                                                           | Room grid: prices per guest count and board for watched stays                | CLOUD | L             | C-074, B-012                      | BLOCKED        |
@@ -163,6 +166,8 @@ Notes: one job "CI" (~3 min). Red proof: [run 38272430319](https://github.com/za
 - [x] A PR shows one required-looking check "CI" that runs all steps
 - [x] An intentionally failing test makes CI red (prove it in the PR, then revert)
 - [x] Typical run under 6 minutes
+
+**C-002c notes (DONE):** the free 2,000 Actions minutes ran out on 14 Oct (B-011; Zaid: "don't spend much"). A push to main no longer reruns the full CI the PR already passed; it only deploys staging. `catalog-photos` runs by hand only. A merged change now costs ≈ 6 minutes instead of ≈ 10. Sessions: batch small changes, never re-run CI without a reason, keep draft PRs draft until the work is done.
 
 ### C-003 · Session tooling
 
@@ -628,9 +633,24 @@ Found in C-070c: for a few hotels the sum of single nights is 15–25 % off the 
 - `/admin` lists the hidden hotels (`admin_health.night_hidden`) and shows "Gezeigt ± 3 %" next to "Alle".
 - On 14 Oct (partial day) 7 hotels were hidden: Rosewood Munich, Hotel de Russie, Mandarin Oriental Munich, Shangri-La Paris, Steigenberger Frankfurter Hof, Claridge's, Le Bristol. The share for shown hotels was 77 %. Expect fewer hidden hotels once morning-aligned data replaces 14 Oct.
 
-### C-071 · Catalog: all five-star hotels in the 25 most popular cities (Owner CLOUD · L · depends on C-070a · TODO)
+### C-071 · Catalog: all five-star hotels in the 25 most popular cities (Owner CLOUD · L · depends on C-070a · split into C-071a/b/c)
 
 D-43 (Zaid, 14 Oct). Steps: pick the 25 most popular cities for luxury travel worldwide (e.g. Paris, London, New York, Dubai, Tokyo, Rome, Barcelona, Istanbul, Singapore, Bangkok, Hong Kong, Abu Dhabi, Milan, Vienna, Munich, Berlin, Zurich, Amsterdam, Madrid, Lisbon, Los Angeles, Miami, Sydney, Shanghai, Maldives) and list their five-star hotels with TripAdvisor keys via Xotelo `/api/list` (no star filter: use price level and rating; check against a second list), photos via the C-011c pipeline, cities and copy in DE/EN. Add in batches of ~50 hotels and watch the daily night run (finish time, errors, empty share). **Capacity limit:** each hotel costs 120 Xotelo calls a day; the free Workers plan fits ~25,000 calls/day in the current 2-minute cycle, and Xotelo is unofficial. Beyond ~150 hotels: Workers paid plan ($5, 10,000 requests per run) and a tiered grid (next 60 nights daily, later nights every 3 days) or a paid/partner source (`docs/research/rate-data.md`).
+
+**C-071a notes (DONE, [#52](https://github.com/zaidg7/tidaq/pull/52)):** `scripts/catalog/discover.ts` finds every city's five-star hotels: LiteAPI's catalog (stars; free, the cloud proxy adds the key) matched to Xotelo's city list (Tripadvisor key) within 250 m and by name, plus Tripadvisor hotels of known luxury brands that LiteAPI files elsewhere (Four Seasons Abu Dhabi, Emirates Palace, Aman Tokyo). Output `scripts/catalog/candidates.json` (1,735 hotels in 27 cities, one per line). `scripts/catalog/batch.ts <n> [city[:n] …]` ranks by Tripadvisor's typical minimum price (≥ 200 reviews), cleans names, and prints an idempotent migration. Batch 1 (migration `20261014141349_catalog_batch1`, applied): 15 new cities (Madrid, Lisbon, Istanbul, Dubai, Abu Dhabi, Maldives, New York, Miami, Los Angeles, Singapore, Bangkok, Hong Kong, Tokyo, Shanghai, Sydney) with their top 3 hotels (Abu Dhabi top 5, incl. Zaid's example Four Seasons Abu Dhabi) → 27 cities, 82 active hotels; new column `hotels.liteapi_id` (null for brand-only matches). Stay grid per hotel 8 → 4 real checks (`GRID_WEEKENDS` 3, `GRID_MIDWEEK` 1; DECISIONS changelog 10) so ~82 hotels fit the cap of 400. Night grid: 82 × 120 = 9,840 calls a day ≈ 9 h of the 2-minute cycle. Xotelo prices for new hotels checked by hand (Four Seasons Abu Dhabi: 5 sites). New hotels have no photo yet (C-071c).
+
+### C-071b · Catalog: next batches up to ~150 hotels (Owner CLOUD · M · depends on C-071a · TODO)
+
+1. Watch C-071a's batch for 2 days in /admin: does the night run finish in the day, how many nights come back empty, and are new hotels' night sums reliable (C-070d)? Are real stay checks skipped (cap)?
+2. Capacity: each hotel = 120 night calls + ~5 real stay checks a day. The 2-minute cycle does about 1,080 night calls an hour (≈ 25,000 a day). Beyond ~150 hotels, or when stay checks hit the cap of 400: run the collect cron every minute, propose a cap change in BLOCKERS (free source, D-13), or use a tiered night window (next 60 nights daily, later nights every 3 days).
+3. Add batches with `node scripts/catalog/batch.ts <n> [city …]` (top n per city by luxury rank). Existing launch cities get their missing top hotels (e.g. Ritz Paris, The Dorchester, Hotel Vier Jahreszeiten Kempinski).
+4. Find the Tripadvisor ids for Santa Monica and West Hollywood (Los Angeles luxury hotels) and re-run discovery for Los Angeles.
+
+### C-071c · Photos for the new hotels (Owner CLOUD · S · depends on C-071a · DONE, [#53](https://github.com/zaidg7/tidaq/pull/53))
+
+New hotels have no photo; the UI shows the placeholder. Run the C-011b/C-011c pipeline (licensed Wikimedia Commons images, credit, self-hosted thumbnails) for them. Hotels without a usable free image keep the placeholder.
+
+**C-071c notes (DONE, [#53](https://github.com/zaidg7/tidaq/pull/53)):** 11 of the 47 new hotels have a licensed photo (migration `20261014180748_hotel_photos_batch1`, self-hosted webp files, `scripts/catalog/photos-batch1.json` with every lookup). Rejected by hand: Bairro Alto Hotel (shows the square) and Cheval Blanc Randheli (an atoll map). 14 lookups failed on Wikimedia's rate limit for the cloud session's IP: re-run them from GitHub Actions (`Catalog photos`, by hand) once minutes are available, with `node scripts/catalog/photos.ts <list>`. `self-host.mjs` now adds to the photo manifest instead of replacing it; `photos.ts` and `photos-sql.ts` take an input file.
 
 ### C-072 · Spike: LiteAPI room/board/occupancy rates (Owner CLOUD · M · depends on B-010 · DONE)
 
@@ -683,7 +703,7 @@ Owner: CLOUD · Size: M · Depends on: C-022 · Status: split into C-023a (page,
 ### C-024 · City pages
 
 Owner: CLOUD · Size: S · Depends on: C-023 · Status: TODO · PR: –
-`/stadt/[city]`: hotel cards with photo, cheapest upcoming stay, state chip. SEO title and intro text (DE/EN). Links from footer and home. Also `/hotels` (navbar "Hotels", footer "Alle Hotels", added in C-020a): all hotels grouped by city.
+`/stadt/[city]`: hotel cards with photo, cheapest upcoming stay, state chip. SEO title and intro text (DE/EN). Links from footer and home. Also `/hotels` (navbar "Hotels", footer "Alle Hotels", added in C-020a): all hotels grouped by city. Since C-071a there are 27 "cities", among them the Maldives (a country: "auf den Malediven", not "in Malediven") and places spanning several Tripadvisor locations (Miami + Miami Beach, Los Angeles + Beverly Hills); group `/hotels` by country or region, and make every city name read naturally in DE and EN.
 
 ### C-025 · Deals page
 

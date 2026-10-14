@@ -270,12 +270,12 @@ Charts only exist for prices we collected _before_ someone asks, and no source s
 
 Charts only exist for stays we track _before_ someone asks. Since D-42 the grid is mainly the ground truth for the night sums (§7.0) and the source of real stay prices. Each day the collector makes sure every active hotel has these stays tracked:
 
-- **Weekends:** the next 6 Fri→Sun stays (2 nights)
-- **Midweek:** 2 Tue→Thu stays in the next 6 weeks
+- **Weekends:** the next 3 Fri→Sun stays (2 nights; 6 until C-071a)
+- **Midweek:** 1 Tue→Thu stay in the next 6 weeks (2 until C-071a)
 - **Events:** New Year's Eve (30 Dec→1 Jan) and a few city specials (Oktoberfest, Christmas markets) in a `special_dates` config, only while they are within 90 days
 - **Plus** every stay a user watches (origin `watch`)
 
-All for 2 adults (the most common luxury booking). About 8 grid stays per hotel (lean start, D-13). The grid size is config (`GRID_WEEKENDS`, `GRID_MIDWEEK`), so scaling up later is a one-line change.
+All for 2 adults (the most common luxury booking). 4 grid stays per hotel since C-071a (8 at the lean start, D-13): with history from the night grid, the real checks only need to be enough to measure the night sums, and the daily cap (400) then covers about 85 hotels. The grid size is config (`GRID_WEEKENDS`, `GRID_MIDWEEK`), so scaling up later is a one-line change.
 
 ### 7.2 Budget math (verify in C-010)
 

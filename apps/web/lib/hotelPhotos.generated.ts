@@ -22,6 +22,22 @@ export const HOTEL_PHOTOS: Record<string, HotelPhoto> = {
       height: 574,
     },
   },
+  'four-seasons-hotel-istanbul-at-sultanahmet': {
+    '160': {
+      src: '/hotels/four-seasons-hotel-istanbul-at-sultanahmet-160.webp',
+      width: 120,
+      height: 160,
+    },
+    '960': {
+      src: '/hotels/four-seasons-hotel-istanbul-at-sultanahmet-960.webp',
+      width: 720,
+      height: 960,
+    },
+  },
+  'four-seasons-hotel-new-york': {
+    '160': { src: '/hotels/four-seasons-hotel-new-york-160.webp', width: 63, height: 160 },
+    '960': { src: '/hotels/four-seasons-hotel-new-york-960.webp', width: 379, height: 960 },
+  },
   'hotel-adlon-kempinski-berlin': {
     '160': { src: '/hotels/hotel-adlon-kempinski-berlin-160.webp', width: 160, height: 128 },
     '960': { src: '/hotels/hotel-adlon-kempinski-berlin-960.webp', width: 960, height: 766 },
@@ -70,17 +86,41 @@ export const HOTEL_PHOTOS: Record<string, HotelPhoto> = {
     '160': { src: '/hotels/mandarin-oriental-munich-160.webp', width: 107, height: 160 },
     '960': { src: '/hotels/mandarin-oriental-munich-960.webp', width: 640, height: 960 },
   },
+  'mandarin-oriental-ritz-madrid': {
+    '160': { src: '/hotels/mandarin-oriental-ritz-madrid-160.webp', width: 160, height: 123 },
+    '960': { src: '/hotels/mandarin-oriental-ritz-madrid-960.webp', width: 960, height: 735 },
+  },
+  'marina-bay-sands-singapur': {
+    '160': { src: '/hotels/marina-bay-sands-singapur-160.webp', width: 160, height: 99 },
+    '960': { src: '/hotels/marina-bay-sands-singapur-960.webp', width: 960, height: 596 },
+  },
   'palais-coburg-wien': {
     '160': { src: '/hotels/palais-coburg-wien-160.webp', width: 160, height: 107 },
     '960': { src: '/hotels/palais-coburg-wien-960.webp', width: 960, height: 640 },
+  },
+  'park-hyatt-tokyo': {
+    '160': { src: '/hotels/park-hyatt-tokyo-160.webp', width: 120, height: 160 },
+    '960': { src: '/hotels/park-hyatt-tokyo-960.webp', width: 720, height: 960 },
   },
   'park-hyatt-vienna': {
     '160': { src: '/hotels/park-hyatt-vienna-160.webp', width: 160, height: 111 },
     '960': { src: '/hotels/park-hyatt-vienna-960.webp', width: 960, height: 668 },
   },
+  'raffles-singapore': {
+    '160': { src: '/hotels/raffles-singapore-160.webp', width: 160, height: 120 },
+    '960': { src: '/hotels/raffles-singapore-960.webp', width: 960, height: 720 },
+  },
+  'rosewood-hong-kong': {
+    '160': { src: '/hotels/rosewood-hong-kong-160.webp', width: 107, height: 160 },
+    '960': { src: '/hotels/rosewood-hong-kong-960.webp', width: 640, height: 960 },
+  },
   'shangri-la-paris': {
     '160': { src: '/hotels/shangri-la-paris-160.webp', width: 160, height: 120 },
     '960': { src: '/hotels/shangri-la-paris-960.webp', width: 960, height: 720 },
+  },
+  'the-beverly-hills-hotel-los-angeles': {
+    '160': { src: '/hotels/the-beverly-hills-hotel-los-angeles-160.webp', width: 120, height: 160 },
+    '960': { src: '/hotels/the-beverly-hills-hotel-los-angeles-960.webp', width: 720, height: 960 },
   },
   'the-charles-hotel-muenchen': {
     '160': { src: '/hotels/the-charles-hotel-muenchen-160.webp', width: 160, height: 110 },
@@ -94,9 +134,37 @@ export const HOTEL_PHOTOS: Record<string, HotelPhoto> = {
     '160': { src: '/hotels/the-fontenay-hamburg-160.webp', width: 160, height: 123 },
     '960': { src: '/hotels/the-fontenay-hamburg-960.webp', width: 960, height: 737 },
   },
+  'the-peninsula-beverly-hills-los-angeles': {
+    '160': {
+      src: '/hotels/the-peninsula-beverly-hills-los-angeles-160.webp',
+      width: 160,
+      height: 107,
+    },
+    '960': {
+      src: '/hotels/the-peninsula-beverly-hills-los-angeles-960.webp',
+      width: 960,
+      height: 640,
+    },
+  },
+  'the-peninsula-shanghai': {
+    '160': { src: '/hotels/the-peninsula-shanghai-160.webp', width: 160, height: 106 },
+    '960': { src: '/hotels/the-peninsula-shanghai-960.webp', width: 960, height: 638 },
+  },
   'the-ritz-carlton-berlin': {
     '160': { src: '/hotels/the-ritz-carlton-berlin-160.webp', width: 160, height: 90 },
     '960': { src: '/hotels/the-ritz-carlton-berlin-960.webp', width: 960, height: 541 },
+  },
+  'the-ritz-carlton-new-york-central-park': {
+    '160': {
+      src: '/hotels/the-ritz-carlton-new-york-central-park-160.webp',
+      width: 120,
+      height: 160,
+    },
+    '960': {
+      src: '/hotels/the-ritz-carlton-new-york-central-park-960.webp',
+      width: 720,
+      height: 960,
+    },
   },
   'the-ritz-london': {
     '160': { src: '/hotels/the-ritz-london-160.webp', width: 105, height: 160 },
