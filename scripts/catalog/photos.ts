@@ -1,7 +1,7 @@
 /**
  * C-011b: finds a freely licensed photo for each catalog hotel and prints JSON to stdout.
  *
- *   node scripts/catalog/photos.ts > scripts/catalog/photos.json
+ *   node scripts/catalog/photos.ts [hotels.json] > scripts/catalog/photos.json
  *
  * Source: the hotel's Wikidata item (matched by name and coordinates within 1 km of our
  * catalog position) and its curated image (property P18) on Wikimedia Commons. Only CC BY,
@@ -209,7 +209,9 @@ async function findPhoto(h: Resolved): Promise<Photo> {
 }
 
 async function main() {
-  const hotels: Resolved[] = JSON.parse(readFileSync(join(DIR, 'resolved.json'), 'utf8'));
+  // Default: the launch catalog; C-071 batches pass their own list ([{ slug, name, city, lat, lng }]).
+  const input = process.argv[2] ?? join(DIR, 'resolved.json');
+  const hotels: Resolved[] = JSON.parse(readFileSync(input, 'utf8'));
   const out: Photo[] = [];
   for (const h of hotels) {
     try {
