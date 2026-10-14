@@ -2,7 +2,7 @@
  * C-011b: turns scripts/catalog/photos.json (from photos.ts, run in GitHub Actions) into SQL that
  * sets `hotels.image_url` and `image_credit`. Hotels without a licensed photo keep null
  * (the UI shows a gradient). Apply it as a migration (README → Database).
- *   node scripts/catalog/photos-sql.ts > /tmp/photos.sql
+ *   node scripts/catalog/photos-sql.ts [photos.json] > /tmp/photos.sql
  */
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -19,7 +19,9 @@ interface Photo {
 
 const sqlString = (v: string): string => `'${v.replace(/'/g, "''")}'`;
 
-const photos: Photo[] = JSON.parse(readFileSync(join(DIR, 'photos.json'), 'utf8'));
+// Default: the launch catalog's photos.json; C-071 batches pass their own file.
+const input = process.argv[2] ?? join(DIR, 'photos.json');
+const photos: Photo[] = JSON.parse(readFileSync(input, 'utf8'));
 const found = photos.filter(
   (p): p is Photo & { imageUrl: string; credit: string } =>
     /^https:\/\/(upload|thumb)\.wikimedia\.org\/[^?#]+$/.test(p.imageUrl ?? '') && !!p.credit,

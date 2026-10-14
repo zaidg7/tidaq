@@ -1,0 +1,472 @@
+[
+  {
+    "slug": "four-seasons-hotel-madrid",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "mandarin-oriental-ritz-madrid",
+    "wikidata": "Q3145654",
+    "file": "Hotel Ritz (Madrid) 03.jpg",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/Hotel_Ritz_%28Madrid%29_03.jpg/1280px-Hotel_Ritz_%28Madrid%29_03.jpg",
+    "credit": "Foto: Luis García ( Zaqarbal ), CC BY-SA 3.0, via Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Hotel_Ritz_(Madrid)_03.jpg",
+    "note": "0.02 km, name score 1.00"
+  },
+  {
+    "slug": "santo-mauro-madrid",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no Wikidata match"
+  },
+  {
+    "slug": "four-seasons-hotel-ritz-lisbon",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "the-ivens-lissabon",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no Wikidata match"
+  },
+  {
+    "slug": "bairro-alto-hotel-lissabon",
+    "wikidata": "Q73760891",
+    "file": "Praça Luís de Camões - Lisbon - Apr 2007.jpg",
+    "imageUrl": null,
+    "credit": null,
+    "license": "CC BY-SA 2.0",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Pra%C3%A7a_Lu%C3%ADs_de_Cam%C3%B5es_-_Lisbon_-_Apr_2007.jpg",
+    "note": "rejected by hand: photo shows the square, not the hotel"
+  },
+  {
+    "slug": "mandarin-oriental-bosphorus-istanbul",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "four-seasons-hotel-istanbul-at-sultanahmet",
+    "wikidata": "Q102318264",
+    "file": "Four Seasons Sultanahmet March 2008.JPG",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/Four_Seasons_Sultanahmet_March_2008.JPG/1280px-Four_Seasons_Sultanahmet_March_2008.JPG",
+    "credit": "Foto: Gryffindor, CC BY-SA 4.0, via Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Four_Seasons_Sultanahmet_March_2008.JPG",
+    "note": "0.03 km, name score 1.00"
+  },
+  {
+    "slug": "the-peninsula-istanbul",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbsearchentities&search=The+Peninsula+Istanbul&language=en&type=item&limit=7"
+  },
+  {
+    "slug": "bvlgari-resort-dubai",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no Wikidata match"
+  },
+  {
+    "slug": "four-seasons-resort-dubai-at-jumeirah-beach",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "mandarin-oriental-jumeira-dubai",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbsearchentities&search=Mandarin+Oriental+Jumeira&language=en&type=item&limit=7"
+  },
+  {
+    "slug": "emirates-palace-mandarin-oriental-abu-dhabi",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbsearchentities&search=Emirates+Palace+Mandarin+Oriental&language=en&type=item&limit=7"
+  },
+  {
+    "slug": "the-st-regis-saadiyat-island-resort-abu-dhabi",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "the-abu-dhabi-edition",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "rosewood-abu-dhabi",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "four-seasons-hotel-abu-dhabi-at-al-maryah-island",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbsearchentities&search=Four+Seasons+Hotel+Abu+Dhabi+at+Al+Maryah+Island&language=en&type=item&limit=7"
+  },
+  {
+    "slug": "waldorf-astoria-maldives-ithaafushi",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbgetentities&ids=Q97382937&props=claims%7Clabels&languages=en%7Cde"
+  },
+  {
+    "slug": "cheval-blanc-randheli-malediven",
+    "wikidata": "Q86725379",
+    "file": "Noonu Atoll.png",
+    "imageUrl": null,
+    "credit": null,
+    "license": "CC BY-SA 3.0",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Noonu_Atoll.png",
+    "note": "rejected by hand: map of the atoll, not the resort"
+  },
+  {
+    "slug": "the-ritz-carlton-maldives-fari-islands",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbsearchentities&search=The+Ritz-Carlton+Maldives%2C+Fari+Islands&language=de&type=item&limit=7"
+  },
+  {
+    "slug": "four-seasons-hotel-new-york",
+    "wikidata": "Q992616",
+    "file": "4 seasons hotel NY 56 jeh.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/72/4_seasons_hotel_NY_56_jeh.jpg",
+    "credit": "Foto: Jim.henderson, CC0, via Wikimedia Commons",
+    "license": "CC0",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:4_seasons_hotel_NY_56_jeh.jpg",
+    "note": "0.01 km, name score 1.00"
+  },
+  {
+    "slug": "lowell-hotel-new-york",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbsearchentities&search=Lowell+Hotel&language=en&type=item&limit=7"
+  },
+  {
+    "slug": "the-ritz-carlton-new-york-central-park",
+    "wikidata": "Q111446029",
+    "file": "Ritz-Carlton New York, Central Park, Manhattan, New York, US.jpg",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Ritz-Carlton_New_York%2C_Central_Park%2C_Manhattan%2C_New_York%2C_US.jpg/1280px-Ritz-Carlton_New_York%2C_Central_Park%2C_Manhattan%2C_New_York%2C_US.jpg",
+    "credit": "Foto: Clyde Charles Brown, CC BY-SA 4.0, via Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Ritz-Carlton_New_York,_Central_Park,_Manhattan,_New_York,_US.jpg",
+    "note": "0.01 km, name score 1.00"
+  },
+  {
+    "slug": "faena-miami-beach",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "the-setai-miami-beach",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no Wikidata match"
+  },
+  {
+    "slug": "1-hotel-south-beach-miami",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "hotel-bel-air-los-angeles",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbsearchentities&search=Hotel+Bel-Air&language=en&type=item&limit=7"
+  },
+  {
+    "slug": "the-beverly-hills-hotel-los-angeles",
+    "wikidata": "Q2021533",
+    "file": "BeverlyHillsHotel03.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/19/BeverlyHillsHotel03.jpg",
+    "credit": "Foto: Minnaert, Public domain, via Wikimedia Commons",
+    "license": "Public domain",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:BeverlyHillsHotel03.jpg",
+    "note": "0.01 km, name score 1.00"
+  },
+  {
+    "slug": "the-peninsula-beverly-hills-los-angeles",
+    "wikidata": "Q7756546",
+    "file": "The Peninsula Beverly Hills 2015.jpg",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/The_Peninsula_Beverly_Hills_2015.jpg/1280px-The_Peninsula_Beverly_Hills_2015.jpg",
+    "credit": "Foto: Toglenn, CC BY-SA 3.0, via Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:The_Peninsula_Beverly_Hills_2015.jpg",
+    "note": "0.05 km, name score 1.00"
+  },
+  {
+    "slug": "raffles-sentosa-singapore",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no Wikidata match"
+  },
+  {
+    "slug": "raffles-singapore",
+    "wikidata": "Q1538837",
+    "file": "RafflesHotel-Singapore-20041025.jpg",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/RafflesHotel-Singapore-20041025.jpg/1280px-RafflesHotel-Singapore-20041025.jpg",
+    "credit": "Foto: Velela ., Public domain, via Wikimedia Commons",
+    "license": "Public domain",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:RafflesHotel-Singapore-20041025.jpg",
+    "note": "0.00 km, name score 0.50"
+  },
+  {
+    "slug": "marina-bay-sands-singapur",
+    "wikidata": "Q548679",
+    "file": "Marina Bay Sands Hotel 3 (31345110894).jpg",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Marina_Bay_Sands_Hotel_3_%2831345110894%29.jpg/1280px-Marina_Bay_Sands_Hotel_3_%2831345110894%29.jpg",
+    "credit": "Foto: Tony Hisgett from Birmingham, UK, CC BY 2.0, via Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Marina_Bay_Sands_Hotel_3_(31345110894).jpg",
+    "note": "0.17 km, name score 1.00"
+  },
+  {
+    "slug": "capella-bangkok",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbsearchentities&search=Capella+Bangkok&language=en&type=item&limit=7"
+  },
+  {
+    "slug": "the-siam-bangkok",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "four-seasons-hotel-bangkok-at-chao-phraya-river",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "rosewood-hong-kong",
+    "wikidata": "Q64584936",
+    "file": "Victoria Dockside night view 201908.jpg",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/05/Victoria_Dockside_night_view_201908.jpg/1280px-Victoria_Dockside_night_view_201908.jpg",
+    "credit": "Foto: Wpcpey, CC BY-SA 4.0, via Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:Victoria_Dockside_night_view_201908.jpg",
+    "note": "0.03 km, name score 1.00"
+  },
+  {
+    "slug": "upper-house-hong-kong",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no Wikidata match"
+  },
+  {
+    "slug": "mandarin-oriental-hong-kong",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbsearchentities&search=Mandarin+Oriental+Hong+Kong&language=en&type=item&limit=7"
+  },
+  {
+    "slug": "aman-tokyo",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbsearchentities&search=Aman+Tokyo&language=en&type=item&limit=7"
+  },
+  {
+    "slug": "four-seasons-hotel-tokyo-at-otemachi",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no Wikidata match"
+  },
+  {
+    "slug": "park-hyatt-tokyo",
+    "wikidata": "Q11329793",
+    "file": "ParkHyattTokyo.JPG",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7f/ParkHyattTokyo.JPG",
+    "credit": "Foto: moore, CC BY-SA 3.0, via Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:ParkHyattTokyo.JPG",
+    "note": "0.08 km, name score 1.00"
+  },
+  {
+    "slug": "bvlgari-hotel-shanghai",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "the-peninsula-shanghai",
+    "wikidata": "Q24911653",
+    "file": "The Peninsula Shanghai.JPG",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/The_Peninsula_Shanghai.JPG/1280px-The_Peninsula_Shanghai.JPG",
+    "credit": "Foto: Livelikerw, CC BY-SA 3.0, via Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "pageUrl": "https://commons.wikimedia.org/wiki/File:The_Peninsula_Shanghai.JPG",
+    "note": "0.46 km, name score 1.00"
+  },
+  {
+    "slug": "the-shanghai-edition",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "park-hyatt-sydney",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "no item with image within 1 km and a matching name"
+  },
+  {
+    "slug": "crown-sydney",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbgetentities&ids=Q16890775&props=claims%7Clabels&languages=en%7Cde"
+  },
+  {
+    "slug": "pullman-quay-grand-sydney-harbour",
+    "wikidata": null,
+    "file": null,
+    "imageUrl": null,
+    "credit": null,
+    "license": null,
+    "pageUrl": null,
+    "note": "error: Error: gave up after retries: https://www.wikidata.org/w/api.php?format=json&formatversion=2&action=wbsearchentities&search=Pullman+Quay+Grand+Sydney+Harbour&language=en&type=item&limit=7"
+  }
+]
