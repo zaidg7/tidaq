@@ -985,6 +985,7 @@ export type Database = {
           series: Json
         }[]
       }
+      alert_offers: { Args: { p_watch_id: string; p_today: string }; Returns: Json }
       alert_record: {
         Args: { p_watch_id: string; p_kind: string; p_price_cents: number; p_resend_id: string | null }
         Returns: undefined
