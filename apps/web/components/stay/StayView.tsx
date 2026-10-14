@@ -7,7 +7,9 @@ import {
   dayDiff,
   formatDateRange,
   formatDayMonth,
+  formatPrice,
   localizedPath,
+  NIGHT_GRID,
   STATS,
   stayPath,
   verdictFacts,
@@ -59,6 +61,10 @@ type Props = {
   series: DailyPrice[];
   providerByDay: Record<string, string>;
   updatedAt: string | null;
+  /** Where the history comes from (C-070b): summed single nights or real checks of the stay. */
+  history?: 'nights' | 'stay' | null;
+  /** Today's real price differs from the nights' sum by more than 3 % (shown as a note). */
+  realVsNights?: { realCents: number; nightsCents: number } | null;
   others: OtherStay[];
   /** The latest day's reviewed providers (C-022b); `unreviewed` counts the hidden ones. */
   offers: { day: string | null; list: StayOffer[]; unreviewed: number };
@@ -82,6 +88,8 @@ export function StayView({
   series,
   providerByDay,
   updatedAt,
+  history = null,
+  realVsNights = null,
   others,
   offers,
   today,
@@ -123,14 +131,17 @@ export function StayView({
       </header>
 
       {status === 'tracked' ? (
-        <TrackedPanel
-          series={series}
-          params={params}
-          today={today}
-          providerByDay={providerByDay}
-          updatedAt={updatedAt}
-          now={now}
-        />
+        <>
+          <TrackedPanel
+            series={series}
+            params={params}
+            today={today}
+            providerByDay={providerByDay}
+            updatedAt={updatedAt}
+            now={now}
+          />
+          <HistoryNote history={history} realVsNights={realVsNights} />
+        </>
       ) : status === 'no_data' ? (
         <Card variant="float" radius="search" className="mt-6 lg:mt-8 lg:p-8">
           <Notice title={t('noDataTitle')} text={t('noDataText')} />
@@ -138,7 +149,19 @@ export function StayView({
       ) : (
         <Card variant="float" radius="search" className="mt-6 lg:mt-8 lg:p-8">
           {status === 'untracked' && (
-            <Notice icon={CalendarClock} title={t('untrackedTitle')} text={t('untrackedText')} />
+            <Notice
+              icon={CalendarClock}
+              title={
+                params.adults === NIGHT_GRID.adults
+                  ? t('untrackedTitle')
+                  : t('untrackedGuestsTitle', { adults: params.adults })
+              }
+              text={
+                params.adults === NIGHT_GRID.adults
+                  ? t('untrackedText', { days: NIGHT_GRID.windowDays })
+                  : t('untrackedGuestsText', { adults: NIGHT_GRID.adults })
+              }
+            />
           )}
           {status === 'past' && (
             <Notice icon={CalendarX2} title={t('pastTitle')} text={t('pastText')} />
@@ -340,6 +363,41 @@ function WatchCard() {
         {t('watchSoon')}
       </Button>
     </Card>
+  );
+}
+
+/**
+ * Under the chart (C-070b, D-42): where the history comes from and, when today's real price for
+ * these exact dates differs from the sum of the nights, both numbers. Facts only, no adjustment.
+ */
+function HistoryNote({
+  history,
+  realVsNights,
+}: {
+  history: 'nights' | 'stay' | null;
+  realVsNights: { realCents: number; nightsCents: number } | null;
+}) {
+  const t = useTranslations('stay');
+  const locale = useLocale() as Locale;
+  if (history !== 'nights') return null;
+  return (
+    <p className="text-meta mt-3 max-w-[44em] text-muted-ink">
+      {t('historyNights')}{' '}
+      {realVsNights && (
+        <>
+          {t('realVsNights', {
+            real: formatPrice(realVsNights.realCents, locale),
+            nights: formatPrice(realVsNights.nightsCents, locale),
+          })}{' '}
+        </>
+      )}
+      <a
+        href={localizedPath(routes.method, locale)}
+        className="font-semibold text-accent underline-offset-2 hover:underline"
+      >
+        {t('historyHow')}
+      </a>
+    </p>
   );
 }
 

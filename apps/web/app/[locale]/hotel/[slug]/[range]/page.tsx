@@ -1,6 +1,8 @@
 import { cache } from 'react';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
+import { after } from 'next/server';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import {
   formatDateRange,
@@ -15,6 +17,7 @@ import { EditStay } from '@/components/stay/EditStay';
 import { StayView, stayStatus } from '@/components/stay/StayView';
 import { buttonClasses } from '@/components/ui/Button';
 import { getCatalog } from '@/lib/data/catalog';
+import { requestStayOnView } from '@/lib/data/requestStay';
 import { getStay, type StayLoad } from '@/lib/data/stay';
 import { searchCardProps } from '@/lib/searchCardProps';
 import { berlinToday } from '@/lib/today';
@@ -100,7 +103,13 @@ export default async function StayPage(props: Props) {
     );
   }
 
-  const { hotel, stay, series, providerByDay, others, offers } = result.data;
+  const { hotel, stay, series, providerByDay, others, offers, history, updatedAt, realVsNights } =
+    result.data;
+  // No real check of these exact dates yet: ask for one after the response (C-070b).
+  if (hotel.active && stay === null && p.checkIn >= today) {
+    const userAgent = (await headers()).get('user-agent');
+    after(() => requestStayOnView(slug, p, userAgent));
+  }
   const [catalog, card] = await Promise.all([getCatalog(), searchCardProps(locale)]);
   const hotels = (catalog?.hotels ?? []).map((h) => ({
     slug: h.slug,
@@ -116,10 +125,18 @@ export default async function StayPage(props: Props) {
     <StayView
       hotel={hotel}
       params={p}
-      status={stayStatus(hotel.active, stay !== null, series, p.checkIn, today)}
+      status={stayStatus(
+        hotel.active,
+        stay !== null || result.data.inNightGrid,
+        series,
+        p.checkIn,
+        today,
+      )}
       series={series}
       providerByDay={providerByDay}
-      updatedAt={stay?.updatedAt ?? null}
+      updatedAt={updatedAt}
+      history={history}
+      realVsNights={realVsNights}
       others={others}
       offers={offers}
       today={today}

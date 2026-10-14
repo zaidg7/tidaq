@@ -102,6 +102,10 @@ const VARIANTS: Record<
     active?: boolean;
     /** Day of the provider prices when not today ("Preise vom …"). */
     offersDay?: string;
+    /** Where the history comes from (C-070b); tracked variants default to `stay`. */
+    history?: 'nights' | 'stay';
+    realVsNights?: { realCents: number; nightsCents: number };
+    adults?: number;
   }
 > = {
   tracked: {
@@ -125,7 +129,25 @@ const VARIANTS: Record<
     others: OTHERS,
   },
   'no-data': { status: 'no_data', checkIn: '2026-12-04', series: [], others: OTHERS },
-  untracked: { status: 'untracked', checkIn: '2026-12-05', series: [], others: OTHERS },
+  // History from the night grid; today's real check is 31 % below the nights' sum (C-070b).
+  nights: {
+    status: 'tracked',
+    checkIn: '2026-12-04',
+    series: sampleSeries(TODAY),
+    others: OTHERS,
+    history: 'nights',
+    realVsNights: { realCents: 154_400, nightsCents: 224_400 },
+  },
+  // Beyond the 120-day night grid.
+  untracked: { status: 'untracked', checkIn: '2027-03-05', series: [], others: OTHERS },
+  // 3 adults: the night grid collects 2.
+  'untracked-guests': {
+    status: 'untracked',
+    checkIn: '2026-12-05',
+    series: [],
+    others: OTHERS,
+    adults: 3,
+  },
   past: { status: 'past', checkIn: '2026-09-04', series: [], others: OTHERS },
   inactive: { status: 'inactive', checkIn: '2026-12-04', series: [], others: [], active: false },
 };
@@ -154,13 +176,15 @@ export default async function DevStayPage({
   return (
     <StayView
       hotel={{ ...HOTEL, active: v.active ?? true }}
-      params={{ checkIn: v.checkIn, checkOut, nights: 2, adults: 2 }}
+      params={{ checkIn: v.checkIn, checkOut, nights: 2, adults: v.adults ?? 2 }}
       status={v.status}
       series={v.series}
       providerByDay={Object.fromEntries(
         v.series.map((p, i) => [p.day, i % 3 ? 'Booking.com' : 'Hotel Adlon Kempinski']),
       )}
       updatedAt={v.series.length ? '2026-10-13T05:12:00Z' : null}
+      history={v.series.length ? (v.history ?? 'stay') : null}
+      realVsNights={v.realVsNights ?? null}
       others={v.others}
       offers={{
         day: v.series.length ? (v.offersDay ?? TODAY) : null,
@@ -181,7 +205,7 @@ export default async function DevStayPage({
             close: t('editClose'),
             editTitle: t('editTitle'),
           }}
-          initial={{ hotel: SLUG, checkIn: v.checkIn, checkOut, adults: 2 }}
+          initial={{ hotel: SLUG, checkIn: v.checkIn, checkOut, adults: v.adults ?? 2 }}
         />
       }
     />
