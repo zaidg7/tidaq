@@ -234,7 +234,17 @@
     "eyebrow": "Just dropped",
     "title": "Five-star deals this week",
     "meta": "{dates} · {adults, plural, one {# adult} other {# adults}}",
-    "all": "All deals"
+    "all": "All deals",
+    "pageTitle": "Five-star hotels that are cheaper right now",
+    "intro": "Stays whose price today is at least {pct} % below their own 30-day average. Only with at least {days} days of history, the biggest drop per hotel.",
+    "filterLabel": "Filter by city",
+    "allCities": "All cities",
+    "emptyTitle": "No deals right now",
+    "emptyText": "We only show real drops: at least {pct} % below the 30-day average, with {days} days of history. No stay meets that right now. Every hotel's calendar still shows its cheapest nights.",
+    "emptyCta": "See all hotels",
+    "metaTitle": "Deals: five-star hotels below their average price | Tidaq",
+    "metaDescription": "Luxury hotels whose price is clearly below their own 30-day average right now. Only real drops, updated daily.",
+    "unavailable": "The deals are unavailable right now. Please try again in a moment."
   },
   "cta": {
     "title": "Find the right moment for your hotel.",

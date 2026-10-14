@@ -79,7 +79,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | DONE           |
 | C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | DONE           |
 | C-024b                                                          | Search card: a city option opens the city page                               | CLOUD | S             | C-024                             | TODO           |
-| C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | TODO           |
+| C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | DONE           |
 | C-028                                                           | SEO foundation and dynamic OG images                                         | CLOUD | M             | C-022                             | TODO           |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | TODO           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
@@ -720,6 +720,8 @@ In the hotel combobox, typing a city shows an option "Alle Hotels in {Stadt}" (`
 
 Owner: CLOUD · Size: S · Depends on: C-022 · Status: TODO · PR: –
 `/deals`: stays with ≥ 14 days of data whose best price is ≥ 8 % below avg30, sorted by % drop; city filter chips; each card links to the stay page. Empty state if no deals.
+
+**C-025 notes (DONE):** `/deals` (`components/deals/DealsView.tsx`): same rule as the homepage section (core `pickDeals`, one stay per hotel, up to 60), city chips as links (`?stadt=berlin`, new `ChipLink` in `ui/Chip.tsx`, `aria-current`, no JS), cards shared with the homepage (`components/deals/DealCard.tsx`, now linking with `?adults=`). One canonical URL for all filters. Honest empty state with a link to `/hotels`; since stays are only tracked since 12 Oct, the first deals can appear around 26 Oct. Deals still come from real stay checks (4 per hotel since C-071a); whether drops of single nights become deals is C-060's call (report ~4 Nov). Dev page `/dev/deals` (`?empty`, `?stadt=`), e2e `e2e/deals.spec.ts`.
 
 ### C-026 · Outbound link service
 
