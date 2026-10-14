@@ -206,7 +206,8 @@
       "done": "Fertig",
       "clear": "Zurücksetzen",
       "today": "heute"
-    }
+    },
+    "cityAll": "Alle Hotels {where}"
   },
   "how": {
     "eyebrow": "So funktioniert’s",
