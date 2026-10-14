@@ -268,7 +268,11 @@ export function Dashboard({ health, monthlyBudgetUsd, now, flash }: Props) {
         )}
       </Section>
 
-      <NightsSection nights={health.nights} accuracy={health.accuracy} />
+      <NightsSection
+        nights={health.nights}
+        accuracy={health.accuracy}
+        hidden={health.night_hidden}
+      />
 
       <Section
         title="Hotels ohne Preise seit 3 Tagen"
@@ -368,22 +372,24 @@ export function Dashboard({ health, monthlyBudgetUsd, now, flash }: Props) {
 /**
  * Night grid (C-070a) and how close summed nights come to real stay prices (C-070c). The
  * night runs are counted here, not in the daily run table: thousands of nights would drown it.
+ * Hotels where single nights mislead have their night history hidden (C-070d); the target and the
+ * email alarm count only the hotels whose night history is shown.
  */
 function NightsSection({
   nights,
   accuracy,
+  hidden,
 }: {
   nights: AdminHealth['nights'];
   accuracy: AdminAccuracyDay[];
+  hidden: AdminHealth['night_hidden'];
 }) {
   const expected = nights.hotels * NIGHT_GRID.windowDays;
   const done = expected > 0 ? nights.rows / expected : 0;
-  const latest = accuracy[0];
-  const share = (d: AdminAccuracyDay) => (d.pairs > 0 ? d.within_3 / d.pairs : null);
-  const weak = (d: AdminAccuracyDay) => {
-    const s = share(d);
-    return s !== null && d.pairs >= NIGHT_ACCURACY.minPairs && s < NIGHT_ACCURACY.minShare;
-  };
+  const ratio = (n: number, of: number) => (of > 0 ? pct.format(n / of) : '–');
+  const weak = (d: AdminAccuracyDay) =>
+    d.pairs_shown >= NIGHT_ACCURACY.minPairs &&
+    d.within_3_shown / d.pairs_shown < NIGHT_ACCURACY.minShare;
   return (
     <Section
       title="Einzelnächte"
@@ -405,7 +411,8 @@ function NightsSection({
       <h3 className="mt-5 font-semibold">Genauigkeit</h3>
       <p className="text-meta mt-1 mb-2 text-muted-ink">
         Summe der Nächte gegen den echten Preis desselben Aufenthalts auf derselben Seite, am selben
-        Tag. Ziel: mindestens {pct.format(NIGHT_ACCURACY.minShare)} auf 3 % genau.
+        Tag. Ziel: mindestens {pct.format(NIGHT_ACCURACY.minShare)} auf 3 % genau bei den Hotels,
+        deren Verlauf wir zeigen.
       </p>
       {accuracy.length === 0 ? (
         <Empty>Noch kein Vergleich. Der erste kommt morgen früh mit der Tagesprüfung.</Empty>
@@ -417,14 +424,17 @@ function NightsSection({
                 <th scope="col" className="py-2 pr-3 font-semibold">
                   Tag
                 </th>
-                <th scope="col" className="py-2 pr-3 text-right font-semibold">
+                <th scope="col" className="py-2 pr-3 text-right font-semibold max-sm:hidden">
                   Vergleiche
                 </th>
                 <th scope="col" className="py-2 pr-3 text-right font-semibold">
-                  ± 3 %
+                  Gezeigt ± 3 %
+                </th>
+                <th scope="col" className="py-2 pr-3 text-right font-semibold">
+                  Alle ± 3 %
                 </th>
                 <th scope="col" className="py-2 pr-3 text-right font-semibold max-sm:hidden">
-                  ± 0,5 %
+                  Alle ± 0,5 %
                 </th>
                 <th scope="col" className="py-2 text-right font-semibold">
                   Median
@@ -432,47 +442,46 @@ function NightsSection({
               </tr>
             </thead>
             <tbody>
-              {accuracy.map((d) => {
-                const s = share(d);
-                return (
-                  <tr key={d.day} className="border-t border-line">
-                    <th scope="row" className="py-2.5 pr-3 font-semibold whitespace-nowrap">
-                      {formatWeekdayDayMonth(d.day, 'de')}
-                    </th>
-                    <td className="py-2.5 pr-3 text-right">{int.format(d.pairs)}</td>
-                    <td
-                      className={cn('py-2.5 pr-3 text-right', weak(d) && 'font-bold text-bad-ink')}
-                    >
-                      {s === null ? '–' : pct.format(s)}
-                    </td>
-                    <td className="py-2.5 pr-3 text-right max-sm:hidden">
-                      {d.pairs > 0 ? pct.format(d.within_05 / d.pairs) : '–'}
-                    </td>
-                    <td className="py-2.5 text-right whitespace-nowrap">
-                      {d.median_gap_pct === null ? '–' : `${gapPct.format(d.median_gap_pct)} %`}
-                    </td>
-                  </tr>
-                );
-              })}
+              {accuracy.map((d) => (
+                <tr key={d.day} className="border-t border-line">
+                  <th scope="row" className="py-2.5 pr-3 font-semibold whitespace-nowrap">
+                    {formatWeekdayDayMonth(d.day, 'de')}
+                  </th>
+                  <td className="py-2.5 pr-3 text-right max-sm:hidden">{int.format(d.pairs)}</td>
+                  <td className={cn('py-2.5 pr-3 text-right', weak(d) && 'font-bold text-bad-ink')}>
+                    {ratio(d.within_3_shown, d.pairs_shown)}
+                  </td>
+                  <td className="py-2.5 pr-3 text-right">{ratio(d.within_3, d.pairs)}</td>
+                  <td className="py-2.5 pr-3 text-right max-sm:hidden">
+                    {ratio(d.within_05, d.pairs)}
+                  </td>
+                  <td className="py-2.5 text-right whitespace-nowrap">
+                    {d.median_gap_pct === null ? '–' : `${gapPct.format(d.median_gap_pct)} %`}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       )}
-      {latest && latest.worst.length > 0 && (
-        <>
-          <h3 className="mt-5 font-semibold">
-            Größte Abweichung am {formatDayMonth(latest.day, 'de')}
-          </h3>
-          <Rows>
-            {latest.worst.map((w) => (
-              <Row
-                key={w.hotel_id}
-                title={w.name}
-                meta={`${int.format(w.within_3)} von ${int.format(w.pairs)} auf 3 % genau`}
-              />
-            ))}
-          </Rows>
-        </>
+      <h3 className="mt-5 font-semibold">Ohne Verlauf aus Einzelnächten</h3>
+      <p className="text-meta mt-1 mb-2 text-muted-ink">
+        Einzelne Nächte kosten hier dauerhaft anders als der ganze Aufenthalt (Median über 5 %
+        daneben) oder schwanken zu stark (unter 40 % auf 3 % genau, 7 Tage). Diese Hotels zeigen nur
+        echte Abfragen. Geht automatisch, sobald die Werte wieder passen.
+      </p>
+      {hidden.length === 0 ? (
+        <Empty>Keine. Alle Hotels zeigen den Verlauf aus Einzelnächten.</Empty>
+      ) : (
+        <Rows>
+          {hidden.map((h) => (
+            <Row
+              key={h.id}
+              title={h.name}
+              meta={`${h.gap_pct === null ? '' : `Einzelnächte im Median ${h.gap_pct > 0 ? '+' : ''}${gapPct.format(h.gap_pct)} % · `}${int.format(h.within_3)} von ${int.format(h.pairs)} auf 3 % genau`}
+            />
+          ))}
+        </Rows>
       )}
     </Section>
   );

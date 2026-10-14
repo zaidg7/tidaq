@@ -47,6 +47,9 @@ const nightDayRow = z.object({
 
 const collectedRow = z.object({ collected_at: z.string() });
 
+/** `night_reliability` for one hotel (C-070d); no row = not enough comparisons = reliable. */
+const reliabilityRow = z.object({ hotel_id: z.number(), reliable: z.boolean() });
+
 const scoreRow = z.object({
   provider_id: z.number(),
   score: z.number(),
@@ -94,6 +97,11 @@ export interface StayData {
   history: 'nights' | 'stay' | null;
   /** The dates are inside the night grid (2 adults, next 120 days), so prices will come. */
   inNightGrid: boolean;
+  /**
+   * The dates are inside the night grid, but for this hotel single nights don't add up to the
+   * real stay price (C-070d): only real checks of the exact stay are shown.
+   */
+  nightsUnreliable: boolean;
   /** When the shown history was last collected (stay stats or the nights' collection time). */
   updatedAt: string | null;
   /**
@@ -135,7 +143,8 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
     );
     if (!hotel) return { kind: 'missing' };
 
-    const [stays, calendar] = await Promise.all([
+    const gridDates = hotel.active && inNightGrid(p, today);
+    const [stays, calendar, reliability] = await Promise.all([
       rest(
         `tracked_stays?select=id,active,stay_stats(updated_at)&hotel_id=eq.${hotel.id}` +
           `&check_in=eq.${p.checkIn}&check_out=eq.${p.checkOut}&adults=eq.${p.adults}&limit=1`,
@@ -149,9 +158,23 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
             calendarRow,
           )
         : Promise.resolve([]),
+      gridDates
+        ? rpc(
+            'night_reliability',
+            { p_day: today, p_hotel_id: hotel.id },
+            z.array(reliabilityRow),
+          ).catch((error: unknown) => {
+            // Without the answer, show the night history as before C-070d.
+            console.error(
+              JSON.stringify({ msg: 'night reliability failed', slug, error: String(error) }),
+            );
+            return [];
+          })
+        : Promise.resolve([]),
     ]);
     const stay = stays[0] ?? null;
-    const nightsOn = hotel.active && inNightGrid(p, today);
+    const nightsUnreliable = gridDates && reliability.some((r) => !r.reliable);
+    const nightsOn = gridDates && !nightsUnreliable;
 
     const from = addDays(today, -(STATS.windowDays - 1));
     const [days, nightDays, collected] = await Promise.all([
@@ -276,6 +299,7 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
         stay: stay ? { active: stay.active, updatedAt: stay.stay_stats?.updated_at ?? null } : null,
         history,
         inNightGrid: nightsOn,
+        nightsUnreliable,
         updatedAt:
           history === 'nights'
             ? (collected[0]?.collected_at ?? null)

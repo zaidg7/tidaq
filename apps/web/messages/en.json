@@ -291,6 +291,9 @@
     "offersUnreviewed": "{n, plural, one {One more provider had a price but isn’t checked by us yet.} other {# more providers had a price but aren’t checked by us yet.}}",
     "watchTitle": "Watch this price",
     "watchText": "We'll email you when the price for this stay drops. Free, unsubscribe with one click.",
-    "watchSoon": "Coming soon"
+    "watchSoon": "Coming soon",
+    "realOnlyTitle": "For this hotel we check whole stays",
+    "realOnlyText": "Here, single nights often cost something different from the whole stay. So we only show prices we checked for exactly these dates. We're queueing these dates now, as long as there's room today. The first prices usually arrive within a few minutes.",
+    "historyRealOnly": "The history only shows prices we checked for exactly these dates. At this hotel, single nights often cost something different from the whole stay."
   }
 }

@@ -60,6 +60,8 @@ export const adminHealthFixture: AdminHealth = {
       median_gap_pct: 1.36,
       stays: 160,
       stays_within_3: 96,
+      pairs_shown: 418,
+      within_3_shown: 309,
       worst: [
         { hotel_id: 7, slug: 'rosewood-munich', name: 'Rosewood Munich', pairs: 15, within_3: 0 },
         {
@@ -80,8 +82,14 @@ export const adminHealthFixture: AdminHealth = {
       median_gap_pct: 0.4,
       stays: 155,
       stays_within_3: 128,
+      pairs_shown: 480,
+      within_3_shown: 396,
       worst: [],
     },
+  ],
+  night_hidden: [
+    { id: 7, name: 'Rosewood Munich', pairs: 21, within_3: 1, gap_pct: 25.04 },
+    { id: 25, name: 'Shangri-La Paris', pairs: 24, within_3: 11, gap_pct: -5.68 },
   ],
   pending_total: 64,
   pending_providers: [

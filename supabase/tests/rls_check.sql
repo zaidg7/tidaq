@@ -34,5 +34,10 @@ select
   has_table_privilege('anon', 'public.night_accuracy', 'select') as anon_can_read_night_accuracy,
   not has_function_privilege('anon', 'public.night_accuracy_record(date)', 'execute')
     as anon_cannot_record_night_accuracy,
+  -- C-070d: the stay page asks whether a hotel's nights are reliable; the raw pairs stay private.
+  has_function_privilege('anon', 'public.night_reliability(date,integer)', 'execute')
+    as anon_can_read_night_reliability,
+  not has_function_privilege('anon', 'public.night_accuracy_pairs(date)', 'execute')
+    as anon_cannot_read_night_pairs,
   (select count(*) = 0 from pg_tables where schemaname = 'public' and not rowsecurity)
     as all_tables_have_rls;
