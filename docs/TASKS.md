@@ -64,7 +64,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-070d                                                          | Stay page: no night-sum history for hotels where single nights mislead       | CLOUD | S             | C-070c                            | DONE                |
 | C-071a                                                          | Catalog: 25 cities, five-star discovery script, first batch (~50 hotels)     | CLOUD | M             | C-070a                            | DONE           |
 | C-071b                                                          | Catalog: next batches up to ~150 hotels, watch the night run                 | CLOUD | M             | C-071a                            | TODO           |
-| C-071c                                                          | Photos for the new hotels (licensed, self-hosted, C-011c pipeline)           | CLOUD | S             | C-071a                            | IN PROGRESS    |
+| C-071c                                                          | Photos for the new hotels (licensed, self-hosted, C-011c pipeline)           | CLOUD | S             | C-071a                            | DONE           |
 | C-072                                                           | Spike: LiteAPI room/board/occupancy rates (free supplier API)                | CLOUD | M             | B-010                             | TODO           |
 | C-073                                                           | Research: German platforms (CHECK24, HolidayCheck, TUI) without scraping     | CLOUD | S             | –                                 | TODO                |
 | C-060                                                           | Market test: five-star price drops in ~10 holiday destinations               | CLOUD | M             | C-013g                            | TODO           |
@@ -639,9 +639,11 @@ D-43 (Zaid, 14 Oct). Steps: pick the 25 most popular cities for luxury travel wo
 3. Add batches with `node scripts/catalog/batch.ts <n> [city …]` (top n per city by luxury rank). Existing launch cities get their missing top hotels (e.g. Ritz Paris, The Dorchester, Hotel Vier Jahreszeiten Kempinski).
 4. Find the Tripadvisor ids for Santa Monica and West Hollywood (Los Angeles luxury hotels) and re-run discovery for Los Angeles.
 
-### C-071c · Photos for the new hotels (Owner CLOUD · S · depends on C-071a · IN PROGRESS)
+### C-071c · Photos for the new hotels (Owner CLOUD · S · depends on C-071a · DONE, [#53](https://github.com/zaidg7/tidaq/pull/53))
 
 New hotels have no photo; the UI shows the placeholder. Run the C-011b/C-011c pipeline (licensed Wikimedia Commons images, credit, self-hosted thumbnails) for them. Hotels without a usable free image keep the placeholder.
+
+**C-071c notes (DONE, [#53](https://github.com/zaidg7/tidaq/pull/53)):** 11 of the 47 new hotels have a licensed photo (migration `20261014180748_hotel_photos_batch1`, self-hosted webp files, `scripts/catalog/photos-batch1.json` with every lookup). Rejected by hand: Bairro Alto Hotel (shows the square) and Cheval Blanc Randheli (an atoll map). 14 lookups failed on Wikimedia's rate limit for the cloud session's IP: re-run them from GitHub Actions (`Catalog photos`, by hand) once minutes are available, with `node scripts/catalog/photos.ts <list>`. `self-host.mjs` now adds to the photo manifest instead of replacing it; `photos.ts` and `photos-sql.ts` take an input file.
 
 ### C-072 · Spike: LiteAPI room/board/occupancy rates (Owner CLOUD · M · depends on B-010 · TODO)
 
