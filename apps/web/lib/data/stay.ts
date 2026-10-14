@@ -280,6 +280,7 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
       const sc = scoreById.get(pr.id);
       offers.push({
         providerId: pr.id,
+        slug: pr.slug,
         name: pr.name,
         isDirect: pr.is_direct,
         totalCents: cents,

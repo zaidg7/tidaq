@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { inlineLinks, localizedPath, type Locale } from '@tidaq/core';
 
 /** One section of a legal or transparency page, as stored in the message files. */
@@ -42,16 +43,19 @@ function Inline({ text, locale }: { text: string; locale: Locale }) {
 /**
  * Legal and transparency pages (C-027): Impressum, Datenschutz, Affiliate-Hinweis, Ranking,
  * Methodik. Plain reading layout, one column of ~65 characters, a heading per section. English
- * pages add a note that the German text is binding.
+ * pages add a note that the German text is binding. `children` (live numbers on /methodik) sit
+ * between the header and the sections.
  */
 export function LegalPage({
   content,
   locale,
   bindingNote,
+  children,
 }: {
   content: LegalContent;
   locale: Locale;
   bindingNote?: string;
+  children?: ReactNode;
 }) {
   return (
     <article className="mx-auto w-full max-w-[1080px] px-5 pt-8 pb-16 md:px-7 lg:pt-14 lg:pb-[88px]">
@@ -70,6 +74,7 @@ export function LegalPage({
           </p>
         )}
       </header>
+      {children}
       <div className="mt-10 grid max-w-[40em] gap-9">
         {content.sections.map((s) => (
           <section key={s.title} aria-labelledby={sectionId(s.title)}>

@@ -81,7 +81,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-024b                                                          | Search card: a city option opens the city page                               | CLOUD | S             | C-024                             | DONE           |
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | DONE           |
 | C-028a                                                          | SEO: canonical, hreflang, sitemap, site JSON-LD                              | CLOUD | S             | C-022                             | DONE           |
-| C-028b                                                          | Dynamic OG images for stay, hotel and city pages                             | CLOUD | S             | C-028a                            | TODO           |
+| C-028b                                                          | Share images: hotel photos and a default OG image                            | CLOUD | S             | C-028a                            | DONE           |
+| C-028c                                                          | Dynamic OG images with today's price (own Worker)                            | CLOUD | S             | C-028b                            | TODO           |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
@@ -89,7 +90,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-030c                                                          | Bot protection for the watch form (Turnstile)                                | CLOUD | S             | C-030b, B-016                     | TODO           |
 | C-031a                                                          | Alert engine: triggers, daily job, alert emails                              | CLOUD | M             | C-030a                            | DONE           |
 | C-031b                                                          | Alert emails: best trusted provider with its link                            | CLOUD | S             | C-031a                            | DONE           |
-| C-034                                                           | Provider pages and methodology page with live data                           | CLOUD | S             | C-032                             | TODO           |
+| C-034                                                           | Provider pages and methodology page with live data                           | CLOUD | S             | C-032                             | DONE           |
+| C-034b                                                          | Link the stay table's trust score to the provider page                       | CLOUD | S             | C-034                             | DONE           |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034                      | TODO           |
 | C-041                                                           | Launch hardening: perf, a11y, error monitoring, backups                      | CLOUD | M             | C-031                             | TODO           |
@@ -771,6 +773,13 @@ Metadata per page (DE/EN), hreflang, canonical, sitemap index per locale, robots
 Owner: CLOUD · Size: S · Depends on: C-028a · Status: TODO · PR: –
 `next/og` images (1200×630) for stay, hotel and city pages: brand, hotel/city name, today's price or cheapest weekend, a small sparkline for stays. Check the Workers bundle size and CPU (fall back to a pre-rendered route if `next/og` doesn't run on Workers). Default image for all other pages.
 
+**C-028b notes (DONE):** `next/og` was not added: the web Worker is already 1.26 MB gzip (`wrangler deploy --dry-run`, 14 Oct) and resvg/satori would add ~1.4 MB, close to the free plan's 3 MB limit. Instead `lib/og.ts` `openGraphFor()` (Next replaces `openGraph` per page, so every page goes through it): hotel and stay pages share the hotel's licensed 960 px photo, city pages the first hotel photo of the city, everything else `public/og/default.png` (1200×630, rendered once by `scripts/og/render.mjs` with Playwright from an HTML template; run it from `apps/web` after design changes). Prices in share images: C-028c.
+
+### C-028c · Dynamic OG images with today's price
+
+Owner: CLOUD · Size: S · Depends on: C-028b · Status: TODO · PR: –
+1200×630 images with hotel name, dates, today's price and a sparkline, for stay pages and alert emails (C-031b). Run satori + resvg in a separate small Worker (`apps/og`, own 3 MB budget, cached at the edge for a day) so the web Worker stays small; or, if Zaid moves to the Workers paid plan, use `next/og` in the web app. Measure the bundle before choosing.
+
 ### C-029 · Analytics events
 
 Owner: CLOUD · Size: S · Depends on: C-020a · Status: TODO · PR: –
@@ -877,8 +886,17 @@ Owner: LOCAL · Size: L, recurring (10–15 tests per session) · Depends on: C-
 
 ### C-034 · Provider pages and methodology with live data
 
-Owner: CLOUD · Size: S · Depends on: C-032 · Status: TODO · PR: –
+Owner: CLOUD · Size: S · Depends on: C-032 · Status: DONE · PR: see `[C-034]`
 `/anbieter/[slug]`: score, tests, match share, average markup, common extras, last test date. `/methodik` gets live numbers, including the 30-day share of night sums within 3 % of the real price (`night_accuracy`, C-070c). Neutral, factual wording (CLAUDE.md rule 8).
+
+**C-034 notes (DONE):** SQL `provider_facts()` (migration `20261014224448`, security definer, anon may call): one JSON with, per reviewed provider, today's night grid (hotels and nights priced, share of nights where it was cheapest or tied among nights with another offer, median gap above the cheapest otherwise) and the aggregates of `trust_tests` (counts per outcome, extras counts, first/last test date in Berlin time) plus `provider_scores`; catalog size; the 30-day `night_accuracy` sums; test totals. No single test, note, screenshot or tester leaves the database. Core `providerFacts.ts` (Zod schema, `providerPath`, `percentOf`, `hasProviderPage`, `extrasByCount`, `TEST_EXTRAS` = the admin form's keys) and `formatDayMonthYear`. `/anbieter/[slug]` (`components/provider/ProviderView.tsx`): trust card (TrustScore, counts, average difference, test period, extras) and grid card; a provider without grid prices and without tests was a 404 (C-034b changed that to `noindex`; today: Expedia, Hotels.com, HRS, CHECK24, since Xotelo doesn't list them). `/methodik` is now rendered per request with `MethodLive` above the text (hotels, nights, night-sum accuracy, tests, provider list with anchor `#anbieter`). Previews: `/dev/provider?p=booking-com|trip-com|agoda|expedia|hotel-direct|method|method-empty`. e2e `provider.spec.ts`.
+
+### C-034b · Trust score links to the provider page
+
+Owner: CLOUD · Size: S · Depends on: C-034 · Status: DONE · PR: see `[C-034b]`
+In the stay page's provider table, make the trust score (or the provider name in the trust column) link to `/anbieter/[slug]` when that provider has a page, without breaking the phone row link (the whole row is the outbound link there: put the provider link above it like the city card's weekend link).
+
+**C-034b notes (DONE):** The Preistreue score in each provider row links to `/anbieter/[slug]` (core `StayOffer.slug`; link sits above the phone row link with `z-[2]`, screen readers hear "…, Preistreue von Booking.com im Detail"). So these links never 404, every reviewed provider now has a page; the ones without grid prices and tests are `noindex`, not in the sitemap and not listed on /methodik (core `isProviderIndexable`, renamed from `hasProviderPage`).
 
 ---
 
