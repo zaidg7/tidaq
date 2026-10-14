@@ -1,10 +1,39 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '@tidaq/core';
+import { z, type Database } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from './ingest';
-import type { CatalogHotel, CollectorStore, DayReport, RunKind, StayJob } from './store';
+import type {
+  CatalogHotel,
+  CollectorStore,
+  DayReport,
+  NightAccuracyRow,
+  RunKind,
+  StayJob,
+} from './store';
 
 /** PostgREST returns at most this many rows per request (Supabase default `max_rows`). */
 const PAGE = 1000;
+
+/** A `night_accuracy` row as Postgres returns it (numeric comes back as a number or string). */
+const accuracyRow = z.object({
+  day: z.string(),
+  pairs: z.number().int(),
+  within_3: z.number().int(),
+  median_gap_pct: z.coerce.number().nullable(),
+  worst: z.array(
+    z.object({ name: z.string(), pairs: z.number().int(), within_3: z.number().int() }),
+  ),
+});
+
+function toAccuracy(raw: unknown): NightAccuracyRow {
+  const r = accuracyRow.parse(raw);
+  return {
+    day: r.day,
+    pairs: r.pairs,
+    within3: r.within_3,
+    medianGapPct: r.median_gap_pct,
+    worst: r.worst.map((w) => ({ name: w.name, pairs: w.pairs, within3: w.within_3 })),
+  };
+}
 /** Stay ids per `in (...)` filter, to keep request URLs short. */
 const ID_CHUNK = 100;
 
@@ -314,6 +343,26 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
           failed: failed ?? 0,
         },
       };
+    },
+
+    async recordNightAccuracy(day) {
+      const row = check(
+        await db.rpc('night_accuracy_record', { p_day: day }),
+        'record night accuracy',
+      );
+      return toAccuracy(row);
+    },
+
+    async nightAccuracy(fromDay) {
+      const rows = check(
+        await db
+          .from('night_accuracy')
+          .select('day, pairs, within_3, median_gap_pct, worst')
+          .gte('day', fromDay)
+          .order('day', { ascending: false }),
+        'load night accuracy',
+      );
+      return rows.map(toAccuracy);
     },
 
     async pruneRaw() {

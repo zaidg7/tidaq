@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { inNightGrid, NIGHT_GRID, nightSumGap } from './nightGrid';
+import {
+  accuracyShare,
+  inNightGrid,
+  NIGHT_GRID,
+  nightAccuracyAlarm,
+  nightSumGap,
+} from './nightGrid';
 
 describe('inNightGrid', () => {
   const today = '2026-10-14';
@@ -39,5 +45,50 @@ describe('nightSumGap', () => {
     expect(nightSumGap(null, 100_000)).toBeNull();
     expect(nightSumGap(100_000, null)).toBeNull();
     expect(nightSumGap(100_000, 0)).toBeNull();
+  });
+});
+
+describe('nightAccuracyAlarm', () => {
+  const day = (d: string, pairs: number, within3: number) => ({ day: d, pairs, within3 });
+
+  it('fires after 3 consecutive weak days and returns their shares, newest first', () => {
+    const rows = [
+      day('2026-10-12', 100, 70),
+      day('2026-10-14', 200, 120),
+      day('2026-10-13', 100, 50),
+      day('2026-10-11', 100, 90),
+    ];
+    expect(nightAccuracyAlarm(rows)).toEqual([0.6, 0.5, 0.7]);
+  });
+
+  it('stays quiet with a good day, a gap in days, too few pairs or too little history', () => {
+    expect(
+      nightAccuracyAlarm([
+        day('2026-10-14', 100, 60),
+        day('2026-10-13', 100, 75),
+        day('2026-10-12', 100, 60),
+      ]),
+    ).toBeNull();
+    expect(
+      nightAccuracyAlarm([
+        day('2026-10-14', 100, 60),
+        day('2026-10-13', 100, 60),
+        day('2026-10-11', 100, 60),
+      ]),
+    ).toBeNull();
+    expect(
+      nightAccuracyAlarm([
+        day('2026-10-14', 100, 60),
+        day('2026-10-13', 19, 0),
+        day('2026-10-12', 100, 60),
+      ]),
+    ).toBeNull();
+    expect(nightAccuracyAlarm([day('2026-10-14', 100, 60), day('2026-10-13', 100, 60)])).toBeNull();
+    expect(nightAccuracyAlarm([])).toBeNull();
+  });
+
+  it('share is null without pairs', () => {
+    expect(accuracyShare(day('2026-10-14', 0, 0))).toBeNull();
+    expect(accuracyShare(day('2026-10-14', 4, 3))).toBe(0.75);
   });
 });

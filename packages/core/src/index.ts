@@ -34,7 +34,15 @@ export {
   type StayParamsResult,
 } from './stayParams';
 export { parseEuroCents } from './money';
-export { inNightGrid, NIGHT_GRID, nightSumGap } from './nightGrid';
+export {
+  accuracyShare,
+  inNightGrid,
+  NIGHT_ACCURACY,
+  NIGHT_GRID,
+  nightAccuracyAlarm,
+  nightSumGap,
+  type NightAccuracyDay,
+} from './nightGrid';
 export { expectedCheckoutCents, rankOffers, type RankedOffer, type StayOffer } from './offers';
 export { toCsv } from './csv';
 export { foldText, matchHotels, type SearchableHotel } from './search';

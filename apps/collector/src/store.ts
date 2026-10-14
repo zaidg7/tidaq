@@ -1,4 +1,11 @@
-import type { BudgetReason, DailyPrice, GridHotel, GridStay, StayState } from '@tidaq/core';
+import type {
+  BudgetReason,
+  DailyPrice,
+  GridHotel,
+  GridStay,
+  NightAccuracyDay,
+  StayState,
+} from '@tidaq/core';
 import type { IngestPayload, OpenTask } from './ingest';
 
 /** A hotel the collector may price: it has an id for at least one price source. */
@@ -37,6 +44,14 @@ export interface NightJob {
 export interface NightIngestPayload {
   providers: { slug: string; name: string; domain: string | null; alias: string }[];
   nights: { hotel_id: number; night: string; day: string; offers: Record<string, number> }[];
+}
+
+/** One `night_accuracy` day (C-070c): night sums vs real stay prices on the same platform. */
+export interface NightAccuracyRow extends NightAccuracyDay {
+  /** Median gap in percent, null without pairs. */
+  medianGapPct: number | null;
+  /** Hotels with the lowest share within 3 % (at least 4 pairs), weakest first. */
+  worst: { name: string; pairs: number; within3: number }[];
 }
 
 export interface RunPatch {
@@ -124,6 +139,10 @@ export interface CollectorStore {
   nightJobs(today: string, window: number, limit: number): Promise<NightJob[]>;
   /** Stores a batch of nights (SQL `night_ingest`). Returns the rows written. */
   ingestNights(payload: NightIngestPayload): Promise<number>;
+  /** Compares `day`'s night sums with its real stay prices and stores the result (C-070c). */
+  recordNightAccuracy(day: string): Promise<NightAccuracyRow>;
+  /** Stored accuracy days from `fromDay` on, newest first. */
+  nightAccuracy(fromDay: string): Promise<NightAccuracyRow[]>;
   /** Removes raw JSON older than 30 days (SQL `prune_raw_snapshots`, D-19). Returns the count. */
   pruneRaw(): Promise<number>;
 }

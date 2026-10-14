@@ -29,5 +29,10 @@ select
     where oid = 'public.request_stay(text,date,date,integer)'::regprocedure)
     as request_stay_pinned_search_path,
   not has_table_privilege('anon', 'public.tracked_stays', 'insert') as anon_cannot_insert_stays,
+  -- C-070c: accuracy aggregates are public (writes: no RLS policy), computing them is the
+  -- collector's job.
+  has_table_privilege('anon', 'public.night_accuracy', 'select') as anon_can_read_night_accuracy,
+  not has_function_privilege('anon', 'public.night_accuracy_record(date)', 'execute')
+    as anon_cannot_record_night_accuracy,
   (select count(*) = 0 from pg_tables where schemaname = 'public' and not rowsecurity)
     as all_tables_have_rls;

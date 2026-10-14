@@ -30,7 +30,13 @@ describe('runDailyCheck', () => {
     for (const t of mem.tasks) t.status = 'done';
     const mail = fakeMail();
     const s = await runDailyCheck({ store: mem.store, env, now: CHECK, fetchFn: mail.fetchFn });
-    expect(s).toEqual({ today: '2026-10-12', pruned: 0, problems: [], email: null });
+    expect(s).toEqual({
+      today: '2026-10-12',
+      pruned: 0,
+      problems: [],
+      accuracy: null,
+      email: null,
+    });
     expect(mem.pruneCalls()).toBe(1);
     expect(mail.sent).toEqual([]);
   });
@@ -61,6 +67,71 @@ describe('runDailyCheck', () => {
       fetchFn: fakeMail().fetchFn,
     });
     expect(ok.problems).toEqual([]);
+  });
+
+  it("records yesterday's night-sum accuracy and alarms after 3 weak days (C-070c)", async () => {
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    const mem = await morning();
+    for (const t of mem.tasks) t.status = 'done';
+    mem.runs.push({
+      id: 50,
+      kind: 'nights',
+      env: 'staging',
+      startedAt: '2026-10-12T00:02:00.000Z',
+      finishedAt: '2026-10-12T00:02:30.000Z',
+    });
+    const free = testEnv({ ...env, PRICE_SOURCE: 'xotelo' });
+    const day = (d: string, pairs: number, within3: number) => ({
+      day: d,
+      pairs,
+      within3,
+      medianGapPct: 1.4,
+      worst: [{ name: 'Rosewood Munich', pairs: 15, within3: 0 }],
+    });
+
+    // Two weak days are not enough; yesterday is recorded.
+    mem.accuracy.set('2026-10-10', day('2026-10-10', 500, 300));
+    mem.accuracy.set('2026-10-11', day('2026-10-11', 524, 320));
+    const quiet = await runDailyCheck({ store: mem.store, env: free, now: CHECK });
+    expect(quiet.accuracy).toMatchObject({ day: '2026-10-11', pairs: 524, within3: 320 });
+    expect(quiet.problems).toEqual([]);
+
+    mem.accuracy.set('2026-10-09', day('2026-10-09', 400, 200));
+    const mail = fakeMail();
+    const weak = await runDailyCheck({
+      store: mem.store,
+      env: free,
+      now: CHECK,
+      fetchFn: mail.fetchFn,
+    });
+    expect(weak.problems).toEqual([
+      'Night sums matched the real stay price (within 3 %) for only 61 %, 60 %, 50 % of pairs on the last 3 days (target 75 %).',
+      '- Rosewood Munich: 0 of 15 within 3 %',
+      'Next step: add a TASKS entry to investigate (minimum stays, multi-night rates per hotel).',
+    ]);
+    expect(weak.email).toBe('sent');
+  });
+
+  it('a failing accuracy check is a problem, not a crash', async () => {
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    const mem = await morning();
+    for (const t of mem.tasks) t.status = 'done';
+    mem.runs.push({
+      id: 50,
+      kind: 'nights',
+      env: 'staging',
+      startedAt: '2026-10-12T00:02:00.000Z',
+      finishedAt: '2026-10-12T00:02:30.000Z',
+    });
+    mem.store.recordNightAccuracy = () => Promise.reject(new Error('timeout'));
+    const s = await runDailyCheck({
+      store: mem.store,
+      env: testEnv({ ...env, PRICE_SOURCE: 'xotelo' }),
+      now: CHECK,
+      fetchFn: fakeMail().fetchFn,
+    });
+    expect(s.accuracy).toBeNull();
+    expect(s.problems).toEqual(['Night accuracy check failed: Error: timeout']);
   });
 
   it('emails once with every problem of the day', async () => {

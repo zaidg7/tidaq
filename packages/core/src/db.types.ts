@@ -263,6 +263,45 @@ export type Database = {
           },
         ]
       }
+      night_accuracy: {
+        Row: {
+          computed_at: string
+          day: string
+          median_gap_pct: number | null
+          pairs: number
+          stays: number
+          stays_within_3: number
+          within_05: number
+          within_10: number
+          within_3: number
+          worst: Json
+        }
+        Insert: {
+          computed_at?: string
+          day: string
+          median_gap_pct?: number | null
+          pairs: number
+          stays: number
+          stays_within_3: number
+          within_05: number
+          within_10: number
+          within_3: number
+          worst?: Json
+        }
+        Update: {
+          computed_at?: string
+          day?: string
+          median_gap_pct?: number | null
+          pairs?: number
+          stays?: number
+          stays_within_3?: number
+          within_05?: number
+          within_10?: number
+          within_3?: number
+          worst?: Json
+        }
+        Relationships: []
+      }
       night_daily: {
         Row: {
           adults: number
@@ -888,6 +927,21 @@ export type Database = {
     Functions: {
       admin_health: { Args: { p_days?: number }; Returns: Json }
       collector_ingest: { Args: { payload: Json }; Returns: Json }
+      night_accuracy_record: {
+        Args: { p_day: string }
+        Returns: {
+          computed_at: string
+          day: string
+          median_gap_pct: number | null
+          pairs: number
+          stays: number
+          stays_within_3: number
+          within_05: number
+          within_10: number
+          within_3: number
+          worst: Json
+        }
+      }
       night_ingest: { Args: { payload: Json }; Returns: number }
       night_jobs: {
         Args: { p_limit: number; p_today: string; p_window: number }
