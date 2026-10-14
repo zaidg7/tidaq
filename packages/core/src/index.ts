@@ -34,6 +34,7 @@ export {
   type StayParamsResult,
 } from './stayParams';
 export { parseEuroCents } from './money';
+export { expectedCheckoutCents, rankOffers, type RankedOffer, type StayOffer } from './offers';
 export { toCsv } from './csv';
 export { foldText, matchHotels, type SearchableHotel } from './search';
 export {

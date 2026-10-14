@@ -111,7 +111,9 @@ test.describe('/dev/ui', () => {
     await expect(
       panel.getByText(/^Günstiger als an \d+ von 58 Tagen seit 15\. Aug\.$/),
     ).toBeVisible();
-    await expect(panel.getByText('Stand: heute, 07:12 Uhr · Quelle: Google Hotels')).toBeVisible();
+    await expect(
+      panel.getByText('Stand: heute, 07:12 Uhr · Quelle: Preise der Buchungsseiten'),
+    ).toBeVisible();
     await expect(
       panel.getByRole('img', {
         name: /^Aktuell .+, zwischen Tief .+ und Hoch .+ seit 15\. Aug\.$/,

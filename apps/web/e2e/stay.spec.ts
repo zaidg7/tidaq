@@ -24,6 +24,46 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     );
   });
 
+  test('provider table: sorted by expected checkout price, with Preistreue (C-022b)', async ({
+    page,
+  }) => {
+    await page.goto('/dev/stay/tracked');
+    const table = page.getByRole('region', { name: 'Preise heute' });
+    const rows = table.getByRole('listitem');
+    // Expedia lists less than Booking.com but its tests show +8.9 % at checkout: it goes last.
+    await expect(rows).toHaveCount(5);
+    await expect(rows.nth(0)).toContainText('Website des Hotels');
+    await expect(rows.nth(0)).toContainText('Günstigster');
+    await expect(rows.nth(0)).toContainText('6 von 6 Tests stimmten');
+    await expect(rows.nth(1)).toContainText('Booking.com');
+    await expect(rows.nth(4)).toContainText('Expedia');
+    await expect(rows.nth(4)).toContainText(/an der Kasse ≈ 1\.252\s€/);
+    await expect(table.getByText('Günstigster')).toHaveCount(1);
+    await expect(rows.nth(2)).toContainText('Noch nicht getestet');
+    await expect(rows.nth(3)).toContainText('Noch zu wenig Tests (3)');
+    await expect(table.getByRole('link', { name: 'So sortieren wir' })).toHaveAttribute(
+      'href',
+      '/ranking',
+    );
+    await expect(table.getByText(/Die Reihenfolge hängt nie von Provisionen ab\./)).toBeVisible();
+    await expect(table.getByText(/2 weitere Anbieter hatten einen Preis/)).toBeVisible();
+
+    // The alert sign-up comes with C-030: until then the button says so and does nothing.
+    await expect(page.getByRole('heading', { name: 'Preis beobachten' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Bald verfügbar' })).toBeDisabled();
+  });
+
+  test('provider prices from an earlier day say which day', async ({ page }) => {
+    await page.goto('/dev/stay/soon');
+    await expect(page.getByRole('heading', { name: 'Preise vom 12. Okt.' })).toBeVisible();
+    await page.goto('/en/dev/stay/soon');
+    await expect(page.getByRole('heading', { name: 'Prices from 12 Oct' })).toBeVisible();
+    await expect(page.getByRole('main').getByRole('link', { name: 'How we sort' })).toHaveAttribute(
+      'href',
+      '/en/ranking',
+    );
+  });
+
   test('check-in within 7 days adds the "don\'t wait" note', async ({ page }) => {
     await page.goto('/dev/stay/soon');
     await expect(page.getByText(/Kurz vor Anreise steigen Preise oft\./)).toBeVisible();
@@ -46,6 +86,7 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     for (const [variant, title] of cases) {
       await page.goto(`/dev/stay/${variant}`);
       await expect(page.getByRole('heading', { level: 2, name: title })).toBeVisible();
+      await expect(page.getByRole('region', { name: 'Preise heute' })).toHaveCount(0);
     }
     await expect(
       page.getByRole('main').getByRole('link', { name: 'Zur Startseite' }),
