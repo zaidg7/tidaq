@@ -82,7 +82,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | DONE           |
 | C-028a                                                          | SEO: canonical, hreflang, sitemap, site JSON-LD                              | CLOUD | S             | C-022                             | DONE           |
 | C-028b                                                          | Share images: hotel photos and a default OG image                            | CLOUD | S             | C-028a                            | DONE           |
-| C-028c                                                          | Dynamic OG images with today's price (own Worker)                            | CLOUD | S             | C-028b                            | TODO           |
+| C-028c                                                          | Dynamic OG images with today's price (own Worker)                            | CLOUD | S             | C-028b, B-017                     | BLOCKED        |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
@@ -778,7 +778,7 @@ Owner: CLOUD · Size: S · Depends on: C-028a · Status: TODO · PR: –
 
 ### C-028c · Dynamic OG images with today's price
 
-Owner: CLOUD · Size: S · Depends on: C-028b · Status: TODO · PR: –
+Owner: CLOUD · Size: S · Depends on: C-028b, B-017 · Status: BLOCKED (14 Oct: rendering a PNG with satori + resvg needs ~100–500 ms CPU; the Workers free plan allows 10 ms per request, and social sites and email clients don't take SVG. Needs Workers Paid, decision B-017) · PR: –
 1200×630 images with hotel name, dates, today's price and a sparkline, for stay pages and alert emails (C-031b). Run satori + resvg in a separate small Worker (`apps/og`, own 3 MB budget, cached at the edge for a day) so the web Worker stays small; or, if Zaid moves to the Workers paid plan, use `next/og` in the web app. Measure the bundle before choosing.
 
 ### C-029 · Analytics events
