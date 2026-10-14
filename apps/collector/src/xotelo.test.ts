@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { runCollect } from './collect';
+import { createWorker, CRON_COLLECT } from './index';
 import type { OpenTask } from './ingest';
 import { runPosting } from './morning';
 import { testEnv } from './test/env';
@@ -154,6 +155,40 @@ describe('PRICE_SOURCE=xotelo (D-41)', () => {
     // Booking.com €316 a night × 2 nights.
     for (const d of mem.daily.values()) expect(d).toMatchObject({ bestCents: 63_200 });
     expect(first.statsUpdated).toBe(5);
+  });
+
+  it('a visitor-requested stay is priced by the next 10-minute collect cron (C-022c1)', async () => {
+    const mem = memoryStore(hotels, { aliases: ALIASES });
+    mem.stays.push({
+      id: 50,
+      hotelId: 1,
+      checkIn: '2026-11-20',
+      checkOut: '2026-11-23',
+      adults: 1,
+      active: true,
+      origin: 'watch',
+    });
+    const x = fakeXotelo();
+    const worker = createWorker({
+      store: mem.store,
+      fetchFn: x.fetchFn,
+      now: () => at('2026-10-14T13:40:00Z'),
+    });
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+    await worker.scheduled(
+      { cron: CRON_COLLECT, scheduledTime: 0, noRetry: () => {} } as ScheduledController,
+      env,
+    );
+    log.mockRestore();
+    expect(mem.runs.map((r) => r.kind)).toEqual(['request', 'collect']);
+    expect(mem.tasks).toMatchObject([{ id: 'xo-1-50', stayId: 50, status: 'done' }]);
+    expect(Object.fromEntries(x.calls[0]?.searchParams ?? [])).toMatchObject({
+      chk_in: '2026-11-20',
+      chk_out: '2026-11-23',
+      adults: '1',
+    });
+    // Booking.com €316 a night × 3 nights.
+    expect([...mem.daily.values()]).toMatchObject([{ stayId: 50, bestCents: 94_800 }]);
   });
 
   it('collect: a busy Xotelo leaves the job queued for the next run', async () => {

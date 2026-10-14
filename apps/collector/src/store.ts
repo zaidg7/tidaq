@@ -19,7 +19,8 @@ export interface StayJob {
   watched: boolean;
 }
 
-export type RunKind = 'morning' | 'evening' | 'collect' | 'manual';
+/** `request`: queues requested stays (origin `watch`) that have no task yet (C-022c1). */
+export type RunKind = 'morning' | 'evening' | 'collect' | 'manual' | 'request';
 
 export interface RunPatch {
   finishedAt: string;
@@ -28,6 +29,8 @@ export interface RunPatch {
   tasksDone?: number;
   estCostUsd?: number;
   budgetReason?: BudgetReason;
+  /** The daily task cap a posting run used; `request_stay()` reads it as the capacity. */
+  dailyCap?: number;
   errors?: unknown[];
 }
 
@@ -70,6 +73,11 @@ export interface CollectorStore {
   deactivatePastStays(today: string): Promise<number>;
   /** Active stays of active hotels with an identifier, check-in today or later. */
   stayJobs(today: string): Promise<StayJob[]>;
+  /**
+   * Requested stays (origin `watch`) that never had a task: active, hotel active, check-in today
+   * or later. They get their first prices right away instead of the next morning (C-022c1).
+   */
+  requestedStayJobs(today: string): Promise<StayJob[]>;
   /** Tasks posted since `today` 00:00 UTC and estimated spend since the 1st of the month. */
   usage(today: string): Promise<{ postedToday: number; spentThisMonthUsd: number }>;
   startRun(kind: RunKind, env: 'production' | 'staging', startedAt: string): Promise<number>;

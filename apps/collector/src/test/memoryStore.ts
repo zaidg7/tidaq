@@ -56,6 +56,15 @@ export function memoryStore(
   let pruneCalls = 0;
   const watched = new Set(opts.watchedStayIds ?? []);
   const hotelById = new Map(hotels.map((h) => [h.id, h]));
+  const toJob = (s: StayRow): StayJob => ({
+    stayId: s.id,
+    checkIn: s.checkIn,
+    checkOut: s.checkOut,
+    adults: s.adults,
+    hotelIdentifier: hotelById.get(s.hotelId)?.dfsHotelIdentifier ?? null,
+    xoteloKey: hotelById.get(s.hotelId)?.xoteloKey ?? null,
+    watched: watched.has(s.id),
+  });
 
   const store: CollectorStore = {
     async activeHotels() {
@@ -91,15 +100,19 @@ export function memoryStore(
     async stayJobs(today) {
       return stays
         .filter((s) => s.active && s.checkIn >= today && hotelById.has(s.hotelId))
-        .map((s): StayJob => ({
-          stayId: s.id,
-          checkIn: s.checkIn,
-          checkOut: s.checkOut,
-          adults: s.adults,
-          hotelIdentifier: hotelById.get(s.hotelId)?.dfsHotelIdentifier ?? null,
-          xoteloKey: hotelById.get(s.hotelId)?.xoteloKey ?? null,
-          watched: watched.has(s.id),
-        }));
+        .map(toJob);
+    },
+    async requestedStayJobs(today) {
+      return stays
+        .filter(
+          (s) =>
+            s.origin === 'watch' &&
+            s.active &&
+            s.checkIn >= today &&
+            hotelById.has(s.hotelId) &&
+            !tasks.some((t) => t.stayId === s.id),
+        )
+        .map(toJob);
     },
     async usage(today) {
       const month = today.slice(0, 7);

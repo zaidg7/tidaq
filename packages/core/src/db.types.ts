@@ -76,6 +76,7 @@ export type Database = {
       collector_runs: {
         Row: {
           budget_reason: string | null
+          daily_cap: number | null
           env: string
           errors: Json
           est_cost_usd: number
@@ -89,6 +90,7 @@ export type Database = {
         }
         Insert: {
           budget_reason?: string | null
+          daily_cap?: number | null
           env?: string
           errors?: Json
           est_cost_usd?: number
@@ -102,6 +104,7 @@ export type Database = {
         }
         Update: {
           budget_reason?: string | null
+          daily_cap?: number | null
           env?: string
           errors?: Json
           est_cost_usd?: number
@@ -832,6 +835,15 @@ export type Database = {
       collector_ingest: { Args: { payload: Json }; Returns: Json }
       prune_raw_snapshots: { Args: { older_than?: string }; Returns: number }
       rebuild_stay_daily: { Args: { p_stay_ids?: number[] }; Returns: number }
+      request_stay: {
+        Args: {
+          p_adults: number
+          p_check_in: string
+          p_check_out: string
+          p_hotel_slug: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
