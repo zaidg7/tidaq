@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { localizedPath, type Locale } from '@tidaq/core';
 import { LegalPage, type LegalContent } from './LegalPage';
 
@@ -28,8 +28,13 @@ export function legalRoute(key: LegalKey, path: string) {
   async function Page({ params }: Props) {
     const { locale } = await params;
     setRequestLocale(locale);
-    const t = await getTranslations({ locale, namespace: 'legal' });
-    const content = t.raw(key) as LegalContent;
+    const [t, messages] = await Promise.all([
+      getTranslations({ locale, namespace: 'legal' }),
+      getMessages({ locale }),
+    ]);
+    // Whole sections, not single strings: read them from the messages (t.raw's key type
+    // gives up on nested arrays of objects).
+    const content = messages.legal[key] as LegalContent;
     return (
       <LegalPage
         content={content}
