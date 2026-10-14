@@ -87,7 +87,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
 | C-030b                                                          | Watch form on the stay page (replaces "Bald verfügbar")                      | CLOUD | S             | C-030a                            | DONE           |
 | C-030c                                                          | Bot protection for the watch form (Turnstile)                                | CLOUD | S             | C-030b, B-016                     | TODO           |
-| C-031                                                           | Alert engine and emails                                                      | CLOUD | M             | C-030, C-013b                     | TODO           |
+| C-031a                                                          | Alert engine: triggers, daily job, alert emails                              | CLOUD | M             | C-030a                            | DONE           |
+| C-031b                                                          | Alert emails: mini chart image and best trusted provider                     | CLOUD | S             | C-031a, C-028b                    | TODO           |
 | C-034                                                           | Provider pages and methodology page with live data                           | CLOUD | S             | C-032                             | TODO           |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034                      | TODO           |
@@ -825,6 +826,13 @@ Cloudflare Turnstile on the watch form (site key as a public var, secret as a Wo
 Owner: CLOUD · Size: M · Depends on: C-030, C-013 · Status: TODO · PR: –
 After each collector run: evaluate active, confirmed watches against triggers (PLAN §9), throttle to 1 email/watch/day, send via Resend with the price, state, mini chart (OG image URL), best trusted provider and the manage/unsubscribe link (List-Unsubscribe header). Record in `alerts_sent`. Unit tests for every trigger and the throttle.
 
+**C-031a notes (DONE):** Core `alerts.ts`: `alertKind` (PLAN §9: target ≤ price, again only 2 % lower; new low under every earlier day and 2 % under the last alert; drop ≥ 5 % since the last alert; state turns `near_low`; one email per watch and Berlin day, strongest reason wins), `alertInputFromSeries` (today's price must be from today; states for today and yesterday via `computeStayStats`), `alertMail` (DE/EN subject and content for `renderMail`). SQL (migration `20261014222316`, service role): `alert_inputs(today)` gives each active watch of a confirmed, subscribed address with check-in after today plus its last 60 days (stay checks, else night sums for 2 adults at reliable hotels), `alert_record` writes `alerts_sent` and the watch's last alert. Collector `alerts.ts` `runAlerts` runs in the daily cron after the daily check (its own try; a crash emails the admins), sends via Resend from `alarm@tidaq.com` with `List-Unsubscribe` one-click, records each sent alert, never logs addresses. **Live only when** `APP_ENV=production`, `ALERTS_DRY_RUN=false` and the key is set: the production collector still has `ALERTS_DRY_RUN=true`, so nothing goes to users until **C-044 switches it to `false`** (dry runs log `alert dry run` with the kind). Tests: core (10) and collector (5, memory store + fake Resend).
+
+### C-031b · Alert emails: chart image and best provider
+
+Owner: CLOUD · Size: S · Depends on: C-031a, C-028b · Status: TODO · PR: –
+Add the stay's OG image (C-028b) as the chart in alert emails and the best trusted provider with its "an der Kasse ≈" note (core `rankOffers` on the latest `per_provider`), linking through `/go/…`.
+
 ### C-032 · Trust audit tool
 
 Owner: CLOUD · Size: M (split a/b) · Depends on: C-020c, C-004 (scheduled early in Phase 2) · Status: a DONE, b DONE · PR: a = [#33](https://github.com/zaidg7/tidaq/pull/33), b = [#34](https://github.com/zaidg7/tidaq/pull/34)
@@ -897,7 +905,7 @@ Owner: CLOUD · Size: S · Depends on: C-042 · Status: TODO · PR: –
 ### C-044 · Go live
 
 Owner: CLOUD · Size: S · Depends on: C-041, L-040, Z-12 · Status: TODO · PR: –
-Final launch checklist (below), production deploy to tidaq.com, collector prod caps set, Search Console sitemap submitted, smoke test in production, announce in the weekly summary issue.
+Final launch checklist (below), production deploy to tidaq.com, collector prod caps set, Search Console sitemap submitted, smoke test in production, announce in the weekly summary issue. **Alerts:** set the production collector's `ALERTS_DRY_RUN` to `"false"` (`apps/collector/wrangler.jsonc`) in the launch PR; until then no alert email reaches users (C-031a).
 
 ---
 

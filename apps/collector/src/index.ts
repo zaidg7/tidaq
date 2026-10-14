@@ -1,4 +1,5 @@
 import { runToken, safeEqual } from '@tidaq/core';
+import { runAlerts } from './alerts';
 import { runCollect } from './collect';
 import type { FetchFn } from './dataforseo';
 import type { Env } from './env';
@@ -149,6 +150,18 @@ export function createWorker(deps: Deps = {}) {
         } catch (err) {
           await mail(env, crashEmail('daily check', err));
           throw err;
+        }
+        // Price alerts (C-031) after the morning data; a failure never hides the daily check.
+        try {
+          const alerts = await runAlerts({
+            store: storeFor(env, deps),
+            env,
+            now: now(),
+            fetchFn: deps.mailFetchFn,
+          });
+          log('alerts done', { ...alerts });
+        } catch (err) {
+          await mail(env, crashEmail('alerts', err));
         }
         return;
       }

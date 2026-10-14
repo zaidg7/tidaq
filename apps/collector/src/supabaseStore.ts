@@ -13,6 +13,25 @@ import type {
 /** PostgREST returns at most this many rows per request (Supabase default `max_rows`). */
 const PAGE = 1000;
 
+/** `alert_inputs` rows (C-031): validated before any email goes out. */
+const alertRows = z.array(
+  z.object({
+    watch_id: z.string().uuid(),
+    email: z.string().email(),
+    locale: z.enum(['de', 'en']),
+    manage_token: z.string().uuid(),
+    hotel_slug: z.string(),
+    hotel_name: z.string(),
+    check_in: z.string(),
+    check_out: z.string(),
+    adults: z.number().int(),
+    target_cents: z.number().int().nullable(),
+    last_alert_cents: z.number().int().nullable(),
+    last_alert_at: z.string().nullable(),
+    series: z.array(z.object({ day: z.string(), cents: z.number().int() })),
+  }),
+);
+
 /** A `night_accuracy` row as Postgres returns it (numeric comes back as a number or string). */
 const accuracyRow = z.object({
   day: z.string(),
@@ -367,6 +386,37 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
         'load night accuracy',
       );
       return rows.map(toAccuracy);
+    },
+
+    async alertInputs(today) {
+      const rows = check(await db.rpc('alert_inputs', { p_today: today }), 'load alert inputs');
+      return alertRows.parse(rows).map((r) => ({
+        watchId: r.watch_id,
+        email: r.email,
+        locale: r.locale,
+        manageToken: r.manage_token,
+        hotelSlug: r.hotel_slug,
+        hotelName: r.hotel_name,
+        checkIn: r.check_in,
+        checkOut: r.check_out,
+        adults: r.adults,
+        targetCents: r.target_cents,
+        lastAlertCents: r.last_alert_cents,
+        lastAlertAt: r.last_alert_at,
+        series: r.series.map((p) => ({ day: p.day, bestCents: p.cents })),
+      }));
+    },
+
+    async recordAlert(watchId, kind, priceCents, resendId) {
+      checkOk(
+        await db.rpc('alert_record', {
+          p_watch_id: watchId,
+          p_kind: kind,
+          p_price_cents: priceCents,
+          p_resend_id: resendId,
+        }),
+        'record alert',
+      );
     },
 
     async pruneRaw() {
