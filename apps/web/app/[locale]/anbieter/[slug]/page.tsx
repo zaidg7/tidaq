@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import {
   alternatesFor,
-  hasProviderPage,
+  isProviderIndexable,
   localizedPath,
   providerPath,
   type Locale,
@@ -36,8 +36,9 @@ async function resolve({ params }: Props): Promise<Resolved> {
   const result = await load();
   if (result.kind === 'unavailable') return { kind: 'unavailable', locale, slug };
   const provider = result.facts.providers.find((p) => p.slug === slug);
-  // Pending providers never come back from SQL; reviewed ones without data have no page.
-  if (!provider || !hasProviderPage(provider)) notFound();
+  // Pending providers never come back from SQL. Reviewed ones without data keep their page (the
+  // stay table links there) but aren't indexed.
+  if (!provider) notFound();
   return { kind: 'ok', locale, slug, provider, facts: result.facts };
 }
 
@@ -50,6 +51,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     title: t('metaTitle', { name }),
     description: t('metaDescription', { name }),
     alternates: alternatesFor(providerPath(r.slug), r.locale),
+    ...(!isProviderIndexable(r.provider) && { robots: { index: false, follow: true } }),
   };
 }
 

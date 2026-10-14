@@ -81,10 +81,11 @@ export function percentOf(part: number, total: number): number | null {
 }
 
 /**
- * A provider gets a page once there is something to say: prices in today's grid or at least one
- * checkout test. Otherwise the page would be empty, so it's a 404 and stays out of the sitemap.
+ * Every reviewed provider has a page (the stay table links to it, C-034b), but only one with
+ * something to say is indexed, listed on /methodik and in the sitemap: prices in today's grid or
+ * at least one checkout test. The others are `noindex`.
  */
-export function hasProviderPage(p: Pick<ProviderFact, 'nights' | 'tests'>): boolean {
+export function isProviderIndexable(p: Pick<ProviderFact, 'nights' | 'tests'>): boolean {
   return p.nights > 0 || p.tests > 0;
 }
 

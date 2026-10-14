@@ -2,7 +2,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import {
   formatDayMonthYear,
   formatPercent,
-  hasProviderPage,
+  isProviderIndexable,
   localizedPath,
   percentOf,
   providerPath,
@@ -35,7 +35,7 @@ export function MethodLive({ load }: { load: ProviderFactsLoad }) {
   const f = load.facts;
   const acc = f.accuracy;
   const accShare = percentOf(acc.stays_within_3, acc.stays);
-  const providers = f.providers.filter(hasProviderPage);
+  const providers = f.providers.filter(isProviderIndexable);
   const n = (v: number) => new Intl.NumberFormat(locale === 'de' ? 'de-DE' : 'en-GB').format(v);
 
   return (
