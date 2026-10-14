@@ -47,7 +47,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-016                                                           | Admin: data health and budget dashboard                                      | CLOUD | M             | C-013b, C-020c                    | DONE           |
 | C-013e                                                          | Villa Kennedy (Frankfurt) gets no prices: check its DataForSEO hotel ID      | CLOUD | S             | C-013b                            | DONE           |
 | C-013f                                                          | Re-check The Florentin (ex Villa Kennedy) in Google Hotels; re-add           | CLOUD | S             | C-013e                            | TODO           |
-| C-013g                                                          | Collector: free price source Xotelo (DataForSEO as fallback)                 | CLOUD | M             | C-013b                            | IN PROGRESS    |
+| C-013g                                                          | Collector: free price source Xotelo (DataForSEO as fallback)                 | CLOUD | M             | C-013b                            | DONE           |
 | C-032a                                                          | Trust audit: form, recent tests, provider scores                             | CLOUD | S             | C-020c, C-004                     | DONE           |
 | C-032b                                                          | Trust audit: screenshot upload, edit tests, CSV export                       | CLOUD | S             | C-032a                            | DONE           |
 | L-033                                                           | Checkout audit with Claude in Chrome (150 tests, recurring until launch)     | LOCAL | L (recurring) | C-032b, Z-07                      | TODO           |
@@ -453,9 +453,11 @@ Owner: CLOUD · Size: S · Depends on: C-013b · Status: DONE · PR: [#36](https
 
 ### C-013g · Collector: free price source Xotelo
 
-Owner: CLOUD · Size: M · Depends on: C-013b · Status: IN PROGRESS · PR: see `[C-013g]` PR
+Owner: CLOUD · Size: M · Depends on: C-013b · Status: DONE · PR: [#41](https://github.com/zaidg7/tidaq/pull/41)
 
 Why: the DataForSEO balance is empty and Zaid wants to run the market test for free (D-41, spike in `docs/research/xotelo.md`). Migration `20261013234015_xotelo_source.sql` (applied 13 Oct): `hotels.xotelo_key` for all 39 active hotels, `price_snapshots.source`, brand-site aliases → `hotel-direct`, `rebuild_stay_daily` builds a stay's days from the source of its newest snapshot only (old DataForSEO snapshots stay), `collector_ingest` stores `source`. Code: core `xotelo.ts` (schema, URL, rates → price items for `normalizeHotelInfo`), budget guard accepts cost 0 (daily cap only), collector `PRICE_SOURCE` (morning queues `xo-<run>-<stay>` jobs, collect calls Xotelo per job, 400 ms apart, busy answers stay queued), `deploy.yml` option **collector_only** (production collector without touching tidaq.com) and a collector `/health` check.
+
+**C-013g notes (DONE, 14 Oct 00:20 UTC):** staging run from Cloudflare: 50 jobs queued ($0), one collect run made 30 Xotelo calls in 38 s → 28 stays priced, 2 without rates, 0 errors; 112 snapshots (Agoda 28, Booking 27, Trip.com 25, Vio 21 pending, hotel direct 10); those stays now show 1 Xotelo day (their 2 DataForSEO days left `stay_daily`, the 8,739 DataForSEO snapshots are kept). Production collector deployed with **collector_only** (web steps skipped, tidaq.com unchanged). Follow-ups: (1) alias `bvlgari` → `hotel-direct` (the Bulgari's own site came in as a pending provider) with the next migration; (2) check the first production Xotelo morning (14 Oct, 05:00–07:50 UTC): ~350 jobs (the staging run used 50 of today's cap of 400), daily check quiet.
 
 **Done when:** CI green; staging: Actions → Collector run → `staging`/`post`, then `staging`/`collect` → Xotelo snapshots for ≥ 20 stays (proves Cloudflare can reach Xotelo); then Actions → Deploy → `production` with **collector_only** ticked; next morning (05:00 UTC) the production run queues ~370 jobs and the collect runs work them off by ~07:20 UTC.
 
