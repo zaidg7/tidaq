@@ -66,7 +66,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-072                                                           | Spike: LiteAPI room/board/occupancy rates (free supplier API)                | CLOUD | M             | B-010                             | DONE           |
 | C-074                                                           | Room-type normalizer prototype (Standard/Deluxe/Suite per hotel)             | CLOUD | M             | C-072, B-012                      | BLOCKED        |
 | C-075                                                           | Room grid: prices per guest count and board for watched stays                | CLOUD | L             | C-074, B-012                      | BLOCKED        |
-| C-073                                                           | Research: German platforms (CHECK24, HolidayCheck, TUI) without scraping     | CLOUD | S             | –                                 | TODO                |
+| C-073                                                           | Research: German platforms (CHECK24, HolidayCheck, TUI) without scraping     | CLOUD | S             | –                                 | DONE                |
+| C-076                                                           | Second source: DataForSEO for real stay checks (CHECK24 & co.)               | CLOUD | M             | B-013                             | BLOCKED             |
 | C-060                                                           | Market test: five-star price drops in ~10 holiday destinations               | CLOUD | M             | C-013g                            | TODO           |
 | C-023                                                           | Hotel page with price calendar                                               | CLOUD | M             | C-022                             | TODO           |
 | C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | TODO           |
@@ -644,9 +645,15 @@ Map the many supplier room names per hotel ("Superior Room (Plus)", "Habitación
 
 Design in `docs/research/liteapi.md`: daily LiteAPI search per (watched or most-viewed stay, guest mix), stored per board and room class (`room_daily`), within a daily search cap Nuitee agrees to. Stay page: guest/board/room filter with history; live search for guest mixes we don't track yet.
 
-### C-073 · Research: German platforms without scraping (Owner CLOUD · S · TODO)
+### C-073 · Research: German platforms without scraping (Owner CLOUD · S · DONE)
 
 Zaid (14 Oct): our audience is German, so CHECK24, HolidayCheck, TUI (and HRS, trivago) matter. Fact: until 13 Oct we had CHECK24, HolidayCheck, TUI and trivago prices only through DataForSEO (Google Hotels, German locale). Xotelo (Tripadvisor) doesn't list them, so since the switch to the free source (D-41) they're missing. Steps: (1) measure what DataForSEO Google Hotels would cost for the real-check stays only (about 350 per day; at ~$0.0008 per call that is ~$8/month, inside the $12 cap; verify against the account's real billing) and whether it can run beside Xotelo just for the platforms Xotelo lacks; (2) check official partner routes: the CHECK24 partner program, HRS affiliate/API, HolidayCheck partner program, trivago (no public API); what data each allows us to store and show; (3) check whether LiteAPI (C-072) or other supplier APIs carry them (likely not; they're resellers). Output: `docs/research/german-platforms.md` with a recommendation, and a BLOCKERS entry if it needs Zaid's money or sign-up. Never scrape (hard rule 2).
+
+**C-073 notes (DONE):** `docs/research/german-platforms.md`. No German platform (CHECK24, HRS/hotel.de, HolidayCheck, TUI, trivago) offers small sites price data per hotel and date; their partner programs give links, widgets and "from" feeds only. The only legal per-stay source with CHECK24/HolidayCheck/TUI is Google Hotels via DataForSEO: ~$9.60/month for ~400 real stay checks a day. Decision for Zaid in B-013; if yes, C-076 runs DataForSEO for stay checks next to Xotelo for the night grid. Awin affiliate links (hotel.de, HolidayCheck, TUI, trivago) come later with C-026.
+
+### C-076 · Second source: DataForSEO for real stay checks next to Xotelo (Owner CLOUD · M · depends on B-013 · BLOCKED)
+
+Let the collector use two sources at once: the night grid stays on Xotelo (free); the real stay checks (grid + watched + requested) go to DataForSEO Google Hotels (German locale) so CHECK24, HolidayCheck and TUI appear in the provider table and the stay history. Budget guard unchanged (`DAILY_TASK_CAP`, `MONTHLY_BUDGET_USD`, hard rule 4). A stay's history keeps one source (C-013g rule); mark the switch day. Night sums and real checks then come from different meta-searches: re-check C-070c accuracy and C-070d reliability for a week after the switch.
 
 ### C-060 · Market test: five-star price drops
 
