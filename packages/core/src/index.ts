@@ -15,6 +15,18 @@ export {
 } from './format';
 export { localizedPath, splitLocale } from './paths';
 export {
+  XOTELO,
+  isXoteloTask,
+  xoteloOutcome,
+  xoteloPriceItems,
+  xoteloRatesResponseSchema,
+  xoteloRatesUrl,
+  xoteloTaskId,
+  type XoteloOutcome,
+  type XoteloRate,
+  type XoteloRatesResponse,
+} from './xotelo';
+export {
   ADULTS,
   parseStayParams,
   stayPath,

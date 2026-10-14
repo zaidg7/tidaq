@@ -6,8 +6,8 @@ import { fakeDataForSeo, memoryStore } from './test/memoryStore';
 import { fakeResults, hotelInfoFixture, SEED_ALIASES, statusOnly } from './test/results';
 
 const hotels = [
-  { id: 1, citySlug: 'berlin', dfsHotelIdentifier: 'id-adlon' },
-  { id: 2, citySlug: 'berlin', dfsHotelIdentifier: 'id-ritz' },
+  { id: 1, citySlug: 'berlin', dfsHotelIdentifier: 'id-adlon', xoteloKey: null },
+  { id: 2, citySlug: 'berlin', dfsHotelIdentifier: 'id-ritz', xoteloKey: null },
 ];
 const at = (iso: string) => new Date(iso);
 const POSTED = '2026-10-12T05:00:00.000Z';

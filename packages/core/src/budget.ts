@@ -17,7 +17,10 @@ export interface BudgetLimits {
   monthlyBudgetUsd: number;
   /** Estimated spend so far this month (from `collector_runs.est_cost_usd`). */
   spentThisMonthUsd: number;
-  /** Price of one task. Hotel Info, standard queue: $0.0008 (C-010). */
+  /**
+   * Price of one task. Hotel Info, standard queue: $0.0008 (C-010). 0 for a free source (Xotelo,
+   * D-41): then only the daily cap limits the run.
+   */
   costPerTaskUsd: number;
 }
 
@@ -67,14 +70,15 @@ export function applyBudget<J extends CollectJob>(
       throw new RangeError(`Budget limit ${name} must be a non-negative number, got ${value}`);
     }
   }
-  if (limits.costPerTaskUsd === 0) throw new RangeError('costPerTaskUsd must be > 0');
-
   const upcoming = jobs.filter((j) => daysBetween(today, j.checkIn) >= 0);
   const ordered = prioritizeJobs(upcoming);
 
   const byDay = Math.max(0, Math.floor(limits.dailyCap) - limits.postedToday);
   const leftMicros = micros(limits.monthlyBudgetUsd) - micros(limits.spentThisMonthUsd);
-  const byMonth = Math.max(0, Math.floor(leftMicros / micros(limits.costPerTaskUsd)));
+  const byMonth =
+    micros(limits.costPerTaskUsd) === 0
+      ? Number.POSITIVE_INFINITY
+      : Math.max(0, Math.floor(leftMicros / micros(limits.costPerTaskUsd)));
   const allowed = Math.min(byDay, byMonth);
 
   const selected = ordered.slice(0, allowed);

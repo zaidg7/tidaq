@@ -18,5 +18,9 @@ select
     as anon_cannot_read_admin_health,
   not has_function_privilege('authenticated', 'public.admin_health(integer)', 'execute')
     as auth_cannot_read_admin_health,
+  not has_function_privilege('anon', 'public.collector_ingest(jsonb)', 'execute')
+    as anon_cannot_ingest,
+  not has_function_privilege('anon', 'public.rebuild_stay_daily(bigint[])', 'execute')
+    as anon_cannot_rebuild_daily,
   (select count(*) = 0 from pg_tables where schemaname = 'public' and not rowsecurity)
     as all_tables_have_rls;

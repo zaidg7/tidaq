@@ -21,6 +21,8 @@ const adlonTask: OpenTask = {
   hotelId: 1,
   checkIn: '2026-12-01',
   checkOut: '2026-12-03',
+  adults: 2,
+  xoteloKey: null,
   postedAt: '2026-10-12T05:00:00.000Z',
 };
 const adlon = (): TaskOutcome =>

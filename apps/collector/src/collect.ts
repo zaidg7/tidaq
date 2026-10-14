@@ -1,8 +1,9 @@
-import { addDays, computeStayStats, STATS, toIsoDate, z } from '@tidaq/core';
+import { addDays, computeStayStats, isXoteloTask, STATS, toIsoDate, XOTELO, z } from '@tidaq/core';
 import { taskGet, tasksReady, type FetchFn } from './dataforseo';
 import type { Env } from './env';
 import { buildIngest, taskOutcome, type OpenTask, type TaskOutcome } from './ingest';
 import type { CollectorStore, StayStatsRow } from './store';
+import { fetchXoteloTask } from './xotelo';
 
 /** Collect-run settings (C-013b). */
 export const COLLECT = {
@@ -42,15 +43,19 @@ const message = (err: unknown): string => (err instanceof Error ? err.message : 
 /**
  * Collect run (C-013b): fetch ready results for posted tasks, store eligible offers as
  * snapshots, rebuild `stay_daily` and recompute `stay_stats` for the touched stays.
- * Free calls only (tasks_ready, task_get), so no budget guard is needed here.
+ * Free calls only (tasks_ready, task_get, Xotelo rates), so no budget guard is needed here; the
+ * daily cap in the morning run already limits how many Xotelo jobs exist.
  */
 export async function runCollect(opts: {
   store: CollectorStore;
   env: Env;
   now: Date;
   fetchFn?: FetchFn;
+  /** For tests: the pause between Xotelo calls. */
+  sleep?: (ms: number) => Promise<void>;
 }): Promise<CollectSummary> {
   const { store, env, now } = opts;
+  const sleep = opts.sleep ?? ((ms: number) => new Promise<void>((r) => setTimeout(r, ms)));
   const batch = batchSchema.parse(env.COLLECT_BATCH ?? undefined);
   const creds = { login: env.DATAFORSEO_LOGIN, password: env.DATAFORSEO_PASSWORD };
   const nowMs = now.getTime();
@@ -60,9 +65,12 @@ export async function runCollect(opts: {
   const expireBefore = nowMs - COLLECT.expireAfterDays * 86_400_000;
   const expired = open.filter((t) => Date.parse(t.postedAt) < expireBefore);
   const live = open.filter((t) => Date.parse(t.postedAt) >= expireBefore);
+  // Xotelo jobs (D-41) are ready at once; DataForSEO tasks only once tasks_ready lists them.
+  const xotelo = live.filter((t) => isXoteloTask(t.id));
+  const dfs = live.filter((t) => !isXoteloTask(t.id));
 
   let ready = new Set<string>();
-  if (live.length > 0) {
+  if (dfs.length > 0) {
     try {
       ready = await tasksReady(creds, opts.fetchFn);
     } catch (err) {
@@ -71,8 +79,9 @@ export async function runCollect(opts: {
   }
   const staleBefore = nowMs - COLLECT.staleAfterMinutes * 60_000;
   const candidates = [
-    ...live.filter((t) => ready.has(t.id)),
-    ...live.filter((t) => !ready.has(t.id) && Date.parse(t.postedAt) < staleBefore),
+    ...dfs.filter((t) => ready.has(t.id)),
+    ...dfs.filter((t) => !ready.has(t.id) && Date.parse(t.postedAt) < staleBefore),
+    ...xotelo,
   ].slice(0, batch);
 
   const summary: CollectSummary = {
@@ -95,9 +104,16 @@ export async function runCollect(opts: {
   summary.runId = runId;
   try {
     const items: { task: OpenTask; outcome: TaskOutcome }[] = [];
+    let xoteloCalls = 0;
     for (const task of candidates) {
+      const isXotelo = isXoteloTask(task.id);
+      // Gentle on a free, donation-run service: a short pause between Xotelo calls.
+      if (isXotelo && xoteloCalls++ > 0) await sleep(XOTELO.delayMs);
       try {
-        items.push({ task, outcome: taskOutcome(await taskGet(task.id, creds, opts.fetchFn)) });
+        const outcome = isXotelo
+          ? await fetchXoteloTask(task, opts.fetchFn)
+          : taskOutcome(await taskGet(task.id, creds, opts.fetchFn));
+        items.push({ task, outcome });
         summary.fetched++;
       } catch (err) {
         // Left `posted`: retried next run, failed after COLLECT.expireAfterDays.

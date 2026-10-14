@@ -96,7 +96,8 @@ export function memoryStore(
           checkIn: s.checkIn,
           checkOut: s.checkOut,
           adults: s.adults,
-          hotelIdentifier: hotelById.get(s.hotelId)?.dfsHotelIdentifier ?? '',
+          hotelIdentifier: hotelById.get(s.hotelId)?.dfsHotelIdentifier ?? null,
+          xoteloKey: hotelById.get(s.hotelId)?.xoteloKey ?? null,
           watched: watched.has(s.id),
         }));
     },
@@ -136,6 +137,8 @@ export function memoryStore(
             hotelId: stay.hotelId,
             checkIn: stay.checkIn,
             checkOut: stay.checkOut,
+            adults: stay.adults,
+            xoteloKey: hotelById.get(stay.hotelId)?.xoteloKey ?? null,
             postedAt: t.postedAt,
           };
         });
@@ -163,11 +166,32 @@ export function memoryStore(
         snapshots.push({ ...s, day });
         inserted++;
       }
+      // Mirrors rebuild_stay_daily: a stay's days come from the source of its newest snapshot
+      // only (D-41); days only the other source priced are dropped.
+      const sourceOf = new Map<number, string>();
+      for (const stayId of new Set([...touched].map((k) => Number(k.split('|')[0])))) {
+        const newest = snapshots
+          .filter((x) => x.stay_id === stayId)
+          .reduce((a, b) => (b.captured_at >= a.captured_at ? b : a));
+        sourceOf.set(stayId, newest.source);
+        for (const [key, row] of daily) {
+          const kept = snapshots.some(
+            (x) => x.stay_id === stayId && x.day === row.day && x.source === newest.source,
+          );
+          if (row.stayId === stayId && !kept) daily.delete(key);
+        }
+      }
       for (const key of touched) {
         const [stayId, day] = key.split('|') as [string, string];
-        // Mirrors rebuild_stay_daily: the best price comes from reviewed providers; a day with
-        // pending providers only keeps the raw minimum and has no best provider.
-        const all = snapshots.filter((x) => x.stay_id === Number(stayId) && x.day === day);
+        // The best price comes from reviewed providers; a day with pending providers only keeps
+        // the raw minimum and has no best provider.
+        const all = snapshots.filter(
+          (x) =>
+            x.stay_id === Number(stayId) &&
+            x.day === day &&
+            x.source === sourceOf.get(Number(stayId)),
+        );
+        if (all.length === 0) continue;
         const reviewed = all.filter((x) => !providers.get(x.provider_slug)?.pending);
         const rows = reviewed.length > 0 ? reviewed : all;
         const best = rows.reduce((a, b) =>

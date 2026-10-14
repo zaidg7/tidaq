@@ -102,7 +102,21 @@ describe('applyBudget', () => {
   it('rejects broken limits instead of posting without a guard', () => {
     expect(() => applyBudget([], TODAY, limits({ dailyCap: Number.NaN }))).toThrow(RangeError);
     expect(() => applyBudget([], TODAY, limits({ monthlyBudgetUsd: -1 }))).toThrow(RangeError);
-    expect(() => applyBudget([], TODAY, limits({ costPerTaskUsd: 0 }))).toThrow(RangeError);
+    expect(() => applyBudget([], TODAY, limits({ costPerTaskUsd: -0.1 }))).toThrow(RangeError);
+  });
+
+  it('lets a free source (cost 0) run up to the daily cap only', () => {
+    const jobs = Array.from({ length: 5 }, (_, i) => job(i + 1, '2026-11-01'));
+    const free = applyBudget(
+      jobs,
+      TODAY,
+      limits({ costPerTaskUsd: 0, dailyCap: 3, spentThisMonthUsd: 99 }),
+    );
+    expect(free.selected).toHaveLength(3);
+    expect(free).toMatchObject({ reason: 'daily_cap', estCostUsd: 0, monthlyAlert: true });
+    const roomy = applyBudget(jobs, TODAY, limits({ costPerTaskUsd: 0, dailyCap: 10 }));
+    expect(roomy).toMatchObject({ reason: 'ok', estCostUsd: 0 });
+    expect(roomy.selected).toHaveLength(5);
   });
 });
 

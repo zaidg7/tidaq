@@ -1,18 +1,21 @@
 import type { BudgetReason, DailyPrice, GridHotel, GridStay, StayState } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from './ingest';
 
-/** A hotel the collector may price. */
+/** A hotel the collector may price: it has an id for at least one price source. */
 export interface CatalogHotel extends GridHotel {
-  dfsHotelIdentifier: string;
+  dfsHotelIdentifier: string | null;
+  /** TripAdvisor key for Xotelo (D-41), e.g. `g187323-d289019`. */
+  xoteloKey: string | null;
 }
 
-/** An active stay to price, with what DataForSEO needs. */
+/** An active stay to price, with what each source needs (null: the hotel has no id there). */
 export interface StayJob {
   stayId: number;
   checkIn: string;
   checkOut: string;
   adults: number;
-  hotelIdentifier: string;
+  hotelIdentifier: string | null;
+  xoteloKey: string | null;
   watched: boolean;
 }
 

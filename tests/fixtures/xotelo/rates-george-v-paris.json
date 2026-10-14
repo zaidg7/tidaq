@@ -1,0 +1,48 @@
+{
+  "_stay": {
+    "check_in": "2026-10-27",
+    "check_out": "2026-10-29",
+    "adults": 2,
+    "nights": 2
+  },
+  "_hotel_key": "g187147-d188975",
+  "error": null,
+  "result": {
+    "chk_in": "2026-10-27",
+    "chk_out": "2026-10-29",
+    "currency": "EUR",
+    "rates": [
+      {
+        "code": "BookingCom",
+        "name": "Booking.com",
+        "rate": 2318,
+        "tax": null
+      },
+      {
+        "code": "DerbySoft",
+        "name": "FourSeasons.com",
+        "rate": 1969,
+        "tax": null
+      },
+      {
+        "code": "Agoda",
+        "name": "Agoda.com",
+        "rate": 2100,
+        "tax": null
+      },
+      {
+        "code": "CtripTA",
+        "name": "Trip.com",
+        "rate": 2318,
+        "tax": null
+      },
+      {
+        "code": "Vio",
+        "name": "Vio.com",
+        "rate": 1969,
+        "tax": null
+      }
+    ]
+  },
+  "timestamp": 1791934537451
+}

@@ -1,0 +1,48 @@
+{
+  "_stay": {
+    "check_in": "2026-10-23",
+    "check_out": "2026-10-25",
+    "adults": 2,
+    "nights": 2
+  },
+  "_hotel_key": "g187331-d199575",
+  "error": null,
+  "result": {
+    "chk_in": "2026-10-23",
+    "chk_out": "2026-10-25",
+    "currency": "EUR",
+    "rates": [
+      {
+        "code": "Marriott1",
+        "name": "Autograph",
+        "rate": 293,
+        "tax": null
+      },
+      {
+        "code": "BookingCom",
+        "name": "Booking.com",
+        "rate": 293,
+        "tax": null
+      },
+      {
+        "code": "Agoda",
+        "name": "Agoda.com",
+        "rate": 293,
+        "tax": null
+      },
+      {
+        "code": "CtripTA",
+        "name": "Trip.com",
+        "rate": 293,
+        "tax": null
+      },
+      {
+        "code": "Vio",
+        "name": "Vio.com",
+        "rate": 293,
+        "tax": null
+      }
+    ]
+  },
+  "timestamp": 1791934486228
+}

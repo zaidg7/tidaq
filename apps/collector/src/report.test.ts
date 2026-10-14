@@ -5,7 +5,7 @@ import { testEnv } from './test/env';
 import { fakeMail } from './test/mail';
 import { fakeDataForSeo, memoryStore } from './test/memoryStore';
 
-const hotels = [{ id: 1, citySlug: 'berlin', dfsHotelIdentifier: 'id-adlon' }];
+const hotels = [{ id: 1, citySlug: 'berlin', dfsHotelIdentifier: 'id-adlon', xoteloKey: null }];
 const env = testEnv({ RESEND_API_KEY: 're_test', ADMIN_EMAILS: 'ops@example.com' });
 const CHECK = new Date('2026-10-12T07:55:00Z');
 

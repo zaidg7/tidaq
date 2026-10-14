@@ -30,7 +30,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-013a                                                          | Collector: grid refresh, budget guard, task posting                          | CLOUD | M             | C-005, C-010, C-011, C-012, C-014 | DONE           |
 | C-013b                                                          | Collector: collect results, store snapshots, daily prices, stats             | CLOUD | M             | C-013a, C-015                     | DONE           |
 | C-013c                                                          | Collector: admin emails, daily check, raw-data prune                         | CLOUD | S             | C-013b                            | DONE           |
-| C-013d                                                          | Collector: live check on staging, first production deploy, 2-day data check  | CLOUD | S             | C-013c, B-005, B-003              | IN PROGRESS    |
+| C-013d                                                          | Collector: live check on staging, first production deploy, 2-day data check  | CLOUD | S             | C-013c, B-005, C-013g             | IN PROGRESS    |
 | C-011b                                                          | Hotel photos: licensed Wikimedia Commons images with credits                 | CLOUD | S             | C-011                             | DONE           |
 | C-019                                                           | Web data layer (public reads) and best price from reviewed providers         | CLOUD | S             | C-013b                            | DONE           |
 | C-011c                                                          | Self-host hotel photos (no third-party requests from our pages)              | CLOUD | S             | C-011b                            | DONE           |
@@ -47,6 +47,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-016                                                           | Admin: data health and budget dashboard                                      | CLOUD | M             | C-013b, C-020c                    | DONE           |
 | C-013e                                                          | Villa Kennedy (Frankfurt) gets no prices: check its DataForSEO hotel ID      | CLOUD | S             | C-013b                            | DONE           |
 | C-013f                                                          | Re-check The Florentin (ex Villa Kennedy) in Google Hotels; re-add           | CLOUD | S             | C-013e                            | TODO           |
+| C-013g                                                          | Collector: free price source Xotelo (DataForSEO as fallback)                 | CLOUD | M             | C-013b                            | IN PROGRESS    |
 | C-032a                                                          | Trust audit: form, recent tests, provider scores                             | CLOUD | S             | C-020c, C-004                     | DONE           |
 | C-032b                                                          | Trust audit: screenshot upload, edit tests, CSV export                       | CLOUD | S             | C-032a                            | DONE           |
 | L-033                                                           | Checkout audit with Claude in Chrome (150 tests, recurring until launch)     | LOCAL | L (recurring) | C-032b, Z-07                      | TODO           |
@@ -54,6 +55,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-021b                                                          | Search: date range picker (mobile bottom sheet)                              | CLOUD | M             | C-021a                            | DONE           |
 | C-022a                                                          | Stay page: route, data, header, chart, stats, advice, states                 | CLOUD | M             | C-020a, C-015, C-013b             | DONE           |
 | C-022b                                                          | Stay page: provider table, watch CTA, untracked stays on demand              | CLOUD | M             | C-022a                            | TODO           |
+| C-060                                                           | Market test: five-star price drops in ~10 holiday destinations               | CLOUD | M             | C-013g                            | TODO           |
 | C-023                                                           | Hotel page with price calendar                                               | CLOUD | M             | C-022                             | TODO           |
 | C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | TODO           |
 | C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | TODO           |
@@ -449,11 +451,19 @@ Owner: CLOUD · Size: S · Depends on: C-013b · Status: DONE · PR: [#36](https
 
 **C-013e notes (DONE):** root cause: Villa Kennedy closed in 2022 and reopened in December 2025 as **The Florentin** (Althoff Collection); our identifier is the closed Google listing, so all 13 Hotel Info tasks returned `no_results`. Two Hotel Searches for the new name ("The Florentin", "The Florentin Frankfurt Althoff"; $0.0016 total, catalog guard) returned nothing: DataForSEO's Google Hotels data doesn't list it yet. The hotel is deactivated (migration `20261013201119`), which saves 11 empty tasks a day. `scripts/catalog/seed.json` now names The Florentin (with `replaces` and a `query` field, new in `resolve.ts`). Follow-up: C-013f.
 
+### C-013g · Collector: free price source Xotelo
+
+Owner: CLOUD · Size: M · Depends on: C-013b · Status: IN PROGRESS · PR: see `[C-013g]` PR
+
+Why: the DataForSEO balance is empty and Zaid wants to run the market test for free (D-41, spike in `docs/research/xotelo.md`). Migration `20261013234015_xotelo_source.sql` (applied 13 Oct): `hotels.xotelo_key` for all 39 active hotels, `price_snapshots.source`, brand-site aliases → `hotel-direct`, `rebuild_stay_daily` builds a stay's days from the source of its newest snapshot only (old DataForSEO snapshots stay), `collector_ingest` stores `source`. Code: core `xotelo.ts` (schema, URL, rates → price items for `normalizeHotelInfo`), budget guard accepts cost 0 (daily cap only), collector `PRICE_SOURCE` (morning queues `xo-<run>-<stay>` jobs, collect calls Xotelo per job, 400 ms apart, busy answers stay queued), `deploy.yml` option **collector_only** (production collector without touching tidaq.com) and a collector `/health` check.
+
+**Done when:** CI green; staging: Actions → Collector run → `staging`/`post`, then `staging`/`collect` → Xotelo snapshots for ≥ 20 stays (proves Cloudflare can reach Xotelo); then Actions → Deploy → `production` with **collector_only** ticked; next morning (05:00 UTC) the production run queues ~370 jobs and the collect runs work them off by ~07:20 UTC.
+
 ### C-013f · Re-check The Florentin
 
 Owner: CLOUD · Size: S · Depends on: C-013e · Status: TODO · PR: –
 
-Not before 10 Nov 2026. Post one Hotel Searches task for The Florentin (`node scripts/catalog/resolve.ts post` after changing the seed's `tag`), and if it resolves: data migration that sets the new `dfs_hotel_identifier`, name "The Florentin", keeps slug or renames it (also rename the photo files and the manifest), then `active = true`. If still missing, try again in December or replace it with another Frankfurt five-star hotel.
+With Xotelo (D-41) first check TripAdvisor's Frankfurt list (`/api/list`, free) for The Florentin and set its `xotelo_key`. Otherwise not before 10 Nov 2026: post one Hotel Searches task for The Florentin (`node scripts/catalog/resolve.ts post` after changing the seed's `tag`), and if it resolves: data migration that sets the new `dfs_hotel_identifier`, name "The Florentin", keeps slug or renames it (also rename the photo files and the manifest), then `active = true`. If still missing, try again in December or replace it with another Frankfurt five-star hotel.
 
 Found by the C-016 dashboard on 13 Oct: Villa Kennedy (Frankfurt, hotel id 16) has active stays but no price on any day, while the other 35 active hotels have prices. Check its `dfs_hotel_identifier` with one DataForSEO hotel search call (through the budget guard), compare with the stored ID, fix the ID with a data migration, or deactivate it in `/admin` if DataForSEO doesn't list it.
 
@@ -545,6 +555,12 @@ Owner: CLOUD · Size: L (split: a = route + data + header + chart + stats + advi
 **Done when**
 
 - [ ] Every state has a designed screen; e2e tests for tracked, collecting and untracked stays
+
+### C-060 · Market test: five-star price drops
+
+Owner: CLOUD · Size: M · Depends on: C-013g · Status: TODO · PR: –
+
+Zaid's growth idea (13 Oct): "Skyscanner for hotel price drops": show users the biggest current drops at five-star hotels for their dates and destination. Test whether it's doable and interesting before building features: pick ~10 holiday destinations (e.g. Mallorca, Algarve, Costa del Sol, Côte d'Azur, Amalfi, Santorini, Dubai, Bali, Maldives, Phuket), find their five-star hotels with Xotelo `/api/list` (no star filter: use price range and rating), track 2–4 fixed stays per hotel daily for 3 weeks within the daily cap, and report how often a stay is ≥ 20 % below its own 14-day average, how long drops last, and 3 real examples. Also try `/api/heatmap` (cheap/expensive days per hotel) as a cheaper signal. Output: `docs/research/price-drops.md` with a go/no-go for a deals feature. Never exceed the daily cap; never scrape.
 
 ### C-023 · Hotel page with price calendar
 

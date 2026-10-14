@@ -49,7 +49,7 @@ Create `docs/progress/YYYY-Www.md` from `docs/progress/TEMPLATE.md` and open a G
 ## 3. Hard rules (never break)
 
 1. **Never commit secrets.** API keys live in GitHub Actions secrets, Cloudflare Worker secrets and the Claude cloud environment. Read them from `process.env` / Worker `env`. `.env*` files are gitignored. If you find a secret in the code, remove it, rotate it via BLOCKERS and tell Zaid.
-2. **Never scrape provider websites from our servers** (Booking, Expedia, hotel sites). Price data comes from the DataForSEO API only. Checkout tests are manual (task L-033).
+2. **Never scrape provider websites from our servers** (Booking, Expedia, hotel sites, Google). Price data comes from price APIs only: Xotelo (free, current source) or DataForSEO (paid fallback), see D-41. Checkout tests are manual (task L-033).
 3. **Never make a booking, enter payment data or personal data** on any booking site, including in LOCAL browser sessions. Stop at the last page before payment.
 4. **Never exceed the data budget.** Every DataForSEO call goes through the budget guard (`DAILY_TASK_CAP`, monthly cap). No loops that call paid APIs without the guard.
 5. **Never send email to real users from dev or preview.** Dev uses Resend's test mode or the `ALERTS_DRY_RUN=true` flag.
@@ -107,6 +107,7 @@ pnpm workspace. Node 22 LTS. If reality differs, update this map in your PR.
 | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | GitHub secret | deploy workflow |
 | `ADMIN_EMAILS` | Cloudflare var (in `apps/web/wrangler.jsonc`) | admin login (`zaidghazal216@gmail.com`) |
 | `DAILY_TASK_CAP` (default 400), `MONTHLY_BUDGET_USD` (default 12), `EVENING_RUN` (default false), `GRID_WEEKENDS` (6), `GRID_MIDWEEK` (2) | Cloudflare var | budget guard, grid size (`MONTHLY_BUDGET_USD` also in the web vars for /admin) |
+| `PRICE_SOURCE` (`xotelo` now, `dataforseo` = paid fallback, D-41) | Cloudflare var (collector) | which price API the collector uses |
 | `COLLECTOR_STAGING_URL` | Cloudflare var (web) | /admin "Staging-Lauf starten" |
 | `ALERTS_DRY_RUN` | Cloudflare var (`true` outside production) | alert engine |
 
@@ -115,7 +116,8 @@ CI injects secrets into deploys. Sessions do not need raw keys for normal work: 
 ## 8. Useful facts
 
 - Today's plan start: Mon 12 Oct 2026. Soft launch target: **Mon 30 Nov 2026**.
-- DataForSEO Hotel Info: `check_in`/`check_out` (max 30 nights), `adults` (default 2), `currency` (use `EUR`), `language_code` `de`, location Germany. Billed per hotel entity, around $0.0008 in the standard queue. Results can be fetched free for 30 days. **Verify the real response shape in C-010 before building on it.**
+- **Current price source: Xotelo** (D-41, `docs/research/xotelo.md`): free, no key, TripAdvisor meta search, one call per hotel and stay, ~4 booking sites, nightly rates. Hotels need `hotels.xotelo_key` (TripAdvisor `g…-d…`, found via `/api/list` by city). No SLA: if it fails for days, propose a DataForSEO top-up in BLOCKERS.
+- DataForSEO Hotel Info (paid fallback): `check_in`/`check_out` (max 30 nights), `adults` (default 2), `currency` (use `EUR`), `language_code` `de`, location Germany. Billed per hotel entity, around $0.0008 in the standard queue. Results can be fetched free for 30 days. **Verify the real response shape in C-010 before building on it.**
 - Cloudflare Workers paid plan ($5/month) is expected: the Next.js bundle likely exceeds the free 3 MB limit. It's included in the €50 budget plan; Zaid activates it in Z-04 if the free plan fails (try free first).
 - Supabase: project `tidaq` (ref `kaxcnrfpgpktzrfibpzg`) in Zaid's **Pro organization** (no auto-pause, 8 GB, daily backups). Raw API JSON is pruned after 30 days (D-19). The connector also sees Zaid's other project `invest-like.com`: **never touch it**. Migration workflow: README → Database.
 - Domain: `tidaq.com` registered at **Namecheap**, DNS in **Cloudflare** (nameservers switched in Z-03b). Don't try to change registrar settings; DNS records are managed in Cloudflare.

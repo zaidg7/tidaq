@@ -5,8 +5,8 @@ import { fakeDataForSeo, memoryStore } from './test/memoryStore';
 
 const NOW = new Date('2026-10-12T05:00:00Z');
 const hotels = [
-  { id: 1, citySlug: 'berlin', dfsHotelIdentifier: 'id-adlon' },
-  { id: 2, citySlug: 'muenchen', dfsHotelIdentifier: 'id-bayerischer-hof' },
+  { id: 1, citySlug: 'berlin', dfsHotelIdentifier: 'id-adlon', xoteloKey: null },
+  { id: 2, citySlug: 'muenchen', dfsHotelIdentifier: 'id-bayerischer-hof', xoteloKey: null },
 ];
 
 describe('runPosting', () => {
