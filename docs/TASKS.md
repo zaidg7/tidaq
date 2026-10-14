@@ -78,9 +78,10 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | L-026                                                           | Check "Zum Angebot" links open the right hotel and dates                     | LOCAL | S             | C-026                             | TODO           |
 | C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | DONE           |
 | C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | DONE           |
-| C-024b                                                          | Search card: a city option opens the city page                               | CLOUD | S             | C-024                             | TODO           |
-| C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | TODO           |
-| C-028                                                           | SEO foundation and dynamic OG images                                         | CLOUD | M             | C-022                             | TODO           |
+| C-024b                                                          | Search card: a city option opens the city page                               | CLOUD | S             | C-024                             | DONE           |
+| C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | DONE           |
+| C-028a                                                          | SEO: canonical, hreflang, sitemap, site JSON-LD                              | CLOUD | S             | C-022                             | DONE           |
+| C-028b                                                          | Dynamic OG images for stay, hotel and city pages                             | CLOUD | S             | C-028a                            | TODO           |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030                                                           | Watch flow with double opt-in and manage/unsubscribe                         | CLOUD | M             | C-022, Z-05                       | TODO           |
@@ -716,10 +717,14 @@ Owner: CLOUD · Size: S · Depends on: C-023 · Status: TODO · PR: –
 Owner: CLOUD · Size: S · Depends on: C-024 · Status: TODO · PR: –
 In the hotel combobox, typing a city shows an option "Alle Hotels in {Stadt}" (`cityIn` phrase) at the top of that city's group; picking it opens the city page. Keep the ARIA 1.2 combobox behavior and the e2e tests of C-021a.
 
+**C-024b notes (DONE):** When the typed text names a city (core `matchesCity`: every query word starts a city word, umlauts optional), that city's group starts with an accent-coloured option "Alle Hotels in Berlin" / "auf den Malediven" with an arrow; Enter or click opens the city page. Hotel names alone ("adlon") and the empty field show hotels only; the result count still counts hotels. The options come from `searchHotels()` in `lib/searchCardProps.ts` (hero, stay page "Ändern", /dev/ui), which adds `cityHref` and `cityAll` to each hotel.
+
 ### C-025 · Deals page
 
 Owner: CLOUD · Size: S · Depends on: C-022 · Status: TODO · PR: –
 `/deals`: stays with ≥ 14 days of data whose best price is ≥ 8 % below avg30, sorted by % drop; city filter chips; each card links to the stay page. Empty state if no deals.
+
+**C-025 notes (DONE):** `/deals` (`components/deals/DealsView.tsx`): same rule as the homepage section (core `pickDeals`, one stay per hotel, up to 60), city chips as links (`?stadt=berlin`, new `ChipLink` in `ui/Chip.tsx`, `aria-current`, no JS), cards shared with the homepage (`components/deals/DealCard.tsx`, now linking with `?adults=`). One canonical URL for all filters. Honest empty state with a link to `/hotels`; since stays are only tracked since 12 Oct, the first deals can appear around 26 Oct. Deals still come from real stay checks (4 per hotel since C-071a); whether drops of single nights become deals is C-060's call (report ~4 Nov). Dev page `/dev/deals` (`?empty`, `?stadt=`), e2e `e2e/deals.spec.ts`.
 
 ### C-026 · Outbound link service
 
@@ -753,8 +758,15 @@ Owner: CLOUD · Size: M · Depends on: C-020a · Status: TODO · PR: –
 
 ### C-028 · SEO foundation and OG images
 
-Owner: CLOUD · Size: M · Depends on: C-022 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-022 · Status: split into C-028a (DONE) and C-028b (OG images, TODO) · PR: –
 Metadata per page (DE/EN), hreflang, canonical, sitemap index per locale, robots (staging noindex), JSON-LD (Organization, Hotel), dynamic OG images for stay and hotel pages (price, sparkline, state chip, brand) via `next/og` (check Workers compatibility; fall back to a pre-rendered image route). Google Search Console verification via DNS (Z-09).
+
+**C-028a notes (DONE):** Core `alternatesFor(path, locale)` gives every page its canonical plus `de`, `en` and `x-default` (German) alternates; used by home, hotel, stay, city, `/hotels`, `/deals` and the legal pages. The locale layout sets `metadataBase` = `https://tidaq.com` (core `SITE_ORIGIN`), so all of these are absolute, plus Open Graph defaults (site name, `de_DE`/`en_GB`) and `summary_large_image`. The homepage has Organization + WebSite JSON-LD (core `siteJsonLd`). `/sitemap.xml` (`app/sitemap.ts`): static pages, every city and hotel page, each in DE and EN with hreflang; no stay pages (endless dates). `robots.txt` names the sitemap in production. Pages stay `noindex` until C-041. Search Console verification is Z-09.
+
+### C-028b · Dynamic OG images
+
+Owner: CLOUD · Size: S · Depends on: C-028a · Status: TODO · PR: –
+`next/og` images (1200×630) for stay, hotel and city pages: brand, hotel/city name, today's price or cheapest weekend, a small sparkline for stays. Check the Workers bundle size and CPU (fall back to a pre-rendered route if `next/og` doesn't run on Workers). Default image for all other pages.
 
 ### C-029 · Analytics events
 

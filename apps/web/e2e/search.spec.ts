@@ -13,11 +13,28 @@ test.describe('search autocomplete (C-021a)', () => {
     await input.fill('zuerich');
     await expect(input).toHaveAttribute('aria-expanded', 'true');
     const options = form.getByRole('listbox', { name: 'Hotels' }).getByRole('option');
-    await expect(options).toHaveText(['Baur au Lac', 'The Dolder Grand']);
+    // The city itself comes first (C-024b); the count is about hotels.
+    await expect(options).toHaveText(['Alle Hotels in Zürich', 'Baur au Lac', 'The Dolder Grand']);
     await expect(form.getByText('2 Hotels gefunden')).toBeAttached();
 
     await input.fill('xyz');
     await expect(form.getByRole('listbox')).toContainText('Kein Hotel gefunden');
+  });
+
+  test('typing a city offers its city page (C-024b)', async ({ page }) => {
+    const form = await searchCard(page);
+    const input = form.getByRole('combobox', { name: 'Hotel' });
+    await input.fill('ber');
+    const city = form.getByRole('option', { name: 'Alle Hotels in Berlin' });
+    await expect(city).toBeVisible();
+    // A hotel name doesn't bring the city option, and an empty field lists hotels only.
+    await input.fill('adlon');
+    await expect(city).toBeHidden();
+    await input.fill('');
+    await expect(form.getByRole('option', { name: /^Alle Hotels/ })).toHaveCount(0);
+    await input.fill('berlin');
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/\/stadt\/berlin$/);
   });
 
   test('a full search works with the keyboard only', async ({ page }) => {

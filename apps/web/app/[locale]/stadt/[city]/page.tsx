@@ -4,7 +4,7 @@ import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { after } from 'next/server';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { cityIn, cityPath, localizedPath, type Locale } from '@tidaq/core';
+import { alternatesFor, cityIn, cityPath, localizedPath, type Locale } from '@tidaq/core';
 import { CityView } from '@/components/city/CityView';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
@@ -38,13 +38,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   return {
     title: t('metaTitle', { where }),
     description: t('metaDescription', { where }),
-    alternates: {
-      canonical: localizedPath(cityPath(slug), locale),
-      languages: {
-        de: localizedPath(cityPath(slug), 'de'),
-        en: localizedPath(cityPath(slug), 'en'),
-      },
-    },
+    alternates: alternatesFor(cityPath(slug), locale),
   };
 }
 

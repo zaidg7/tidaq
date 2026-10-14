@@ -13,7 +13,7 @@ export {
   type PercentOptions,
   type PriceParts,
 } from './format';
-export { localizedPath, splitLocale } from './paths';
+export { alternatesFor, localizedPath, splitLocale } from './paths';
 export {
   XOTELO,
   isXoteloTask,
@@ -57,7 +57,7 @@ export {
 } from './nightGrid';
 export { expectedCheckoutCents, rankOffers, type RankedOffer, type StayOffer } from './offers';
 export { toCsv } from './csv';
-export { foldText, matchHotels, type SearchableHotel } from './search';
+export { foldText, matchesCity, matchHotels, type SearchableHotel } from './search';
 export {
   STAY_LIMITS,
   dayDiff,
@@ -217,6 +217,12 @@ export {
   type OutboundHotel,
   type OutboundStay,
 } from './outbound';
-export { hotelJsonLd, jsonLdString, SITE_ORIGIN, type HotelJsonLdInput } from './structuredData';
+export {
+  hotelJsonLd,
+  jsonLdString,
+  siteJsonLd,
+  SITE_ORIGIN,
+  type HotelJsonLdInput,
+} from './structuredData';
 export { inlineLinks, type InlinePart } from './inlineLinks';
 export { cityIn, cityPath, groupByRegion, regionOf, REGIONS, type Region } from './places';

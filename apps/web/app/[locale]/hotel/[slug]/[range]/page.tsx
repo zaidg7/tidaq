@@ -5,6 +5,7 @@ import { notFound, redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import {
+  alternatesFor,
   daysBetween,
   formatDateRange,
   localizedPath,
@@ -21,7 +22,7 @@ import { getCatalog } from '@/lib/data/catalog';
 import { logView } from '@/lib/data/events';
 import { requestStayOnView } from '@/lib/data/requestStay';
 import { getStay, type StayLoad } from '@/lib/data/stay';
-import { searchCardProps } from '@/lib/searchCardProps';
+import { searchCardProps, searchHotels } from '@/lib/searchCardProps';
 import { berlinToday } from '@/lib/today';
 
 // Prices change every morning: render per request.
@@ -72,9 +73,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       hotel: result.data.hotel.name,
       dates: formatDateRange(p.checkIn, p.checkOut, locale),
     }),
-    alternates: {
-      canonical: localizedPath(stayPath(slug, p.checkIn, p.checkOut, p.adults), locale),
-    },
+    alternates: alternatesFor(stayPath(slug, p.checkIn, p.checkOut, p.adults), locale),
   };
 }
 
@@ -138,11 +137,7 @@ export default async function StayPage(props: Props) {
     ),
   );
   const [catalog, card] = await Promise.all([getCatalog(), searchCardProps(locale)]);
-  const hotels = (catalog?.hotels ?? []).map((h) => ({
-    slug: h.slug,
-    name: h.name,
-    city: h.city.name[locale],
-  }));
+  const hotels = await searchHotels(catalog?.hotels ?? [], locale);
   // An inactive hotel isn't in the catalog: keep it selectable so "Ändern" starts from here.
   if (!hotels.some((h) => h.slug === hotel.slug)) {
     hotels.push({ slug: hotel.slug, name: hotel.name, city: hotel.city.name[locale] });

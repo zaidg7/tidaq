@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { localizedPath, splitLocale } from './paths';
+import { alternatesFor, localizedPath, splitLocale } from './paths';
 
 describe('splitLocale', () => {
   it('reads the English prefix', () => {
@@ -42,5 +42,18 @@ describe('localizedPath', () => {
   it('drops trailing slashes', () => {
     expect(localizedPath('/en/deals/', 'de')).toBe('/deals');
     expect(localizedPath('/deals/', 'en')).toBe('/en/deals');
+  });
+});
+
+describe('alternatesFor', () => {
+  it('gives the canonical URL in the page language and both versions, German as default', () => {
+    expect(alternatesFor('/stadt/berlin', 'en')).toEqual({
+      canonical: '/en/stadt/berlin',
+      languages: { de: '/stadt/berlin', en: '/en/stadt/berlin', 'x-default': '/stadt/berlin' },
+    });
+    expect(alternatesFor('/en/', 'de')).toEqual({
+      canonical: '/',
+      languages: { de: '/', en: '/en', 'x-default': '/' },
+    });
   });
 });

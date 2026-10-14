@@ -26,3 +26,18 @@ export function localizedPath(pathname: string, locale: Locale): string {
   if (locale === defaultLocale) return trimmed || '/';
   return trimmed === '/' ? `/${locale}` : `/${locale}${trimmed}`;
 }
+
+/**
+ * Canonical URL and hreflang alternates of a page (C-028a), for Next's `metadata.alternates`:
+ * the page in `locale`, both language versions, and German as `x-default` (D-05).
+ */
+export function alternatesFor(
+  pathname: string,
+  locale: Locale,
+): { canonical: string; languages: Record<'de' | 'en' | 'x-default', string> } {
+  const de = localizedPath(pathname, 'de');
+  return {
+    canonical: localizedPath(pathname, locale),
+    languages: { de, en: localizedPath(pathname, 'en'), 'x-default': de },
+  };
+}
