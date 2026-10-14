@@ -50,11 +50,13 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-013g                                                          | Collector: free price source Xotelo (DataForSEO as fallback)                 | CLOUD | M             | C-013b                            | DONE           |
 | C-032a                                                          | Trust audit: form, recent tests, provider scores                             | CLOUD | S             | C-020c, C-004                     | DONE           |
 | C-032b                                                          | Trust audit: screenshot upload, edit tests, CSV export                       | CLOUD | S             | C-032a                            | DONE           |
+| C-032c                                                          | Trust audit: listed price from Tripadvisor (Xotelo source) not Google        | CLOUD | S             | C-032b, C-013g                    | TODO           |
 | L-033                                                           | Checkout audit with Claude in Chrome (150 tests, recurring until launch)     | LOCAL | L (recurring) | C-032b, Z-07                      | TODO           |
 | C-021a                                                          | Search: hotel and city autocomplete                                          | CLOUD | S             | C-020a, C-011                     | DONE           |
 | C-021b                                                          | Search: date range picker (mobile bottom sheet)                              | CLOUD | M             | C-021a                            | DONE           |
 | C-022a                                                          | Stay page: route, data, header, chart, stats, advice, states                 | CLOUD | M             | C-020a, C-015, C-013b             | DONE           |
-| C-022b                                                          | Stay page: provider table, watch CTA, untracked stays on demand              | CLOUD | M             | C-022a                            | TODO           |
+| C-022b                                                          | Stay page: provider table, watch CTA                                         | CLOUD | M             | C-022a                            | DONE           |
+| C-022c                                                          | Stay page: track untracked dates on request (daily cap)                      | CLOUD | M             | C-022b                            | TODO           |
 | C-060                                                           | Market test: five-star price drops in ~10 holiday destinations               | CLOUD | M             | C-013g                            | TODO           |
 | C-023                                                           | Hotel page with price calendar                                               | CLOUD | M             | C-022                             | TODO           |
 | C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | TODO           |
@@ -540,9 +542,13 @@ Owner: CLOUD · Size: M (split a/b) · Depends on: C-020a, C-011 · Status: DONE
 
 ### C-022 · Stay page
 
-Owner: CLOUD · Size: L (split: a = route + data + header + chart + stats + advice + collecting/no-data/past/inactive states; b = provider table + watch CTA + untracked stays created on demand) · Depends on: C-020a, C-015, C-013 · Status: a DONE, b TODO · PR: a = [#40](https://github.com/zaidg7/tidaq/pull/40)
+Owner: CLOUD · Size: L (split: a = route + data + header + chart + stats + advice + collecting/no-data/past/inactive states; b = provider table + watch CTA; c = untracked stays tracked on request) · Depends on: C-020a, C-015, C-013 · Status: a DONE, b DONE, c TODO · PR: a = [#40](https://github.com/zaidg7/tidaq/pull/40), b = [#43](https://github.com/zaidg7/tidaq/pull/43)
 
 **C-022a notes (DONE):** route `app/[locale]/hotel/[slug]/[range]/page.tsx`, params validated by core `parseStayParams` (bad dates, check-out ≤ check-in, > 30 nights, bad slug → 404; invalid `adults` → redirect to `adults=2`; missing `adults` = 2) and linked with core `stayPath`. Data: `lib/data/stay.ts` `getStay` (hotel incl. inactive, the exact tracked stay, 60 days of reviewed best prices with the best provider's name per day, up to 6 other upcoming tracked stays from `v_hotel_calendar`); no Supabase or a read error → "Preise gerade nicht erreichbar" with reload. View: `components/stay/StayView.tsx` with `stayStatus()`: tracked (verdict + chart + Tief/Ø 30 Tage/Hoch + advice incl. "Kurz vor Anreise"), collecting (price + chart so far + 7-day progress), no_data, untracked, past, inactive. "Ändern" (`EditStay`) opens the search card prefilled (`SearchCard` got `initial` and `formId`). Sample-data previews of every state at `/dev/stay/<tracked|soon|collecting|no-data|untracked|past|inactive>` (not on production) feed `e2e/stay.spec.ts`. Checked against live data (Waldorf Astoria, collecting). For C-022b: the untracked copy says "Bald kannst du auch eigene Daten beobachten lassen" — change it when on-demand tracking ships; the provider table and watch CTA go between the panel and "Weitere Termine"; no visual-regression baseline for the stay page yet (add one when the layout settles, it costs a baseline run).
+
+**C-022b notes (DONE):** "Preise heute" (or "Preise vom 12. Okt." when the latest collected day isn't today) lists the latest `stay_daily.per_provider` entry of every reviewed provider (RLS hides pending ones; their count shows as "2 weitere Anbieter … noch nicht von uns geprüft"), sorted by core `rankOffers`: trusted price = listed × (1 + avg markup) when a provider has ≥ 5 checkout tests and a markup above the pass threshold, else the listed price; ties → lower listed, hotel site, name. Each row: monogram (hotel icon for the hotel's own site), name, "Günstigster" on the single cheapest trusted price, price with "an der Kasse ≈ …" in red when the tests show a markup, Preistreue (`TrustScore`; box and note side by side on phones). No outbound buttons yet (C-026 adds `/go/*` links with `rel="sponsored nofollow"`; Xotelo gives no deep links, so C-026 must build search links per provider or use the hotel's own site). "Preis beobachten" card next to the table (disabled "Bald verfügbar" until C-030; C-030 also adds the sticky mobile bar from DESIGN §4, pointless while disabled). Public source lines no longer say "Google Hotels" (Xotelo since D-41): footer "Preise jeden Morgen von den Buchungsseiten", verdict "Quelle: Preise der Buchungsseiten"; visual baselines regenerated. Aliases `bvlgari` and `preferred hotels & resorts` → hotel-direct (migration `20261014072730`). Follow-up: C-032c (checkout tests still reference Google Hotels).
+
+**C-022c (TODO) · Track untracked dates on request.** Owner CLOUD, size M, depends on C-022b. On an untracked stay, show "Diese Daten beobachten" (a button, never on page view, so crawlers can't create stays). It calls a security-definer RPC `request_stay(hotel_slug, check_in, check_out, adults)` (anon may execute) that validates the stay (core `STAY_LIMITS`, active hotel, check-in ≥ today Berlin), returns an existing stay, or inserts `tracked_stays` with origin `watch` only while fewer than `DAILY_REQUEST_CAP` (start 30) were requested today and the total active stays stay within the collector cap; else a clear "Heute sind alle Plätze vergeben, versuch es morgen" state. Then the page says "Erste Preise morgen früh" (the collector runs at 05:00 and 17:00 UTC; with Xotelo the evening run can pick it up the same day if it's within the evening window). Also: rate limit per IP in memory/KV (IP not stored), e2e on the dev page, RLS check for the RPC, and change the untracked copy ("Bald kannst du auch eigene Daten …"). Unused requested stays expire like other stays (grid `isStayExpired`).
 
 **Steps**
 
@@ -556,7 +562,7 @@ Owner: CLOUD · Size: L (split: a = route + data + header + chart + stats + advi
 
 **Done when**
 
-- [ ] Every state has a designed screen; e2e tests for tracked, collecting and untracked stays
+- [x] Every state has a designed screen; e2e tests for tracked, collecting and untracked stays (C-022a/b; the on-request flow gets its own in C-022c)
 
 ### C-060 · Market test: five-star price drops
 
@@ -622,6 +628,12 @@ Cloudflare Web Analytics snippet (cookieless) + server-side `events` inserts for
 ---
 
 ## Phase 3: Alerts and trust
+
+### C-032c · Checkout tests after the Xotelo switch
+
+Owner: CLOUD · Size: S · Depends on: C-032b, C-013g · Status: TODO · PR: –
+
+Since D-41 our prices come from Xotelo (Tripadvisor's meta search), but the checkout-test method (L-033 steps, PLAN §8, `/admin/audit` labels "Preis bei Google", CSV header, `trust_tests.listed_cents` comment) still says Google Hotels. The markup we apply in "an der Kasse ≈ …" is measured against that listed price, so the reference should be the listing our data comes from: the provider's price on Tripadvisor for the same stay (or the price on our own stay page if it was collected the same morning). Update the L-033 steps, PLAN §8.2, the admin labels/help text and the export header; keep old tests (note the change date in the methodology page, C-034). Propose it in BLOCKERS first if it changes a locked decision.
 
 ### C-030 · Watch flow
 
