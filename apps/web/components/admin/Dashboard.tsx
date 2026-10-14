@@ -199,7 +199,13 @@ export function Dashboard({ health, monthlyBudgetUsd, now, flash }: Props) {
         {health.days.length === 0 ? (
           <Empty>Noch keine Läufe.</Empty>
         ) : (
-          <div className="-mx-5 overflow-x-auto px-5 lg:-mx-6 lg:px-6">
+          // Scrolls sideways on phones: focusable so it works with the keyboard (C-041a).
+          <div
+            tabIndex={0}
+            role="region"
+            aria-label="Läufe der letzten 14 Tage"
+            className="-mx-5 overflow-x-auto px-5 focus-visible:outline-2 focus-visible:outline-accent lg:-mx-6 lg:px-6"
+          >
             <table className="w-full text-left text-[14px] tabular-nums">
               <thead className="text-meta whitespace-nowrap text-muted-ink">
                 <tr className="border-b border-line">
@@ -417,7 +423,12 @@ function NightsSection({
       {accuracy.length === 0 ? (
         <Empty>Noch kein Vergleich. Der erste kommt morgen früh mit der Tagesprüfung.</Empty>
       ) : (
-        <div className="-mx-5 overflow-x-auto px-5 lg:-mx-6 lg:px-6">
+        <div
+          tabIndex={0}
+          role="region"
+          aria-label="Genauigkeit der Nächte-Summen"
+          className="-mx-5 overflow-x-auto px-5 focus-visible:outline-2 focus-visible:outline-accent lg:-mx-6 lg:px-6"
+        >
           <table className="w-full text-left text-[14px] tabular-nums">
             <thead className="text-meta whitespace-nowrap text-muted-ink">
               <tr className="border-b border-line">

@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import {
   alternatesFor,
   cityPath,
-  hasProviderPage,
+  isProviderIndexable,
   hotelPath,
   providerPath,
   SITE_ORIGIN,
@@ -34,7 +34,7 @@ const STATIC = [
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [directory, facts] = await Promise.all([getHotelDirectory(), getProviderFacts()]);
   const cities = directory ?? [];
-  const providers = facts.kind === 'ok' ? facts.facts.providers.filter(hasProviderPage) : [];
+  const providers = facts.kind === 'ok' ? facts.facts.providers.filter(isProviderIndexable) : [];
   const paths = [
     ...STATIC,
     ...cities.map((c) => cityPath(c.slug)),

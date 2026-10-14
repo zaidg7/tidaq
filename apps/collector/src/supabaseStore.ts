@@ -32,6 +32,22 @@ const alertRows = z.array(
   }),
 );
 
+/** `alert_offers` (C-031b): today's offers of one watched stay, reviewed providers only. */
+const alertOfferRows = z.array(
+  z.object({
+    id: z.number().int(),
+    slug: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
+    name: z.string().min(1),
+    is_direct: z.boolean(),
+    partner: z.boolean(),
+    cents: z.number().int().positive(),
+    score: z.number().int().nullable(),
+    tests: z.number().int().nonnegative(),
+    matches: z.number().int().nonnegative(),
+    avg_markup_pct: z.coerce.number().nullable(),
+  }),
+);
+
 /** A `night_accuracy` row as Postgres returns it (numeric comes back as a number or string). */
 const accuracyRow = z.object({
   day: z.string(),
@@ -404,6 +420,30 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
         lastAlertCents: r.last_alert_cents,
         lastAlertAt: r.last_alert_at,
         series: r.series.map((p) => ({ day: p.day, bestCents: p.cents })),
+      }));
+    },
+
+    async alertOffers(watchId, today) {
+      const rows = check(
+        await db.rpc('alert_offers', { p_watch_id: watchId, p_today: today }),
+        'load alert offers',
+      );
+      return alertOfferRows.parse(rows).map((r) => ({
+        providerId: r.id,
+        slug: r.slug,
+        name: r.name,
+        isDirect: r.is_direct,
+        partner: r.partner,
+        totalCents: r.cents,
+        trust:
+          r.score === null
+            ? null
+            : {
+                score: r.score,
+                tests: r.tests,
+                matches: r.matches,
+                avgMarkupPct: r.avg_markup_pct,
+              },
       }));
     },
 

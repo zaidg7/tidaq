@@ -230,7 +230,7 @@ export { cityIn, cityPath, groupByRegion, regionOf, REGIONS, type Region } from 
 export { escapeHtml, renderMail, type MailContent } from './mailTemplate';
 export {
   extrasByCount,
-  hasProviderPage,
+  isProviderIndexable,
   percentOf,
   providerFactSchema,
   providerFactsSchema,
@@ -248,5 +248,6 @@ export {
   type AlertInput,
   type AlertKind,
   type AlertMailData,
+  type AlertMailOffer,
 } from './alerts';
 export { clientIp, createRateLimiter } from './rateLimit';

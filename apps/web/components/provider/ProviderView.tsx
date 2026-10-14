@@ -3,7 +3,7 @@ import {
   extrasByCount,
   formatDayMonthYear,
   formatPercent,
-  hasProviderPage,
+  isProviderIndexable,
   localizedPath,
   NIGHT_GRID,
   percentOf,
@@ -40,7 +40,7 @@ export function ProviderView({
   const locale = useLocale() as Locale;
   const nameOf = useProviderName();
   const name = nameOf(provider);
-  const others = facts.providers.filter((p) => p.slug !== provider.slug && hasProviderPage(p));
+  const others = facts.providers.filter((p) => p.slug !== provider.slug && isProviderIndexable(p));
 
   return (
     <div className="mx-auto w-full max-w-[1080px] px-5 pt-8 pb-16 md:px-7 lg:pt-14 lg:pb-[88px]">

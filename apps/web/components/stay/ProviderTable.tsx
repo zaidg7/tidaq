@@ -4,6 +4,7 @@ import {
   formatPrice,
   goPath,
   localizedPath,
+  providerPath,
   rankOffers,
   type Locale,
   type OutboundStay,
@@ -30,6 +31,18 @@ type Props = {
   className?: string;
 };
 
+// Phones: box and note side by side under the name, so rows stay short.
+const TRUST_CLASSES =
+  'max-sm:max-w-none max-sm:flex-row max-sm:items-center max-sm:gap-2 sm:max-w-[176px]';
+
+function trustProps(o: StayOffer) {
+  return {
+    score: o.trust?.score ?? null,
+    tests: o.trust?.tests ?? 0,
+    matches: o.trust?.matches ?? 0,
+  };
+}
+
 /** "Booking.com" → "B", "Hotel Adlon" → "HA": a neutral tile instead of third-party logos. */
 function monogram(name: string): string {
   const words = name
@@ -44,7 +57,8 @@ function monogram(name: string): string {
 /**
  * Provider table (CRAFT.md §3 Provider row, PLAN §8.3): every reviewed provider's latest stay
  * total, sorted by the price you can expect at checkout, with its Preistreue score and, when tests
- * show a markup, "an der Kasse ≈ …". Commission never affects the order. "Zum Angebot ↗" goes
+ * show a markup, "an der Kasse ≈ …"; the score links to the provider page (C-034b). Commission
+ * never affects the order. "Zum Angebot ↗" goes
  * through `/go/…` (C-026: click counted, provider search for these dates, new tab); on phones the
  * whole row is the link. Past stays get no links.
  */
@@ -141,13 +155,26 @@ export function ProviderTable({
                   </span>
                 )}
               </span>
-              <TrustScore
-                score={o.trust?.score ?? null}
-                tests={o.trust?.tests ?? 0}
-                matches={o.trust?.matches ?? 0}
-                // Phones: box and note side by side under the name, so rows stay short.
-                className="col-span-2 col-start-2 max-sm:max-w-none max-sm:flex-row max-sm:items-center max-sm:gap-2 sm:col-span-1 sm:col-start-auto sm:max-w-[176px]"
-              />
+              {o.slug ? (
+                // The provider page (C-034b): what our tests found. Above the phone row link.
+                <a
+                  href={localizedPath(providerPath(o.slug), locale)}
+                  className="relative z-[2] col-span-2 col-start-2 justify-self-start rounded-badge underline-offset-2 hover:[&_span]:underline sm:col-span-1 sm:col-start-auto"
+                >
+                  <TrustScore {...trustProps(o)} className={TRUST_CLASSES} />
+                  <span className="sr-only">
+                    {t('trustDetails', { provider: o.isDirect ? t('direct') : o.name })}
+                  </span>
+                </a>
+              ) : (
+                <TrustScore
+                  {...trustProps(o)}
+                  className={cn(
+                    TRUST_CLASSES,
+                    'col-span-2 col-start-2 sm:col-span-1 sm:col-start-auto',
+                  )}
+                />
+              )}
               {bookable && o.link && (
                 <a
                   href={goPath(o.link.slug, hotelSlug, stay, locale)}

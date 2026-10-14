@@ -83,7 +83,8 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/dev/stay/tracked');
     const row = page.getByRole('region', { name: 'Preise heute' }).getByRole('listitem').nth(1);
-    const link = row.getByRole('link');
+    // The outbound link (the trust score links to the provider page, C-034b).
+    const link = row.locator('a[target="_blank"]');
     const [r, l] = await Promise.all([row.boundingBox(), link.boundingBox()]);
     // Inside the row's 1 px divider border.
     expect(Math.abs((l?.width ?? 0) - (r?.width ?? 0))).toBeLessThanOrEqual(2);
