@@ -19,8 +19,10 @@
     "DAILY_TASK_CAP": "400",
     "MONTHLY_BUDGET_USD": "12",
     "EVENING_RUN": "false",
-    "GRID_WEEKENDS": "6",
-    "GRID_MIDWEEK": "2",
+    // Real stay checks per hotel (C-071a): since D-42 they are the ground truth for the night
+    // sums, so 4 per hotel (3 weekends + 1 midweek) let ~85 hotels fit the daily cap.
+    "GRID_WEEKENDS": "3",
+    "GRID_MIDWEEK": "1",
     // Results fetched per collect run; the Workers free plan allows 50 subrequests per run.
     "COLLECT_BATCH": "30",
     "NIGHT_WINDOW_DAYS": "120",

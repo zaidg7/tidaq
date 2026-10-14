@@ -44,6 +44,7 @@ Steps for Zaid (≈ 5 min):
 ## B-011 · GitHub Actions stopped: no CI, no merges, no deploys
 
 Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: every merge and deploy (C-071a waits, the collector deploy for the new stay grid waits)
+Update 14 Oct, 17:20: Zaid confirmed the limit (2,000 of 2,000 minutes used; reset on 1 Nov) and asked not to spend much. C-002c cuts the cost of each merged change from ≈ 10 to ≈ 6 minutes. With a **$5 budget and "Stop usage" on**, GitHub can never charge more than $5, and at ≈ 6 minutes ($0.05) per change the expected bill until 1 Nov is **about $2–3**. Without a budget nothing can be merged or deployed until 1 Nov (18 days).
 What I need: GitHub Actions running again. Since 14:16 UTC on 14 Oct every workflow (CI, Catalog photos) fails within 3 seconds without a runner. That is what GitHub does when the account's free Actions minutes (2,000 a month for private repos) are used up or billing blocks them. The site and the data collection keep running; only code changes are stuck.
 Steps for Zaid (≈ 3 min):
 
