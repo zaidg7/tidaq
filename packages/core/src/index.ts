@@ -196,3 +196,12 @@ export {
   type TrustTest,
 } from './db';
 export type { Database, Json, Tables, TablesInsert, TablesUpdate } from './db.types';
+export {
+  goPath,
+  hasOutboundSearch,
+  outboundUrl,
+  safeHttpsUrl,
+  withAffiliate,
+  type OutboundHotel,
+  type OutboundStay,
+} from './outbound';

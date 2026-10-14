@@ -2,9 +2,12 @@ import 'server-only';
 import { hotelPhoto, type PhotoSize } from '@/lib/hotelPhotos';
 import {
   addDays,
+  hasOutboundSearch,
   inNightGrid,
   nightSumGap,
+  safeHttpsUrl,
   STATS,
+  withAffiliate,
   stayStates,
   z,
   type DailyPrice,
@@ -20,6 +23,7 @@ const hotelRow = z.object({
   active: z.boolean(),
   image_credit: z.string().nullable(),
   image_source_url: z.string().nullable(),
+  official_url: z.string().nullable(),
   cities: z.object({ slug: z.string(), name_de: z.string(), name_en: z.string() }),
 });
 
@@ -58,7 +62,17 @@ const scoreRow = z.object({
   avg_markup_pct: z.number().nullable(),
 });
 
-const providerRow = z.object({ id: z.number(), name: z.string(), is_direct: z.boolean() });
+const providerRow = z.object({
+  id: z.number(),
+  slug: z.string(),
+  name: z.string(),
+  is_direct: z.boolean(),
+  affiliate_template: z.string().nullable(),
+});
+
+/** True when the template really changes links (a broken one is ignored by `withAffiliate`). */
+const isAffiliate = (template: string | null) =>
+  withAffiliate('https://example.com/', template) !== 'https://example.com/';
 
 const calendarRow = z.object({
   check_in: z.string(),
@@ -137,7 +151,8 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
   if (!hasSupabase()) return { kind: 'unavailable' };
   try {
     const [hotel] = await rest(
-      `hotels?select=id,slug,name,active,image_credit,image_source_url,cities(slug,name_de,name_en)` +
+      'hotels?select=id,slug,name,active,image_credit,image_source_url,official_url,' +
+        'cities(slug,name_de,name_en)' +
         `&slug=eq.${encodeURIComponent(slug)}&limit=1`,
       hotelRow,
     );
@@ -237,7 +252,11 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
     // RLS returns reviewed providers only; scores are public (provider_scores).
     const [providers, scores] = providerIds.length
       ? await Promise.all([
-          rest(`providers?select=id,name,is_direct&id=in.(${providerIds.join(',')})`, providerRow),
+          rest(
+            'providers?select=id,slug,name,is_direct,affiliate_template' +
+              `&id=in.(${providerIds.join(',')})`,
+            providerRow,
+          ),
           rest(
             'provider_scores?select=provider_id,score,tests,matches,avg_markup_pct' +
               `&provider_id=in.(${providerIds.join(',')})`,
@@ -264,6 +283,10 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
         name: pr.name,
         isDirect: pr.is_direct,
         totalCents: cents,
+        // The /go route builds the same target (core `outboundUrl`); no button without one.
+        ...((pr.is_direct ? safeHttpsUrl(hotel.official_url) : hasOutboundSearch(pr.slug)) && {
+          link: { slug: pr.slug, partner: isAffiliate(pr.affiliate_template) },
+        }),
         trust: sc
           ? {
               score: sc.score,

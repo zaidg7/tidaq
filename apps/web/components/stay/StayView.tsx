@@ -196,6 +196,8 @@ export function StayView({
             unreviewed={offers.unreviewed}
             day={offers.day}
             today={today}
+            hotelSlug={hotel.slug}
+            stay={{ checkIn: params.checkIn, checkOut: params.checkOut, adults: params.adults }}
           />
           <WatchCard />
         </div>
