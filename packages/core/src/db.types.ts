@@ -211,6 +211,7 @@ export type Database = {
           image_credit: string | null
           image_source_url: string | null
           image_url: string | null
+          liteapi_id: string | null
           lat: number | null
           lng: number | null
           name: string
@@ -228,6 +229,7 @@ export type Database = {
           image_credit?: string | null
           image_source_url?: string | null
           image_url?: string | null
+          liteapi_id?: string | null
           lat?: number | null
           lng?: number | null
           name: string
@@ -245,6 +247,7 @@ export type Database = {
           image_credit?: string | null
           image_source_url?: string | null
           image_url?: string | null
+          liteapi_id?: string | null
           lat?: number | null
           lng?: number | null
           name?: string
