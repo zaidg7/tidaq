@@ -18,7 +18,7 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ## B-009 · Decision: daily price-check limit 400 → 500 (free source)
 
-Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-022c gets only ~4 slots until then (feature works, just tiny)
+Status: DONE – superseded by D-42 (14 Oct): history now comes from single nights, so visitor requests no longer need cap room. No answer needed. · Opened: 2026-10-14 by CLOUD
 What I need: a yes or no. Visitors will be able to ask us to track their own dates (C-022c). Each tracked stay costs one price check per day, and the daily limit (`DAILY_TASK_CAP`, D-13) is 400. Our fixed dates already use 396, so only ~4 visitor requests fit. Since 14 Oct the prices come from the free source (Xotelo), so 100 more checks cost **$0**. If we ever switch back to the paid source, the monthly limit ($12, unchanged) still stops spending, as it does today.
 My recommendation: **yes, 500.** Room for ~100 visitor-requested stays at a time; the fixed dates keep their place (visitor requests are only accepted while there's room).
 Steps for Zaid (≈ 1 min):
