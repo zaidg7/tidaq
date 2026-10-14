@@ -122,6 +122,12 @@ export function formatDayMonth(day: string, locale: Locale): string {
   return dayMonth(new Date(parseIsoDate(day)), locale);
 }
 
+/** A `YYYY-MM-DD` date with its year: `15. Okt. 2026` / `15 Oct 2026` ("Stand", test dates). */
+export function formatDayMonthYear(day: string, locale: Locale): string {
+  const date = new Date(parseIsoDate(day));
+  return `${dayMonth(date, locale)} ${date.getUTCFullYear()}`;
+}
+
 /**
  * Formats a stay as a compact date range.
  * Same month: `1.–3. Dez. 2026` / `1–3 Dec 2026`.
