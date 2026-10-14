@@ -69,7 +69,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-073                                                           | Research: German platforms (CHECK24, HolidayCheck, TUI) without scraping     | CLOUD | S             | –                                 | DONE                |
 | C-076                                                           | Second source: DataForSEO for real stay checks (CHECK24 & co.)               | CLOUD | M             | B-013                             | BLOCKED             |
 | C-060                                                           | Market test: five-star price drops in ~10 holiday destinations               | CLOUD | M             | C-013g                            | TODO           |
-| C-023                                                           | Hotel page with price calendar                                               | CLOUD | M             | C-022                             | TODO           |
+| C-023a                                                          | Hotel page: price calendar of every night, pick dates → stay                 | CLOUD | M             | C-022, C-070b                     | IN PROGRESS    |
+| C-023b                                                          | Hotel page: cheapest weekend/midweek, structured data, links in              | CLOUD | S             | C-023a                            | TODO           |
 | C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | TODO           |
 | C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | TODO           |
 | C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | TODO           |
@@ -663,7 +664,7 @@ Owner: CLOUD · Size: M · Depends on: C-013g · Status: TODO · PR: –
 
 ### C-023 · Hotel page with price calendar
 
-Owner: CLOUD · Size: M · Depends on: C-022 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-022 · Status: split into C-023a (page, calendar of every night from the night grid, pick dates → stay page) and C-023b (cheapest weekend/midweek, hotel structured data, links from stay page, search and home) · PR: –
 
 **Steps**
 
