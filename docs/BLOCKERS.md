@@ -16,6 +16,19 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-012 · Ask LiteAPI (Nuitee) two questions in writing
+
+Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-074, C-075 (prices per guest count, room and board, D-43)
+What I need: written answers from LiteAPI. The test (C-072, `docs/research/liteapi.md`) works: one search gives every room type and board (room only, breakfast, half board) for any guest count, close to market prices. Before we run it daily we need their OK, because we compare prices and rarely book. It has to come from your account.
+Steps for Zaid (≈ 5 min):
+
+1. Log in at **dashboard.liteapi.travel** → open the support chat (or the help/contact page) and send this text:
+
+   > Hi, I'm building Tidaq (tidaq.com), a price tracker for luxury hotel stays. I use the LiteAPI sandbox key on my account. Before going further: (1) We would search rates for about 700 to 5,000 hotel/date combinations a day to track how prices change, and send users to book. What search volume or look-to-book ratio is acceptable on your free plan? (2) May we store the rates we receive over time and show the price history (charts) to our visitors, naming LiteAPI as the source? (3) Does the sandbox return the same rates as production, and what do we need for a production key? Thanks, Zaid Ghazal
+
+2. When they answer, paste the answer (no keys) in the chat with the session or in the weekly issue.
+   Where to put the result: the chat or the weekly issue. Change this Status to DONE.
+
 ## B-011 · GitHub Actions stopped: no CI, no merges, no deploys
 
 Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: every merge and deploy (C-071a waits, the collector deploy for the new stay grid waits)
