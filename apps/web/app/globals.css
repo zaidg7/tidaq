@@ -456,3 +456,25 @@
     calc(2 * var(--zig)) 100%;
   border-radius: 14px 14px 0 0;
 }
+
+/* Price calendar (C-023a, DESIGN.md calendar cell): 5 levels from --good 20 % to --bad 20 %.
+   The price is always printed in the cell, so the tint is never the only signal. */
+.price-lvl-0 {
+  background: color-mix(in srgb, var(--good) var(--price-tint-strong, 20%), transparent);
+}
+.price-lvl-1 {
+  background: color-mix(in srgb, var(--good) 10%, transparent);
+}
+.price-lvl-2 {
+  background: color-mix(in srgb, var(--muted) 8%, transparent);
+}
+.price-lvl-3 {
+  background: color-mix(in srgb, var(--bad) 10%, transparent);
+}
+.price-lvl-4 {
+  background: color-mix(in srgb, var(--bad) var(--price-tint-strong, 20%), transparent);
+}
+/* Dark: 20 % would leave the 11 px price text at 4.4:1; 16 % keeps AA (4.8:1). */
+:root[data-theme='dark'] {
+  --price-tint-strong: 16%;
+}

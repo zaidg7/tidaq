@@ -29,11 +29,19 @@ export {
 export {
   ADULTS,
   parseStayParams,
+  hotelPath,
   stayPath,
   type StayParams,
   type StayParamsResult,
 } from './stayParams';
 export { parseEuroCents } from './money';
+export {
+  PRICE_LEVELS,
+  priceLevels,
+  stayFromNights,
+  type NightPrice,
+  type StayTotal,
+} from './hotelCalendar';
 export {
   accuracyShare,
   inNightGrid,
