@@ -312,7 +312,7 @@ export function memoryStore(
     async webErrors(env, since) {
       return webErrors
         .filter((e) => e.env === env && e.lastAt >= since)
-        .map(({ env: _env, ...row }) => row);
+        .map((e) => ({ source: e.source, message: e.message, n: e.n, lastAt: e.lastAt }));
     },
     async alertInputs(today) {
       return alertWatches.filter((w) => w.checkIn > today);
