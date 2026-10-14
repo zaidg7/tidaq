@@ -79,9 +79,10 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | DONE           |
 | C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | DONE           |
 | C-024b                                                          | Search card: a city option opens the city page                               | CLOUD | S             | C-024                             | DONE           |
-| C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | TODO           |
-| C-028                                                           | SEO foundation and dynamic OG images                                         | CLOUD | M             | C-022                             | TODO           |
-| C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | TODO           |
+| C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | DONE           |
+| C-028a                                                          | SEO: canonical, hreflang, sitemap, site JSON-LD                              | CLOUD | S             | C-022                             | DONE           |
+| C-028b                                                          | Dynamic OG images for stay, hotel and city pages                             | CLOUD | S             | C-028a                            | TODO           |
+| C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
 | C-030b                                                          | Watch form on the stay page (replaces "Bald verfügbar")                      | CLOUD | S             | C-030a                            | TODO           |
@@ -725,6 +726,8 @@ In the hotel combobox, typing a city shows an option "Alle Hotels in {Stadt}" (`
 Owner: CLOUD · Size: S · Depends on: C-022 · Status: TODO · PR: –
 `/deals`: stays with ≥ 14 days of data whose best price is ≥ 8 % below avg30, sorted by % drop; city filter chips; each card links to the stay page. Empty state if no deals.
 
+**C-025 notes (DONE):** `/deals` (`components/deals/DealsView.tsx`): same rule as the homepage section (core `pickDeals`, one stay per hotel, up to 60), city chips as links (`?stadt=berlin`, new `ChipLink` in `ui/Chip.tsx`, `aria-current`, no JS), cards shared with the homepage (`components/deals/DealCard.tsx`, now linking with `?adults=`). One canonical URL for all filters. Honest empty state with a link to `/hotels`; since stays are only tracked since 12 Oct, the first deals can appear around 26 Oct. Deals still come from real stay checks (4 per hotel since C-071a); whether drops of single nights become deals is C-060's call (report ~4 Nov). Dev page `/dev/deals` (`?empty`, `?stadt=`), e2e `e2e/deals.spec.ts`.
+
 ### C-026 · Outbound link service
 
 Owner: CLOUD · Size: S · Depends on: C-022 · Status: TODO · PR: –
@@ -757,13 +760,22 @@ Owner: CLOUD · Size: M · Depends on: C-020a · Status: TODO · PR: –
 
 ### C-028 · SEO foundation and OG images
 
-Owner: CLOUD · Size: M · Depends on: C-022 · Status: TODO · PR: –
+Owner: CLOUD · Size: M · Depends on: C-022 · Status: split into C-028a (DONE) and C-028b (OG images, TODO) · PR: –
 Metadata per page (DE/EN), hreflang, canonical, sitemap index per locale, robots (staging noindex), JSON-LD (Organization, Hotel), dynamic OG images for stay and hotel pages (price, sparkline, state chip, brand) via `next/og` (check Workers compatibility; fall back to a pre-rendered image route). Google Search Console verification via DNS (Z-09).
+
+**C-028a notes (DONE):** Core `alternatesFor(path, locale)` gives every page its canonical plus `de`, `en` and `x-default` (German) alternates; used by home, hotel, stay, city, `/hotels`, `/deals` and the legal pages. The locale layout sets `metadataBase` = `https://tidaq.com` (core `SITE_ORIGIN`), so all of these are absolute, plus Open Graph defaults (site name, `de_DE`/`en_GB`) and `summary_large_image`. The homepage has Organization + WebSite JSON-LD (core `siteJsonLd`). `/sitemap.xml` (`app/sitemap.ts`): static pages, every city and hotel page, each in DE and EN with hreflang; no stay pages (endless dates). `robots.txt` names the sitemap in production. Pages stay `noindex` until C-041. Search Console verification is Z-09.
+
+### C-028b · Dynamic OG images
+
+Owner: CLOUD · Size: S · Depends on: C-028a · Status: TODO · PR: –
+`next/og` images (1200×630) for stay, hotel and city pages: brand, hotel/city name, today's price or cheapest weekend, a small sparkline for stays. Check the Workers bundle size and CPU (fall back to a pre-rendered route if `next/og` doesn't run on Workers). Default image for all other pages.
 
 ### C-029 · Analytics events
 
 Owner: CLOUD · Size: S · Depends on: C-020a · Status: TODO · PR: –
 Cloudflare Web Analytics snippet (cookieless) + server-side `events` inserts for search, stay_view, watch_created, watch_confirmed, outbound_click. No cookies, no IPs, no user ids. A small weekly stats query for the summary.
+
+**C-029 notes (DONE):** Server-side view counts: SQL `log_event(name, props)` (migration `20261014220354`, anon, security definer) accepts only `stay_view` (hotel, nights, adults, days ahead), `hotel_view` (hotel) and `city_view` (city), object props ≤ 400 chars, at most 20,000 a German day; `lib/data/events.ts` `logView()` runs in `after()` on the stay, hotel and city pages, skips bots (same rule as requested stays) and never throws. `outbound_click` is logged by C-026; `watch_created`/`watch_confirmed` come with C-030 (add the names to `log_event` or log them in the watch functions). No separate "search" event: the search card leads to a stay, hotel or city page, which is counted there. Weekly numbers: `select * from event_stats(7)` (service role, e.g. the Supabase connector) for the summary. Cloudflare Web Analytics needs one switch in Zaid's Cloudflare account (B-015); the privacy page (section 3 and 4) already describes it and the view counts. `rpc()` now accepts empty 204 bodies (void functions).
 
 ---
 

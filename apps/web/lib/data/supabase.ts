@@ -57,5 +57,7 @@ export async function rpc<T extends z.ZodType>(
     cache: 'no-store',
   });
   if (!res.ok) throw new Error(`Supabase ${res.status} for rpc/${name}`);
-  return result.parse(await res.json());
+  // Functions returning void answer 204 with an empty body: parse that as null.
+  const body = await res.text();
+  return result.parse(body ? JSON.parse(body) : null);
 }
