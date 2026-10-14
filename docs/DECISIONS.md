@@ -70,3 +70,4 @@ Last updated: 11 Oct 2026 (kickoff with Zaid).
 - **13 Oct 2026 (7):** D-41 added (free price source Xotelo, DataForSEO as fallback), approved by Zaid in chat.
 - **14 Oct 2026 (8):** D-42 added (night grid; Zaid asked for history for any dates and delegated the design). D-13's daily cap keeps applying to stay checks only; night calls have their own window (`NIGHT_WINDOW_DAYS`) and only run with the free source. B-009 superseded.
 - **14 Oct 2026 (9):** D-43 added (coverage: 25 most popular cities; room/board/occupancy depth), decided by Zaid in chat; replaces D-04 as the target.
+- **14 Oct 2026 (10):** D-13's grid of 8 real stay checks per hotel becomes 4 (3 weekends + 1 midweek, C-071a) so more hotels fit the unchanged daily cap of 400; since D-42 those checks are the ground truth for the night sums, not the source of the charts.
