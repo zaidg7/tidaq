@@ -22,6 +22,8 @@ import { getCatalog } from '@/lib/data/catalog';
 import { logView } from '@/lib/data/events';
 import { requestStayOnView } from '@/lib/data/requestStay';
 import { getStay, type StayLoad } from '@/lib/data/stay';
+import { hotelPhoto } from '@/lib/hotelPhotos';
+import { openGraphFor } from '@/lib/og';
 import { searchCardProps, searchHotels } from '@/lib/searchCardProps';
 import { berlinToday } from '@/lib/today';
 
@@ -68,10 +70,17 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const result = await loadFor(slug, p, berlinToday());
   if (result.kind === 'missing') notFound();
   if (result.kind !== 'ok') return { title: t('metaUnavailable') };
+  const title = t('metaTitle', {
+    hotel: result.data.hotel.name,
+    dates: formatDateRange(p.checkIn, p.checkOut, locale),
+  });
   return {
-    title: t('metaTitle', {
-      hotel: result.data.hotel.name,
-      dates: formatDateRange(p.checkIn, p.checkOut, locale),
+    title,
+    // The page shows a thumbnail; share the 960 px version of the same licensed photo.
+    openGraph: openGraphFor(locale, {
+      title,
+      photo: result.data.hotel.image ? (hotelPhoto(slug)?.[960] ?? null) : null,
+      alt: result.data.hotel.name,
     }),
     alternates: alternatesFor(stayPath(slug, p.checkIn, p.checkOut, p.adults), locale),
   };
