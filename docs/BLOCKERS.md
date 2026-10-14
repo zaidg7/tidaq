@@ -26,6 +26,16 @@ Steps for Zaid (≈ 4 min):
 2. Name `tidaq-watch`, hostnames `tidaq.com` and `tidaq-web-staging.tidaq.workers.dev`, mode **Managed**, pre-clearance **No** → Create.
 3. You see a **Site Key** and a **Secret Key**. Store them as GitHub secrets (repo tidaq → Settings → Secrets and variables → Actions → New repository secret): `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY`. Never paste them in a chat or issue.
    Where to put the result: the two GitHub secrets, then change this Status to DONE.
+## B-015 · Turn on Cloudflare Web Analytics (cookieless visitor numbers)
+
+Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: nothing urgent (visitor numbers in the weekly summary; needed before launch)
+What I need: one switch in your Cloudflare account. It counts visits without cookies (decision D-15), so no cookie banner is needed. The privacy page already describes it.
+Steps for Zaid (≈ 3 min):
+
+1. dash.cloudflare.com → account **tidaq** → **Analytics & Logs** → **Web Analytics** → **Add a site**.
+2. Choose the domain **tidaq.com** (it's already on Cloudflare) and pick **Enable automatic setup** (Cloudflare adds the small script itself; no code change).
+3. Leave "Exclude EU visitors" off and don't enable anything that mentions cookies or session replay.
+   Where to put the result: nothing. Change this Status to DONE. The numbers appear in the same Web Analytics screen; the weekly summary will quote them.
 
 ## B-014 · Read the legal pages once, sign the Supabase data agreement (Z-12)
 

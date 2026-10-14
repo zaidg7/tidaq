@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
-import { localizedPath, type Locale } from '@tidaq/core';
+import { alternatesFor, type Locale } from '@tidaq/core';
 import { LegalPage, type LegalContent } from './LegalPage';
 
 export type LegalKey = 'imprint' | 'privacy' | 'affiliate' | 'ranking' | 'method';
@@ -18,10 +18,7 @@ export function legalRoute(key: LegalKey, path: string) {
     return {
       title: t(`${key}.metaTitle`),
       description: t(`${key}.metaDescription`),
-      alternates: {
-        canonical: localizedPath(path, locale),
-        languages: { de: localizedPath(path, 'de'), en: localizedPath(path, 'en') },
-      },
+      alternates: alternatesFor(path, locale),
     };
   }
 

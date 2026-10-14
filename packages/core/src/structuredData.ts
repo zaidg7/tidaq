@@ -39,3 +39,32 @@ export function hotelJsonLd(h: HotelJsonLdInput): Record<string, unknown> {
 export function jsonLdString(data: unknown): string {
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }
+
+/**
+ * The site itself for the homepage (C-028a): Organization (name, logo) and WebSite, as one
+ * `@graph`. No search action: our search needs dates, which schema.org's SearchAction can't
+ * express.
+ */
+export function siteJsonLd(description: string, language: string): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${SITE_ORIGIN}/#organization`,
+        name: 'Tidaq',
+        url: `${SITE_ORIGIN}/`,
+        logo: `${SITE_ORIGIN}/icon.svg`,
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${SITE_ORIGIN}/#website`,
+        name: 'Tidaq',
+        url: `${SITE_ORIGIN}/`,
+        description,
+        inLanguage: language,
+        publisher: { '@id': `${SITE_ORIGIN}/#organization` },
+      },
+    ],
+  };
+}
