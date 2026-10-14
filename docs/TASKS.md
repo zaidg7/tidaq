@@ -17,6 +17,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-001                                                           | Monorepo scaffold (Next.js + OpenNext + collector + core)                    | CLOUD | M             | Z-01                              | DONE           |
 | C-002                                                           | CI pipeline (lint, typecheck, test, build, e2e smoke)                        | CLOUD | M             | C-001                             | DONE           |
 | C-002b                                                          | CI: spend fewer GitHub Actions minutes                                       | CLOUD | S             | C-002                             | DONE           |
+| C-002c                                                          | CI: no second full run on main, photos workflow manual (minutes)             | CLOUD | S             | C-002b                            | DONE           |
 | C-003                                                           | Session tooling (SessionStart hook, permissions allowlist)                   | CLOUD | S             | C-001                             | DONE           |
 | C-007                                                           | i18n setup (de default, en) and formatting helpers                           | CLOUD | S             | C-001                             | DONE           |
 | C-004                                                           | Supabase schema v1, RLS, seed providers and cities                           | CLOUD | M             | C-001, Z-04                       | DONE           |
@@ -162,6 +163,8 @@ Notes: one job "CI" (~3 min). Red proof: [run 38272430319](https://github.com/za
 - [x] A PR shows one required-looking check "CI" that runs all steps
 - [x] An intentionally failing test makes CI red (prove it in the PR, then revert)
 - [x] Typical run under 6 minutes
+
+**C-002c notes (DONE):** the free 2,000 Actions minutes ran out on 14 Oct (B-011; Zaid: "don't spend much"). A push to main no longer reruns the full CI the PR already passed; it only deploys staging. `catalog-photos` runs by hand only. A merged change now costs ≈ 6 minutes instead of ≈ 10. Sessions: batch small changes, never re-run CI without a reason, keep draft PRs draft until the work is done.
 
 ### C-003 · Session tooling
 

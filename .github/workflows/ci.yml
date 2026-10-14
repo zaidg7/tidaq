@@ -1,8 +1,10 @@
 name: CI
 
-# Actions minutes are limited on the private repo, so runs are only spent where they test code:
-# draft PRs (a draft only claims a task) and docs-only changes skip CI. Every ready PR and every
-# push to main still runs the full suite.
+# Actions minutes are limited on the private repo (2,000 a month; used up on 14 Oct, B-011), so
+# runs are only spent where they test code: draft PRs (a draft only claims a task) and docs-only
+# changes skip CI, and a push to main doesn't repeat the suite its PR just passed (C-002c): main
+# only deploys staging. PRs are squash-merged with the branch up to date, so the merged code is
+# the code CI tested.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -21,7 +23,7 @@ permissions:
 jobs:
   ci:
     name: CI
-    if: github.event_name == 'push' || !github.event.pull_request.draft
+    if: github.event_name == 'pull_request' && !github.event.pull_request.draft
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -85,7 +87,6 @@ jobs:
 
   deploy-staging:
     name: Deploy staging
-    needs: ci
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     uses: ./.github/workflows/deploy.yml
     with:
