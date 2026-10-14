@@ -47,7 +47,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-020c                                                          | Admin auth: Supabase magic link, `/admin` guard                              | CLOUD | S             | C-020a                            | DONE           |
 | C-016                                                           | Admin: data health and budget dashboard                                      | CLOUD | M             | C-013b, C-020c                    | DONE           |
 | C-013e                                                          | Villa Kennedy (Frankfurt) gets no prices: check its DataForSEO hotel ID      | CLOUD | S             | C-013b                            | DONE           |
-| C-013f                                                          | Re-check The Florentin (ex Villa Kennedy) in Google Hotels; re-add           | CLOUD | S             | C-013e                            | TODO           |
+| C-013f                                                          | Re-check The Florentin (ex Villa Kennedy) in Google Hotels; re-add           | CLOUD | S             | C-013e                            | DONE           |
 | C-013g                                                          | Collector: free price source Xotelo (DataForSEO as fallback)                 | CLOUD | M             | C-013b                            | DONE           |
 | C-032a                                                          | Trust audit: form, recent tests, provider scores                             | CLOUD | S             | C-020c, C-004                     | DONE           |
 | C-032b                                                          | Trust audit: screenshot upload, edit tests, CSV export                       | CLOUD | S             | C-032a                            | DONE           |
@@ -77,7 +77,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | DONE           |
 | L-026                                                           | Check "Zum Angebot" links open the right hotel and dates                     | LOCAL | S             | C-026                             | TODO           |
 | C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | DONE           |
-| C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | TODO           |
+| C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | DONE           |
+| C-024b                                                          | Search card: a city option opens the city page                               | CLOUD | S             | C-024                             | TODO           |
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | TODO           |
 | C-028                                                           | SEO foundation and dynamic OG images                                         | CLOUD | M             | C-022                             | TODO           |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | TODO           |
@@ -487,6 +488,8 @@ Owner: CLOUD · Size: S · Depends on: C-013e · Status: TODO · PR: –
 
 With Xotelo (D-41) first check TripAdvisor's Frankfurt list (`/api/list`, free) for The Florentin and set its `xotelo_key`. Otherwise not before 10 Nov 2026: post one Hotel Searches task for The Florentin (`node scripts/catalog/resolve.ts post` after changing the seed's `tag`), and if it resolves: data migration that sets the new `dfs_hotel_identifier`, name "The Florentin", keeps slug or renames it (also rename the photo files and the manifest), then `active = true`. If still missing, try again in December or replace it with another Frankfurt five-star hotel.
 
+**C-013f notes (DONE, 14 Oct):** Tripadvisor's Frankfurt list (Xotelo `/api/list`, free) has "The Florentin by Althoff Collection" as `g187337-d33302530` (45 reviews, 411–641 € a night) with Booking.com, Agoda and Trip.com rates. Migration `20261014214738` renames hotel 16 to "The Florentin", slug `the-florentin-frankfurt`, sets the key and reactivates it; the night grid picks it up on the next run. No photo yet (none existed for Villa Kennedy); add one in the next photo batch. Frankfurt is back to 3 hotels.
+
 Found by the C-016 dashboard on 13 Oct: Villa Kennedy (Frankfurt, hotel id 16) has active stays but no price on any day, while the other 35 active hotels have prices. Check its `dfs_hotel_identifier` with one DataForSEO hotel search call (through the budget guard), compare with the stored ID, fix the ID with a data migration, or deactivate it in `/admin` if DataForSEO doesn't list it.
 
 ---
@@ -705,6 +708,13 @@ Owner: CLOUD · Size: M · Depends on: C-022 · Status: split into C-023a (page,
 
 Owner: CLOUD · Size: S · Depends on: C-023 · Status: TODO · PR: –
 `/stadt/[city]`: hotel cards with photo, cheapest upcoming stay, state chip. SEO title and intro text (DE/EN). Links from footer and home. Also `/hotels` (navbar "Hotels", footer "Alle Hotels", added in C-020a): all hotels grouped by city. Since C-071a there are 27 "cities", among them the Maldives (a country: "auf den Malediven", not "in Malediven") and places spanning several Tripadvisor locations (Miami + Miami Beach, Los Angeles + Beverly Hills); group `/hotels` by country or region, and make every city name read naturally in DE and EN.
+
+**C-024 notes (DONE):** `/stadt/[city]` (`components/city/CityView.tsx`, `lib/data/city.ts`): hotel cards A–Z with the 960 px photo, name (→ hotel page) and the cheapest upcoming weekend (Fri → Sun, both nights on one reviewed site, check-in after today, from the night grid; SQL `city_best_weekends`, migration `20261014213011`, one round trip per city) as a link to its stay page, with total, site and "2 Nächte, 2 Erwachsene". Hotels whose single nights mislead (C-070d), or when reliability can't be read, show "Noch kein Wochenendpreis" instead of a total. No state chip: a weekend picked from the night grid has no verdict of its own yet (the stay page computes it). `/hotels` (`HotelDirectory.tsx`): regions (core `groupByRegion`: Deutschland, Europa, Naher Osten, Asien und Pazifik, Amerika) → cities A–Z by locale → hotels; city phrases from core `cityIn` ("auf den Malediven", "in the Maldives"). Links in: footer and navbar "Hotels" (already), the hero's "N Fünf-Sterne-Hotels in M Städten" (live data only), the city eyebrow on hotel and stay pages. Dev pages `/dev/city`, `/dev/hotels`; e2e `e2e/city.spec.ts`. Left for C-024b: a city option in the search combobox.
+
+### C-024b · Search card: city option
+
+Owner: CLOUD · Size: S · Depends on: C-024 · Status: TODO · PR: –
+In the hotel combobox, typing a city shows an option "Alle Hotels in {Stadt}" (`cityIn` phrase) at the top of that city's group; picking it opens the city page. Keep the ARIA 1.2 combobox behavior and the e2e tests of C-021a.
 
 ### C-025 · Deals page
 
