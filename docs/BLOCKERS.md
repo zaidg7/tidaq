@@ -16,6 +16,16 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-017 · Decision: Cloudflare Workers Paid ($5/month) for share images with today's price
+
+Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-028c (nothing for launch)
+What I need: a yes or no. When someone shares a stay page (WhatsApp, X, iMessage), the preview image could show the hotel, the dates, today's price and a small price chart, and alert emails could show that chart too. Drawing such an image takes about 0.1–0.5 seconds of computing. The free Cloudflare plan allows 0.01 seconds per request, so it only works on the paid plan ($5 a month, already in the €50 budget plan as Z-04). Right now the previews show the hotel photo, which is fine.
+My recommendation: **not now**. Say yes after launch if sharing turns out to matter (we'll see it in the visitor numbers).
+Steps for Zaid if yes (≈ 3 min):
+
+1. dash.cloudflare.com → account **tidaq** → **Workers & Pages** → **Plans** → **Workers Paid** → subscribe.
+   Where to put the result: change this Status to DONE ("paid plan active"); the next session builds C-028c.
+
 ## B-016 · Turnstile keys for the price-alert form (bot protection)
 
 Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-030c (not urgent: the form has a rate limit and a honeypot until then)
