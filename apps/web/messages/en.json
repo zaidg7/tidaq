@@ -235,7 +235,17 @@
     "eyebrow": "Just dropped",
     "title": "Five-star deals this week",
     "meta": "{dates} · {adults, plural, one {# adult} other {# adults}}",
-    "all": "All deals"
+    "all": "All deals",
+    "pageTitle": "Five-star hotels that are cheaper right now",
+    "intro": "Stays whose price today is at least {pct} % below their own 30-day average. Only with at least {days} days of history, the biggest drop per hotel.",
+    "filterLabel": "Filter by city",
+    "allCities": "All cities",
+    "emptyTitle": "No deals right now",
+    "emptyText": "We only show real drops: at least {pct} % below the 30-day average, with {days} days of history. No stay meets that right now. Every hotel's calendar still shows its cheapest nights.",
+    "emptyCta": "See all hotels",
+    "metaTitle": "Deals: five-star hotels below their average price | Tidaq",
+    "metaDescription": "Luxury hotels whose price is clearly below their own 30-day average right now. Only real drops, updated daily.",
+    "unavailable": "The deals are unavailable right now. Please try again in a moment."
   },
   "cta": {
     "title": "Find the right moment for your hotel.",
@@ -296,7 +306,23 @@
     "offersUnreviewed": "{n, plural, one {One more provider had a price but isn’t checked by us yet.} other {# more providers had a price but aren’t checked by us yet.}}",
     "watchTitle": "Watch this price",
     "watchText": "We'll email you when the price for this stay drops. Free, unsubscribe with one click.",
-    "watchSoon": "Coming soon",
+    "watchEmail": "Your email address",
+    "watchTarget": "Target price (optional)",
+    "watchTargetHint": "Total in euros, e.g. 1,100",
+    "watchConsent": "Yes, email me about the price of this stay. Unsubscribe any time with one click.",
+    "watchPrivacy": "Privacy",
+    "watchSubmit": "Watch price",
+    "watchPreview": "Test mode: open the email link",
+    "watchResults": {
+      "sent": "Almost done: we've sent you an email. Click the link in it to activate your alert.",
+      "added": "Done: we're now watching this stay for you. A confirmation is on its way.",
+      "invalid": "Please enter a valid email address and tick the box.",
+      "too_many": "You already have 10 active alerts. Stop one from your latest email, then add a new one.",
+      "too_soon": "There was a request for this address just now. Please try again in a minute.",
+      "rate_limited": "Too many requests in a short time. Please try again in a few minutes.",
+      "bad_price": "Enter the target price as a number, e.g. 1,100.",
+      "error": "That didn't work just now. Please try again in a moment."
+    },
     "realOnlyTitle": "For this hotel we check whole stays",
     "realOnlyText": "Here, single nights often cost something different from the whole stay. So we only show prices we checked for exactly these dates. We're queueing these dates now, as long as there's room today. The first prices usually arrive within a few minutes.",
     "historyRealOnly": "The history only shows prices we checked for exactly these dates. At this hotel, single nights often cost something different from the whole stay."
@@ -412,7 +438,8 @@
         {
           "title": "3. No cookies, no tracking",
           "text": [
-            "We set no cookies for visitors and store nothing in your browser. We use no analytics or ad services that follow you across websites. Fonts and hotel photos come from our own server, without requests to third parties."
+            "We set no cookies for visitors and store nothing in your browser. We use no analytics or ad services that follow you across websites. Fonts and hotel photos come from our own server, without requests to third parties.",
+            "To see how many people use Tidaq and how fast the pages load, we use Cloudflare Web Analytics. It works without cookies and without storing anything in your browser, and it doesn't follow you across other websites. Cloudflare sees the page you open, its load time, your browser type and country, and shows us only totals. The legal basis is our legitimate interest in a working, fast website (Art. 6(1)(f) GDPR)."
           ]
         },
         {
@@ -422,7 +449,8 @@
           ],
           "list": [
             "Clicks on “View offer”: booking site, hotel, travel dates and number of guests.",
-            "Travel dates you open on a stay page and that we then check prices for: hotel, travel dates and number of guests."
+            "Travel dates you open on a stay page and that we then check prices for: hotel, travel dates and number of guests.",
+            "Views of stay, hotel and city pages: which page (hotel, city, travel dates), not who opened it."
           ]
         },
         {

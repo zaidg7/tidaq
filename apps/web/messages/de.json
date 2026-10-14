@@ -235,7 +235,17 @@
     "eyebrow": "Gerade gefallen",
     "title": "Fünf-Sterne-Deals dieser Woche",
     "meta": "{dates} · {adults, plural, one {# Erwachsener} other {# Erwachsene}}",
-    "all": "Alle Deals"
+    "all": "Alle Deals",
+    "pageTitle": "Fünf-Sterne-Hotels, die gerade günstiger sind",
+    "intro": "Aufenthalte, deren heutiger Preis mindestens {pct} % unter ihrem eigenen 30-Tage-Schnitt liegt. Nur mit mindestens {days} Tagen Verlauf, pro Hotel der größte Rückgang.",
+    "filterLabel": "Nach Stadt filtern",
+    "allCities": "Alle Städte",
+    "emptyTitle": "Gerade gibt es keine Deals",
+    "emptyText": "Wir zeigen nur echte Rückgänge: mindestens {pct} % unter dem 30-Tage-Schnitt, mit {days} Tagen Verlauf. Gerade erfüllt kein Aufenthalt das. Im Kalender jedes Hotels siehst du trotzdem die günstigsten Nächte.",
+    "emptyCta": "Alle Hotels ansehen",
+    "metaTitle": "Deals: Fünf-Sterne-Hotels unter ihrem Durchschnittspreis | Tidaq",
+    "metaDescription": "Luxushotels, deren Preis gerade deutlich unter dem eigenen 30-Tage-Schnitt liegt. Nur echte Rückgänge, täglich aktualisiert.",
+    "unavailable": "Die Deals sind gerade nicht erreichbar. Versuch es gleich noch einmal."
   },
   "cta": {
     "title": "Finde den richtigen Moment für dein Hotel.",
@@ -296,7 +306,23 @@
     "offersUnreviewed": "{n, plural, one {Ein weiterer Anbieter hatte einen Preis, ist aber noch nicht von uns geprüft.} other {# weitere Anbieter hatten einen Preis, sind aber noch nicht von uns geprüft.}}",
     "watchTitle": "Preis beobachten",
     "watchText": "Wir schreiben dir eine E-Mail, wenn der Preis für diesen Aufenthalt fällt. Kostenlos, abmelden mit einem Klick.",
-    "watchSoon": "Bald verfügbar",
+    "watchEmail": "Deine E-Mail-Adresse",
+    "watchTarget": "Wunschpreis (optional)",
+    "watchTargetHint": "Gesamtpreis in Euro, z. B. 1.100",
+    "watchConsent": "Ja, schickt mir E-Mails zum Preis dieses Aufenthalts. Abmelden geht jederzeit mit einem Klick.",
+    "watchPrivacy": "Datenschutz",
+    "watchSubmit": "Preis beobachten",
+    "watchPreview": "Testmodus: E-Mail-Link öffnen",
+    "watchResults": {
+      "sent": "Fast geschafft: Wir haben dir eine E-Mail geschickt. Klick auf den Link darin, dann ist dein Alarm aktiv.",
+      "added": "Erledigt: Wir beobachten diesen Aufenthalt jetzt für dich. Eine Bestätigung ist unterwegs.",
+      "invalid": "Bitte gib eine gültige E-Mail-Adresse ein und setz den Haken.",
+      "too_many": "Du hast schon 10 aktive Alarme. Beende einen in deiner letzten E-Mail, dann geht ein neuer.",
+      "too_soon": "Gerade eben kam schon eine Anfrage für diese Adresse. Versuch es in einer Minute noch einmal.",
+      "rate_limited": "Zu viele Anfragen in kurzer Zeit. Versuch es in ein paar Minuten noch einmal.",
+      "bad_price": "Gib den Wunschpreis als Zahl ein, z. B. 1.100.",
+      "error": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
+    },
     "realOnlyTitle": "Für dieses Hotel prüfen wir ganze Aufenthalte",
     "realOnlyText": "Hier kosten einzelne Nächte oft anders als der ganze Aufenthalt. Deshalb zeigen wir nur Preise, die wir für genau diese Daten abgefragt haben. Wir merken die Daten jetzt vor, solange heute noch Platz ist. Die ersten Preise kommen meist nach wenigen Minuten.",
     "historyRealOnly": "Der Verlauf zeigt nur Preise, die wir für genau diese Daten abgefragt haben. Bei diesem Hotel kosten einzelne Nächte oft anders als der ganze Aufenthalt."
@@ -412,7 +438,8 @@
         {
           "title": "3. Keine Cookies, kein Tracking",
           "text": [
-            "Wir setzen für Besucher keine Cookies und speichern nichts in deinem Browser. Wir nutzen keine Analyse- oder Werbedienste, die dich über Websites hinweg verfolgen. Schriften und Hotelfotos liefern wir von unserem eigenen Server aus, ohne Anfragen an Dritte."
+            "Wir setzen für Besucher keine Cookies und speichern nichts in deinem Browser. Wir nutzen keine Analyse- oder Werbedienste, die dich über Websites hinweg verfolgen. Schriften und Hotelfotos liefern wir von unserem eigenen Server aus, ohne Anfragen an Dritte.",
+            "Um zu sehen, wie viele Menschen Tidaq nutzen und wie schnell die Seiten laden, verwenden wir Cloudflare Web Analytics. Es kommt ohne Cookies und ohne Speicherung in deinem Browser aus und verfolgt dich nicht über andere Websites. Cloudflare sieht dabei die aufgerufene Seite, die Ladezeit, den Browser-Typ und das Land und zeigt uns nur zusammengefasste Zahlen. Rechtsgrundlage ist unser berechtigtes Interesse an einer funktionierenden, schnellen Website (Art. 6 Abs. 1 lit. f DSGVO)."
           ]
         },
         {
@@ -422,7 +449,8 @@
           ],
           "list": [
             "Klicks auf „Zum Angebot“: Buchungsseite, Hotel, Reisedaten und Zahl der Gäste.",
-            "Reisedaten, die du auf einer Aufenthaltsseite aufrufst und für die wir Preise abfragen: Hotel, Reisedaten und Zahl der Gäste."
+            "Reisedaten, die du auf einer Aufenthaltsseite aufrufst und für die wir Preise abfragen: Hotel, Reisedaten und Zahl der Gäste.",
+            "Aufrufe von Aufenthalts-, Hotel- und Stadtseiten: welche Seite (Hotel, Stadt, Reisedaten), nicht wer sie aufgerufen hat."
           ]
         },
         {

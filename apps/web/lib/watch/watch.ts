@@ -9,7 +9,7 @@ import {
   type Locale,
 } from '@tidaq/core';
 import { hasServiceRole, serviceRest } from '@/lib/admin/db';
-import { sendMail } from '@/lib/mail';
+import { mailIsLive, sendMail } from '@/lib/mail';
 
 /**
  * Price-alert watches (C-030): double opt-in, one-click manage and unsubscribe, no login. The
@@ -44,11 +44,20 @@ export interface WatchRequest {
   consentText: string;
 }
 
-export type WatchRequestResult = 'sent' | 'added' | 'invalid' | 'too_many' | 'too_soon' | 'error';
+export type WatchRequestStatus = 'sent' | 'added' | 'invalid' | 'too_many' | 'too_soon' | 'error';
+
+export interface WatchRequestResult {
+  status: WatchRequestStatus;
+  /**
+   * Dry runs only (staging, local): the link the email would contain, so the flow can be tested
+   * without sending mail. Never set in production.
+   */
+  previewUrl?: string;
+}
 
 /** Creates the watch and sends the confirmation (new address) or "added" email. */
 export async function requestWatch(req: WatchRequest, origin: string): Promise<WatchRequestResult> {
-  if (!hasServiceRole()) return 'error';
+  if (!hasServiceRole()) return { status: 'error' };
   try {
     const r = await serviceRest('rpc/watch_request', requestResult, {
       method: 'POST',
@@ -65,7 +74,7 @@ export async function requestWatch(req: WatchRequest, origin: string): Promise<W
       },
     });
     if (r.status !== 'ok' || !r.confirm_token || !r.manage_token) {
-      return r.status === 'ok' ? 'error' : r.status;
+      return { status: r.status === 'ok' ? 'error' : r.status };
     }
     const t = await getTranslations({ locale: req.locale, namespace: 'watchMail' });
     const dates = formatDateRange(req.checkIn, req.checkOut, req.locale);
@@ -74,6 +83,7 @@ export async function requestWatch(req: WatchRequest, origin: string): Promise<W
     const manageUrl = origin + localizedPath(WATCH_PATHS.manage(r.manage_token), req.locale);
     const footer = [t('footerWhy'), t('footerManage', { url: manageUrl })];
     const confirm = r.email_kind === 'confirm';
+    const confirmUrl = `${origin}${localizedPath(WATCH_PATHS.confirm, req.locale)}?token=${r.confirm_token}`;
     const mail = renderMail(
       confirm
         ? {
@@ -84,10 +94,7 @@ export async function requestWatch(req: WatchRequest, origin: string): Promise<W
               target ? t('targetText', { target }) : t('noTargetText'),
               t('confirmIgnore'),
             ],
-            button: {
-              label: t('confirmButton'),
-              url: `${origin}${localizedPath(WATCH_PATHS.confirm, req.locale)}?token=${r.confirm_token}`,
-            },
+            button: { label: t('confirmButton'), url: confirmUrl },
             footer,
           }
         : {
@@ -108,11 +115,14 @@ export async function requestWatch(req: WatchRequest, origin: string): Promise<W
       unsubscribeUrl: origin + WATCH_PATHS.unsubscribe(r.manage_token),
       ...mail,
     });
-    if (!ok) return 'error';
-    return confirm ? 'sent' : 'added';
+    if (!ok) return { status: 'error' };
+    return {
+      status: confirm ? 'sent' : 'added',
+      ...(!mailIsLive() && { previewUrl: confirm ? confirmUrl : manageUrl }),
+    };
   } catch (error) {
     console.error(JSON.stringify({ msg: 'watch request failed', error: String(error) }));
-    return 'error';
+    return { status: 'error' };
   }
 }
 

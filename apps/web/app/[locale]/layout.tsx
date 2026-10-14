@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
+import { SITE_ORIGIN } from '@tidaq/core';
 import { Footer } from '@/components/shell/Footer';
 import { Navbar } from '@/components/shell/Navbar';
 import { routing } from '@/i18n/routing';
@@ -20,8 +21,16 @@ export async function generateMetadata({ params }: Omit<Props, 'children'>): Pro
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: 'meta' });
   return {
+    // Absolute canonical, hreflang and image URLs (C-028a); staging is never indexed anyway.
+    metadataBase: new URL(SITE_ORIGIN),
     title: t('title'),
     description: t('description'),
+    openGraph: {
+      type: 'website',
+      siteName: 'Tidaq',
+      locale: locale === 'de' ? 'de_DE' : 'en_GB',
+    },
+    twitter: { card: 'summary_large_image' },
     robots: { index: false, follow: false },
   };
 }
