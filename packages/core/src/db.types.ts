@@ -269,11 +269,13 @@ export type Database = {
           day: string
           median_gap_pct: number | null
           pairs: number
+          pairs_shown: number
           stays: number
           stays_within_3: number
           within_05: number
           within_10: number
           within_3: number
+          within_3_shown: number
           worst: Json
         }
         Insert: {
@@ -281,11 +283,13 @@ export type Database = {
           day: string
           median_gap_pct?: number | null
           pairs: number
+          pairs_shown?: number
           stays: number
           stays_within_3: number
           within_05: number
           within_10: number
           within_3: number
+          within_3_shown?: number
           worst?: Json
         }
         Update: {
@@ -293,14 +297,48 @@ export type Database = {
           day?: string
           median_gap_pct?: number | null
           pairs?: number
+          pairs_shown?: number
           stays?: number
           stays_within_3?: number
           within_05?: number
           within_10?: number
           within_3?: number
+          within_3_shown?: number
           worst?: Json
         }
         Relationships: []
+      }
+      night_accuracy_hotel: {
+        Row: {
+          day: string
+          hotel_id: number
+          median_signed_gap_pct: number
+          pairs: number
+          within_3: number
+        }
+        Insert: {
+          day: string
+          hotel_id: number
+          median_signed_gap_pct: number
+          pairs: number
+          within_3: number
+        }
+        Update: {
+          day?: string
+          hotel_id?: number
+          median_signed_gap_pct?: number
+          pairs?: number
+          within_3?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "night_accuracy_hotel_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       night_daily: {
         Row: {
@@ -927,6 +965,16 @@ export type Database = {
     Functions: {
       admin_health: { Args: { p_days?: number }; Returns: Json }
       collector_ingest: { Args: { payload: Json }; Returns: Json }
+      night_accuracy_pairs: {
+        Args: { p_day: string }
+        Returns: {
+          hotel_id: number
+          nights_cents: number
+          provider_id: number
+          real_cents: number
+          stay_id: number
+        }[]
+      }
       night_accuracy_record: {
         Args: { p_day: string }
         Returns: {
@@ -934,11 +982,13 @@ export type Database = {
           day: string
           median_gap_pct: number | null
           pairs: number
+          pairs_shown: number
           stays: number
           stays_within_3: number
           within_05: number
           within_10: number
           within_3: number
+          within_3_shown: number
           worst: Json
         }
       }
@@ -949,6 +999,16 @@ export type Database = {
           hotel_id: number
           night: string
           xotelo_key: string
+        }[]
+      }
+      night_reliability: {
+        Args: { p_day: string; p_hotel_id?: number }
+        Returns: {
+          gap_pct: number
+          hotel_id: number
+          pairs: number
+          reliable: boolean
+          within_3: number
         }[]
       }
       prune_raw_snapshots: { Args: { older_than?: string }; Returns: number }

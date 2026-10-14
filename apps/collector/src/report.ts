@@ -30,14 +30,16 @@ async function checkNightAccuracy(
 ): Promise<{ row: NightAccuracyRow | null; problems: string[] }> {
   try {
     const row = await store.recordNightAccuracy(addDays(today, -1));
+    // Only hotels whose night history is shown count (C-070d hides the unreliable ones).
+    const recent = await store.nightAccuracy(addDays(today, -NIGHT_ACCURACY.alarmDays));
     const alarm = nightAccuracyAlarm(
-      await store.nightAccuracy(addDays(today, -NIGHT_ACCURACY.alarmDays)),
+      recent.map((d) => ({ day: d.day, pairs: d.pairsShown, within3: d.within3Shown })),
     );
     if (!alarm) return { row, problems: [] };
     return {
       row,
       problems: [
-        `Night sums matched the real stay price (within 3 %) for only ${alarm.map(pct).join(', ')} of pairs on the last ${alarm.length} days (target ${pct(NIGHT_ACCURACY.minShare)}).`,
+        `Night sums matched the real stay price (within 3 %) for only ${alarm.map(pct).join(', ')} of pairs on the last ${alarm.length} days, hotels with night history shown (target ${pct(NIGHT_ACCURACY.minShare)}).`,
         ...row.worst.map((w) => `- ${w.name}: ${w.within3} of ${w.pairs} within 3 %`),
         'Next step: add a TASKS entry to investigate (minimum stays, multi-night rates per hotel).',
       ],

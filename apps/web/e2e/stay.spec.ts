@@ -98,6 +98,33 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     await expect(page.getByText(/einzelnen Nächte/)).toHaveCount(0);
   });
 
+  test('hotels where single nights mislead show real checks only (C-070d)', async ({ page }) => {
+    await page.goto('/dev/stay/real-only');
+    await expect(
+      page.getByRole('heading', {
+        level: 2,
+        name: 'Für dieses Hotel prüfen wir ganze Aufenthalte',
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(/einzelne Nächte oft anders als der ganze Aufenthalt/),
+    ).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Preise heute' })).toHaveCount(0);
+
+    await page.goto('/dev/stay/real-only-history');
+    await expect(
+      page.getByText(
+        /^Der Verlauf zeigt nur Preise, die wir für genau diese Daten abgefragt haben\./,
+      ),
+    ).toBeVisible();
+    await expect(page.getByText(/Summe der Preise der einzelnen Nächte/)).toHaveCount(0);
+
+    await page.goto('/en/dev/stay/real-only');
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'For this hotel we check whole stays' }),
+    ).toBeVisible();
+  });
+
   test('dates beyond the night grid say how far ahead we collect', async ({ page }) => {
     await page.goto('/dev/stay/untracked');
     await expect(page.getByText(/die Preise jeder Nacht für die nächsten 120 Tage/)).toBeVisible();

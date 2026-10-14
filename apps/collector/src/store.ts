@@ -48,6 +48,12 @@ export interface NightIngestPayload {
 
 /** One `night_accuracy` day (C-070c): night sums vs real stay prices on the same platform. */
 export interface NightAccuracyRow extends NightAccuracyDay {
+  /**
+   * Pairs and matches of hotels whose night history is shown (C-070d hides unreliable ones):
+   * what the alarm watches.
+   */
+  pairsShown: number;
+  within3Shown: number;
   /** Median gap in percent, null without pairs. */
   medianGapPct: number | null;
   /** Hotels with the lowest share within 3 % (at least 4 pairs), weakest first. */

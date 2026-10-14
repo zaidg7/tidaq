@@ -103,8 +103,18 @@ export default async function StayPage(props: Props) {
     );
   }
 
-  const { hotel, stay, series, providerByDay, others, offers, history, updatedAt, realVsNights } =
-    result.data;
+  const {
+    hotel,
+    stay,
+    series,
+    providerByDay,
+    others,
+    offers,
+    history,
+    updatedAt,
+    realVsNights,
+    nightsUnreliable,
+  } = result.data;
   // No real check of these exact dates yet: ask for one after the response (C-070b).
   if (hotel.active && stay === null && p.checkIn >= today) {
     const userAgent = (await headers()).get('user-agent');
@@ -137,6 +147,7 @@ export default async function StayPage(props: Props) {
       updatedAt={updatedAt}
       history={history}
       realVsNights={realVsNights}
+      nightsUnreliable={nightsUnreliable}
       others={others}
       offers={offers}
       today={today}

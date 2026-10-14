@@ -18,6 +18,8 @@ const accuracyRow = z.object({
   day: z.string(),
   pairs: z.number().int(),
   within_3: z.number().int(),
+  pairs_shown: z.number().int(),
+  within_3_shown: z.number().int(),
   median_gap_pct: z.coerce.number().nullable(),
   worst: z.array(
     z.object({ name: z.string(), pairs: z.number().int(), within_3: z.number().int() }),
@@ -30,6 +32,8 @@ function toAccuracy(raw: unknown): NightAccuracyRow {
     day: r.day,
     pairs: r.pairs,
     within3: r.within_3,
+    pairsShown: r.pairs_shown,
+    within3Shown: r.within_3_shown,
     medianGapPct: r.median_gap_pct,
     worst: r.worst.map((w) => ({ name: w.name, pairs: w.pairs, within3: w.within_3 })),
   };
@@ -357,7 +361,7 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
       const rows = check(
         await db
           .from('night_accuracy')
-          .select('day, pairs, within_3, median_gap_pct, worst')
+          .select('day, pairs, within_3, pairs_shown, within_3_shown, median_gap_pct, worst')
           .gte('day', fromDay)
           .order('day', { ascending: false }),
         'load night accuracy',

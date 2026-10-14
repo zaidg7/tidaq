@@ -81,10 +81,13 @@ describe('runDailyCheck', () => {
       finishedAt: '2026-10-12T00:02:30.000Z',
     });
     const free = testEnv({ ...env, PRICE_SOURCE: 'xotelo' });
+    // Overall numbers are worse; the alarm watches the hotels whose night history is shown.
     const day = (d: string, pairs: number, within3: number) => ({
       day: d,
-      pairs,
-      within3,
+      pairs: pairs + 100,
+      within3: within3 - 50,
+      pairsShown: pairs,
+      within3Shown: within3,
       medianGapPct: 1.4,
       worst: [{ name: 'Rosewood Munich', pairs: 15, within3: 0 }],
     });
@@ -93,7 +96,7 @@ describe('runDailyCheck', () => {
     mem.accuracy.set('2026-10-10', day('2026-10-10', 500, 300));
     mem.accuracy.set('2026-10-11', day('2026-10-11', 524, 320));
     const quiet = await runDailyCheck({ store: mem.store, env: free, now: CHECK });
-    expect(quiet.accuracy).toMatchObject({ day: '2026-10-11', pairs: 524, within3: 320 });
+    expect(quiet.accuracy).toMatchObject({ day: '2026-10-11', pairsShown: 524, within3Shown: 320 });
     expect(quiet.problems).toEqual([]);
 
     mem.accuracy.set('2026-10-09', day('2026-10-09', 400, 200));
@@ -105,7 +108,7 @@ describe('runDailyCheck', () => {
       fetchFn: mail.fetchFn,
     });
     expect(weak.problems).toEqual([
-      'Night sums matched the real stay price (within 3 %) for only 61 %, 60 %, 50 % of pairs on the last 3 days (target 75 %).',
+      'Night sums matched the real stay price (within 3 %) for only 61 %, 60 %, 50 % of pairs on the last 3 days, hotels with night history shown (target 75 %).',
       '- Rosewood Munich: 0 of 15 within 3 %',
       'Next step: add a TASKS entry to investigate (minimum stays, multi-night rates per hotel).',
     ]);

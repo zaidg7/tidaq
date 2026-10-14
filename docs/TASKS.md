@@ -61,7 +61,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-070a                                                          | Night grid: every night × 120 days per hotel, collected daily (D-42)         | CLOUD | M             | C-013g                            | DONE           |
 | C-070b                                                          | Stay page: history for any dates from nights + real check of the viewed stay | CLOUD | M             | C-070a, C-022c1                   | DONE           |
 | C-070c                                                          | Night-sum accuracy: daily comparison with real stays, admin + methodology    | CLOUD | S             | C-070a                            | DONE                |
-| C-070d                                                          | Stay page: no night-sum history for hotels where single nights mislead       | CLOUD | S             | C-070c                            | TODO                |
+| C-070d                                                          | Stay page: no night-sum history for hotels where single nights mislead       | CLOUD | S             | C-070c                            | DONE                |
 | C-071                                                           | Catalog: all five-star hotels in the 25 most popular cities (batches)        | CLOUD | L             | C-070a                            | TODO           |
 | C-072                                                           | Spike: LiteAPI room/board/occupancy rates (free supplier API)                | CLOUD | M             | B-010                             | TODO           |
 | C-073                                                           | Research: German platforms (CHECK24, HolidayCheck, TUI) without scraping     | CLOUD | S             | –                                 | TODO                |
@@ -606,9 +606,23 @@ Zaid's product (14 Oct): open Tidaq for any dates, e.g. Four Seasons 1.–4.12.,
 
 **C-070c notes (DONE, [#50](https://github.com/zaidg7/tidaq/pull/50)):** `night_accuracy` (one row per UTC day, public read) and `night_accuracy_record(day)` (service role): for every 2-adult tracked stay with a real price that day, each reviewed platform's real total vs the sum of its nights collected the same day; counts within 0.5/3/10 %, median gap, best-price stays, 5 weakest hotels. The 07:55 daily check records **yesterday** (complete by then) and emails when the share within 3 % is under 75 % on 3 days in a row (core `nightAccuracyAlarm`, ≥ 20 pairs each); a failing check is a problem line, not a crash. `admin_health` no longer counts night runs in the run table and has `nights` (today's rows/priced/runs/errors, expected = hotels × 120) and `accuracy` (7 days); /admin shows an "Einzelnächte" card. **First measurement (14 Oct, partial):** 524 pairs, 61 % within 3 %, median gap 1.4 %. Most hotels match exactly (median 0 %), but Rosewood Munich, Hotel de Russie, Mandarin Oriental Munich (single nights about +25 %) and Shangri-La Paris (−15 %) differ systematically, likely minimum stays or multi-night rates. Today's stays were checked at 05:00 and the nights at 12–13:00 UTC, so part of the gap is intraday change; from 15 Oct both run in the morning. C-034: show the 30-day share from `night_accuracy`.
 
-**C-070d · No night-sum history for hotels where single nights mislead** (Owner CLOUD · S · depends on C-070c · TODO)
+**C-070d · No night-sum history for hotels where single nights mislead** (Owner CLOUD · S · depends on C-070c · DONE, [#51](https://github.com/zaidg7/tidaq/pull/51))
 
 Found in C-070c: for a few hotels the sum of single nights is 15–25 % off the real price of the same stay on the same platform, every day. Showing that history would be wrong by hundreds of euros. Steps: (1) store per-hotel accuracy daily (`night_accuracy_hotel`: day, hotel, pairs, within 3 %, median signed gap) in `night_accuracy_record`; (2) a hotel whose last 7 days have ≥ 10 pairs and < 60 % within 3 % (or |median signed gap| > 5 %) is "nights unreliable"; (3) `getStay` then ignores night history for that hotel and uses real checks of the exact stay only (`request_stay` on view already starts them), with its own short note ("Für dieses Hotel vergleichen wir nur ganze Aufenthalte, weil einzelne Nächte dort anders kosten."); (4) list such hotels in /admin; (5) the daily accuracy alarm (C-070c) then counts only hotels whose night history is shown, otherwise it emails every day about hotels already handled. Later option: a 2-night grid for those hotels (same number of calls).
+
+**C-070d notes (DONE, [#51](https://github.com/zaidg7/tidaq/pull/51)):**
+- SQL:
+  - `night_accuracy_pairs(day)` holds the shared comparison.
+  - `night_accuracy_hotel` (day × hotel: pairs, within 3 %, median signed gap) is written by `night_accuracy_record`, which also fills `night_accuracy.pairs_shown`/`within_3_shown`.
+  - `night_reliability(day, hotel?)` (anon may execute) applies the rule over the 7 days up to `day`. A hotel is unreliable with ≥ 10 pairs and either |median signed gap| > 5 % or < 40 % within 3 %. A hotel without data counts as reliable.
+  - The first rule (< 60 %) hid 11 of 35 hotels on a day with 7 h between the stay and night collection, so it was loosened in migration `20261014134535`.
+- Web: `getStay` asks `night_reliability` for grid dates. If the hotel is unreliable:
+  - `nightsUnreliable`, no night history; status untracked unless a real stay exists.
+  - Own copy (`realOnlyTitle`/`Text`, `historyRealOnly`); `request_stay` still runs on view.
+  - If the call fails, the page shows nights as before.
+- Collector alarm uses the shown share.
+- `/admin` lists the hidden hotels (`admin_health.night_hidden`) and shows "Gezeigt ± 3 %" next to "Alle".
+- On 14 Oct (partial day) 7 hotels were hidden: Rosewood Munich, Hotel de Russie, Mandarin Oriental Munich, Shangri-La Paris, Steigenberger Frankfurter Hof, Claridge's, Le Bristol. The share for shown hotels was 77 %. Expect fewer hidden hotels once morning-aligned data replaces 14 Oct.
 
 ### C-071 · Catalog: all five-star hotels in the 25 most popular cities (Owner CLOUD · L · depends on C-070a · TODO)
 

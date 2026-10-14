@@ -117,6 +117,9 @@ export const adminHealthSchema = z.object({
       median_gap_pct: z.coerce.number().nullable(),
       stays: count,
       stays_within_3: count,
+      /** Only hotels whose night history is shown (C-070d). */
+      pairs_shown: count,
+      within_3_shown: count,
       worst: z.array(
         z.object({
           hotel_id: count,
@@ -126,6 +129,16 @@ export const adminHealthSchema = z.object({
           within_3: count,
         }),
       ),
+    }),
+  ),
+  /** Hotels whose night history is hidden: single nights mislead there (C-070d). */
+  night_hidden: z.array(
+    z.object({
+      id: count,
+      name: z.string(),
+      pairs: count,
+      within_3: count,
+      gap_pct: z.coerce.number().nullable(),
     }),
   ),
   pending_total: count,

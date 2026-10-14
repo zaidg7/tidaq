@@ -276,7 +276,15 @@ export function memoryStore(
       };
     },
     async recordNightAccuracy(day) {
-      const row = accuracy.get(day) ?? { day, pairs: 0, within3: 0, medianGapPct: null, worst: [] };
+      const row = accuracy.get(day) ?? {
+        day,
+        pairs: 0,
+        within3: 0,
+        pairsShown: 0,
+        within3Shown: 0,
+        medianGapPct: null,
+        worst: [],
+      };
       accuracy.set(day, row);
       return row;
     },

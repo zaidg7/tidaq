@@ -65,6 +65,8 @@ type Props = {
   history?: 'nights' | 'stay' | null;
   /** Today's real price differs from the nights' sum by more than 3 % (shown as a note). */
   realVsNights?: { realCents: number; nightsCents: number } | null;
+  /** Single nights mislead at this hotel (C-070d): only real checks of the stay count. */
+  nightsUnreliable?: boolean;
   others: OtherStay[];
   /** The latest day's reviewed providers (C-022b); `unreviewed` counts the hidden ones. */
   offers: { day: string | null; list: StayOffer[]; unreviewed: number };
@@ -90,6 +92,7 @@ export function StayView({
   updatedAt,
   history = null,
   realVsNights = null,
+  nightsUnreliable = false,
   others,
   offers,
   today,
@@ -140,7 +143,11 @@ export function StayView({
             updatedAt={updatedAt}
             now={now}
           />
-          <HistoryNote history={history} realVsNights={realVsNights} />
+          <HistoryNote
+            history={history}
+            realVsNights={realVsNights}
+            nightsUnreliable={nightsUnreliable}
+          />
         </>
       ) : status === 'no_data' ? (
         <Card variant="float" radius="search" className="mt-6 lg:mt-8 lg:p-8">
@@ -148,7 +155,10 @@ export function StayView({
         </Card>
       ) : (
         <Card variant="float" radius="search" className="mt-6 lg:mt-8 lg:p-8">
-          {status === 'untracked' && (
+          {status === 'untracked' && nightsUnreliable && (
+            <Notice icon={CalendarClock} title={t('realOnlyTitle')} text={t('realOnlyText')} />
+          )}
+          {status === 'untracked' && !nightsUnreliable && (
             <Notice
               icon={CalendarClock}
               title={
@@ -373,16 +383,19 @@ function WatchCard() {
 function HistoryNote({
   history,
   realVsNights,
+  nightsUnreliable,
 }: {
   history: 'nights' | 'stay' | null;
   realVsNights: { realCents: number; nightsCents: number } | null;
+  nightsUnreliable: boolean;
 }) {
   const t = useTranslations('stay');
   const locale = useLocale() as Locale;
-  if (history !== 'nights') return null;
+  // Real checks need no note, unless the hotel's nights were left out on purpose (C-070d).
+  if (history !== 'nights' && !nightsUnreliable) return null;
   return (
     <p className="text-meta mt-3 max-w-[44em] text-muted-ink">
-      {t('historyNights')}{' '}
+      {history === 'nights' ? t('historyNights') : t('historyRealOnly')}{' '}
       {realVsNights && (
         <>
           {t('realVsNights', {

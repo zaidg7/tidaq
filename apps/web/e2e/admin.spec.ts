@@ -96,11 +96,19 @@ test.describe('dashboard preview (made-up data)', () => {
     await expect(nights.getByText('3.912 von 4.200 Nächten heute')).toBeVisible();
     const table = nights.getByRole('table');
     await expect(table.getByRole('row')).toHaveCount(3);
-    // 320 of 524 within 3 %: below the 75 % target, so it's marked.
-    await expect(table.getByRole('cell', { name: '61 %' })).toHaveClass(/text-bad-ink/);
-    await expect(table.getByRole('cell', { name: '81 %' })).not.toHaveClass(/text-bad-ink/);
+    // Hotels shown: 309 of 418 within 3 % is under the 75 % target, so it's marked; the share
+    // over all hotels (61 %) is context only.
+    await expect(table.getByRole('cell', { name: '74 %' })).toHaveClass(/text-bad-ink/);
+    await expect(table.getByRole('cell', { name: '61 %' })).not.toHaveClass(/text-bad-ink/);
+    await expect(table.getByRole('cell', { name: '83 %' })).not.toHaveClass(/text-bad-ink/);
+    // C-070d: hotels whose night history is hidden.
     await expect(nights.getByText('Rosewood Munich')).toBeVisible();
-    await expect(nights.getByText('0 von 15 auf 3 % genau')).toBeVisible();
+    await expect(
+      nights.getByText('Einzelnächte im Median +25 % · 1 von 21 auf 3 % genau'),
+    ).toBeVisible();
+    await expect(
+      nights.getByText(/Einzelnächte im Median −5,7 %|Einzelnächte im Median -5,7 %/),
+    ).toBeVisible();
   });
 
   test('fits a phone without horizontal scrolling', async ({ page }) => {

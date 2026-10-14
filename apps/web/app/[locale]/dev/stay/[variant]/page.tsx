@@ -105,6 +105,8 @@ const VARIANTS: Record<
     /** Where the history comes from (C-070b); tracked variants default to `stay`. */
     history?: 'nights' | 'stay';
     realVsNights?: { realCents: number; nightsCents: number };
+    /** Single nights mislead at this hotel (C-070d). */
+    nightsUnreliable?: boolean;
     adults?: number;
   }
 > = {
@@ -148,6 +150,21 @@ const VARIANTS: Record<
     others: OTHERS,
     adults: 3,
   },
+  // C-070d: single nights mislead here, so only real checks of the exact stay count.
+  'real-only': {
+    status: 'untracked',
+    checkIn: '2026-12-04',
+    series: [],
+    others: OTHERS,
+    nightsUnreliable: true,
+  },
+  'real-only-history': {
+    status: 'tracked',
+    checkIn: '2026-12-04',
+    series: sampleSeries(TODAY).slice(-9),
+    others: OTHERS,
+    nightsUnreliable: true,
+  },
   past: { status: 'past', checkIn: '2026-09-04', series: [], others: OTHERS },
   inactive: { status: 'inactive', checkIn: '2026-12-04', series: [], others: [], active: false },
 };
@@ -185,6 +202,7 @@ export default async function DevStayPage({
       updatedAt={v.series.length ? '2026-10-13T05:12:00Z' : null}
       history={v.series.length ? (v.history ?? 'stay') : null}
       realVsNights={v.realVsNights ?? null}
+      nightsUnreliable={v.nightsUnreliable ?? false}
       others={v.others}
       offers={{
         day: v.series.length ? (v.offersDay ?? TODAY) : null,
