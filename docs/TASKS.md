@@ -93,10 +93,11 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-034                                                           | Provider pages and methodology page with live data                           | CLOUD | S             | C-032                             | TODO           |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034                      | TODO           |
-| C-041                                                           | Launch hardening: perf, a11y, error monitoring, backups                      | CLOUD | M             | C-031                             | TODO           |
+| C-041a                                                          | Launch hardening: axe checks, security headers                               | CLOUD | S             | C-031a                            | DONE           |
+| C-041b                                                          | Launch hardening: Lighthouse, error digest, backups, rate limits, robots     | CLOUD | M             | C-041a                            | TODO           |
 | C-042                                                           | Trust report page "150 Checkouts getestet"                                   | CLOUD | S             | L-033, C-034                      | TODO           |
 | C-043                                                           | Launch content pack for Zaid                                                 | CLOUD | S             | C-042                             | TODO           |
-| C-044                                                           | Go live on tidaq.com                                                         | CLOUD | S             | C-041, L-040, Z-12                | TODO           |
+| C-044                                                           | Go live on tidaq.com                                                         | CLOUD | S             | C-041b, L-040, Z-12               | TODO           |
 | **Phase 5: Growth** (Dec 2026 – Mar 2027)                       |                                                                              |       |               |                                   |
 | C-050                                                           | Affiliate wiring per approved program                                        | CLOUD | S             | Z-11                              | TODO           |
 | C-051                                                           | Weekly content pack routine                                                  | CLOUD | S             | C-044                             | TODO           |
@@ -897,8 +898,16 @@ Run through the full journey on Zaid's PC (Chrome, Edge) and his iPhone 15 (Safa
 
 ### C-041 · Launch hardening
 
-Owner: CLOUD · Size: M · Depends on: C-031 · Status: TODO · PR: –
+Split into **C-041a** (axe checks, security headers) and **C-041b** (the rest), see below.
+Owner: CLOUD · Size: M · Depends on: C-031 · Status: see C-041a/b · PR: –
 Lighthouse ≥ 90 (mobile) on home, stay, hotel; axe accessibility checks in Playwright; error monitoring (Workers Logs + a daily error digest email to Zaid, or Sentry free if the connector is set up); Supabase backups confirmed (daily on free plan; document restore); remove the pre-launch `robots: noindex` from `app/[locale]/layout.tsx` metadata (404/500 pages exist since C-020a); security headers (CSP, HSTS, Referrer-Policy); rate limits on API routes.
+
+**C-041a notes (DONE):** `e2e/a11y.spec.ts`: axe-core (WCAG 2.1 A/AA, incl. contrast) on 21 pages at 390 px (home, stay, hotel, city, deals, provider and legal pages, watch, admin, the UI gallery, 404) plus home, stay and hotel at 1280 px; serious or critical findings fail CI. It found one: the admin tables that scroll sideways weren't keyboard-reachable (now focusable regions). Security headers on every response from `next.config.ts` `headers()`: CSP (own origin only plus Cloudflare Web Analytics; `'unsafe-inline'` scripts because the App Router streams inline payloads and nonces would make every page dynamic; no framing, no plugins, forms only to us), HSTS 1 year with subdomains (no preload), `Referrer-Policy: strict-origin-when-cross-origin`, `nosniff`, `X-Frame-Options: DENY`, a restrictive `Permissions-Policy`, no `X-Powered-By`. `e2e/security.spec.ts` checks the headers and that pages and client components run without CSP violations. **Turnstile (C-030c) must add `https://challenges.cloudflare.com` to `script-src` and `frame-src`.** After the merge, check the headers on staging (`curl -sI`), since OpenNext applies them in its routing layer.
+
+### C-041b · Launch hardening: the rest
+
+Owner: CLOUD · Size: M · Depends on: C-041a · Status: TODO · PR: –
+Lighthouse ≥ 90 (mobile) on home, stay, hotel (measure on staging, fix what's below); error monitoring (Workers Logs + a daily error digest email to Zaid); Supabase backups confirmed (Pro: daily) and restore steps in the README; remove the pre-launch `robots: noindex` from `app/[locale]/layout.tsx` (production isn't deployed before C-044, staging stays `Disallow: /`); rate limits on API routes (`/api/watch/unsubscribe`, `/go/…`).
 
 ### C-042 · Trust report page
 
