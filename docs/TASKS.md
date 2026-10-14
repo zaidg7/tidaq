@@ -51,7 +51,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-013g                                                          | Collector: free price source Xotelo (DataForSEO as fallback)                 | CLOUD | M             | C-013b                            | DONE           |
 | C-032a                                                          | Trust audit: form, recent tests, provider scores                             | CLOUD | S             | C-020c, C-004                     | DONE           |
 | C-032b                                                          | Trust audit: screenshot upload, edit tests, CSV export                       | CLOUD | S             | C-032a                            | DONE           |
-| C-032c                                                          | Trust audit: listed price from Tripadvisor (Xotelo source) not Google        | CLOUD | S             | C-032b, C-013g                    | TODO           |
+| C-032c                                                          | Trust audit: listed price from Tripadvisor (Xotelo source) not Google        | CLOUD | S             | C-032b, C-013g                    | DONE           |
 | L-033                                                           | Checkout audit with Claude in Chrome (150 tests, recurring until launch)     | LOCAL | L (recurring) | C-032b, Z-07                      | TODO           |
 | C-021a                                                          | Search: hotel and city autocomplete                                          | CLOUD | S             | C-020a, C-011                     | DONE           |
 | C-021b                                                          | Search: date range picker (mobile bottom sheet)                              | CLOUD | M             | C-021a                            | DONE           |
@@ -771,6 +771,8 @@ Owner: CLOUD · Size: S · Depends on: C-032b, C-013g · Status: TODO · PR: –
 
 Since D-41 our prices come from Xotelo (Tripadvisor's meta search), but the checkout-test method (L-033 steps, PLAN §8, `/admin/audit` labels "Preis bei Google", CSV header, `trust_tests.listed_cents` comment) still says Google Hotels. The markup we apply in "an der Kasse ≈ …" is measured against that listed price, so the reference should be the listing our data comes from: the provider's price on Tripadvisor for the same stay (or the price on our own stay page if it was collected the same morning). Update the L-033 steps, PLAN §8.2, the admin labels/help text and the export header; keep old tests (note the change date in the methodology page, C-034). Propose it in BLOCKERS first if it changes a locked decision.
 
+**C-032c notes (DONE):** Reference for checkout tests from 15 Oct 2026: the provider's price on our stay page ("Preise heute", same morning), else on Tripadvisor for the same stay. PLAN §8.2, L-033 steps, `/admin/audit` label "Angezeigter Preis" and intro, CSV header, `trust_tests.listed_cents` comment (migration `20261014214926`), the pending-providers hint on `/admin`. Older tests keep counting; C-034 must mention the change date on the methodology page. No locked decision changed (D-12 is superseded by D-41 for the data, the test method was never a decision).
+
 ### C-030 · Watch flow
 
 Owner: CLOUD · Size: M · Depends on: C-022, Z-05 · Status: TODO · PR: –
@@ -820,9 +822,9 @@ Owner: LOCAL · Size: L, recurring (10–15 tests per session) · Depends on: C-
 
 **Protocol per test (with Zaid at the PC, or Zaid approving each site in Claude in Chrome):**
 
-1. Pick a tracked stay (rotate cities, providers, dates; prefer the stays shown on Google Hotels with 4+ providers).
-2. Open Google Hotels for that hotel and dates, 2 adults. Note each provider's listed price.
-3. For one provider: click through to the provider site, select the same room type as the cheapest listed, continue to the **last page before payment**. **Never enter personal or payment data, never submit.** If a page asks for personal data before showing the total, record the total shown at that step and mark extras.
+1. Pick a stay within the next 120 days (rotate cities, providers, dates; prefer hotels with 3+ providers in "Preise heute").
+2. Open its Tidaq stay page (staging) and note the provider's price under **"Preise heute"**. If the table says "Preise vom …" (an earlier day), use the provider's price on Tripadvisor for the same hotel, dates and 2 adults instead (C-032c). This is the "Angezeigter Preis" in `/admin/audit`.
+3. Open the provider's own site directly (not through "Zum Angebot", so audit visits don't count as visitor clicks), search the same hotel and dates, select the cheapest room, and continue to the **last page before payment**. **Never enter personal or payment data, never submit.** If a page asks for personal data before showing the total, record the total shown at that step and mark extras.
 4. Record the final total and extras in `/admin/audit`, attach a screenshot.
 5. Close tabs. Next provider.
 
