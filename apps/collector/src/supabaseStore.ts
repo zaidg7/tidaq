@@ -103,6 +103,32 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
       }));
     },
 
+    async requestedStayJobs(today) {
+      // Anti-join: stays without any collector task (PostgREST `rel=is.null` on the embed).
+      const stays = check(
+        await db
+          .from('tracked_stays')
+          .select(
+            'id, check_in, check_out, adults, hotels!inner(dfs_hotel_identifier, xotelo_key, active), collector_tasks(id)',
+          )
+          .eq('origin', 'watch')
+          .eq('active', true)
+          .gte('check_in', today)
+          .eq('hotels.active', true)
+          .is('collector_tasks', null),
+        'load requested stays',
+      );
+      return stays.map((s): StayJob => ({
+        stayId: s.id,
+        checkIn: s.check_in,
+        checkOut: s.check_out,
+        adults: s.adults,
+        hotelIdentifier: s.hotels.dfs_hotel_identifier,
+        xoteloKey: s.hotels.xotelo_key,
+        watched: false,
+      }));
+    },
+
     async usage(today) {
       const monthStart = `${today.slice(0, 8)}01`;
       const runs = check(
@@ -144,6 +170,7 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
             tasks_done: patch.tasksDone,
             est_cost_usd: patch.estCostUsd,
             budget_reason: patch.budgetReason,
+            daily_cap: patch.dailyCap,
             errors: (patch.errors ??
               []) as Database['public']['Tables']['collector_runs']['Row']['errors'],
           })

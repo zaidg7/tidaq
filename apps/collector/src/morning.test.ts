@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { runPosting } from './morning';
+import { runPosting, runRequests } from './morning';
 import { testEnv } from './test/env';
 import { fakeDataForSeo, memoryStore } from './test/memoryStore';
 
@@ -31,6 +31,8 @@ describe('runPosting', () => {
       env: 'staging',
       tasksPosted: stays.length,
       budgetReason: 'ok',
+      // request_stay() reads the cap from here (C-022c1).
+      dailyCap: 300,
     });
     expect(runs[0]?.estCostUsd).toBeCloseTo(stays.length * 0.0008, 10);
     // Every posted task carries the stay id as tag and the right identifier, location Germany, EUR.
@@ -167,5 +169,110 @@ describe('runPosting', () => {
     );
     expect(runs[0]?.errors).toEqual(['run failed: db down']);
     expect(runs[0]?.finishedAt).toBeTruthy();
+  });
+});
+
+describe('runRequests (C-022c1)', () => {
+  const requested = (mem: ReturnType<typeof memoryStore>, id: number, hotelId = 1) =>
+    mem.stays.push({
+      id,
+      hotelId,
+      checkIn: '2026-11-20',
+      checkOut: '2026-11-22',
+      adults: 3,
+      active: true,
+      origin: 'watch',
+    });
+
+  it('does nothing and writes no run row when no requested stay is waiting', async () => {
+    const mem = memoryStore(hotels);
+    const summary = await runRequests({ store: mem.store, env: testEnv(), now: NOW });
+    expect(summary).toEqual({
+      runId: null,
+      waiting: 0,
+      posted: 0,
+      skipped: 0,
+      budgetReason: null,
+      errors: [],
+    });
+    expect(mem.runs).toHaveLength(0);
+  });
+
+  it('posts requested stays without a task, once, and records the cap', async () => {
+    const mem = memoryStore(hotels);
+    requested(mem, 101);
+    requested(mem, 102, 2);
+    // Already priced once (e.g. by the morning run): not posted again.
+    requested(mem, 103);
+    mem.tasks.push({
+      id: 'task-103',
+      runId: 0,
+      stayId: 103,
+      costUsd: 0.0008,
+      postedAt: '2026-10-12T04:00:00.000Z',
+      status: 'done',
+      error: null,
+    });
+    // A grid stay is never part of a request run.
+    mem.stays.push({
+      id: 104,
+      hotelId: 1,
+      checkIn: '2026-11-20',
+      checkOut: '2026-11-22',
+      adults: 2,
+      active: true,
+      origin: 'grid',
+    });
+    const dfs = fakeDataForSeo();
+
+    const summary = await runRequests({
+      store: mem.store,
+      env: testEnv(),
+      now: NOW,
+      fetchFn: dfs.fetchFn,
+    });
+    expect(summary).toMatchObject({ waiting: 2, posted: 2, skipped: 0, budgetReason: 'ok' });
+    expect(mem.runs[0]).toMatchObject({ kind: 'request', tasksPosted: 2, dailyCap: 300 });
+    expect(dfs.calls[0]?.body.map((t) => t.tag)).toEqual(['101', '102']);
+    expect(dfs.calls[0]?.body[0]).toMatchObject({ adults: 3 });
+
+    const again = await runRequests({
+      store: mem.store,
+      env: testEnv(),
+      now: NOW,
+      fetchFn: dfs.fetchFn,
+    });
+    expect(again.runId).toBeNull();
+  });
+
+  it('stays inside the daily cap', async () => {
+    const mem = memoryStore(hotels);
+    mem.runs.push({
+      id: 0,
+      kind: 'morning',
+      env: 'staging',
+      startedAt: '2026-10-12T05:00:00.000Z',
+      tasksPosted: 299,
+    });
+    requested(mem, 101);
+    requested(mem, 102);
+    const summary = await runRequests({
+      store: mem.store,
+      env: testEnv(),
+      now: NOW,
+      fetchFn: fakeDataForSeo().fetchFn,
+    });
+    expect(summary).toMatchObject({ posted: 1, skipped: 1, budgetReason: 'daily_cap' });
+  });
+
+  it('skips stays whose hotel has no id at the active source', async () => {
+    const mem = memoryStore(hotels);
+    requested(mem, 101);
+    const summary = await runRequests({
+      store: mem.store,
+      env: testEnv({ PRICE_SOURCE: 'xotelo' }),
+      now: NOW,
+    });
+    expect(summary.runId).toBeNull();
   });
 });

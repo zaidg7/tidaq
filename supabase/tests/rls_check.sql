@@ -22,5 +22,12 @@ select
     as anon_cannot_ingest,
   not has_function_privilege('anon', 'public.rebuild_stay_daily(bigint[])', 'execute')
     as anon_cannot_rebuild_daily,
+  -- The one write the public site may do (C-022c1): validated and capped inside the function.
+  has_function_privilege('anon', 'public.request_stay(text,date,date,integer)', 'execute')
+    as anon_can_request_stay,
+  (select prosecdef and proconfig @> array['search_path=""'] from pg_proc
+    where oid = 'public.request_stay(text,date,date,integer)'::regprocedure)
+    as request_stay_pinned_search_path,
+  not has_table_privilege('anon', 'public.tracked_stays', 'insert') as anon_cannot_insert_stays,
   (select count(*) = 0 from pg_tables where schemaname = 'public' and not rowsecurity)
     as all_tables_have_rls;
