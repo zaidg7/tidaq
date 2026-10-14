@@ -1,6 +1,7 @@
 import type { GridStay } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from '../ingest';
 import type {
+  AlertWatch,
   CatalogHotel,
   CollectorStore,
   DayReport,
@@ -57,6 +58,14 @@ export function memoryStore(
    * (recording a day without a seeded row stores an empty one).
    */
   const accuracy = new Map<string, NightAccuracyRow>();
+  /** Watches for the alert engine (C-031): tests push into it; recorded alerts land below. */
+  const alertWatches: AlertWatch[] = [];
+  const recordedAlerts: {
+    watchId: string;
+    kind: string;
+    priceCents: number;
+    resendId: string | null;
+  }[] = [];
   /** night_daily by `hotelId|night|day`: rates by provider slug and the cheapest reviewed one. */
   const nights = new Map<
     string,
@@ -297,6 +306,17 @@ export function memoryStore(
       pruneCalls++;
       return 0;
     },
+    async alertInputs(today) {
+      return alertWatches.filter((w) => w.checkIn > today);
+    },
+    async recordAlert(watchId, kind, priceCents, resendId) {
+      recordedAlerts.push({ watchId, kind, priceCents, resendId });
+      const w = alertWatches.find((x) => x.watchId === watchId);
+      if (w) {
+        w.lastAlertCents = priceCents;
+        w.lastAlertAt = new Date().toISOString();
+      }
+    },
     async nightJobs(today, window, limit) {
       const jobs: { hotelId: number; xoteloKey: string; night: string }[] = [];
       for (let i = 0; i < window; i++) {
@@ -343,6 +363,8 @@ export function memoryStore(
     providers,
     officialUrls,
     pruneCalls: () => pruneCalls,
+    alertWatches,
+    recordedAlerts,
     /** Sets the `posted_at` time for tasks recorded from now on. */
     setClock(iso: string) {
       clock = iso;

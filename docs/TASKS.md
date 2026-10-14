@@ -85,8 +85,11 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-028c                                                          | Dynamic OG images with today's price (own Worker)                            | CLOUD | S             | C-028b                            | TODO           |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
-| C-030                                                           | Watch flow with double opt-in and manage/unsubscribe                         | CLOUD | M             | C-022, Z-05                       | TODO           |
-| C-031                                                           | Alert engine and emails                                                      | CLOUD | M             | C-030, C-013b                     | TODO           |
+| C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
+| C-030b                                                          | Watch form on the stay page (replaces "Bald verfügbar")                      | CLOUD | S             | C-030a                            | DONE           |
+| C-030c                                                          | Bot protection for the watch form (Turnstile)                                | CLOUD | S             | C-030b, B-016                     | TODO           |
+| C-031a                                                          | Alert engine: triggers, daily job, alert emails                              | CLOUD | M             | C-030a                            | DONE           |
+| C-031b                                                          | Alert emails: mini chart image and best trusted provider                     | CLOUD | S             | C-031a, C-028b                    | TODO           |
 | C-034                                                           | Provider pages and methodology page with live data                           | CLOUD | S             | C-032                             | TODO           |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034                      | TODO           |
@@ -812,10 +815,31 @@ Owner: CLOUD · Size: M · Depends on: C-022, Z-05 · Status: TODO · PR: –
 - [ ] e2e test of the whole flow with the dry-run mailer
 - [ ] Unconfirmed watches never receive alerts; unconfirmed watchers are deleted after 7 days
 
+**C-030a notes (DONE):** SQL (migration `20261014220754_watch_flow`, service role only): `watch_request` validates the address and stay, makes sure a `tracked_stays` row exists (tracked via `request_stay` when there's capacity, otherwise an inactive row the watch can point at), creates or updates the watcher (consent text + time) and the watch (max 10 active, one request per address per minute), deletes unconfirmed addresses older than 7 days, and returns which email to send; `watch_confirm`, `watch_manage`, `watch_remove`, `watch_unsubscribe` (deletes the address and its watches, as the privacy page now says). Random UUID tokens in the links (`watchers.confirm_token`, `manage_token`). Web: `lib/watch/watch.ts` (calls + emails), `lib/mail.ts` (Resend EU, `alarm@tidaq.com`; really sends only when `APP_ENV=production`, `ALERTS_DRY_RUN=false` and `RESEND_API_KEY` is set, else logs the kind without the address; `List-Unsubscribe` one-click header), core `renderMail` (escaped HTML + text, tested). Pages: `/alarm/bestaetigen?token=` (a button confirms, a GET never does), `/alarm/verwalten/[token]` (list, stop one, unsubscribe; noindex, no referrer), `POST /api/watch/unsubscribe?token=` (RFC 8058). Deploy: `RESEND_API_KEY` now also goes to the web Worker; `ALERTS_DRY_RUN` is `false` in production, `true` on staging. e2e `watch.spec.ts` covers the pages; the full flow needs a database, so it is checked by hand on staging (dry run) in C-030b.
+
+### C-030b · Watch form on the stay page
+
+Owner: CLOUD · Size: S · Depends on: C-030a · Status: TODO · PR: –
+Replace the "Bald verfügbar" watch card with the form: email, optional target price, consent checkbox (not pre-ticked; the exact sentence is sent as `consentText`), server action → `requestWatch` with the request's origin; result messages for sent / added / too_soon / too_many / invalid / error; simple in-memory rate limit per IP (not stored) and a honeypot field until C-030c. Sticky mobile bar from DESIGN §4. On staging (dry run) show the confirmation link in the success message so the flow can be tested end to end without email.
+
+**C-030b notes (DONE):** "Preis beobachten" card on the stay page (`components/stay/WatchForm.tsx`, client, `useActionState`; server action `app/[locale]/alarm/watchAction.ts`): email, optional target (core `parseEuroCents`, "1.100" or "1100"), consent checkbox never pre-ticked (its exact sentence `stay.watchConsent` is stored), link to the privacy page. Messages for sent / added / invalid / too_soon / too_many / rate_limited / bad_price / error; a failed attempt keeps what was typed. Honeypot field + 5 requests per 10 minutes per IP per Worker isolate (IP only as an in-memory key). On staging and locally (dry run) the success message links the email's confirm or manage link ("Testmodus"), so the flow can be tested without email. Not done: the sticky mobile bar from DESIGN §4 (add when there's a reason; the card sits right under the price table). Manual staging check of the full flow: after the next staging deploy, request an alert on any stay page, follow the Testmodus link, confirm, stop, unsubscribe.
+
+### C-030c · Turnstile
+
+Owner: CLOUD · Size: S · Depends on: C-030b, B-016 · Status: TODO · PR: –
+Cloudflare Turnstile on the watch form (site key as a public var, secret as a Worker secret), verified in the server action before `requestWatch`. Privacy page: add Turnstile (Cloudflare) to section 6.
+
 ### C-031 · Alert engine and emails
 
 Owner: CLOUD · Size: M · Depends on: C-030, C-013 · Status: TODO · PR: –
 After each collector run: evaluate active, confirmed watches against triggers (PLAN §9), throttle to 1 email/watch/day, send via Resend with the price, state, mini chart (OG image URL), best trusted provider and the manage/unsubscribe link (List-Unsubscribe header). Record in `alerts_sent`. Unit tests for every trigger and the throttle.
+
+**C-031a notes (DONE):** Core `alerts.ts`: `alertKind` (PLAN §9: target ≤ price, again only 2 % lower; new low under every earlier day and 2 % under the last alert; drop ≥ 5 % since the last alert; state turns `near_low`; one email per watch and Berlin day, strongest reason wins), `alertInputFromSeries` (today's price must be from today; states for today and yesterday via `computeStayStats`), `alertMail` (DE/EN subject and content for `renderMail`). SQL (migration `20261014222316`, service role): `alert_inputs(today)` gives each active watch of a confirmed, subscribed address with check-in after today plus its last 60 days (stay checks, else night sums for 2 adults at reliable hotels), `alert_record` writes `alerts_sent` and the watch's last alert. Collector `alerts.ts` `runAlerts` runs in the daily cron after the daily check (its own try; a crash emails the admins), sends via Resend from `alarm@tidaq.com` with `List-Unsubscribe` one-click, records each sent alert, never logs addresses. **Live only when** `APP_ENV=production`, `ALERTS_DRY_RUN=false` and the key is set: the production collector still has `ALERTS_DRY_RUN=true`, so nothing goes to users until **C-044 switches it to `false`** (dry runs log `alert dry run` with the kind). Tests: core (10) and collector (5, memory store + fake Resend).
+
+### C-031b · Alert emails: chart image and best provider
+
+Owner: CLOUD · Size: S · Depends on: C-031a, C-028b · Status: TODO · PR: –
+Add the stay's OG image (C-028b) as the chart in alert emails and the best trusted provider with its "an der Kasse ≈" note (core `rankOffers` on the latest `per_provider`), linking through `/go/…`.
 
 ### C-032 · Trust audit tool
 
@@ -889,7 +913,7 @@ Owner: CLOUD · Size: S · Depends on: C-042 · Status: TODO · PR: –
 ### C-044 · Go live
 
 Owner: CLOUD · Size: S · Depends on: C-041, L-040, Z-12 · Status: TODO · PR: –
-Final launch checklist (below), production deploy to tidaq.com, collector prod caps set, Search Console sitemap submitted, smoke test in production, announce in the weekly summary issue.
+Final launch checklist (below), production deploy to tidaq.com, collector prod caps set, Search Console sitemap submitted, smoke test in production, announce in the weekly summary issue. **Alerts:** set the production collector's `ALERTS_DRY_RUN` to `"false"` (`apps/collector/wrangler.jsonc`) in the launch PR; until then no alert email reaches users (C-031a).
 
 ---
 

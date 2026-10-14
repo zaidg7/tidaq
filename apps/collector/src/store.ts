@@ -1,4 +1,5 @@
 import type {
+  AlertKind,
   BudgetReason,
   DailyPrice,
   GridHotel,
@@ -151,4 +152,32 @@ export interface CollectorStore {
   nightAccuracy(fromDay: string): Promise<NightAccuracyRow[]>;
   /** Removes raw JSON older than 30 days (SQL `prune_raw_snapshots`, D-19). Returns the count. */
   pruneRaw(): Promise<number>;
+  /**
+   * Active watches of confirmed, subscribed addresses with check-in after `today`, each with its
+   * last 60 days (stay checks, else reliable night sums; SQL `alert_inputs`, C-031).
+   */
+  alertInputs(today: string): Promise<AlertWatch[]>;
+  /** Stores a sent alert and the watch's last alert price and time (SQL `alert_record`). */
+  recordAlert(
+    watchId: string,
+    kind: AlertKind,
+    priceCents: number,
+    resendId: string | null,
+  ): Promise<void>;
+}
+
+export interface AlertWatch {
+  watchId: string;
+  email: string;
+  locale: 'de' | 'en';
+  manageToken: string;
+  hotelSlug: string;
+  hotelName: string;
+  checkIn: string;
+  checkOut: string;
+  adults: number;
+  targetCents: number | null;
+  lastAlertCents: number | null;
+  lastAlertAt: string | null;
+  series: DailyPrice[];
 }

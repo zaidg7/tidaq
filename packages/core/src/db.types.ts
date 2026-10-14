@@ -967,6 +967,28 @@ export type Database = {
     }
     Functions: {
       admin_health: { Args: { p_days?: number }; Returns: Json }
+      alert_inputs: {
+        Args: { p_today: string }
+        Returns: {
+          watch_id: string
+          email: string
+          locale: string
+          manage_token: string
+          hotel_slug: string
+          hotel_name: string
+          check_in: string
+          check_out: string
+          adults: number
+          target_cents: number | null
+          last_alert_cents: number | null
+          last_alert_at: string | null
+          series: Json
+        }[]
+      }
+      alert_record: {
+        Args: { p_watch_id: string; p_kind: string; p_price_cents: number; p_resend_id: string | null }
+        Returns: undefined
+      }
       collector_ingest: { Args: { payload: Json }; Returns: Json }
       night_accuracy_pairs: {
         Args: { p_day: string }

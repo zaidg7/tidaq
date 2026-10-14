@@ -51,9 +51,15 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     await expect(table.getByText(/Die Reihenfolge hängt nie von Provisionen ab\./)).toBeVisible();
     await expect(table.getByText(/2 weitere Anbieter hatten einen Preis/)).toBeVisible();
 
-    // The alert sign-up comes with C-030: until then the button says so and does nothing.
-    await expect(page.getByRole('heading', { name: 'Preis beobachten' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Bald verfügbar' })).toBeDisabled();
+    // Price alert (C-030b): email, optional target, consent never pre-ticked.
+    const watch = page.getByRole('region', { name: 'Preis beobachten' });
+    await expect(watch.getByLabel('Deine E-Mail-Adresse')).toHaveAttribute('type', 'email');
+    await expect(watch.getByLabel('Wunschpreis (optional)')).toBeVisible();
+    await expect(watch.getByRole('checkbox')).not.toBeChecked();
+    await expect(watch.getByRole('link', { name: 'Datenschutz' })).toHaveAttribute(
+      'href',
+      '/datenschutz',
+    );
   });
 
   test('"Zum Angebot" opens the provider in a new tab through /go (C-026)', async ({ page }) => {
@@ -84,6 +90,23 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     expect(Math.abs((l?.height ?? 0) - (r?.height ?? 0))).toBeLessThanOrEqual(2);
     const width = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(width).toBeLessThanOrEqual(390);
+  });
+
+  test('price alert: the form explains every outcome (C-030b)', async ({ page }) => {
+    await page.goto('/dev/stay/tracked');
+    const watch = page.getByRole('region', { name: 'Preis beobachten' });
+    await watch.getByLabel('Deine E-Mail-Adresse').fill('gast@example.com');
+    await watch.getByLabel('Wunschpreis (optional)').fill('viel');
+    await watch.getByRole('checkbox').check();
+    await watch.getByRole('button', { name: 'Preis beobachten' }).click();
+    await expect(watch.getByText('Gib den Wunschpreis als Zahl ein, z. B. 1.100.')).toBeVisible();
+    // A valid request without a database (CI) fails gracefully and keeps the form.
+    await watch.getByLabel('Wunschpreis (optional)').fill('1.100');
+    await watch.getByRole('button', { name: 'Preis beobachten' }).click();
+    await expect(watch.getByRole('alert')).toHaveText(
+      'Das hat gerade nicht geklappt. Versuch es gleich noch einmal.',
+    );
+    await expect(watch.getByLabel('Deine E-Mail-Adresse')).toBeVisible();
   });
 
   test('provider prices from an earlier day say which day', async ({ page }) => {

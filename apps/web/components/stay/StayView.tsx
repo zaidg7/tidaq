@@ -32,6 +32,7 @@ import { routes } from '@/lib/routes';
 import { CollectingState } from './CollectingState';
 import { ProviderTable } from './ProviderTable';
 import { VerdictBlock } from './VerdictBlock';
+import { WatchForm, type WatchFormLabels } from './WatchForm';
 
 /**
  * What the page can say about this stay:
@@ -214,7 +215,7 @@ export function StayView({
             hotelSlug={hotel.slug}
             stay={{ checkIn: params.checkIn, checkOut: params.checkOut, adults: params.adults }}
           />
-          <WatchCard />
+          <WatchCard hotel={hotel} params={params} locale={locale} />
         </div>
       )}
 
@@ -377,18 +378,58 @@ function StatsRow({ stats, series }: { stats: StayStatsResult; series: DailyPric
  * "Preis beobachten" (C-022b step 7): the alert sign-up comes with C-030 (double opt-in), so
  * until then the button is disabled and says so. No sticky mobile bar while it can't do anything.
  */
-function WatchCard() {
+function WatchCard({
+  hotel,
+  params,
+  locale,
+}: {
+  hotel: { slug: string; name: string };
+  params: StayParams;
+  locale: Locale;
+}) {
   const t = useTranslations('stay');
+  const results: WatchFormLabels['results'] = {
+    sent: t('watchResults.sent'),
+    added: t('watchResults.added'),
+    invalid: t('watchResults.invalid'),
+    too_many: t('watchResults.too_many'),
+    too_soon: t('watchResults.too_soon'),
+    rate_limited: t('watchResults.rate_limited'),
+    bad_price: t('watchResults.bad_price'),
+    error: t('watchResults.error'),
+  };
   return (
-    <Card variant="float" className="flex flex-col gap-3 lg:mt-10">
+    <Card
+      variant="float"
+      className="flex flex-col gap-3 lg:mt-10"
+      role="region"
+      aria-labelledby="watch-title"
+    >
       <span className="grid size-10 place-items-center rounded-full bg-accent-soft text-accent">
         <Icon icon={BellRing} size={20} />
       </span>
-      <h2 className="text-h3">{t('watchTitle')}</h2>
+      <h2 id="watch-title" className="text-h3">
+        {t('watchTitle')}
+      </h2>
       <p className="text-[15px] text-muted-ink">{t('watchText')}</p>
-      <Button disabled block className="mt-1">
-        {t('watchSoon')}
-      </Button>
+      <WatchForm
+        hotel={hotel}
+        checkIn={params.checkIn}
+        checkOut={params.checkOut}
+        adults={params.adults}
+        locale={locale}
+        labels={{
+          email: t('watchEmail'),
+          target: t('watchTarget'),
+          targetHint: t('watchTargetHint'),
+          consent: t('watchConsent'),
+          privacy: t('watchPrivacy'),
+          privacyHref: localizedPath(routes.privacy, locale),
+          submit: t('watchSubmit'),
+          results,
+          preview: t('watchPreview'),
+        }}
+      />
     </Card>
   );
 }
