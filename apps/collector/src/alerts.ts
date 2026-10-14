@@ -2,16 +2,19 @@ import {
   alertInputFromSeries,
   alertKind,
   alertMail,
+  goPath,
   localizedPath,
+  rankOffers,
   renderMail,
   SITE_ORIGIN,
   stayPath,
   toIsoDate,
   type AlertKind,
+  type AlertMailOffer,
 } from '@tidaq/core';
 import type { FetchFn } from './dataforseo';
 import type { Env } from './env';
-import type { CollectorStore } from './store';
+import type { AlertWatch, CollectorStore } from './store';
 
 const RESEND_API = 'https://api.resend.com/emails';
 const FROM = 'Tidaq <alarm@tidaq.com>';
@@ -62,8 +65,9 @@ export async function runAlerts(opts: {
     const kind = input && alertKind(input);
     if (!input || !kind) continue;
     summary.due[kind] = (summary.due[kind] ?? 0) + 1;
+    const offer = await bestOffer(store, w, today);
     if (!live) {
-      console.log(JSON.stringify({ msg: 'alert dry run', kind }));
+      console.log(JSON.stringify({ msg: 'alert dry run', kind, provider: offer?.slug ?? null }));
       continue;
     }
     const manageUrl = SITE_ORIGIN + localizedPath(`/alarm/verwalten/${w.manageToken}`, w.locale);
@@ -81,6 +85,7 @@ export async function runAlerts(opts: {
         SITE_ORIGIN +
         localizedPath(stayPath(w.hotelSlug, w.checkIn, w.checkOut, w.adults), w.locale),
       manageUrl,
+      offer,
     });
     const { html, text } = renderMail(content);
     try {
@@ -117,4 +122,39 @@ export async function runAlerts(opts: {
     }
   }
   return summary;
+}
+
+/**
+ * The first offer of core `rankOffers` (PLAN §8.3: by expected checkout price when our tests
+ * show a markup) on today's prices, with its `/go/…` link (C-031b). The email still goes out
+ * without it when the lookup fails.
+ */
+async function bestOffer(
+  store: CollectorStore,
+  w: AlertWatch,
+  today: string,
+): Promise<(AlertMailOffer & { slug: string }) | null> {
+  try {
+    const [top] = rankOffers(await store.alertOffers(w.watchId, today));
+    if (!top) return null;
+    return {
+      slug: top.slug,
+      name: top.name,
+      isDirect: top.isDirect,
+      totalCents: top.totalCents,
+      expectedCents: top.expectedCents,
+      partner: top.partner,
+      url:
+        SITE_ORIGIN +
+        goPath(
+          top.slug,
+          w.hotelSlug,
+          { checkIn: w.checkIn, checkOut: w.checkOut, adults: w.adults },
+          w.locale,
+        ),
+    };
+  } catch (err) {
+    console.log(JSON.stringify({ msg: 'alert offers failed', error: String(err) }));
+    return null;
+  }
 }

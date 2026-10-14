@@ -9,6 +9,8 @@ export interface MailContent {
   heading: string;
   paragraphs: string[];
   button: { label: string; url: string };
+  /** A secondary text link under the button (e.g. the booking site in alert emails). */
+  link?: { label: string; url: string };
   /** Small print, e.g. why you got this and how to stop it. */
   footer: string[];
 }
@@ -39,6 +41,7 @@ export function renderMail(c: MailContent): { html: string; text: string } {
 ${c.paragraphs.map(p).join('\n')}
 <p style="margin:24px 0"><a href="${escapeHtml(c.button.url)}" style="display:inline-block;background:#6d4aff;color:#ffffff;${FONT};font-size:16px;font-weight:600;text-decoration:none;padding:14px 24px;border-radius:999px">${escapeHtml(c.button.label)}</a></p>
 ${small(c.button.url)}
+${c.link ? `<p style="margin:16px 0 0;${FONT};font-size:16px;line-height:1.5"><a href="${escapeHtml(c.link.url)}" style="color:#6d4aff;font-weight:600">${escapeHtml(c.link.label)}</a></p>` : ''}
 </td></tr></table>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px"><tr><td style="padding:16px 28px">
 ${c.footer.map(small).join('\n')}
@@ -50,6 +53,7 @@ ${c.footer.map(small).join('\n')}
     '',
     ...c.paragraphs.flatMap((t) => [t, '']),
     `${c.button.label}: ${c.button.url}`,
+    ...(c.link ? ['', `${c.link.label}: ${c.link.url}`] : []),
     '',
     '—',
     ...c.footer,

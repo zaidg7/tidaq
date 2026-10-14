@@ -2,6 +2,7 @@ export {
   defaultLocale,
   formatDateRange,
   formatDayMonth,
+  formatDayMonthYear,
   formatWeekdayDayMonth,
   updatedAtParts,
   formatPercent,
@@ -228,6 +229,18 @@ export { inlineLinks, type InlinePart } from './inlineLinks';
 export { cityIn, cityPath, groupByRegion, regionOf, REGIONS, type Region } from './places';
 export { escapeHtml, renderMail, type MailContent } from './mailTemplate';
 export {
+  extrasByCount,
+  isProviderIndexable,
+  percentOf,
+  providerFactSchema,
+  providerFactsSchema,
+  providerPath,
+  TEST_EXTRAS,
+  type ProviderFact,
+  type ProviderFacts,
+  type TestExtra,
+} from './providerFacts';
+export {
   ALERT,
   alertInputFromSeries,
   alertKind,
@@ -235,4 +248,5 @@ export {
   type AlertInput,
   type AlertKind,
   type AlertMailData,
+  type AlertMailOffer,
 } from './alerts';
