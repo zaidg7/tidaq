@@ -6,7 +6,7 @@
   "home": {
     "eyebrow": "Fünf-Sterne-Hotels",
     "title": "Ist dein Hotelpreis gerade <hi>tief</hi> oder hoch?",
-    "lead": "Jeden Morgen prüfen wir {hotels} Fünf-Sterne-Hotels in {cities} Städten. Du siehst den Verlauf, den Tiefpunkt und den günstigsten Anbieter.",
+    "lead": "Jeden Morgen prüfen wir <link>{hotels} Fünf-Sterne-Hotels in {cities} Städten</link>. Du siehst den Verlauf, den Tiefpunkt und den günstigsten Anbieter.",
     "leadNoData": "Jeden Morgen prüfen wir die Preise von Fünf-Sterne-Hotels. Du siehst den Verlauf, den Tiefpunkt und den günstigsten Anbieter.",
     "liveEyebrow": "Live · Stand {time}",
     "liveTitle": "Ist jetzt ein guter Moment zum Buchen?",
@@ -606,5 +606,32 @@
         }
       ]
     }
+  },
+  "city": {
+    "metaTitle": "Fünf-Sterne-Hotels {where}: Preise jeder Nacht | Tidaq",
+    "metaDescription": "Die Luxushotels {where} mit dem Preis jeder Nacht und dem günstigsten Wochenende. Täglich aktualisiert, ohne Cookies.",
+    "eyebrow": "Alle Hotels",
+    "title": "Fünf-Sterne-Hotels {where}",
+    "intro": "Wir beobachten {n, plural, one {ein Fünf-Sterne-Hotel} other {# Fünf-Sterne-Hotels}} {where}. Für jedes siehst du den Preis jeder Nacht in den nächsten {days} Tagen und das günstigste Wochenende.",
+    "empty": "Hier beobachten wir gerade keine Hotels. Schau in die Liste aller Hotels.",
+    "weekend": "Günstigstes Wochenende",
+    "weekendFacts": "2 Nächte, 2 Erwachsene, bei {provider}",
+    "noWeekend": "Noch kein Wochenendpreis. Im Kalender siehst du jede Nacht."
+  },
+  "hotels": {
+    "metaTitle": "Alle Hotels: Luxushotels mit Preisverlauf | Tidaq",
+    "metaDescription": "Alle Fünf-Sterne-Hotels, deren Preise Tidaq jeden Tag beobachtet, nach Region und Stadt.",
+    "eyebrow": "Hotels",
+    "title": "Alle Hotels",
+    "intro": "{hotels} Fünf-Sterne-Hotels in {cities} Städten und Reisezielen. Wähl eine Stadt oder direkt ein Hotel.",
+    "cityLabel": "{n, plural, one {1 Hotel} other {# Hotels}} {where}",
+    "regions": {
+      "germany": "Deutschland",
+      "europe": "Europa",
+      "middleEast": "Naher Osten",
+      "asiaPacific": "Asien und Pazifik",
+      "americas": "Amerika"
+    },
+    "unavailable": "Die Hotelliste ist gerade nicht erreichbar. Versuch es gleich noch einmal."
   }
 }

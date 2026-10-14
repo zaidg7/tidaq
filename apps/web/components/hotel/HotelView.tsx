@@ -2,6 +2,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { CalendarClock, CalendarOff } from 'lucide-react';
 import {
   cheapestStays,
+  cityPath,
   formatDateRange,
   formatPrice,
   localizedPath,
@@ -113,7 +114,14 @@ export function HotelView({ data, today, now }: Props) {
           )}
         </div>
         <div className="min-w-0 md:order-1">
-          <p className="text-eyebrow text-accent">{city}</p>
+          <p className="text-eyebrow text-accent">
+            <a
+              href={localizedPath(cityPath(hotel.city.slug), locale)}
+              className="underline-offset-2 hover:underline"
+            >
+              {city}
+            </a>
+          </p>
           <h1 className="text-title mt-1">{hotel.name}</h1>
           <p className="mt-2 text-[15px] text-muted-ink">{t('facts', { city })}</p>
         </div>

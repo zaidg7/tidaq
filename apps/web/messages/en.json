@@ -6,7 +6,7 @@
   "home": {
     "eyebrow": "Five-star hotels",
     "title": "Is your hotel price <hi>low</hi> or high right now?",
-    "lead": "Every morning we check {hotels} five-star hotels in {cities} cities. You see the history, the low and the cheapest site.",
+    "lead": "Every morning we check <link>{hotels} five-star hotels in {cities} cities</link>. You see the history, the low and the cheapest site.",
     "leadNoData": "Every morning we check the prices of five-star hotels. You see the history, the low and the cheapest site.",
     "liveEyebrow": "Live · as of {time}",
     "liveTitle": "Is now a good time to book?",
@@ -604,5 +604,32 @@
         }
       ]
     }
+  },
+  "city": {
+    "metaTitle": "Five-star hotels {where}: prices for every night | Tidaq",
+    "metaDescription": "The luxury hotels {where} with the price of every night and the cheapest weekend. Updated daily, no cookies.",
+    "eyebrow": "All hotels",
+    "title": "Five-star hotels {where}",
+    "intro": "We watch {n, plural, one {one five-star hotel} other {# five-star hotels}} {where}. For each, you see the price of every night in the next {days} days and the cheapest weekend.",
+    "empty": "We're not watching any hotels here right now. Have a look at the list of all hotels.",
+    "weekend": "Cheapest weekend",
+    "weekendFacts": "2 nights, 2 adults, on {provider}",
+    "noWeekend": "No weekend price yet. The calendar shows every night."
+  },
+  "hotels": {
+    "metaTitle": "All hotels: luxury hotels with price history | Tidaq",
+    "metaDescription": "Every five-star hotel whose prices Tidaq watches daily, by region and city.",
+    "eyebrow": "Hotels",
+    "title": "All hotels",
+    "intro": "{hotels} five-star hotels in {cities} cities and destinations. Pick a city or go straight to a hotel.",
+    "cityLabel": "{n, plural, one {1 hotel} other {# hotels}} {where}",
+    "regions": {
+      "germany": "Germany",
+      "europe": "Europe",
+      "middleEast": "Middle East",
+      "asiaPacific": "Asia and Pacific",
+      "americas": "Americas"
+    },
+    "unavailable": "The hotel list is unavailable right now. Please try again in a moment."
   }
 }
