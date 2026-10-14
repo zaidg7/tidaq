@@ -3,11 +3,9 @@
 # job summary; a session copies it to scripts/catalog/photos.json and turns it into a migration.
 name: Catalog photos
 
+# Manual only (C-002c): a PR touching photos.ts no longer starts it by itself.
 on:
   workflow_dispatch:
-  pull_request:
-    paths:
-      - scripts/catalog/photos.ts
 
 permissions:
   contents: read

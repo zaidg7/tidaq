@@ -17,6 +17,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-001                                                           | Monorepo scaffold (Next.js + OpenNext + collector + core)                    | CLOUD | M             | Z-01                              | DONE           |
 | C-002                                                           | CI pipeline (lint, typecheck, test, build, e2e smoke)                        | CLOUD | M             | C-001                             | DONE           |
 | C-002b                                                          | CI: spend fewer GitHub Actions minutes                                       | CLOUD | S             | C-002                             | DONE           |
+| C-002c                                                          | CI: no second full run on main, photos workflow manual (minutes)             | CLOUD | S             | C-002b                            | DONE           |
 | C-003                                                           | Session tooling (SessionStart hook, permissions allowlist)                   | CLOUD | S             | C-001                             | DONE           |
 | C-007                                                           | i18n setup (de default, en) and formatting helpers                           | CLOUD | S             | C-001                             | DONE           |
 | C-004                                                           | Supabase schema v1, RLS, seed providers and cities                           | CLOUD | M             | C-001, Z-04                       | DONE           |
@@ -65,8 +66,11 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-071a                                                          | Catalog: 25 cities, five-star discovery script, first batch (~50 hotels)     | CLOUD | M             | C-070a                            | DONE           |
 | C-071b                                                          | Catalog: next batches up to ~150 hotels, watch the night run                 | CLOUD | M             | C-071a                            | TODO           |
 | C-071c                                                          | Photos for the new hotels (licensed, self-hosted, C-011c pipeline)           | CLOUD | S             | C-071a                            | TODO           |
-| C-072                                                           | Spike: LiteAPI room/board/occupancy rates (free supplier API)                | CLOUD | M             | B-010                             | TODO           |
-| C-073                                                           | Research: German platforms (CHECK24, HolidayCheck, TUI) without scraping     | CLOUD | S             | –                                 | TODO                |
+| C-072                                                           | Spike: LiteAPI room/board/occupancy rates (free supplier API)                | CLOUD | M             | B-010                             | DONE           |
+| C-074                                                           | Room-type normalizer prototype (Standard/Deluxe/Suite per hotel)             | CLOUD | M             | C-072, B-012                      | BLOCKED        |
+| C-075                                                           | Room grid: prices per guest count and board for watched stays                | CLOUD | L             | C-074, B-012                      | BLOCKED        |
+| C-073                                                           | Research: German platforms (CHECK24, HolidayCheck, TUI) without scraping     | CLOUD | S             | –                                 | DONE                |
+| C-076                                                           | Second source: DataForSEO for real stay checks (CHECK24 & co.)               | CLOUD | M             | B-013                             | BLOCKED             |
 | C-060                                                           | Market test: five-star price drops in ~10 holiday destinations               | CLOUD | M             | C-013g                            | TODO           |
 | C-023                                                           | Hotel page with price calendar                                               | CLOUD | M             | C-022                             | TODO           |
 | C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | TODO           |
@@ -161,6 +165,8 @@ Notes: one job "CI" (~3 min). Red proof: [run 38272430319](https://github.com/za
 - [x] A PR shows one required-looking check "CI" that runs all steps
 - [x] An intentionally failing test makes CI red (prove it in the PR, then revert)
 - [x] Typical run under 6 minutes
+
+**C-002c notes (DONE):** the free 2,000 Actions minutes ran out on 14 Oct (B-011; Zaid: "don't spend much"). A push to main no longer reruns the full CI the PR already passed; it only deploys staging. `catalog-photos` runs by hand only. A merged change now costs ≈ 6 minutes instead of ≈ 10. Sessions: batch small changes, never re-run CI without a reason, keep draft PRs draft until the work is done.
 
 ### C-003 · Session tooling
 
@@ -643,19 +649,35 @@ D-43 (Zaid, 14 Oct). Steps: pick the 25 most popular cities for luxury travel wo
 
 New hotels have no photo; the UI shows the placeholder. Run the C-011b/C-011c pipeline (licensed Wikimedia Commons images, credit, self-hosted thumbnails) for them. Hotels without a usable free image keep the placeholder.
 
-### C-072 · Spike: LiteAPI room/board/occupancy rates (Owner CLOUD · M · depends on B-010 · TODO)
+### C-072 · Spike: LiteAPI room/board/occupancy rates (Owner CLOUD · M · depends on B-010 · DONE)
 
 D-43 needs room types, board (breakfast, half board, all-inclusive) and occupancies (1 adult, 2+child, 3). LiteAPI (Nuitee) is the only self-serve, free source found with that data (`docs/research/rate-data.md`). Steps: with the sandbox key (B-010), map 10 of our hotels to LiteAPI ids; for 20 stays and occupancies 1, 2, 2+1, 3 record rooms, board types, prices, cancellation and response time; compare totals with our platform prices; ask Nuitee in writing what look-to-book is acceptable and whether storing and showing price history is allowed. Output: `docs/research/liteapi.md` with a go/no-go and a design for a room-level grid (2 adults daily for 60 nights, other occupancies for watched hotels). No booking, no payment data (hard rule 3).
 
-### C-073 · Research: German platforms without scraping (Owner CLOUD · S · TODO)
+**C-072 notes (DONE):** `docs/research/liteapi.md`. 80 sandbox searches (10 hotels × 2 stays × 1, 2, 2+1, 3 guests): prices for 17–19 of 20 stays per guest mix, up to 200 room types per answer, boards Room Only / Breakfast / Half Board, cheapest 2-adult rate a median +4.7 % from the cheapest Tripadvisor site (15 of 18 within ±10 %), 3.2 s median. Go for a small build only after Nuitee's written OK (B-012). Room names need normalizing (C-074).
+
+### C-074 · Room-type normalizer prototype (Owner CLOUD · M · depends on C-072, B-012 · BLOCKED)
+
+Map the many supplier room names per hotel ("Superior Room (Plus)", "Habitación superior (Plus)", "Double room - Accommodation Only - Superior Courtyard View") to a few classes per hotel (Standard, Deluxe, Junior Suite, Suite, Villa) with board (room only, breakfast, half board, full board, all-inclusive). Rules first (keywords in EN/DE/ES/FR/IT, bed types, view), unit tests in `packages/core`, measured on stored answers of 20 hotels. Output: share of rates classified, examples of misses.
+
+### C-075 · Room grid for watched stays (Owner CLOUD · L · depends on C-074, B-012 · BLOCKED)
+
+Design in `docs/research/liteapi.md`: daily LiteAPI search per (watched or most-viewed stay, guest mix), stored per board and room class (`room_daily`), within a daily search cap Nuitee agrees to. Stay page: guest/board/room filter with history; live search for guest mixes we don't track yet.
+
+### C-073 · Research: German platforms without scraping (Owner CLOUD · S · DONE)
 
 Zaid (14 Oct): our audience is German, so CHECK24, HolidayCheck, TUI (and HRS, trivago) matter. Fact: until 13 Oct we had CHECK24, HolidayCheck, TUI and trivago prices only through DataForSEO (Google Hotels, German locale). Xotelo (Tripadvisor) doesn't list them, so since the switch to the free source (D-41) they're missing. Steps: (1) measure what DataForSEO Google Hotels would cost for the real-check stays only (about 350 per day; at ~$0.0008 per call that is ~$8/month, inside the $12 cap; verify against the account's real billing) and whether it can run beside Xotelo just for the platforms Xotelo lacks; (2) check official partner routes: the CHECK24 partner program, HRS affiliate/API, HolidayCheck partner program, trivago (no public API); what data each allows us to store and show; (3) check whether LiteAPI (C-072) or other supplier APIs carry them (likely not; they're resellers). Output: `docs/research/german-platforms.md` with a recommendation, and a BLOCKERS entry if it needs Zaid's money or sign-up. Never scrape (hard rule 2).
+
+**C-073 notes (DONE):** `docs/research/german-platforms.md`. No German platform (CHECK24, HRS/hotel.de, HolidayCheck, TUI, trivago) offers small sites price data per hotel and date; their partner programs give links, widgets and "from" feeds only. The only legal per-stay source with CHECK24/HolidayCheck/TUI is Google Hotels via DataForSEO: ~$9.60/month for ~400 real stay checks a day. Decision for Zaid in B-013; if yes, C-076 runs DataForSEO for stay checks next to Xotelo for the night grid. Awin affiliate links (hotel.de, HolidayCheck, TUI, trivago) come later with C-026.
+
+### C-076 · Second source: DataForSEO for real stay checks next to Xotelo (Owner CLOUD · M · depends on B-013 · BLOCKED)
+
+Let the collector use two sources at once: the night grid stays on Xotelo (free); the real stay checks (grid + watched + requested) go to DataForSEO Google Hotels (German locale) so CHECK24, HolidayCheck and TUI appear in the provider table and the stay history. Budget guard unchanged (`DAILY_TASK_CAP`, `MONTHLY_BUDGET_USD`, hard rule 4). A stay's history keeps one source (C-013g rule); mark the switch day. Night sums and real checks then come from different meta-searches: re-check C-070c accuracy and C-070d reliability for a week after the switch.
 
 ### C-060 · Market test: five-star price drops
 
 Owner: CLOUD · Size: M · Depends on: C-013g · Status: TODO · PR: –
 
-Zaid's growth idea (13 Oct): "Skyscanner for hotel price drops": show users the biggest current drops at five-star hotels for their dates and destination. Test whether it's doable and interesting before building features: pick ~10 holiday destinations (e.g. Mallorca, Algarve, Costa del Sol, Côte d'Azur, Amalfi, Santorini, Dubai, Bali, Maldives, Phuket), find their five-star hotels with Xotelo `/api/list` (no star filter: use price range and rating), track 2–4 fixed stays per hotel daily for 3 weeks within the daily cap, and report how often a stay is ≥ 20 % below its own 14-day average, how long drops last, and 3 real examples. Also try `/api/heatmap` (cheap/expensive days per hotel) as a cheaper signal. Output: `docs/research/price-drops.md` with a go/no-go for a deals feature. Never exceed the daily cap; never scrape.
+**Update 14 Oct (C-072 session):** since D-42 the night grid stores every night of every hotel daily, and C-071a added Dubai and the Maldives. Measure drops on `night_daily` instead of extra stays: a night is a drop when today's best price is ≥ 20 % below its own 14-day average. Data starts 14 Oct, so the 3-week report is possible from about 4 Nov; add 3 hotels each in 3–4 more holiday places (e.g. Mallorca, Amalfi, Phuket) in C-071b if capacity allows. Original idea: Zaid's growth idea (13 Oct): "Skyscanner for hotel price drops": show users the biggest current drops at five-star hotels for their dates and destination. Test whether it's doable and interesting before building features: pick ~10 holiday destinations (e.g. Mallorca, Algarve, Costa del Sol, Côte d'Azur, Amalfi, Santorini, Dubai, Bali, Maldives, Phuket), find their five-star hotels with Xotelo `/api/list` (no star filter: use price range and rating), track 2–4 fixed stays per hotel daily for 3 weeks within the daily cap, and report how often a stay is ≥ 20 % below its own 14-day average, how long drops last, and 3 real examples. Also try `/api/heatmap` (cheap/expensive days per hotel) as a cheaper signal. Output: `docs/research/price-drops.md` with a go/no-go for a deals feature. Never exceed the daily cap; never scrape.
 
 ### C-023 · Hotel page with price calendar
 
