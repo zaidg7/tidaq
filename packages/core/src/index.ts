@@ -204,3 +204,4 @@ export {
   type TrustTest,
 } from './db';
 export type { Database, Json, Tables, TablesInsert, TablesUpdate } from './db.types';
+export { inlineLinks, type InlinePart } from './inlineLinks';
