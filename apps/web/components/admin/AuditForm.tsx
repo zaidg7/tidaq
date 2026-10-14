@@ -123,7 +123,7 @@ export function AuditForm({
         <TextField
           id="listed"
           name="listed"
-          label="Preis bei Google"
+          label="Angezeigter Preis"
           inputMode="decimal"
           placeholder="1.184"
           pattern={EURO_PATTERN}

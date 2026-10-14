@@ -9,7 +9,14 @@ import { cn } from '@/lib/cn';
 import { DateRangePicker, type PickerLabels } from './DateRangePicker';
 import { HotelCombobox, type ComboboxLabels } from './HotelCombobox';
 
-export type SearchHotel = { slug: string; name: string; city: string };
+export type SearchHotel = {
+  slug: string;
+  name: string;
+  city: string;
+  /** City page and its option label ("Alle Hotels in Berlin"), C-024b. Without: no city option. */
+  cityHref?: string;
+  cityAll?: string;
+};
 
 type Labels = {
   label: string;

@@ -192,7 +192,7 @@ create table trust_tests (
   provider_id int not null references providers(id),
   hotel_id int not null references hotels(id),
   check_in date not null, check_out date not null, adults smallint not null,
-  listed_cents int not null,            -- price shown on Google Hotels for this provider
+  listed_cents int not null,            -- provider's price on our stay page / Tripadvisor (Google Hotels before 15 Oct 2026)
   checkout_cents int,                   -- final total on the last page before payment (null = could not book)
   outcome text not null check (outcome in ('match','higher','lower','unavailable')),
   extras text,                          -- e.g. 'city tax added', 'breakfast not included'
@@ -322,6 +322,8 @@ Input: `stay_daily.best_cents` for the last N days (N = days tracked, max 60).
 ### 8.2 Trust score (per provider)
 
 From `trust_tests` (manual checkout tests, PLAN §9 and task L-033):
+
+**Listed price (since 15 Oct 2026, C-032c):** the provider's price for that stay as our own stay page shows it under "Preise heute" (collected the same morning), or, if that table is from an earlier day, the provider's price on Tripadvisor for the same hotel, dates and guests. That is the listing our data comes from (D-41), so "an der Kasse ≈ …" applies the markup to the price we actually show. Tests before 15 Oct used Google Hotels as the reference; they stay in the score.
 
 1. For each test: markup = (checkout − listed) / listed. A test **passes** if markup ≤ +1 % (same price or cheaper). `unavailable` (the price could not be booked) fails.
 2. accuracy = passed tests / all tests (n).
