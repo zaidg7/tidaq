@@ -36,9 +36,13 @@ export {
 } from './stayParams';
 export { parseEuroCents } from './money';
 export {
+  BEST_STAY_KINDS,
+  cheapestStays,
   PRICE_LEVELS,
   priceLevels,
   stayFromNights,
+  type BestStay,
+  type BestStayKind,
   type NightPrice,
   type StayTotal,
 } from './hotelCalendar';
@@ -204,4 +208,14 @@ export {
   type TrustTest,
 } from './db';
 export type { Database, Json, Tables, TablesInsert, TablesUpdate } from './db.types';
+export {
+  goPath,
+  hasOutboundSearch,
+  outboundUrl,
+  safeHttpsUrl,
+  withAffiliate,
+  type OutboundHotel,
+  type OutboundStay,
+} from './outbound';
+export { hotelJsonLd, jsonLdString, SITE_ORIGIN, type HotelJsonLdInput } from './structuredData';
 export { inlineLinks, type InlinePart } from './inlineLinks';

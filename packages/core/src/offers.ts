@@ -8,6 +8,11 @@ export interface StayOffer {
   /** Stay total in EUR cents as listed. */
   totalCents: number;
   trust: { score: number; tests: number; matches: number; avgMarkupPct: number | null } | null;
+  /**
+   * Set when we can send visitors there (C-026): the provider slug for `/go/…`, and whether an
+   * affiliate template applies (the link is then labelled as a partner link).
+   */
+  link?: { slug: string; partner: boolean };
 }
 
 export interface RankedOffer extends StayOffer {
@@ -33,7 +38,9 @@ export function expectedCheckoutCents(offer: StayOffer): number | null {
  * usually charges more at checkout doesn't sit on top. Commission never plays a role. Ties: the
  * lower listed price, then the hotel's own site, then the name.
  */
-export function rankOffers(offers: readonly StayOffer[]): RankedOffer[] {
+export function rankOffers<T extends StayOffer>(
+  offers: readonly T[],
+): (T & Omit<RankedOffer, keyof StayOffer>)[] {
   return offers
     .map((o) => {
       const expectedCents = expectedCheckoutCents(o);

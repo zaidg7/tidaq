@@ -1016,6 +1016,16 @@ export type Database = {
       }
       prune_raw_snapshots: { Args: { older_than?: string }; Returns: number }
       rebuild_stay_daily: { Args: { p_stay_ids?: number[] }; Returns: number }
+      outbound_click: {
+        Args: {
+          p_adults: number
+          p_check_in: string
+          p_check_out: string
+          p_hotel: string
+          p_provider: string
+        }
+        Returns: Json
+      }
       request_stay: {
         Args: {
           p_adults: number

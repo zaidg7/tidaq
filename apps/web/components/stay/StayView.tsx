@@ -8,6 +8,7 @@ import {
   formatDateRange,
   formatDayMonth,
   formatPrice,
+  hotelPath,
   localizedPath,
   NIGHT_GRID,
   STATS,
@@ -129,6 +130,12 @@ export function StayView({
           <p className="text-meta mt-1 text-muted-ink">
             {dates} · {t('stayFacts', { nights: params.nights, adults: params.adults })}
           </p>
+          <a
+            href={localizedPath(hotelPath(hotel.slug), locale)}
+            className="text-meta mt-1.5 inline-block font-semibold text-accent underline-offset-2 hover:underline"
+          >
+            {t('allNights')}
+          </a>
         </div>
         {edit}
       </header>
@@ -196,6 +203,8 @@ export function StayView({
             unreviewed={offers.unreviewed}
             day={offers.day}
             today={today}
+            hotelSlug={hotel.slug}
+            stay={{ checkIn: params.checkIn, checkOut: params.checkOut, adults: params.adults }}
           />
           <WatchCard />
         </div>

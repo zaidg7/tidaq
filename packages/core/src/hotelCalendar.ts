@@ -1,4 +1,4 @@
-import { dayDiff, shiftDays } from './calendar';
+import { dayDiff, shiftDays, weekdayMonFirst } from './calendar';
 
 /**
  * Hotel page price calendar (C-023a): today's price of every night from the night grid (D-42).
@@ -83,4 +83,55 @@ export function stayFromNights(
     }
   }
   return best ? { kind: 'ok', ...best, nights: count } : { kind: 'none', nights: count };
+}
+
+/** The kinds of stay the hotel page highlights, as in the stay grid (PLAN §7.1). */
+export const BEST_STAY_KINDS = {
+  /** Friday → Sunday (`weekdayMonFirst`: Monday = 0). */
+  weekend: { checkInWeekday: 4, nights: 2 },
+  /** Tuesday → Thursday. */
+  midweek: { checkInWeekday: 1, nights: 2 },
+} as const;
+
+export type BestStayKind = keyof typeof BEST_STAY_KINDS;
+
+export interface BestStay {
+  checkIn: string;
+  checkOut: string;
+  totalCents: number;
+  providerId: number;
+  nights: number;
+}
+
+/**
+ * The cheapest upcoming weekend (Fri → Sun) and midweek (Tue → Thu) stay among the nights, each
+ * on one reviewed site (same rule as `stayFromNights`). Check-in strictly after `today`, like the
+ * stay grid. Ties go to the earlier date. Null when no such stay has a total.
+ */
+export function cheapestStays(
+  nights: readonly NightPrice[],
+  today: string,
+  reviewed: ReadonlySet<number>,
+): Record<BestStayKind, BestStay | null> {
+  const result: Record<BestStayKind, BestStay | null> = { weekend: null, midweek: null };
+  for (const kind of Object.keys(BEST_STAY_KINDS) as BestStayKind[]) {
+    const { checkInWeekday, nights: count } = BEST_STAY_KINDS[kind];
+    for (const { night } of nights) {
+      if (night <= today || weekdayMonFirst(night) !== checkInWeekday) continue;
+      const checkOut = shiftDays(night, count);
+      const stay = stayFromNights(nights, night, checkOut, reviewed);
+      const best = result[kind];
+      // Nights come oldest first, so `<` keeps the earlier date on a tie.
+      if (stay.kind === 'ok' && (!best || stay.totalCents < best.totalCents)) {
+        result[kind] = {
+          checkIn: night,
+          checkOut,
+          totalCents: stay.totalCents,
+          providerId: stay.providerId,
+          nights: count,
+        };
+      }
+    }
+  }
+  return result;
 }

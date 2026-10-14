@@ -5,6 +5,8 @@ import {
   formatDateRange,
   formatDayMonth,
   formatPrice,
+  hotelPath,
+  localizedPath,
   STATS,
   updatedAtParts,
   type Locale,
@@ -118,7 +120,18 @@ export async function LiveExample({ locale }: { locale: Locale }) {
             <span aria-hidden="true" className="bg-placeholder size-14 shrink-0 rounded-cell" />
           )}
           <div className="min-w-0 flex-1">
-            <p className="text-title truncate">{stay.hotel.name}</p>
+            <p className="text-title truncate">
+              {live ? (
+                <a
+                  href={localizedPath(hotelPath(stay.hotel.slug), locale)}
+                  className="underline-offset-4 hover:underline"
+                >
+                  {stay.hotel.name}
+                </a>
+              ) : (
+                stay.hotel.name
+              )}
+            </p>
             <p className="text-meta mt-0.5 text-muted-ink">
               <span className="whitespace-nowrap max-sm:hidden">
                 {stay.hotel.cityName[locale]} ·{' '}

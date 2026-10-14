@@ -7,6 +7,9 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     await page.goto('/dev/stay/tracked');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Hotel Adlon Kempinski');
     await expect(page.getByText('4.–6. Dez. 2026 · 2 Nächte · 2 Erwachsene')).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Preise jeder Nacht in diesem Hotel' }),
+    ).toHaveAttribute('href', '/hotel/hotel-adlon-kempinski-berlin');
     await expect(page.getByText('Guter Preis').first()).toBeVisible();
 
     await expect(page.getByRole('term')).toHaveText(['Tief', 'Ø 30 Tage', 'Hoch']);
@@ -51,6 +54,36 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     // The alert sign-up comes with C-030: until then the button says so and does nothing.
     await expect(page.getByRole('heading', { name: 'Preis beobachten' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Bald verfügbar' })).toBeDisabled();
+  });
+
+  test('"Zum Angebot" opens the provider in a new tab through /go (C-026)', async ({ page }) => {
+    await page.goto('/dev/stay/tracked');
+    const table = page.getByRole('region', { name: 'Preise heute' });
+    const booking = table.getByRole('link', { name: 'Zum Angebot bei Booking.com (neuer Tab)' });
+    await expect(booking).toHaveAttribute(
+      'href',
+      '/go/booking-com/hotel-adlon-kempinski-berlin?in=2026-12-04&out=2026-12-06&adults=2&lang=de',
+    );
+    await expect(booking).toHaveAttribute('target', '_blank');
+    await expect(booking).toHaveAttribute('rel', 'sponsored nofollow noopener');
+    await expect(booking).toContainText('Zum Angebot');
+    await expect(table.getByRole('link', { name: /^Zum Angebot bei/ })).toHaveCount(5);
+    await expect(
+      table.getByRole('link', { name: 'Zum Angebot bei Website des Hotels (neuer Tab)' }),
+    ).toHaveAttribute('href', /^\/go\/hotel-direct\//);
+  });
+
+  test('on phones the whole provider row is the link', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/dev/stay/tracked');
+    const row = page.getByRole('region', { name: 'Preise heute' }).getByRole('listitem').nth(1);
+    const link = row.getByRole('link');
+    const [r, l] = await Promise.all([row.boundingBox(), link.boundingBox()]);
+    // Inside the row's 1 px divider border.
+    expect(Math.abs((l?.width ?? 0) - (r?.width ?? 0))).toBeLessThanOrEqual(2);
+    expect(Math.abs((l?.height ?? 0) - (r?.height ?? 0))).toBeLessThanOrEqual(2);
+    const width = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(width).toBeLessThanOrEqual(390);
   });
 
   test('provider prices from an earlier day say which day', async ({ page }) => {
@@ -185,6 +218,29 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     await page.goto('/en/dev/stay/tracked');
     await expect(page.getByText('4–6 Dec 2026 · 2 nights · 2 adults')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Our take' })).toBeVisible();
+  });
+});
+
+test.describe('outbound route (C-026)', () => {
+  test('without a database it says so instead of a dead redirect', async ({ request }) => {
+    const res = await request.get(
+      '/go/booking-com/hotel-adlon-kempinski-berlin?in=2026-12-04&out=2026-12-06&adults=2',
+      { maxRedirects: 0 },
+    );
+    expect(res.status()).toBe(503);
+    expect(res.headers()['cache-control']).toBe('no-store');
+    expect(await res.text()).toContain('Buchungsseite');
+  });
+
+  test('malformed links are a 404', async ({ request }) => {
+    for (const path of [
+      '/go/Booking/hotel-adlon-kempinski-berlin?in=2026-12-04&out=2026-12-06',
+      '/go/booking-com/hotel-adlon-kempinski-berlin?in=4.12.2026&out=2026-12-06',
+      '/go/booking-com/hotel-adlon-kempinski-berlin?in=2026-12-04&out=2026-12-06&adults=two',
+    ]) {
+      const res = await request.get(path, { maxRedirects: 0 });
+      expect(res.status(), path).toBe(404);
+    }
   });
 });
 

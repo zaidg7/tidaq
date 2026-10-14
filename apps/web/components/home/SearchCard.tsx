@@ -2,7 +2,7 @@
 
 import { useId, useState, type FormEvent, type ReactNode } from 'react';
 import { CalendarDays, ChevronDown, CircleAlert, MapPin, Users } from 'lucide-react';
-import { localizedPath, stayPath, type Locale } from '@tidaq/core';
+import { hotelPath, localizedPath, stayPath, type Locale } from '@tidaq/core';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
@@ -106,6 +106,11 @@ export function SearchCard({
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+    // A hotel without any dates opens its calendar of every night: the quickest way to pick.
+    if (hotel && !checkIn && !checkOut) {
+      window.location.assign(localizedPath(hotelPath(hotel), locale));
+      return;
+    }
     setSubmitted(true);
     const p = problem();
     if (p) {

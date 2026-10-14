@@ -73,8 +73,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-076                                                           | Second source: DataForSEO for real stay checks (CHECK24 & co.)               | CLOUD | M             | B-013                             | BLOCKED             |
 | C-060                                                           | Market test: five-star price drops in ~10 holiday destinations               | CLOUD | M             | C-013g                            | TODO           |
 | C-023a                                                          | Hotel page: price calendar of every night, pick dates → stay                 | CLOUD | M             | C-022, C-070b                     | DONE           |
-| C-023b                                                          | Hotel page: cheapest weekend/midweek, structured data, links in              | CLOUD | S             | C-023a                            | TODO           |
-| C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | TODO           |
+| C-023b                                                          | Hotel page: cheapest weekend/midweek, structured data, links in              | CLOUD | S             | C-023a                            | DONE           |
+| C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | DONE           |
+| L-026                                                           | Check "Zum Angebot" links open the right hotel and dates                     | LOCAL | S             | C-026                             | TODO           |
 | C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | DONE           |
 | C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | TODO           |
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | TODO           |
@@ -114,7 +115,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | Z-09  | Google Search Console                                                                          | TODO               |
 | Z-10  | Social handles                                                                                 | TODO               |
 | Z-11  | Affiliate program applications (after launch)                                                  | TODO               |
-| Z-12  | Read legal pages before launch                                                                 | OPEN, see B-014    |
+| Z-12  | Read legal pages before launch                                                                 | DONE (B-014)       |
 
 Tasks marked **parallel-safe** for LOCAL (no shared files with typical CLOUD work): C-003, C-007, C-015, C-027, C-029.
 
@@ -698,6 +699,8 @@ Owner: CLOUD · Size: M · Depends on: C-022 · Status: split into C-023a (page,
 
 **C-023a notes (DONE, [#56](https://github.com/zaidg7/tidaq/pull/56)):** `/hotel/[slug]` (`components/hotel/HotelView.tsx`, `PriceCalendar.tsx`, `lib/data/hotel.ts`): photo hero, then a calendar of every night of the next 120 days with today's cheapest reviewed price (night grid, newest of the last two collection days per night), tinted in 5 levels (core `priceLevels`, CSS `.price-lvl-*`, dark tints 16 % for AA) and the price printed in each cell. Picking check-in/check-out (same keyboard grid as the search picker) shows the total on one site (core `stayFromNights`, same rule as SQL `stay_history_from_nights`) and links to the stay page; hotels with unreliable nights (C-070d) show a note and no total. States: empty (no nights yet), inactive, unavailable, 404. Dev page `/dev/hotel/{calendar,unreliable,empty,inactive}`, e2e `e2e/hotel.spec.ts`. Nothing links to the hotel page yet: C-023b.
 
+**C-023b notes (DONE):** "Günstigste Termine" above the calendar: the cheapest upcoming Fri→Sun and Tue→Thu stay (core `cheapestStays`, check-in after today, one reviewed site for all nights like `stayFromNights`), each card with dates (→ stay page), nights, site, total and per-night price. Hidden at unreliable hotels (C-070d) and when no stay has a total. `/hotel/[slug]` emits schema.org `Hotel` JSON-LD (core `hotelJsonLd`: name, URL, description, stars, city, country, photo; no prices, they change daily; `jsonLdString` escapes `<`). Links in: the stay page header ("Preise jeder Nacht in diesem Hotel"), the home live example's hotel name (live data only), and the search card: a hotel without dates opens its hotel page instead of the "Wähl Anreise und Abreise." error (one date only still errors). `SITE_ORIGIN` (`https://tidaq.com`) lives in core `structuredData.ts`; C-041 (sitemap/canonical) should reuse it.
+
 ### C-024 · City pages
 
 Owner: CLOUD · Size: S · Depends on: C-023 · Status: TODO · PR: –
@@ -712,6 +715,13 @@ Owner: CLOUD · Size: S · Depends on: C-022 · Status: TODO · PR: –
 
 Owner: CLOUD · Size: S · Depends on: C-022 · Status: TODO · PR: –
 `/go/[offerId]`: look up the latest offer URL, apply `providers.affiliate_template` if set, log `outbound_click` (provider, hotel, stay; no IP, no user agent stored), 302 redirect. Links carry `rel="sponsored nofollow noopener"`, open in a new tab. Unit tests for template filling and unknown ids.
+
+**C-026 notes (DONE):** Xotelo has no deep links or offer ids, so the route is `/go/<provider>/<hotel>?in&out&adults&lang` instead of `/go/[offerId]`. SQL `outbound_click` (anon, security definer, migration `20261014185156`) checks the stay (future check-in, ≤ 30 nights, 1–4 adults), reviewed provider and hotel, logs one `events` row `outbound_click` (provider, hotel, dates, adults; nothing about the visitor; max 5,000 logged a day) and returns provider + hotel facts. Core `outboundUrl` builds the provider's own search (Booking.com, Agoda, Trip.com, Hotels.com, Expedia) for "hotel name + English city" with dates and guests, or the hotel's official https website for "Hotel direkt", then applies `providers.affiliate_template` (`{url}` → encoded target; broken or non-https templates are ignored). 302 with `no-store` and `noindex`; nothing to link (past stay, provider without a search, hotel without a website) → back to the stay page; no database → 503 text. Provider table: ghost "Zum Angebot ↗" (`target=_blank`, `rel="sponsored nofollow noopener"`, icon-only at 1024–1279 px), on phones the whole row is the link; rows with an affiliate template say "Partnerlink". CHECK24 and HRS have no search link yet (Awin, C-073). 47 of 82 hotels have no `official_url`, so "Hotel direkt" has no button there. L-026 checks the links by hand in a browser.
+
+### L-026 · Check outbound links by hand
+
+Owner: LOCAL · Size: S · Depends on: C-026 · Status: TODO · PR: –
+On the staging site, open 3 stay pages (a German city, a holiday place, an Asian city) and click every "Zum Angebot". For each provider: does the right hotel come first, with the right dates and 2 adults? Note wrong ones as a fix task (the URL formats live in core `outbound.ts`). Never book, never enter personal data (hard rule 3).
 
 ### C-027 · Legal and transparency pages
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { priceLevels, stayFromNights, type NightPrice } from './hotelCalendar';
+import { cheapestStays, priceLevels, stayFromNights, type NightPrice } from './hotelCalendar';
 
 describe('priceLevels', () => {
   it('puts each price into its fifth, cheapest = 0, dearest = 4', () => {
@@ -69,5 +69,67 @@ describe('stayFromNights', () => {
 
   it('rejects an empty or reversed stay', () => {
     expect(() => stayFromNights(nights, '2026-12-02', '2026-12-02', reviewed)).toThrow(RangeError);
+  });
+});
+
+describe('cheapestStays', () => {
+  // 2026-12-01 is a Tuesday. Site 1 prices every night; site 4 only some; site 9 is unreviewed.
+  const prices: Record<string, number> = {
+    '2026-12-01': 30_000, // Tue
+    '2026-12-02': 31_000,
+    '2026-12-03': 32_000,
+    '2026-12-04': 50_000, // Fri
+    '2026-12-05': 52_000,
+    '2026-12-06': 28_000,
+    '2026-12-07': 28_000,
+    '2026-12-08': 25_000, // Tue
+    '2026-12-09': 26_000,
+    '2026-12-10': 27_000,
+    '2026-12-11': 45_000, // Fri
+    '2026-12-12': 46_000,
+  };
+  const nights: NightPrice[] = Object.entries(prices).map(([n, cents]) => ({
+    night: n,
+    bestCents: cents,
+    perProvider: { '1': cents, '9': cents - 10_000 },
+  }));
+  const reviewed = new Set([1]);
+
+  it('finds the cheapest Fri → Sun and Tue → Thu stay on one reviewed site', () => {
+    expect(cheapestStays(nights, '2026-11-30', reviewed)).toEqual({
+      weekend: {
+        checkIn: '2026-12-11',
+        checkOut: '2026-12-13',
+        totalCents: 91_000,
+        providerId: 1,
+        nights: 2,
+      },
+      midweek: {
+        checkIn: '2026-12-08',
+        checkOut: '2026-12-10',
+        totalCents: 51_000,
+        providerId: 1,
+        nights: 2,
+      },
+    });
+  });
+
+  it('skips today and stays whose nights are not all priced', () => {
+    // 12 Dec has no next night: the 11 Dec weekend has no total, so 4 Dec wins.
+    const short = nights.filter((n) => n.night !== '2026-12-12');
+    expect(cheapestStays(short, '2026-11-30', reviewed).weekend?.checkIn).toBe('2026-12-04');
+    // Check-in today doesn't count: the next Tuesday is the only midweek stay left.
+    expect(cheapestStays(nights, '2026-12-01', reviewed).midweek?.checkIn).toBe('2026-12-08');
+    expect(cheapestStays(nights, '2026-12-08', reviewed).midweek).toBeNull();
+  });
+
+  it('keeps the earlier date on a tie and returns nulls without reviewed prices', () => {
+    const flat = nights.map((n) => ({ ...n, perProvider: { '1': 20_000 } }));
+    expect(cheapestStays(flat, '2026-11-30', reviewed).weekend?.checkIn).toBe('2026-12-04');
+    expect(cheapestStays(nights, '2026-11-30', new Set([4]))).toEqual({
+      weekend: null,
+      midweek: null,
+    });
+    expect(cheapestStays([], '2026-11-30', reviewed)).toEqual({ weekend: null, midweek: null });
   });
 });

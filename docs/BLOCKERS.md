@@ -18,7 +18,7 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ## B-014 · Read the legal pages once, sign the Supabase data agreement (Z-12)
 
-Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-044 (go live), not the build
+Status: DONE (14 Oct: Zaid read the pages and signed the Supabase DPA; no USt-IdNr. assumed, so the Impressum stays as is) · Opened: 2026-10-14 by CLOUD · Blocks: nothing now
 What I need: you read the five legal pages once and answer two questions. Not legal advice from me: the texts follow PLAN §11 and describe what Tidaq really does today.
 Steps for Zaid (≈ 20 min, any time before launch on 30 Nov):
 
