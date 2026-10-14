@@ -3,6 +3,7 @@ import { BellRing, CalendarClock, CalendarOff, CalendarX2, Lightbulb } from 'luc
 import { useLocale, useTranslations } from 'next-intl';
 import {
   addDays,
+  cityPath,
   computeStayStats,
   dayDiff,
   formatDateRange,
@@ -125,7 +126,14 @@ export function StayView({
           />
         )}
         <div className="min-w-0 flex-1">
-          <p className="text-eyebrow text-accent">{hotel.city.name[locale]}</p>
+          <p className="text-eyebrow text-accent">
+            <a
+              href={localizedPath(cityPath(hotel.city.slug), locale)}
+              className="underline-offset-2 hover:underline"
+            >
+              {hotel.city.name[locale]}
+            </a>
+          </p>
           <h1 className="text-title mt-1">{hotel.name}</h1>
           <p className="text-meta mt-1 text-muted-ink">
             {dates} · {t('stayFacts', { nights: params.nights, adults: params.adults })}

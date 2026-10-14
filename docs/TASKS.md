@@ -77,7 +77,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | DONE           |
 | L-026                                                           | Check "Zum Angebot" links open the right hotel and dates                     | LOCAL | S             | C-026                             | TODO           |
 | C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | DONE           |
-| C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | TODO           |
+| C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | DONE           |
+| C-024b                                                          | Search card: a city option opens the city page                               | CLOUD | S             | C-024                             | TODO           |
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | TODO           |
 | C-028                                                           | SEO foundation and dynamic OG images                                         | CLOUD | M             | C-022                             | TODO           |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | TODO           |
@@ -705,6 +706,13 @@ Owner: CLOUD · Size: M · Depends on: C-022 · Status: split into C-023a (page,
 
 Owner: CLOUD · Size: S · Depends on: C-023 · Status: TODO · PR: –
 `/stadt/[city]`: hotel cards with photo, cheapest upcoming stay, state chip. SEO title and intro text (DE/EN). Links from footer and home. Also `/hotels` (navbar "Hotels", footer "Alle Hotels", added in C-020a): all hotels grouped by city. Since C-071a there are 27 "cities", among them the Maldives (a country: "auf den Malediven", not "in Malediven") and places spanning several Tripadvisor locations (Miami + Miami Beach, Los Angeles + Beverly Hills); group `/hotels` by country or region, and make every city name read naturally in DE and EN.
+
+**C-024 notes (DONE):** `/stadt/[city]` (`components/city/CityView.tsx`, `lib/data/city.ts`): hotel cards A–Z with the 960 px photo, name (→ hotel page) and the cheapest upcoming weekend (Fri → Sun, both nights on one reviewed site, check-in after today, from the night grid; SQL `city_best_weekends`, migration `20261014213011`, one round trip per city) as a link to its stay page, with total, site and "2 Nächte, 2 Erwachsene". Hotels whose single nights mislead (C-070d), or when reliability can't be read, show "Noch kein Wochenendpreis" instead of a total. No state chip: a weekend picked from the night grid has no verdict of its own yet (the stay page computes it). `/hotels` (`HotelDirectory.tsx`): regions (core `groupByRegion`: Deutschland, Europa, Naher Osten, Asien und Pazifik, Amerika) → cities A–Z by locale → hotels; city phrases from core `cityIn` ("auf den Malediven", "in the Maldives"). Links in: footer and navbar "Hotels" (already), the hero's "N Fünf-Sterne-Hotels in M Städten" (live data only), the city eyebrow on hotel and stay pages. Dev pages `/dev/city`, `/dev/hotels`; e2e `e2e/city.spec.ts`. Left for C-024b: a city option in the search combobox.
+
+### C-024b · Search card: city option
+
+Owner: CLOUD · Size: S · Depends on: C-024 · Status: TODO · PR: –
+In the hotel combobox, typing a city shows an option "Alle Hotels in {Stadt}" (`cityIn` phrase) at the top of that city's group; picking it opens the city page. Keep the ARIA 1.2 combobox behavior and the e2e tests of C-021a.
 
 ### C-025 · Deals page
 
