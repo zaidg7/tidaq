@@ -76,10 +76,42 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     await expect(page.getByRole('term')).toHaveCount(0);
   });
 
+  test('history from single nights says so, and shows a real price that differs (C-070b)', async ({
+    page,
+  }) => {
+    await page.goto('/dev/stay/nights');
+    await expect(
+      page.getByText(
+        /^Der Verlauf ist die Summe der Preise der einzelnen Nächte beim selben Anbieter\./,
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        /Für genau diese Daten zeigen die Anbieter heute 1\.544\s€, die Summe der Nächte liegt bei 2\.244\s€\./,
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('main').getByRole('link', { name: 'So rechnen wir' }),
+    ).toHaveAttribute('href', '/methodik');
+    // Real checks of the exact stay need no note.
+    await page.goto('/dev/stay/tracked');
+    await expect(page.getByText(/einzelnen Nächte/)).toHaveCount(0);
+  });
+
+  test('dates beyond the night grid say how far ahead we collect', async ({ page }) => {
+    await page.goto('/dev/stay/untracked');
+    await expect(page.getByText(/die Preise jeder Nacht für die nächsten 120 Tage/)).toBeVisible();
+    await page.goto('/en/dev/stay/untracked-guests');
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'No history for 3 people yet' }),
+    ).toBeVisible();
+  });
+
   test('no data, untracked, past and inactive each explain themselves', async ({ page }) => {
     const cases: [string, string][] = [
       ['no-data', 'Für diesen Aufenthalt gibt es noch keine Preise'],
-      ['untracked', 'Diese Daten beobachten wir noch nicht'],
+      ['untracked', 'So weit im Voraus haben wir noch keine Preise'],
+      ['untracked-guests', 'Für 3 Personen gibt es noch keinen Verlauf'],
       ['past', 'Dieser Aufenthalt ist schon vorbei'],
       ['inactive', 'Dieses Hotel beobachten wir gerade nicht'],
     ];

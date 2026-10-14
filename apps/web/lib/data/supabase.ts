@@ -30,3 +30,32 @@ export async function rest<T extends z.ZodType>(path: string, row: T): Promise<z
   if (!res.ok) throw new Error(`Supabase ${res.status} for ${path.split('?')[0]}`);
   return z.array(row).parse(await res.json());
 }
+
+/**
+ * Call a Postgres function (`rpc/<name>`) with the anon key and validate the result with Zod.
+ * Only functions anon may execute are reachable (e.g. `stay_history_from_nights`,
+ * `request_stay`).
+ */
+export async function rpc<T extends z.ZodType>(
+  name: string,
+  args: Record<string, unknown>,
+  result: T,
+  timeoutMs = TIMEOUT_MS,
+): Promise<z.infer<T>> {
+  const cfg = config();
+  if (!cfg) throw new Error('Supabase is not configured (SUPABASE_URL, SUPABASE_ANON_KEY)');
+  const res = await fetch(`${cfg.url}/rest/v1/rpc/${name}`, {
+    method: 'POST',
+    headers: {
+      apikey: cfg.key,
+      authorization: `Bearer ${cfg.key}`,
+      accept: 'application/json',
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(args),
+    signal: AbortSignal.timeout(timeoutMs),
+    cache: 'no-store',
+  });
+  if (!res.ok) throw new Error(`Supabase ${res.status} for rpc/${name}`);
+  return result.parse(await res.json());
+}

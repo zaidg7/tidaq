@@ -2,6 +2,8 @@ import 'server-only';
 import { hotelPhoto, type PhotoSize } from '@/lib/hotelPhotos';
 import {
   addDays,
+  inNightGrid,
+  nightSumGap,
   STATS,
   stayStates,
   z,
@@ -9,7 +11,7 @@ import {
   type StayOffer,
   type StayParams,
 } from '@tidaq/core';
-import { hasSupabase, rest } from './supabase';
+import { hasSupabase, rest, rpc } from './supabase';
 
 const hotelRow = z.object({
   id: z.number(),
@@ -34,6 +36,16 @@ const dailyRow = z.object({
   /** `{ "<provider id>": total cents }`, every provider including unreviewed ones. */
   per_provider: z.record(z.string(), z.number()),
 });
+
+/** One day of `stay_history_from_nights` (C-070b): the stay built from its single nights. */
+const nightDayRow = z.object({
+  day: z.string(),
+  best_cents: z.number().int().positive(),
+  best_provider_id: z.number().nullable(),
+  per_provider: z.record(z.string(), z.number()),
+});
+
+const collectedRow = z.object({ collected_at: z.string() });
 
 const scoreRow = z.object({
   provider_id: z.number(),
@@ -75,6 +87,20 @@ export interface StayData {
   hotel: StayHotel;
   /** Null when we don't track these exact dates and guests. */
   stay: { active: boolean; updatedAt: string | null } | null;
+  /**
+   * Where the chart's history comes from (C-070b, D-42): `nights` = summed single nights (any
+   * dates inside the night grid), `stay` = real checks of this exact stay, null = no prices yet.
+   */
+  history: 'nights' | 'stay' | null;
+  /** The dates are inside the night grid (2 adults, next 120 days), so prices will come. */
+  inNightGrid: boolean;
+  /** When the shown history was last collected (stay stats or the nights' collection time). */
+  updatedAt: string | null;
+  /**
+   * Today's real price for these exact dates differs by more than 3 % from the sum of the
+   * nights the chart shows: both, for an honest note. Null otherwise.
+   */
+  realVsNights: { realCents: number; nightsCents: number } | null;
   /** Best reviewed price per day, oldest first, at most the stats window. */
   series: DailyPrice[];
   /** Name of the cheapest provider per day, for the chart readout and table. */
@@ -125,21 +151,63 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
         : Promise.resolve([]),
     ]);
     const stay = stays[0] ?? null;
+    const nightsOn = hotel.active && inNightGrid(p, today);
 
     const from = addDays(today, -(STATS.windowDays - 1));
-    const days = stay
-      ? await rest(
-          `stay_daily?select=day,best_cents,best_provider_id,per_provider&stay_id=eq.${stay.id}` +
-            `&best_provider_id=not.is.null&day=gte.${from}&day=lte.${today}&order=day.asc`,
-          dailyRow,
-        )
-      : [];
+    const [days, nightDays, collected] = await Promise.all([
+      stay
+        ? rest(
+            `stay_daily?select=day,best_cents,best_provider_id,per_provider&stay_id=eq.${stay.id}` +
+              `&best_provider_id=not.is.null&day=gte.${from}&day=lte.${today}&order=day.asc`,
+            dailyRow,
+          )
+        : Promise.resolve([]),
+      nightsOn
+        ? rpc(
+            'stay_history_from_nights',
+            {
+              p_hotel_id: hotel.id,
+              p_check_in: p.checkIn,
+              p_check_out: p.checkOut,
+              p_from_day: from,
+            },
+            z.array(nightDayRow),
+          )
+        : Promise.resolve([]),
+      nightsOn
+        ? rest(
+            `night_daily?select=collected_at&hotel_id=eq.${hotel.id}&night=gte.${p.checkIn}` +
+              `&night=lt.${p.checkOut}&order=collected_at.desc&limit=1`,
+            collectedRow,
+          )
+        : Promise.resolve([]),
+    ]);
 
-    const latest = days.at(-1);
+    // The longer history wins: real checks of this exact stay early on, the nights once they
+    // reach back further (they cover every date from the first collected day).
+    const nightDaysClean = nightDays.filter((d) => d.day <= today);
+    const history: StayData['history'] =
+      nightDaysClean.length > 0 && nightDaysClean.length >= days.length
+        ? 'nights'
+        : days.length > 0
+          ? 'stay'
+          : null;
+    const rows = history === 'nights' ? nightDaysClean : days;
+
+    // Today's provider table: the real check of these dates when it ran today, else the rows.
+    const realToday = days.at(-1)?.day === today ? days.at(-1) : undefined;
+    const nightsToday = nightDaysClean.at(-1)?.day === today ? nightDaysClean.at(-1) : undefined;
+    const latest = realToday ?? rows.at(-1);
+    const gap = nightSumGap(realToday?.best_cents ?? null, nightsToday?.best_cents ?? null);
+    const realVsNights =
+      history === 'nights' && gap !== null && realToday && nightsToday
+        ? { realCents: realToday.best_cents, nightsCents: nightsToday.best_cents }
+        : null;
+
     const latestIds = Object.keys(latest?.per_provider ?? {}).filter((id) => /^\d+$/.test(id));
     const providerIds = [
       ...new Set([
-        ...days.map((d) => d.best_provider_id).filter((id) => id !== null),
+        ...rows.map((d) => d.best_provider_id).filter((id) => id !== null),
         ...latestIds.map(Number),
       ]),
     ];
@@ -157,7 +225,7 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
     const scoreById = new Map(scores.map((sc) => [sc.provider_id, sc]));
     const nameById = new Map(providers.map((pr) => [pr.id, pr]));
     const providerByDay: Record<string, string> = {};
-    for (const d of days) {
+    for (const d of rows) {
       const pr = d.best_provider_id === null ? undefined : nameById.get(d.best_provider_id);
       if (pr) providerByDay[d.day] = pr.is_direct ? hotel.name : pr.name;
     }
@@ -206,7 +274,14 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
               : null,
         },
         stay: stay ? { active: stay.active, updatedAt: stay.stay_stats?.updated_at ?? null } : null,
-        series: days.map((d) => ({ day: d.day, bestCents: d.best_cents })),
+        history,
+        inNightGrid: nightsOn,
+        updatedAt:
+          history === 'nights'
+            ? (collected[0]?.collected_at ?? null)
+            : (stay?.stay_stats?.updated_at ?? null),
+        realVsNights,
+        series: rows.map((d) => ({ day: d.day, bestCents: d.best_cents })),
         providerByDay,
         offers: {
           day: latest?.day ?? null,
