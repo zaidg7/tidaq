@@ -325,7 +325,8 @@
     },
     "realOnlyTitle": "For this hotel we check whole stays",
     "realOnlyText": "Here, single nights often cost something different from the whole stay. So we only show prices we checked for exactly these dates. We're queueing these dates now, as long as there's room today. The first prices usually arrive within a few minutes.",
-    "historyRealOnly": "The history only shows prices we checked for exactly these dates. At this hotel, single nights often cost something different from the whole stay."
+    "historyRealOnly": "The history only shows prices we checked for exactly these dates. At this hotel, single nights often cost something different from the whole stay.",
+    "trustDetails": ", {provider} price accuracy in detail"
   },
   "hotel": {
     "metaTitle": "{hotel}: prices for every night | Tidaq",

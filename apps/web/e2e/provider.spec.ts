@@ -92,4 +92,17 @@ test.describe('provider pages (C-034, sample data on /dev/provider)', () => {
     const res = await page.goto('/anbieter/Booking.com');
     expect(res?.status()).toBe(404);
   });
+
+  test('stay table: the trust score opens the provider page, above the phone row link (C-034b)', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/dev/stay/tracked');
+    const link = page.getByRole('link', { name: /Preistreue von Booking\.com im Detail/ });
+    await expect(link).toHaveAttribute('href', '/anbieter/booking-com');
+    // Agoda has no slug in the sample: plain score, no link.
+    await expect(page.getByRole('link', { name: /Preistreue von Agoda/ })).toHaveCount(0);
+    await link.click();
+    await expect(page).toHaveURL(/\/anbieter\/booking-com$/);
+  });
 });

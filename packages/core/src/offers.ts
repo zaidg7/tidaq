@@ -3,6 +3,8 @@ import { TRUST, TRUST_SCORE } from './trust';
 /** One provider's latest price for a stay, with its checkout-test record if it has one. */
 export interface StayOffer {
   providerId: number;
+  /** Provider slug, for its page `/anbieter/[slug]` (C-034b). */
+  slug?: string;
   name: string;
   isDirect: boolean;
   /** Stay total in EUR cents as listed. */

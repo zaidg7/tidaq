@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   extrasByCount,
-  hasProviderPage,
+  isProviderIndexable,
   percentOf,
   providerFactsSchema,
   providerPath,
@@ -102,11 +102,11 @@ describe('percentOf', () => {
   });
 });
 
-describe('hasProviderPage', () => {
-  it('needs grid prices or a test', () => {
-    expect(hasProviderPage({ nights: 0, tests: 0 })).toBe(false);
-    expect(hasProviderPage({ nights: 10, tests: 0 })).toBe(true);
-    expect(hasProviderPage({ nights: 0, tests: 1 })).toBe(true);
+describe('isProviderIndexable', () => {
+  it('needs grid prices or a test to be indexed', () => {
+    expect(isProviderIndexable({ nights: 0, tests: 0 })).toBe(false);
+    expect(isProviderIndexable({ nights: 10, tests: 0 })).toBe(true);
+    expect(isProviderIndexable({ nights: 0, tests: 1 })).toBe(true);
   });
 });
 
