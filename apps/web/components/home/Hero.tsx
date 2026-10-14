@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
-import type { Locale } from '@tidaq/core';
+import { localizedPath, type Locale } from '@tidaq/core';
 import { getCatalog } from '@/lib/data/catalog';
+import { routes } from '@/lib/routes';
 import { berlinToday } from '@/lib/today';
 import { searchCardProps } from '@/lib/searchCardProps';
 import { SearchCard } from './SearchCard';
@@ -53,7 +54,20 @@ export async function Hero({ locale }: { locale: Locale }) {
           })}
         </h1>
         <p className="text-lead mt-5 max-w-[34em] text-muted-ink">
-          {catalog ? t('lead', { hotels, cities }) : t('leadNoData')}
+          {catalog
+            ? t.rich('lead', {
+                hotels,
+                cities,
+                link: (chunks) => (
+                  <a
+                    href={localizedPath(routes.hotels, locale)}
+                    className="font-semibold text-fg underline decoration-line-strong underline-offset-4 hover:decoration-accent"
+                  >
+                    {chunks}
+                  </a>
+                ),
+              })
+            : t('leadNoData')}
         </p>
         <div className="mt-8 w-full max-w-[560px] text-left">
           <SearchCard
