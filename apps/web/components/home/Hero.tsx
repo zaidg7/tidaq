@@ -3,7 +3,7 @@ import { localizedPath, type Locale } from '@tidaq/core';
 import { getCatalog } from '@/lib/data/catalog';
 import { routes } from '@/lib/routes';
 import { berlinToday } from '@/lib/today';
-import { searchCardProps } from '@/lib/searchCardProps';
+import { searchCardProps, searchHotels } from '@/lib/searchCardProps';
 import { SearchCard } from './SearchCard';
 
 /** The soft falling hairline under the accent word (CRAFT.md §4.1): the price going down. */
@@ -35,6 +35,7 @@ function Hairline() {
 export async function Hero({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'home' });
   const [catalog, searchProps] = await Promise.all([getCatalog(), searchCardProps(locale)]);
+  const searchList = await searchHotels(catalog?.hotels ?? [], locale);
   const hotels = catalog?.hotels.length ?? 0;
   const cities = catalog?.cityCount ?? 0;
 
@@ -70,16 +71,7 @@ export async function Hero({ locale }: { locale: Locale }) {
             : t('leadNoData')}
         </p>
         <div className="mt-8 w-full max-w-[560px] text-left">
-          <SearchCard
-            hotels={(catalog?.hotels ?? []).map((h) => ({
-              slug: h.slug,
-              name: h.name,
-              city: h.city.name[locale],
-            }))}
-            today={berlinToday()}
-            locale={locale}
-            {...searchProps}
-          />
+          <SearchCard hotels={searchList} today={berlinToday()} locale={locale} {...searchProps} />
         </div>
       </div>
     </section>

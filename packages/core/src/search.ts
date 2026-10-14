@@ -36,6 +36,17 @@ function prefixMatch(queryWords: string[], textWords: string[]): boolean {
 }
 
 /**
+ * The query names this city ("zuer", "zurich", "new y" for New York): every query word starts a
+ * word of the city. Empty queries never match.
+ */
+export function matchesCity(query: string, city: string): boolean {
+  const raw = foldText(query);
+  if (!raw) return false;
+  const cityWords = words(foldText(city));
+  return [raw, transliterated(raw)].some((q) => prefixMatch(words(q), cityWords));
+}
+
+/**
  * Hotels that match `query`, best first: name starts with the query, then a name word matches,
  * then the city matches, then any substring. An empty query returns all hotels by city and name.
  */

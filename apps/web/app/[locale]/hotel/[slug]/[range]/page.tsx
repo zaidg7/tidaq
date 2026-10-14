@@ -19,7 +19,7 @@ import { buttonClasses } from '@/components/ui/Button';
 import { getCatalog } from '@/lib/data/catalog';
 import { requestStayOnView } from '@/lib/data/requestStay';
 import { getStay, type StayLoad } from '@/lib/data/stay';
-import { searchCardProps } from '@/lib/searchCardProps';
+import { searchCardProps, searchHotels } from '@/lib/searchCardProps';
 import { berlinToday } from '@/lib/today';
 
 // Prices change every morning: render per request.
@@ -121,11 +121,7 @@ export default async function StayPage(props: Props) {
     after(() => requestStayOnView(slug, p, userAgent));
   }
   const [catalog, card] = await Promise.all([getCatalog(), searchCardProps(locale)]);
-  const hotels = (catalog?.hotels ?? []).map((h) => ({
-    slug: h.slug,
-    name: h.name,
-    city: h.city.name[locale],
-  }));
+  const hotels = await searchHotels(catalog?.hotels ?? [], locale);
   // An inactive hotel isn't in the catalog: keep it selectable so "Ändern" starts from here.
   if (!hotels.some((h) => h.slug === hotel.slug)) {
     hotels.push({ slug: hotel.slug, name: hotel.name, city: hotel.city.name[locale] });

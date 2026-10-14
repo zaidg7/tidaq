@@ -78,7 +78,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | L-026                                                           | Check "Zum Angebot" links open the right hotel and dates                     | LOCAL | S             | C-026                             | TODO           |
 | C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | DONE           |
 | C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | DONE           |
-| C-024b                                                          | Search card: a city option opens the city page                               | CLOUD | S             | C-024                             | TODO           |
+| C-024b                                                          | Search card: a city option opens the city page                               | CLOUD | S             | C-024                             | DONE           |
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | TODO           |
 | C-028                                                           | SEO foundation and dynamic OG images                                         | CLOUD | M             | C-022                             | TODO           |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | TODO           |
@@ -715,6 +715,8 @@ Owner: CLOUD · Size: S · Depends on: C-023 · Status: TODO · PR: –
 
 Owner: CLOUD · Size: S · Depends on: C-024 · Status: TODO · PR: –
 In the hotel combobox, typing a city shows an option "Alle Hotels in {Stadt}" (`cityIn` phrase) at the top of that city's group; picking it opens the city page. Keep the ARIA 1.2 combobox behavior and the e2e tests of C-021a.
+
+**C-024b notes (DONE):** When the typed text names a city (core `matchesCity`: every query word starts a city word, umlauts optional), that city's group starts with an accent-coloured option "Alle Hotels in Berlin" / "auf den Malediven" with an arrow; Enter or click opens the city page. Hotel names alone ("adlon") and the empty field show hotels only; the result count still counts hotels. The options come from `searchHotels()` in `lib/searchCardProps.ts` (hero, stay page "Ändern", /dev/ui), which adds `cityHref` and `cityAll` to each hotel.
 
 ### C-025 · Deals page
 

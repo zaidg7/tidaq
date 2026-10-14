@@ -18,7 +18,7 @@ import {
 import { addDays, computeStayStats, stayStates, verdictFacts, type Locale } from '@tidaq/core';
 import { ToastDemo } from '@/components/dev/ToastDemo';
 import { SearchCard } from '@/components/home/SearchCard';
-import { searchCardProps } from '@/lib/searchCardProps';
+import { searchCardProps, searchHotels } from '@/lib/searchCardProps';
 import { CollectingState } from '@/components/stay/CollectingState';
 import { VerdictBlock } from '@/components/stay/VerdictBlock';
 import { PriceChart } from '@/components/chart/PriceChart';
@@ -41,12 +41,19 @@ import { sampleSeries } from '@/lib/sampleStay';
 export const dynamic = 'force-dynamic';
 
 /** Sample catalog for the search card (CI has no database). */
+const city = (slug: string, de: string, en: string) => ({ slug, name: { de, en } });
+const BERLIN = city('berlin', 'Berlin', 'Berlin');
+const ZUERICH = city('zuerich', 'Zürich', 'Zurich');
 const DEV_HOTELS = [
-  { slug: 'hotel-adlon-kempinski-berlin', name: 'Hotel Adlon Kempinski', city: 'Berlin' },
-  { slug: 'hotel-de-rome-berlin', name: 'Hotel de Rome', city: 'Berlin' },
-  { slug: 'hotel-bayerischer-hof-muenchen', name: 'Hotel Bayerischer Hof', city: 'München' },
-  { slug: 'baur-au-lac-zuerich', name: 'Baur au Lac', city: 'Zürich' },
-  { slug: 'the-dolder-grand-zuerich', name: 'The Dolder Grand', city: 'Zürich' },
+  { slug: 'hotel-adlon-kempinski-berlin', name: 'Hotel Adlon Kempinski', city: BERLIN },
+  { slug: 'hotel-de-rome-berlin', name: 'Hotel de Rome', city: BERLIN },
+  {
+    slug: 'hotel-bayerischer-hof-muenchen',
+    name: 'Hotel Bayerischer Hof',
+    city: city('muenchen', 'München', 'Munich'),
+  },
+  { slug: 'baur-au-lac-zuerich', name: 'Baur au Lac', city: ZUERICH },
+  { slug: 'the-dolder-grand-zuerich', name: 'The Dolder Grand', city: ZUERICH },
 ];
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
@@ -250,7 +257,7 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
       <Section title="Suche">
         <div className="w-full max-w-[560px]">
           <SearchCard
-            hotels={DEV_HOTELS}
+            hotels={await searchHotels(DEV_HOTELS, locale)}
             today="2026-10-13"
             locale={locale}
             {...await searchCardProps(locale)}
