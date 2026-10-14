@@ -16,6 +16,18 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-013 · Decision: $50 DataForSEO top-up to bring back CHECK24, HolidayCheck, TUI
+
+Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-076
+What I need: a yes or no. Our free source (Tripadvisor via Xotelo) doesn't show German platforms. CHECK24, HolidayCheck and TUI only come through Google Hotels (DataForSEO), which we used until 13 Oct. Research (C-073, `docs/research/german-platforms.md`): none of these platforms offers us a price API; Google Hotels is the only legal way.
+Cost: about **$9.60 a month** (≈ 400 real stay checks a day × $0.0008). The minimum top-up is **$50, which lasts about 5 months**. The monthly limit of $12 (D-13) still applies and stops spending automatically. The free night grid stays as it is.
+My recommendation: **yes**, once there's a launch date in sight (German users will look for CHECK24 first). If money is tight, it can wait until shortly before launch (30 Nov); nothing else depends on it.
+Steps for Zaid (≈ 5 min, only if yes):
+
+1. Log in at **app.dataforseo.com** → **Billing** / **Add funds** → **$50** → pay.
+2. Tell the session "B-013 yes, topped up".
+   Where to put the result: the chat or the weekly issue. Change this Status to DONE.
+
 ## B-012 · Ask LiteAPI (Nuitee) two questions in writing
 
 Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-074, C-075 (prices per guest count, room and board, D-43)
