@@ -47,7 +47,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-020c                                                          | Admin auth: Supabase magic link, `/admin` guard                              | CLOUD | S             | C-020a                            | DONE           |
 | C-016                                                           | Admin: data health and budget dashboard                                      | CLOUD | M             | C-013b, C-020c                    | DONE           |
 | C-013e                                                          | Villa Kennedy (Frankfurt) gets no prices: check its DataForSEO hotel ID      | CLOUD | S             | C-013b                            | DONE           |
-| C-013f                                                          | Re-check The Florentin (ex Villa Kennedy) in Google Hotels; re-add           | CLOUD | S             | C-013e                            | TODO           |
+| C-013f                                                          | Re-check The Florentin (ex Villa Kennedy) in Google Hotels; re-add           | CLOUD | S             | C-013e                            | DONE           |
 | C-013g                                                          | Collector: free price source Xotelo (DataForSEO as fallback)                 | CLOUD | M             | C-013b                            | DONE           |
 | C-032a                                                          | Trust audit: form, recent tests, provider scores                             | CLOUD | S             | C-020c, C-004                     | DONE           |
 | C-032b                                                          | Trust audit: screenshot upload, edit tests, CSV export                       | CLOUD | S             | C-032a                            | DONE           |
@@ -486,6 +486,8 @@ Why: the DataForSEO balance is empty and Zaid wants to run the market test for f
 Owner: CLOUD · Size: S · Depends on: C-013e · Status: TODO · PR: –
 
 With Xotelo (D-41) first check TripAdvisor's Frankfurt list (`/api/list`, free) for The Florentin and set its `xotelo_key`. Otherwise not before 10 Nov 2026: post one Hotel Searches task for The Florentin (`node scripts/catalog/resolve.ts post` after changing the seed's `tag`), and if it resolves: data migration that sets the new `dfs_hotel_identifier`, name "The Florentin", keeps slug or renames it (also rename the photo files and the manifest), then `active = true`. If still missing, try again in December or replace it with another Frankfurt five-star hotel.
+
+**C-013f notes (DONE, 14 Oct):** Tripadvisor's Frankfurt list (Xotelo `/api/list`, free) has "The Florentin by Althoff Collection" as `g187337-d33302530` (45 reviews, 411–641 € a night) with Booking.com, Agoda and Trip.com rates. Migration `20261014214738` renames hotel 16 to "The Florentin", slug `the-florentin-frankfurt`, sets the key and reactivates it; the night grid picks it up on the next run. No photo yet (none existed for Villa Kennedy); add one in the next photo batch. Frankfurt is back to 3 hotels.
 
 Found by the C-016 dashboard on 13 Oct: Villa Kennedy (Frankfurt, hotel id 16) has active stays but no price on any day, while the other 35 active hotels have prices. Check its `dfs_hotel_identifier` with one DataForSEO hotel search call (through the budget guard), compare with the stored ID, fix the ID with a data migration, or deactivate it in `/admin` if DataForSEO doesn't list it.
 
