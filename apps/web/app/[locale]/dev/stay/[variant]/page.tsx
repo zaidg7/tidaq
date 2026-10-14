@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { addDays, type DailyPrice, type Locale } from '@tidaq/core';
+import { addDays, type DailyPrice, type Locale, type StayOffer } from '@tidaq/core';
 import { EditStay } from '@/components/stay/EditStay';
 import { StayView, type StayStatus } from '@/components/stay/StayView';
 import type { OtherStay, StayHotel } from '@/lib/data/stay';
@@ -45,6 +45,53 @@ const OTHERS: OtherStay[] = [
   { checkIn: '2026-11-06', checkOut: '2026-11-08', adults: 2, bestCents: null, state: null },
 ];
 
+/**
+ * Today's prices by provider around the latest best price: the hotel site is cheapest, Expedia
+ * lists less than Booking.com but its tests show a markup, so it drops behind (PLAN §8.3).
+ */
+function sampleOffers(series: DailyPrice[]): StayOffer[] {
+  const best = series.at(-1)?.bestCents;
+  if (!best) return [];
+  const at = (pct: number) => Math.round((best * (1 + pct / 100)) / 100) * 100;
+  const trust = (score: number, tests: number, matches: number, avgMarkupPct: number) => ({
+    score,
+    tests,
+    matches,
+    avgMarkupPct,
+  });
+  return [
+    {
+      providerId: 1,
+      name: 'Booking.com',
+      isDirect: false,
+      totalCents: at(2.5),
+      trust: trust(96, 25, 24, 0.4),
+    },
+    {
+      providerId: 2,
+      name: 'Expedia',
+      isDirect: false,
+      totalCents: at(1),
+      trust: trust(58, 12, 7, 8.9),
+    },
+    {
+      providerId: 3,
+      name: 'Hotel Adlon Kempinski',
+      isDirect: true,
+      totalCents: best,
+      trust: trust(100, 6, 6, 0),
+    },
+    { providerId: 4, name: 'Trip.com', isDirect: false, totalCents: at(4), trust: null },
+    {
+      providerId: 5,
+      name: 'Agoda',
+      isDirect: false,
+      totalCents: at(6),
+      trust: trust(67, 3, 2, 2.1),
+    },
+  ];
+}
+
 const VARIANTS: Record<
   string,
   {
@@ -53,6 +100,8 @@ const VARIANTS: Record<
     series: DailyPrice[];
     others: OtherStay[];
     active?: boolean;
+    /** Day of the provider prices when not today ("Preise vom …"). */
+    offersDay?: string;
   }
 > = {
   tracked: {
@@ -62,7 +111,13 @@ const VARIANTS: Record<
     others: OTHERS,
   },
   // Check-in in 5 days: the advice adds "Kurz vor Anreise …".
-  soon: { status: 'tracked', checkIn: addDays(TODAY, 5), series: sampleSeries(TODAY), others: [] },
+  soon: {
+    status: 'tracked',
+    checkIn: addDays(TODAY, 5),
+    series: sampleSeries(TODAY),
+    others: [],
+    offersDay: addDays(TODAY, -1),
+  },
   collecting: {
     status: 'tracked',
     checkIn: '2026-12-04',
@@ -107,6 +162,11 @@ export default async function DevStayPage({
       )}
       updatedAt={v.series.length ? '2026-10-13T05:12:00Z' : null}
       others={v.others}
+      offers={{
+        day: v.series.length ? (v.offersDay ?? TODAY) : null,
+        list: sampleOffers(v.series),
+        unreviewed: v.series.length ? 2 : 0,
+      }}
       today={TODAY}
       now={NOW}
       edit={

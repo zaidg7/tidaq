@@ -112,7 +112,7 @@
       "privacy": "Datenschutz"
     },
     "copyright": "© {year} Tidaq",
-    "source": "Preise täglich aus Google Hotels. Ohne Cookies."
+    "source": "Preise jeden Morgen von den Buchungsseiten. Ohne Cookies."
   },
   "notFound": {
     "meta": "Seite nicht gefunden",
@@ -158,7 +158,7 @@
     "updatedtoday": "Stand: heute, {time} Uhr",
     "updatedyesterday": "Stand: gestern, {time} Uhr",
     "updateddate": "Stand: {date}, {time} Uhr",
-    "source": "Quelle: Google Hotels",
+    "source": "Quelle: Preise der Buchungsseiten",
     "totalPrice": "gesamt · {perNight} pro Nacht",
     "totalStay": "{nights, plural, one {# Nacht} other {# Nächte}}, {adults, plural, one {# Erwachsener} other {# Erwachsene}}"
   },
@@ -271,7 +271,21 @@
     "othersTitle": "Weitere Termine in diesem Hotel",
     "othersNoPrice": "Noch kein Preis",
     "methodTitle": "So entsteht die Einschätzung",
-    "methodText": "Jeden Morgen fragen wir Google Hotels nach dem Gesamtpreis für genau diesen Aufenthalt, bei allen Anbietern, die wir geprüft haben. Den günstigsten Preis vergleichen wir mit den letzten 60 Tagen. Eine Vorhersage ist das nicht: Preise können jederzeit steigen oder fallen.",
-    "photoCredit": "Foto: {credit}"
+    "methodText": "Jeden Morgen holen wir für genau diesen Aufenthalt die Gesamtpreise aller Anbieter, die wir geprüft haben. Den günstigsten Preis vergleichen wir mit den letzten 60 Tagen. Eine Vorhersage ist das nicht: Preise können jederzeit steigen oder fallen.",
+    "photoCredit": "Foto: {credit}",
+    "offersTitle": "Preise heute",
+    "offersTitleDay": "Preise vom {date}",
+    "offersSorted": "Sortiert nach erwartetem Gesamtpreis",
+    "offersRanking": "So sortieren wir",
+    "offersEmpty": "Heute hat noch kein geprüfter Anbieter einen Preis gemeldet.",
+    "direct": "Website des Hotels",
+    "directNote": "Direkt beim Hotel",
+    "cheapest": "Günstigster",
+    "expected": "an der Kasse ≈ {price}",
+    "offersNote": "Gesamtpreis für den ganzen Aufenthalt, wie ihn der Anbieter bei unserer letzten Abfrage gemeldet hat. Mit Preistreue zeigen wir, wie oft der Preis an der Kasse stimmte. Die Reihenfolge hängt nie von Provisionen ab.",
+    "offersUnreviewed": "{n, plural, one {Ein weiterer Anbieter hatte} other {# weitere Anbieter hatten}} einen Preis, ist aber noch nicht von uns geprüft.",
+    "watchTitle": "Preis beobachten",
+    "watchText": "Wir schreiben dir eine E-Mail, wenn der Preis für diesen Aufenthalt fällt. Kostenlos, abmelden mit einem Klick.",
+    "watchSoon": "Bald verfügbar"
   }
 }

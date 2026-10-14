@@ -112,7 +112,7 @@
       "privacy": "Privacy"
     },
     "copyright": "© {year} Tidaq",
-    "source": "Prices daily from Google Hotels. No cookies."
+    "source": "Prices every morning from the booking sites. No cookies."
   },
   "notFound": {
     "meta": "Page not found",
@@ -158,7 +158,7 @@
     "updatedtoday": "As of today, {time}",
     "updatedyesterday": "As of yesterday, {time}",
     "updateddate": "As of {date}, {time}",
-    "source": "Source: Google Hotels",
+    "source": "Source: booking site prices",
     "totalPrice": "total · {perNight} per night",
     "totalStay": "{nights, plural, one {# night} other {# nights}}, {adults, plural, one {# adult} other {# adults}}"
   },
@@ -271,7 +271,21 @@
     "othersTitle": "Other dates at this hotel",
     "othersNoPrice": "No price yet",
     "methodTitle": "How we judge the price",
-    "methodText": "Every morning we ask Google Hotels for the total price of exactly this stay, across every provider we've checked. We compare the cheapest price with the last 60 days. It's not a forecast: prices can rise or fall at any time.",
-    "photoCredit": "Photo: {credit}"
+    "methodText": "Every morning we fetch the total price of exactly this stay from every provider we've checked. We compare the cheapest price with the last 60 days. It's not a forecast: prices can rise or fall at any time.",
+    "photoCredit": "Photo: {credit}",
+    "offersTitle": "Prices today",
+    "offersTitleDay": "Prices from {date}",
+    "offersSorted": "Sorted by expected total price",
+    "offersRanking": "How we sort",
+    "offersEmpty": "No checked provider has reported a price yet today.",
+    "direct": "Hotel website",
+    "directNote": "Direct with the hotel",
+    "cheapest": "Cheapest",
+    "expected": "at checkout ≈ {price}",
+    "offersNote": "Total price for the whole stay, as the provider reported it at our latest check. Price accuracy shows how often the checkout price matched. Commissions never affect the order.",
+    "offersUnreviewed": "{n, plural, one {One more provider had} other {# more providers had}} a price but isn't checked by us yet.",
+    "watchTitle": "Watch this price",
+    "watchText": "We'll email you when the price for this stay drops. Free, unsubscribe with one click.",
+    "watchSoon": "Coming soon"
   }
 }

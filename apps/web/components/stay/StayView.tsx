@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { CalendarClock, CalendarOff, CalendarX2, Lightbulb } from 'lucide-react';
+import { BellRing, CalendarClock, CalendarOff, CalendarX2, Lightbulb } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import {
   addDays,
@@ -13,11 +13,12 @@ import {
   verdictFacts,
   type DailyPrice,
   type Locale,
+  type StayOffer,
   type StayParams,
   type StayStatsResult,
 } from '@tidaq/core';
 import { PriceChart } from '@/components/chart/PriceChart';
-import { buttonClasses } from '@/components/ui/Button';
+import { Button, buttonClasses } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
 import { PriceText } from '@/components/ui/PriceText';
@@ -25,13 +26,14 @@ import { StateChip } from '@/components/ui/StateChip';
 import type { OtherStay, StayHotel } from '@/lib/data/stay';
 import { routes } from '@/lib/routes';
 import { CollectingState } from './CollectingState';
+import { ProviderTable } from './ProviderTable';
 import { VerdictBlock } from './VerdictBlock';
 
 /**
  * What the page can say about this stay:
  * - `tracked`: we have prices (a verdict from 7 days, collecting before that);
  * - `no_data`: tracked, but no reviewed price yet;
- * - `untracked`: we don't track these dates and guests (C-022b creates them on demand);
+ * - `untracked`: we don't track these dates and guests (C-022c will create them on demand);
  * - `past`: check-in is before today;
  * - `inactive`: the hotel is no longer tracked.
  */
@@ -58,6 +60,8 @@ type Props = {
   providerByDay: Record<string, string>;
   updatedAt: string | null;
   others: OtherStay[];
+  /** The latest day's reviewed providers (C-022b); `unreviewed` counts the hidden ones. */
+  offers: { day: string | null; list: StayOffer[]; unreviewed: number };
   /** `YYYY-MM-DD` in German time. */
   today: string;
   /** The "Ändern" control with the prefilled search card (client). */
@@ -68,8 +72,8 @@ type Props = {
 
 /**
  * Stay page (C-022a, DESIGN.md §5): compact header → panel (verdict, 60-day chart, low/avg/high,
- * advice) → other dates at this hotel → how the verdict is made. Every state has its own screen.
- * The provider table and the watch button follow in C-022b.
+ * advice) → today's prices by provider → watch card → other dates at this hotel → how the verdict is
+ * made. Every state has its own screen.
  */
 export function StayView({
   hotel,
@@ -79,6 +83,7 @@ export function StayView({
   providerByDay,
   updatedAt,
   others,
+  offers,
   today,
   edit,
   now,
@@ -149,6 +154,18 @@ export function StayView({
             </Notice>
           )}
         </Card>
+      )}
+
+      {status === 'tracked' && (
+        <div className="mt-12 grid grid-cols-[minmax(0,1fr)] items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-8">
+          <ProviderTable
+            offers={offers.list}
+            unreviewed={offers.unreviewed}
+            day={offers.day}
+            today={today}
+          />
+          <WatchCard />
+        </div>
       )}
 
       {others.length > 0 && (
@@ -303,6 +320,26 @@ function StatsRow({ stats, series }: { stats: StayStatsResult; series: DailyPric
         </div>
       ))}
     </dl>
+  );
+}
+
+/**
+ * "Preis beobachten" (C-022b step 7): the alert sign-up comes with C-030 (double opt-in), so
+ * until then the button is disabled and says so. No sticky mobile bar while it can't do anything.
+ */
+function WatchCard() {
+  const t = useTranslations('stay');
+  return (
+    <Card variant="float" className="flex flex-col gap-3 lg:mt-10">
+      <span className="grid size-10 place-items-center rounded-full bg-accent-soft text-accent">
+        <Icon icon={BellRing} size={20} />
+      </span>
+      <h2 className="text-h3">{t('watchTitle')}</h2>
+      <p className="text-[15px] text-muted-ink">{t('watchText')}</p>
+      <Button disabled block className="mt-1">
+        {t('watchSoon')}
+      </Button>
+    </Card>
   );
 }
 

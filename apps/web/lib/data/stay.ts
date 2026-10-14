@@ -1,6 +1,14 @@
 import 'server-only';
 import { hotelPhoto, type PhotoSize } from '@/lib/hotelPhotos';
-import { addDays, STATS, stayStates, z, type DailyPrice, type StayParams } from '@tidaq/core';
+import {
+  addDays,
+  STATS,
+  stayStates,
+  z,
+  type DailyPrice,
+  type StayOffer,
+  type StayParams,
+} from '@tidaq/core';
 import { hasSupabase, rest } from './supabase';
 
 const hotelRow = z.object({
@@ -23,6 +31,16 @@ const dailyRow = z.object({
   day: z.string(),
   best_cents: z.number().int().positive(),
   best_provider_id: z.number().nullable(),
+  /** `{ "<provider id>": total cents }`, every provider including unreviewed ones. */
+  per_provider: z.record(z.string(), z.number()),
+});
+
+const scoreRow = z.object({
+  provider_id: z.number(),
+  score: z.number(),
+  tests: z.number(),
+  matches: z.number(),
+  avg_markup_pct: z.number().nullable(),
 });
 
 const providerRow = z.object({ id: z.number(), name: z.string(), is_direct: z.boolean() });
@@ -63,6 +81,11 @@ export interface StayData {
   providerByDay: Record<string, string>;
   /** Up to 6 upcoming tracked stays of this hotel, soonest first, without this one. */
   others: OtherStay[];
+  /**
+   * The latest day's price per reviewed provider with its checkout-test record (C-022b).
+   * `unreviewed`: providers with a price that aren't reviewed yet (RLS hides their names).
+   */
+  offers: { day: string | null; list: StayOffer[]; unreviewed: number };
 }
 
 export type StayLoad =
@@ -106,26 +129,59 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
     const from = addDays(today, -(STATS.windowDays - 1));
     const days = stay
       ? await rest(
-          `stay_daily?select=day,best_cents,best_provider_id&stay_id=eq.${stay.id}` +
+          `stay_daily?select=day,best_cents,best_provider_id,per_provider&stay_id=eq.${stay.id}` +
             `&best_provider_id=not.is.null&day=gte.${from}&day=lte.${today}&order=day.asc`,
           dailyRow,
         )
       : [];
 
+    const latest = days.at(-1);
+    const latestIds = Object.keys(latest?.per_provider ?? {}).filter((id) => /^\d+$/.test(id));
     const providerIds = [
-      ...new Set(days.map((d) => d.best_provider_id).filter((id) => id !== null)),
+      ...new Set([
+        ...days.map((d) => d.best_provider_id).filter((id) => id !== null),
+        ...latestIds.map(Number),
+      ]),
     ];
-    const providers = providerIds.length
-      ? await rest(
-          `providers?select=id,name,is_direct&id=in.(${providerIds.join(',')})`,
-          providerRow,
-        )
-      : [];
+    // RLS returns reviewed providers only; scores are public (provider_scores).
+    const [providers, scores] = providerIds.length
+      ? await Promise.all([
+          rest(`providers?select=id,name,is_direct&id=in.(${providerIds.join(',')})`, providerRow),
+          rest(
+            'provider_scores?select=provider_id,score,tests,matches,avg_markup_pct' +
+              `&provider_id=in.(${providerIds.join(',')})`,
+            scoreRow,
+          ),
+        ])
+      : [[], []];
+    const scoreById = new Map(scores.map((sc) => [sc.provider_id, sc]));
     const nameById = new Map(providers.map((pr) => [pr.id, pr]));
     const providerByDay: Record<string, string> = {};
     for (const d of days) {
       const pr = d.best_provider_id === null ? undefined : nameById.get(d.best_provider_id);
       if (pr) providerByDay[d.day] = pr.is_direct ? hotel.name : pr.name;
+    }
+
+    const offers: StayOffer[] = [];
+    for (const id of latestIds) {
+      const pr = nameById.get(Number(id));
+      const cents = latest?.per_provider[id];
+      if (!pr || cents === undefined || !Number.isInteger(cents) || cents <= 0) continue;
+      const sc = scoreById.get(pr.id);
+      offers.push({
+        providerId: pr.id,
+        name: pr.name,
+        isDirect: pr.is_direct,
+        totalCents: cents,
+        trust: sc
+          ? {
+              score: sc.score,
+              tests: sc.tests,
+              matches: sc.matches,
+              avgMarkupPct: sc.avg_markup_pct,
+            }
+          : null,
+      });
     }
 
     const photo = hotelPhoto(hotel.slug);
@@ -152,6 +208,11 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
         stay: stay ? { active: stay.active, updatedAt: stay.stay_stats?.updated_at ?? null } : null,
         series: days.map((d) => ({ day: d.day, bestCents: d.best_cents })),
         providerByDay,
+        offers: {
+          day: latest?.day ?? null,
+          list: offers,
+          unreviewed: latestIds.filter((id) => !nameById.has(Number(id))).length,
+        },
         others: calendar
           .filter(
             (c) =>

@@ -100,7 +100,7 @@ export default async function StayPage(props: Props) {
     );
   }
 
-  const { hotel, stay, series, providerByDay, others } = result.data;
+  const { hotel, stay, series, providerByDay, others, offers } = result.data;
   const [catalog, card] = await Promise.all([getCatalog(), searchCardProps(locale)]);
   const hotels = (catalog?.hotels ?? []).map((h) => ({
     slug: h.slug,
@@ -121,6 +121,7 @@ export default async function StayPage(props: Props) {
       providerByDay={providerByDay}
       updatedAt={stay?.updatedAt ?? null}
       others={others}
+      offers={offers}
       today={today}
       edit={
         <EditStay
