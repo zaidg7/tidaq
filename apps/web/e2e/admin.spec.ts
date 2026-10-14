@@ -126,8 +126,8 @@ test('Kassen-Check: the audit page is guarded and the form preview works', async
   await page.goto('/dev/admin');
   const form = page.locator('#kassen-check');
   await expect(form.getByLabel('Hotel')).toBeVisible();
-  await expect(form.getByLabel('Preis bei Google')).toHaveAttribute('inputmode', 'decimal');
-  await expect(form.getByLabel('Preis bei Google')).toHaveAttribute('required', '');
+  await expect(form.getByLabel('Angezeigter Preis')).toHaveAttribute('inputmode', 'decimal');
+  await expect(form.getByLabel('Angezeigter Preis')).toHaveAttribute('required', '');
   const chip = form.getByLabel('Citytax extra');
   await chip.check();
   await expect(chip).toBeChecked();

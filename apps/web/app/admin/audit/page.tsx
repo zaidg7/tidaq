@@ -45,8 +45,9 @@ export default async function AuditPage({ searchParams }: Props) {
         </Link>
         <h1 className="text-h2">Kassen-Check</h1>
         <p className="text-muted-ink">
-          Preis bei Google Hotels und Endpreis an der Kasse, kurz vor dem Bezahlen. Nie buchen, nie
-          Zahldaten eingeben.
+          Angezeigter Preis (der Preis der Seite unter „Preise heute“ auf unserer Aufenthaltsseite,
+          sonst bei Tripadvisor für dieselben Daten) und Endpreis an der Kasse, kurz vor dem
+          Bezahlen. Nie buchen, nie Zahldaten eingeben.
         </p>
       </div>
       {notice && (

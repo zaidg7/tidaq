@@ -17,7 +17,7 @@ export async function GET() {
       'Anreise',
       'Abreise',
       'Erwachsene',
-      'Preis bei Google (€)',
+      'Angezeigter Preis (€)',
       'Preis an der Kasse (€)',
       'Aufschlag (%)',
       'Ergebnis',
