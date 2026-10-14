@@ -26,6 +26,7 @@ Steps for Zaid (≈ 4 min):
 2. Name `tidaq-watch`, hostnames `tidaq.com` and `tidaq-web-staging.tidaq.workers.dev`, mode **Managed**, pre-clearance **No** → Create.
 3. You see a **Site Key** and a **Secret Key**. Store them as GitHub secrets (repo tidaq → Settings → Secrets and variables → Actions → New repository secret): `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY`. Never paste them in a chat or issue.
    Where to put the result: the two GitHub secrets, then change this Status to DONE.
+
 ## B-015 · Turn on Cloudflare Web Analytics (cookieless visitor numbers)
 
 Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: nothing urgent (visitor numbers in the weekly summary; needed before launch)
