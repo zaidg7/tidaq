@@ -93,3 +93,15 @@ test('robots.txt blocks crawlers outside production', async ({ request }) => {
   expect(res.status()).toBe(200);
   expect(await res.text()).toContain('Disallow: /');
 });
+
+test('outside production pages send X-Robots-Tag noindex instead of a meta tag (C-041b)', async ({
+  page,
+}) => {
+  for (const path of ['/', '/impressum', '/en/methodik', '/does-not-exist']) {
+    const res = await page.goto(path);
+    expect(res?.headers()['x-robots-tag'], path).toBe('noindex, nofollow');
+  }
+  // Production pages are indexable: the layout no longer adds noindex.
+  await page.goto('/');
+  await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
+});

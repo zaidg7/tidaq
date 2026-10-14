@@ -132,4 +132,56 @@ describe('alertMail', () => {
     expect(en.subject).toMatch(/^Hotel Adlon Kempinski: new low, /);
     expect(renderMail(en.content).text).toContain('In our last email it was');
   });
+
+  it('names the best offer with its link, the expected checkout total and the partner label', () => {
+    const data = {
+      kind: 'drop' as const,
+      locale: 'de' as const,
+      hotel: 'Hotel Adlon Kempinski',
+      checkIn: '2026-12-04',
+      checkOut: '2026-12-06',
+      adults: 2,
+      nowCents: 98_000,
+      targetCents: null,
+      lastAlertCents: 105_000,
+      stayUrl: 'https://tidaq.com/hotel/a/2026-12-04--2026-12-06?adults=2',
+      manageUrl: 'https://tidaq.com/alarm/verwalten/x',
+    };
+    const offer = {
+      name: 'Booking.com',
+      isDirect: false,
+      totalCents: 98_000,
+      expectedCents: null,
+      partner: false,
+      url: 'https://tidaq.com/go/booking-com/a?in=2026-12-04',
+    };
+    const plain = renderMail(alertMail({ ...data, offer }).content);
+    expect(plain.text).toMatch(/Am günstigsten heute: Booking\.com, 980\s€\./);
+    expect(plain.text).toContain(
+      'Zu Booking.com: https://tidaq.com/go/booking-com/a?in=2026-12-04',
+    );
+    expect(plain.html).toContain('href="https://tidaq.com/go/booking-com/a?in=2026-12-04"');
+
+    const expected = renderMail(
+      alertMail({ ...data, offer: { ...offer, expectedCents: 103_900, partner: true } }).content,
+    ).text;
+    expect(expected).toMatch(
+      /980\s€ angezeigt\. An der Kasse erwarten wir nach unseren Tests etwa 1\.039\s€\./,
+    );
+    expect(expected).toContain('Zu Booking.com (Partnerlink):');
+
+    const direct = renderMail(
+      alertMail({
+        ...data,
+        locale: 'en',
+        offer: { ...offer, isDirect: true, name: 'Hotel direkt' },
+      }).content,
+    ).text;
+    expect(direct).toMatch(/Cheapest today: directly with the hotel, €980\./);
+    expect(direct).toContain("Go to the hotel's website:");
+
+    const none = renderMail(alertMail({ ...data, offer: null }).content);
+    expect(none.text).not.toContain('Am günstigsten heute');
+    expect(none.html).not.toContain('font-weight:600">Zu ');
+  });
 });

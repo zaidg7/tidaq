@@ -2,7 +2,7 @@
 
 import { headers } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
-import { isLocale, parseEuroCents } from '@tidaq/core';
+import { clientIp, createRateLimiter, isLocale, parseEuroCents } from '@tidaq/core';
 import { requestWatch, type WatchRequestStatus } from '@/lib/watch/watch';
 
 export type WatchFormState =
@@ -18,18 +18,7 @@ export type WatchFormState =
  * Per-IP limit for the watch form (C-030b): 5 requests per 10 minutes per Worker isolate. The IP
  * is only a key in memory, never stored or logged. A weak first line until Turnstile (C-030c).
  */
-const WINDOW_MS = 10 * 60_000;
-const LIMIT = 5;
-const hits = new Map<string, number[]>();
-
-function limited(ip: string): boolean {
-  const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  recent.push(now);
-  hits.set(ip, recent);
-  if (hits.size > 5000) hits.clear();
-  return recent.length > LIMIT;
-}
+const limiter = createRateLimiter({ max: 5, windowMs: 10 * 60_000 });
 
 const str = (form: FormData, key: string) => {
   const v = form.get(key);
@@ -52,8 +41,8 @@ async function submit(form: FormData): Promise<Exclude<WatchFormState, { status:
   if (str(form, 'website')) return { status: 'sent' };
 
   const h = await headers();
-  const ip = h.get('cf-connecting-ip') ?? h.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '';
-  if (ip && limited(ip)) return { status: 'rate_limited' };
+  const ip = clientIp(h);
+  if (ip && limiter.limited(ip)) return { status: 'rate_limited' };
 
   const locale = isLocale(str(form, 'locale')) ? (str(form, 'locale') as 'de' | 'en') : 'de';
   const priceInput = str(form, 'target');

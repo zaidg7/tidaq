@@ -5,6 +5,7 @@ import type {
   GridHotel,
   GridStay,
   NightAccuracyDay,
+  StayOffer,
   StayState,
 } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from './ingest';
@@ -159,6 +160,11 @@ export interface CollectorStore {
    * last 60 days (stay checks, else reliable night sums; SQL `alert_inputs`, C-031).
    */
   alertInputs(today: string): Promise<AlertWatch[]>;
+  /**
+   * Today's offers for the watch's stay on reviewed providers, with their checkout-test record
+   * (SQL `alert_offers`, C-031b): for the alert email's best trusted provider.
+   */
+  alertOffers(watchId: string, today: string): Promise<AlertOffer[]>;
   /** Stores a sent alert and the watch's last alert price and time (SQL `alert_record`). */
   recordAlert(
     watchId: string,
@@ -174,6 +180,9 @@ export interface WebErrorRow {
   n: number;
   lastAt: string;
 }
+
+/** A provider's stay total today, ready for core `rankOffers`, plus its slug for `/go/…`. */
+export type AlertOffer = StayOffer & { slug: string; partner: boolean };
 
 export interface AlertWatch {
   watchId: string;

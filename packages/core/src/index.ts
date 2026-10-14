@@ -248,5 +248,7 @@ export {
   type AlertInput,
   type AlertKind,
   type AlertMailData,
+  type AlertMailOffer,
 } from './alerts';
 export { scrubErrorText } from './errorText';
+export { clientIp, createRateLimiter } from './rateLimit';

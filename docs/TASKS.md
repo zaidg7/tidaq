@@ -82,22 +82,24 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | DONE           |
 | C-028a                                                          | SEO: canonical, hreflang, sitemap, site JSON-LD                              | CLOUD | S             | C-022                             | DONE           |
 | C-028b                                                          | Share images: hotel photos and a default OG image                            | CLOUD | S             | C-028a                            | DONE           |
-| C-028c                                                          | Dynamic OG images with today's price (own Worker)                            | CLOUD | S             | C-028b                            | TODO           |
+| C-028c                                                          | Dynamic OG images with today's price (own Worker)                            | CLOUD | S             | C-028b, B-017                     | BLOCKED        |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
 | C-030b                                                          | Watch form on the stay page (replaces "Bald verfügbar")                      | CLOUD | S             | C-030a                            | DONE           |
 | C-030c                                                          | Bot protection for the watch form (Turnstile)                                | CLOUD | S             | C-030b, B-016                     | TODO           |
 | C-031a                                                          | Alert engine: triggers, daily job, alert emails                              | CLOUD | M             | C-030a                            | DONE           |
-| C-031b                                                          | Alert emails: mini chart image and best trusted provider                     | CLOUD | S             | C-031a, C-028b                    | TODO           |
+| C-031b                                                          | Alert emails: best trusted provider with its link                            | CLOUD | S             | C-031a                            | DONE           |
 | C-034                                                           | Provider pages and methodology page with live data                           | CLOUD | S             | C-032                             | DONE           |
 | C-034b                                                          | Link the stay table's trust score to the provider page                       | CLOUD | S             | C-034                             | DONE           |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034                      | TODO           |
-| C-041                                                           | Launch hardening: perf, a11y, error monitoring, backups                      | CLOUD | M             | C-031                             | TODO           |
+| C-041a                                                          | Launch hardening: axe checks, security headers                               | CLOUD | S             | C-031a                            | DONE           |
+| C-041b                                                          | Launch hardening: Lighthouse, backups, rate limits, robots                   | CLOUD | S             | C-041a                            | DONE           |
+| C-041c                                                          | Launch hardening: daily email with the website's server errors               | CLOUD | S             | C-041b                            | TODO           |
 | C-042                                                           | Trust report page "150 Checkouts getestet"                                   | CLOUD | S             | L-033, C-034                      | TODO           |
 | C-043                                                           | Launch content pack for Zaid                                                 | CLOUD | S             | C-042                             | TODO           |
-| C-044                                                           | Go live on tidaq.com                                                         | CLOUD | S             | C-041, L-040, Z-12                | TODO           |
+| C-044                                                           | Go live on tidaq.com                                                         | CLOUD | S             | C-041c, L-040, Z-12               | TODO           |
 | **Phase 5: Growth** (Dec 2026 – Mar 2027)                       |                                                                              |       |               |                                   |
 | C-050                                                           | Affiliate wiring per approved program                                        | CLOUD | S             | Z-11                              | TODO           |
 | C-051                                                           | Weekly content pack routine                                                  | CLOUD | S             | C-044                             | TODO           |
@@ -777,7 +779,7 @@ Owner: CLOUD · Size: S · Depends on: C-028a · Status: TODO · PR: –
 
 ### C-028c · Dynamic OG images with today's price
 
-Owner: CLOUD · Size: S · Depends on: C-028b · Status: TODO · PR: –
+Owner: CLOUD · Size: S · Depends on: C-028b, B-017 · Status: BLOCKED (14 Oct: rendering a PNG with satori + resvg needs ~100–500 ms CPU; the Workers free plan allows 10 ms per request, and social sites and email clients don't take SVG. Needs Workers Paid, decision B-017) · PR: –
 1200×630 images with hotel name, dates, today's price and a sparkline, for stay pages and alert emails (C-031b). Run satori + resvg in a separate small Worker (`apps/og`, own 3 MB budget, cached at the edge for a day) so the web Worker stays small; or, if Zaid moves to the Workers paid plan, use `next/og` in the web app. Measure the bundle before choosing.
 
 ### C-029 · Analytics events
@@ -837,10 +839,12 @@ After each collector run: evaluate active, confirmed watches against triggers (P
 
 **C-031a notes (DONE):** Core `alerts.ts`: `alertKind` (PLAN §9: target ≤ price, again only 2 % lower; new low under every earlier day and 2 % under the last alert; drop ≥ 5 % since the last alert; state turns `near_low`; one email per watch and Berlin day, strongest reason wins), `alertInputFromSeries` (today's price must be from today; states for today and yesterday via `computeStayStats`), `alertMail` (DE/EN subject and content for `renderMail`). SQL (migration `20261014222316`, service role): `alert_inputs(today)` gives each active watch of a confirmed, subscribed address with check-in after today plus its last 60 days (stay checks, else night sums for 2 adults at reliable hotels), `alert_record` writes `alerts_sent` and the watch's last alert. Collector `alerts.ts` `runAlerts` runs in the daily cron after the daily check (its own try; a crash emails the admins), sends via Resend from `alarm@tidaq.com` with `List-Unsubscribe` one-click, records each sent alert, never logs addresses. **Live only when** `APP_ENV=production`, `ALERTS_DRY_RUN=false` and the key is set: the production collector still has `ALERTS_DRY_RUN=true`, so nothing goes to users until **C-044 switches it to `false`** (dry runs log `alert dry run` with the kind). Tests: core (10) and collector (5, memory store + fake Resend).
 
-### C-031b · Alert emails: chart image and best provider
+### C-031b · Alert emails: best trusted provider
 
-Owner: CLOUD · Size: S · Depends on: C-031a, C-028b · Status: TODO · PR: –
-Add the stay's OG image (C-028b) as the chart in alert emails and the best trusted provider with its "an der Kasse ≈" note (core `rankOffers` on the latest `per_provider`), linking through `/go/…`.
+Owner: CLOUD · Size: S · Depends on: C-031a · Status: DONE · PR: see `[C-031b]`
+Add the best trusted provider with its "an der Kasse ≈" note (core `rankOffers` on the latest `per_provider`), linking through `/go/…`. The chart image in alert emails moved to C-028c: it needs the dynamic share images (C-028b only uses the hotel photo).
+
+**C-031b notes (DONE):** SQL `alert_offers(watch, today)` (migrations `20261014225949` + `20261014230030`, service role): today's per-provider totals of the watched stay, from the real stay check, else the night sums (2 adults), reviewed providers only, with each one's checkout-test record. The collector calls it only for watches with an alert due, ranks with core `rankOffers` and adds "Am günstigsten heute: Booking.com, 1.120 €." (with "An der Kasse erwarten wir nach unseren Tests etwa …" when tests show a markup) and a text link "Zu Booking.com" to `https://tidaq.com/go/…` ("(Partnerlink)" when an affiliate template applies). `MailContent.link` renders it. If the lookup fails, the email goes out without that line. Dry runs log the chosen provider slug, so the production dry run shows it before launch.
 
 ### C-032 · Trust audit tool
 
@@ -907,8 +911,23 @@ Run through the full journey on Zaid's PC (Chrome, Edge) and his iPhone 15 (Safa
 
 ### C-041 · Launch hardening
 
-Owner: CLOUD · Size: M · Depends on: C-031 · Status: TODO · PR: –
+Split into **C-041a** (axe checks, security headers) and **C-041b** (the rest), see below.
+Owner: CLOUD · Size: M · Depends on: C-031 · Status: see C-041a/b · PR: –
 Lighthouse ≥ 90 (mobile) on home, stay, hotel; axe accessibility checks in Playwright; error monitoring (Workers Logs + a daily error digest email to Zaid, or Sentry free if the connector is set up); Supabase backups confirmed (daily on free plan; document restore); remove the pre-launch `robots: noindex` from `app/[locale]/layout.tsx` metadata (404/500 pages exist since C-020a); security headers (CSP, HSTS, Referrer-Policy); rate limits on API routes.
+
+**C-041a notes (DONE):** `e2e/a11y.spec.ts`: axe-core (WCAG 2.1 A/AA, incl. contrast) on 21 pages at 390 px (home, stay, hotel, city, deals, provider and legal pages, watch, admin, the UI gallery, 404) plus home, stay and hotel at 1280 px; serious or critical findings fail CI. It found one: the admin tables that scroll sideways weren't keyboard-reachable (now focusable regions). Security headers on every response from `next.config.ts` `headers()`: CSP (own origin only plus Cloudflare Web Analytics; `'unsafe-inline'` scripts because the App Router streams inline payloads and nonces would make every page dynamic; no framing, no plugins, forms only to us), HSTS 1 year with subdomains (no preload), `Referrer-Policy: strict-origin-when-cross-origin`, `nosniff`, `X-Frame-Options: DENY`, a restrictive `Permissions-Policy`, no `X-Powered-By`. `e2e/security.spec.ts` checks the headers and that pages and client components run without CSP violations. **Turnstile (C-030c) must add `https://challenges.cloudflare.com` to `script-src` and `frame-src`.** After the merge, check the headers on staging (`curl -sI`), since OpenNext applies them in its routing layer.
+
+### C-041b · Launch hardening: Lighthouse, backups, rate limits, robots
+
+Owner: CLOUD · Size: S · Depends on: C-041a · Status: DONE · PR: see `[C-041b]`
+Lighthouse ≥ 90 (mobile) on home, stay, hotel (measure on staging, fix what's below); Supabase backups confirmed (Pro: daily) and restore steps in the README; remove the pre-launch `robots: noindex` from `app/[locale]/layout.tsx` (production isn't deployed before C-044, staging stays `Disallow: /`); rate limits on API routes (`/api/watch/unsubscribe`, `/go/…`).
+
+**C-041b notes (DONE):** Lighthouse (mobile, staging, 14 Oct): performance 95 home, 95 hotel, 97 stay; accessibility 100/100/99, best practices 100. SEO is low on staging only because of `noindex` and the canonical pointing to tidaq.com, both intended. Fixed the one finding: the "Wir sammeln noch Daten" heading on stay pages was an h3 straight after the h1 (now h2); axe now also fails on `heading-order`. Robots: the layout no longer sends `noindex`; instead the middleware sends `X-Robots-Tag: noindex, nofollow` on every page outside production (APP_ENV is a runtime var, legal pages are prerendered, so metadata couldn't depend on it). **So the next production web deploy makes tidaq.com indexable: that deploy is the launch (C-044).** Rate limits per IP and Worker isolate (core `createRateLimiter`, `clientIp`): `/go/…` 30 a minute (429 with a German/English note), one-click unsubscribe 10 a minute, the watch form keeps 5 per 10 minutes. Backups: Pro plan, daily, 7 days; restore steps and when not to restore in the README (Database). Error digest split off as C-041c.
+
+### C-041c · Daily email with the website's server errors
+
+Owner: CLOUD · Size: S · Depends on: C-041b · Status: TODO · PR: –
+Error monitoring: the website's server errors (handled fallbacks and unhandled ones) are stored without personal data and listed in the admins' daily check email, so Zaid hears about problems without opening Cloudflare.
 
 ### C-042 · Trust report page
 

@@ -1,7 +1,7 @@
 import { addDays } from '@tidaq/core';
 import { describe, expect, it } from 'vitest';
 import { alertsLive, runAlerts } from './alerts';
-import type { AlertWatch } from './store';
+import type { AlertOffer, AlertWatch } from './store';
 import { testEnv } from './test/env';
 import { fakeMail } from './test/mail';
 import { memoryStore } from './test/memoryStore';
@@ -106,5 +106,48 @@ describe('runAlerts (C-031)', () => {
     await runAlerts({ store: mem.store, env: live, now: NOW, fetchFn: mail.fetchFn });
     expect(mail.sent[0]?.subject).toMatch(/your target price is reached$/);
     expect(mail.sent[0]?.text).toContain('https://tidaq.com/en/hotel/');
+  });
+
+  it('names the first offer by expected checkout price and links it through /go (C-031b)', async () => {
+    const mem = memoryStore([]);
+    mem.alertWatches.push(watch());
+    const offer = (o: Partial<AlertOffer>): AlertOffer => ({
+      providerId: 1,
+      slug: 'booking-com',
+      name: 'Booking.com',
+      isDirect: false,
+      partner: false,
+      totalCents: 110_000,
+      trust: null,
+      ...o,
+    });
+    mem.alertOffers.set(watch().watchId, [
+      // Cheapest listed, but our tests expect +6 % at checkout: 116.600 €.
+      offer({
+        providerId: 4,
+        slug: 'trip-com',
+        name: 'Trip.com',
+        totalCents: 110_000,
+        trust: { score: 60, tests: 8, matches: 4, avgMarkupPct: 6 },
+      }),
+      offer({ providerId: 1, totalCents: 112_000, partner: true }),
+    ]);
+    const mail = fakeMail();
+    await runAlerts({ store: mem.store, env: live, now: NOW, fetchFn: mail.fetchFn });
+    const text = mail.sent[0]?.text ?? '';
+    expect(text).toMatch(/Am günstigsten heute: Booking\.com, 1\.120\s€\./);
+    expect(text).toContain(
+      'Zu Booking.com (Partnerlink): https://tidaq.com/go/booking-com/hotel-adlon-kempinski-berlin?in=2026-12-04&out=2026-12-06&adults=2&lang=de',
+    );
+  });
+
+  it('sends without an offer line when the offer lookup fails', async () => {
+    const mem = memoryStore([]);
+    mem.alertWatches.push(watch());
+    mem.store.alertOffers = () => Promise.reject(new Error('db down'));
+    const mail = fakeMail();
+    const s = await runAlerts({ store: mem.store, env: live, now: NOW, fetchFn: mail.fetchFn });
+    expect(s.sent).toBe(1);
+    expect(mail.sent[0]?.text).not.toContain('Am günstigsten heute');
   });
 });

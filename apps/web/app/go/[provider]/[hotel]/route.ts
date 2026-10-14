@@ -1,5 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { isLocale, localizedPath, outboundUrl, stayPath, z } from '@tidaq/core';
+import {
+  clientIp,
+  createRateLimiter,
+  isLocale,
+  localizedPath,
+  outboundUrl,
+  stayPath,
+  z,
+} from '@tidaq/core';
 import { hasSupabase, rpc } from '@/lib/data/supabase';
 import { reportError } from '@/lib/errors';
 
@@ -30,6 +38,23 @@ function notFound(lang: string) {
   return new NextResponse(text, {
     status: 404,
     headers: { ...HEADERS, 'content-type': 'text/plain; charset=utf-8' },
+  });
+}
+
+/**
+ * 30 outbound clicks a minute per IP and Worker isolate (C-041b): far above what a person does,
+ * low enough that a bot can't flood the click counter or the database.
+ */
+const limiter = createRateLimiter({ max: 30, windowMs: 60_000 });
+
+function tooMany(lang: string) {
+  const text =
+    lang === 'en'
+      ? 'Too many requests in a short time. Please wait a minute and try again.'
+      : 'Zu viele Aufrufe in kurzer Zeit. Warte bitte eine Minute und versuch es dann noch einmal.';
+  return new NextResponse(text, {
+    status: 429,
+    headers: { ...HEADERS, 'content-type': 'text/plain; charset=utf-8', 'retry-after': '60' },
   });
 }
 
@@ -70,6 +95,8 @@ export async function GET(
   ) {
     return notFound(locale);
   }
+  const ip = clientIp(request.headers);
+  if (ip && limiter.limited(ip)) return tooMany(locale);
   if (!hasSupabase()) return unavailable(locale);
 
   try {
