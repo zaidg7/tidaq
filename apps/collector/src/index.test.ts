@@ -111,9 +111,13 @@ describe('collector /collect', () => {
     await worker.fetch(req('/run', { method: 'POST', headers: auth }), testEnv());
     const res = await worker.fetch(req('/collect', { method: 'POST', headers: auth }), testEnv());
     expect(res.status).toBe(200);
-    const body = (await res.json()) as { summary: { done: number; snapshots: number } };
-    expect(body.summary.done).toBe(mem.tasks.length);
-    expect(body.summary.snapshots).toBeGreaterThan(0);
+    const body = (await res.json()) as {
+      summary: { collect: { done: number; snapshots: number }; nights: unknown };
+    };
+    expect(body.summary.collect.done).toBe(mem.tasks.length);
+    expect(body.summary.collect.snapshots).toBeGreaterThan(0);
+    // Stay results were waiting, so this run left the night grid alone (request budget).
+    expect(body.summary.nights).toBeNull();
   });
 });
 

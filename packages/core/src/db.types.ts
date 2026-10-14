@@ -263,6 +263,61 @@ export type Database = {
           },
         ]
       }
+      night_daily: {
+        Row: {
+          adults: number
+          best_cents: number | null
+          best_provider_id: number | null
+          collected_at: string
+          day: string
+          hotel_id: number
+          night: string
+          per_provider: Json
+        }
+        Insert: {
+          adults?: number
+          best_cents?: number | null
+          best_provider_id?: number | null
+          collected_at?: string
+          day: string
+          hotel_id: number
+          night: string
+          per_provider?: Json
+        }
+        Update: {
+          adults?: number
+          best_cents?: number | null
+          best_provider_id?: number | null
+          collected_at?: string
+          day?: string
+          hotel_id?: number
+          night?: string
+          per_provider?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "night_daily_best_provider_id_fkey"
+            columns: ["best_provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "night_daily_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "night_daily_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "v_stay_public"
+            referencedColumns: ["hotel_id"]
+          },
+        ]
+      }
       price_snapshots: {
         Row: {
           board: string | null
@@ -833,6 +888,15 @@ export type Database = {
     Functions: {
       admin_health: { Args: { p_days?: number }; Returns: Json }
       collector_ingest: { Args: { payload: Json }; Returns: Json }
+      night_ingest: { Args: { payload: Json }; Returns: number }
+      night_jobs: {
+        Args: { p_limit: number; p_today: string; p_window: number }
+        Returns: {
+          hotel_id: number
+          night: string
+          xotelo_key: string
+        }[]
+      }
       prune_raw_snapshots: { Args: { older_than?: string }; Returns: number }
       rebuild_stay_daily: { Args: { p_stay_ids?: number[] }; Returns: number }
       request_stay: {

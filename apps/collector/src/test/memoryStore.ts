@@ -51,6 +51,17 @@ export function memoryStore(
     { stayId: number; day: string; bestCents: number; best: string | null }
   >();
   const stats = new Map<number, StayStatsRow>();
+  /** night_daily by `hotelId|night|day`: rates by provider slug and the cheapest reviewed one. */
+  const nights = new Map<
+    string,
+    {
+      hotelId: number;
+      night: string;
+      day: string;
+      offers: Record<string, number>;
+      best: number | null;
+    }
+  >();
   const officialUrls = new Map<number, string>();
   let clock = '2026-10-12T05:00:00.000Z';
   let pruneCalls = 0;
@@ -262,9 +273,42 @@ export function memoryStore(
       pruneCalls++;
       return 0;
     },
+    async nightJobs(today, window, limit) {
+      const jobs: { hotelId: number; xoteloKey: string; night: string }[] = [];
+      for (let i = 0; i < window; i++) {
+        const night = new Date(Date.parse(`${today}T00:00:00Z`) + i * 86_400_000)
+          .toISOString()
+          .slice(0, 10);
+        for (const h of [...hotels].sort((a, b) => a.id - b.id)) {
+          if (!h.xoteloKey || nights.has(`${h.id}|${night}|${today}`)) continue;
+          jobs.push({ hotelId: h.id, xoteloKey: h.xoteloKey, night });
+        }
+      }
+      return jobs.slice(0, limit);
+    },
+    async ingestNights(payload) {
+      for (const p of payload.providers) {
+        if (!providers.has(p.slug)) providers.set(p.slug, { pending: true, name: p.name });
+        if (p.alias && !aliases.has(p.alias)) aliases.set(p.alias, p.slug);
+      }
+      for (const n of payload.nights) {
+        const reviewed = Object.entries(n.offers).filter(
+          ([slug]) => providers.get(slug)?.pending === false,
+        );
+        nights.set(`${n.hotel_id}|${n.night}|${n.day}`, {
+          hotelId: n.hotel_id,
+          night: n.night,
+          day: n.day,
+          offers: n.offers,
+          best: reviewed.length ? Math.min(...reviewed.map(([, c]) => c)) : null,
+        });
+      }
+      return payload.nights.length;
+    },
   };
   return {
     store,
+    nights,
     stays,
     runs,
     tasks,

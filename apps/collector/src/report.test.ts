@@ -35,6 +35,34 @@ describe('runDailyCheck', () => {
     expect(mail.sent).toEqual([]);
   });
 
+  it('flags a day without a night-grid run on the free source (C-070a)', async () => {
+    const mem = await morning();
+    for (const t of mem.tasks) t.status = 'done';
+    const free = testEnv({ ...env, PRICE_SOURCE: 'xotelo' });
+    const noNights = await runDailyCheck({
+      store: mem.store,
+      env: free,
+      now: CHECK,
+      fetchFn: fakeMail().fetchFn,
+    });
+    expect(noNights.problems).toEqual(['No night-grid run in staging today.']);
+
+    mem.runs.push({
+      id: 50,
+      kind: 'nights',
+      env: 'staging',
+      startedAt: '2026-10-12T00:02:00.000Z',
+      finishedAt: '2026-10-12T00:02:30.000Z',
+    });
+    const ok = await runDailyCheck({
+      store: mem.store,
+      env: free,
+      now: CHECK,
+      fetchFn: fakeMail().fetchFn,
+    });
+    expect(ok.problems).toEqual([]);
+  });
+
   it('emails once with every problem of the day', async () => {
     vi.spyOn(console, 'log').mockImplementation(() => {});
     const mem = await morning({ failStayIds: [1] });
