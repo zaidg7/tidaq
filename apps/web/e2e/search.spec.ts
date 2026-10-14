@@ -79,8 +79,9 @@ test.describe('search autocomplete (C-021a)', () => {
     await form.getByRole('combobox', { name: 'Hotel' }).fill('hotel de rome');
     await page.keyboard.press('Tab');
     await form.getByRole('button', { name: 'Preise ansehen' }).click();
-    // No "Wähl ein Hotel." error: the hotel counts as chosen; the dates are what's missing.
-    await expect(form.getByRole('alert')).toHaveText('Wähl Anreise und Abreise.');
+    // No "Wähl ein Hotel." error: the hotel counts as chosen, and without dates its calendar of
+    // every night opens.
+    await expect(page).toHaveURL(/\/hotel\/hotel-de-rome-berlin$/);
   });
 
   test('fits an iPhone screen with the list open', async ({ page }) => {
