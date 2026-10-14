@@ -61,7 +61,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-070a                                                          | Night grid: every night × 120 days per hotel, collected daily (D-42)         | CLOUD | M             | C-013g                            | DONE           |
 | C-070b                                                          | Stay page: history for any dates from nights + real check of the viewed stay | CLOUD | M             | C-070a, C-022c1                   | IN PROGRESS    |
 | C-070c                                                          | Night-sum accuracy: daily comparison with real stays, admin + methodology    | CLOUD | S             | C-070a                            | TODO           |
-| C-071                                                           | Catalog: international five-star hotels (proposal + first batch)             | CLOUD | M             | C-070a                            | TODO           |
+| C-071                                                           | Catalog: all five-star hotels in the 25 most popular cities (batches)        | CLOUD | L             | C-070a                            | TODO           |
+| C-072                                                           | Spike: LiteAPI room/board/occupancy rates (free supplier API)                | CLOUD | M             | B-010                             | BLOCKED        |
 | C-060                                                           | Market test: five-star price drops in ~10 holiday destinations               | CLOUD | M             | C-013g                            | TODO           |
 | C-023                                                           | Hotel page with price calendar                                               | CLOUD | M             | C-022                             | TODO           |
 | C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | TODO           |
@@ -599,9 +600,13 @@ Zaid's product (14 Oct): open Tidaq for any dates, e.g. Four Seasons 1.–4.12.,
 2. Show the last 7 days in /admin; the methodology page (C-034) shows the 30-day share within 3 %.
 3. If the share within 3 % drops below 75 % for 3 days, email Zaid and add a TASKS entry to investigate (e.g. per-hotel minimum stays).
 
-### C-071 · International catalog (Owner CLOUD · M · depends on C-070a · TODO)
+### C-071 · Catalog: all five-star hotels in the 25 most popular cities (Owner CLOUD · L · depends on C-070a · TODO)
 
-Zaid's goal is an international product. Each hotel costs 120 free calls a day, so the catalog can grow without data cost, within what Xotelo tolerates. Steps: propose the next 40–60 five-star hotels (Gulf, Mediterranean resorts, Alps, major world cities; e.g. Four Seasons Abu Dhabi) with TripAdvisor keys via Xotelo `/api/list`, photos via the C-011c pipeline, cities and copy in DE/EN. This changes D-04 (launch coverage DACH + EU): put the proposal in BLOCKERS as a yes/no before adding. Add hotels in batches of 20 and watch the daily night run time and error rate.
+D-43 (Zaid, 14 Oct). Steps: pick the 25 most popular cities for luxury travel worldwide (e.g. Paris, London, New York, Dubai, Tokyo, Rome, Barcelona, Istanbul, Singapore, Bangkok, Hong Kong, Abu Dhabi, Milan, Vienna, Munich, Berlin, Zurich, Amsterdam, Madrid, Lisbon, Los Angeles, Miami, Sydney, Shanghai, Maldives) and list their five-star hotels with TripAdvisor keys via Xotelo `/api/list` (no star filter: use price level and rating; check against a second list), photos via the C-011c pipeline, cities and copy in DE/EN. Add in batches of ~50 hotels and watch the daily night run (finish time, errors, empty share). **Capacity limit:** each hotel costs 120 Xotelo calls a day; the free Workers plan fits ~25,000 calls/day in the current 2-minute cycle, and Xotelo is unofficial. Beyond ~150 hotels: Workers paid plan ($5, 10,000 requests per run) and a tiered grid (next 60 nights daily, later nights every 3 days) or a paid/partner source (`docs/research/rate-data.md`).
+
+### C-072 · Spike: LiteAPI room/board/occupancy rates (Owner CLOUD · M · depends on B-010 · BLOCKED)
+
+D-43 needs room types, board (breakfast, half board, all-inclusive) and occupancies (1 adult, 2+child, 3). LiteAPI (Nuitee) is the only self-serve, free source found with that data (`docs/research/rate-data.md`). Steps: with the sandbox key (B-010), map 10 of our hotels to LiteAPI ids; for 20 stays and occupancies 1, 2, 2+1, 3 record rooms, board types, prices, cancellation and response time; compare totals with our platform prices; ask Nuitee in writing what look-to-book is acceptable and whether storing and showing price history is allowed. Output: `docs/research/liteapi.md` with a go/no-go and a design for a room-level grid (2 adults daily for 60 nights, other occupancies for watched hotels). No booking, no payment data (hard rule 3).
 
 ### C-060 · Market test: five-star price drops
 

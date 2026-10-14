@@ -1,5 +1,6 @@
 import {
   aliasKey,
+  NIGHT_GRID,
   normalizeHotelInfo,
   registrableDomain,
   toIsoDate,
@@ -14,7 +15,7 @@ import { fetchXoteloTask } from './xotelo';
 /** Night grid settings (C-070a, D-42, PLAN §7.0). */
 export const NIGHTS = {
   /** Nights ahead per hotel. */
-  defaultWindow: 120,
+  defaultWindow: NIGHT_GRID.windowDays,
   /**
    * Nights per run. The Workers free plan allows 50 outgoing requests per run; a nights run also
    * makes ~6 Supabase calls, so 36 Xotelo calls leave a safety margin.

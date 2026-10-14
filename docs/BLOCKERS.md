@@ -16,6 +16,19 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-010 · Free LiteAPI sandbox key (room types, breakfast, half board)
+
+Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-072 (room/board/occupancy data, D-43)
+What I need: a free LiteAPI sandbox key, stored as a secret. It has to be your account. No credit card, no cost.
+Steps for Zaid (≈ 5 min):
+
+1. Go to **liteapi.travel**, then **Sign up** (your email).
+2. In the dashboard, open **API keys** and copy the **sandbox** key (it starts with `sand_`).
+3. Store it in **two** places (never in chat):
+   - GitHub: repo **tidaq** → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**, name `LITEAPI_KEY`.
+   - Claude cloud environment: the environment menu in the session's title bar → **Edit** → **Network secrets** (or **API credentials**) for host `api.liteapi.travel`, header `X-API-Key`. If that section isn't offered, add it as an environment variable named `LITEAPI_KEY` instead. A new session picks it up.
+   Where to put the result: those two places, then change this Status to DONE.
+
 ## B-009 · Decision: daily price-check limit 400 → 500 (free source)
 
 Status: DONE – superseded by D-42 (14 Oct): history now comes from single nights, so visitor requests no longer need cap room. No answer needed. · Opened: 2026-10-14 by CLOUD
