@@ -4,6 +4,8 @@ import {
   formatDayMonth,
   formatWeekdayDayMonth,
   healthVerdict,
+  NIGHT_ACCURACY,
+  NIGHT_GRID,
   type HealthCheck,
   type HealthLevel,
 } from '@tidaq/core';
@@ -16,7 +18,7 @@ import {
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
-import type { AdminHealth } from '@/lib/admin/db';
+import type { AdminAccuracyDay, AdminHealth } from '@/lib/admin/db';
 import { cn } from '@/lib/cn';
 
 /**
@@ -32,6 +34,8 @@ const usd = new Intl.NumberFormat('de-DE', {
   maximumFractionDigits: 2,
 });
 const int = new Intl.NumberFormat('de-DE');
+const pct = new Intl.NumberFormat('de-DE', { style: 'percent', maximumFractionDigits: 0 });
+const gapPct = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 1 });
 const time = new Intl.DateTimeFormat('de-DE', {
   timeZone: 'Europe/Berlin',
   hour: '2-digit',
@@ -264,6 +268,8 @@ export function Dashboard({ health, monthlyBudgetUsd, now, flash }: Props) {
         )}
       </Section>
 
+      <NightsSection nights={health.nights} accuracy={health.accuracy} />
+
       <Section
         title="Hotels ohne Preise seit 3 Tagen"
         hint="Oft falsche Hotel-ID bei DataForSEO. Deaktivieren spart Budget, bis es geklärt ist."
@@ -359,6 +365,119 @@ export function Dashboard({ health, monthlyBudgetUsd, now, flash }: Props) {
   );
 }
 
+/**
+ * Night grid (C-070a) and how close summed nights come to real stay prices (C-070c). The
+ * night runs are counted here, not in the daily run table: thousands of nights would drown it.
+ */
+function NightsSection({
+  nights,
+  accuracy,
+}: {
+  nights: AdminHealth['nights'];
+  accuracy: AdminAccuracyDay[];
+}) {
+  const expected = nights.hotels * NIGHT_GRID.windowDays;
+  const done = expected > 0 ? nights.rows / expected : 0;
+  const latest = accuracy[0];
+  const share = (d: AdminAccuracyDay) => (d.pairs > 0 ? d.within_3 / d.pairs : null);
+  const weak = (d: AdminAccuracyDay) => {
+    const s = share(d);
+    return s !== null && d.pairs >= NIGHT_ACCURACY.minPairs && s < NIGHT_ACCURACY.minShare;
+  };
+  return (
+    <Section
+      title="Einzelnächte"
+      hint={`Jede Nacht der nächsten ${NIGHT_GRID.windowDays} Tage pro Hotel, täglich ab Mitternacht UTC. Tag in UTC.`}
+    >
+      <div className="flex flex-col gap-1">
+        <p className="font-semibold tabular-nums">
+          {int.format(nights.rows)} von {int.format(expected)} Nächten heute
+          {nights.last_collected_at &&
+            `, zuletzt ${time.format(new Date(nights.last_collected_at))} Uhr`}
+        </p>
+        <Meter
+          share={done}
+          label={`${pct.format(done)} abgefragt · ${int.format(nights.priced)} mit Preis · ${int.format(nights.runs)} Läufe · ${int.format(nights.errors)} Fehler`}
+          tone="progress"
+        />
+      </div>
+
+      <h3 className="mt-5 font-semibold">Genauigkeit</h3>
+      <p className="text-meta mt-1 mb-2 text-muted-ink">
+        Summe der Nächte gegen den echten Preis desselben Aufenthalts auf derselben Seite, am selben
+        Tag. Ziel: mindestens {pct.format(NIGHT_ACCURACY.minShare)} auf 3 % genau.
+      </p>
+      {accuracy.length === 0 ? (
+        <Empty>Noch kein Vergleich. Der erste kommt morgen früh mit der Tagesprüfung.</Empty>
+      ) : (
+        <div className="-mx-5 overflow-x-auto px-5 lg:-mx-6 lg:px-6">
+          <table className="w-full text-left text-[14px] tabular-nums">
+            <thead className="text-meta whitespace-nowrap text-muted-ink">
+              <tr className="border-b border-line">
+                <th scope="col" className="py-2 pr-3 font-semibold">
+                  Tag
+                </th>
+                <th scope="col" className="py-2 pr-3 text-right font-semibold">
+                  Vergleiche
+                </th>
+                <th scope="col" className="py-2 pr-3 text-right font-semibold">
+                  ± 3 %
+                </th>
+                <th scope="col" className="py-2 pr-3 text-right font-semibold max-sm:hidden">
+                  ± 0,5 %
+                </th>
+                <th scope="col" className="py-2 text-right font-semibold">
+                  Median
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {accuracy.map((d) => {
+                const s = share(d);
+                return (
+                  <tr key={d.day} className="border-t border-line">
+                    <th scope="row" className="py-2.5 pr-3 font-semibold whitespace-nowrap">
+                      {formatWeekdayDayMonth(d.day, 'de')}
+                    </th>
+                    <td className="py-2.5 pr-3 text-right">{int.format(d.pairs)}</td>
+                    <td
+                      className={cn('py-2.5 pr-3 text-right', weak(d) && 'font-bold text-bad-ink')}
+                    >
+                      {s === null ? '–' : pct.format(s)}
+                    </td>
+                    <td className="py-2.5 pr-3 text-right max-sm:hidden">
+                      {d.pairs > 0 ? pct.format(d.within_05 / d.pairs) : '–'}
+                    </td>
+                    <td className="py-2.5 text-right whitespace-nowrap">
+                      {d.median_gap_pct === null ? '–' : `${gapPct.format(d.median_gap_pct)} %`}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {latest && latest.worst.length > 0 && (
+        <>
+          <h3 className="mt-5 font-semibold">
+            Größte Abweichung am {formatDayMonth(latest.day, 'de')}
+          </h3>
+          <Rows>
+            {latest.worst.map((w) => (
+              <Row
+                key={w.hotel_id}
+                title={w.name}
+                meta={`${int.format(w.within_3)} von ${int.format(w.pairs)} auf 3 % genau`}
+              />
+            ))}
+          </Rows>
+        </>
+      )}
+    </Section>
+  );
+}
+
 function Tile({ label, value, children }: { label: string; value: string; children: ReactNode }) {
   return (
     <Card className="flex flex-col gap-1">
@@ -370,7 +489,16 @@ function Tile({ label, value, children }: { label: string; value: string; childr
 }
 
 /** Budget used, as a bar. The label carries the number; the bar is decoration. */
-function Meter({ share, label }: { share: number; label: string }) {
+function Meter({
+  share,
+  label,
+  tone = 'budget',
+}: {
+  share: number;
+  label: string;
+  /** `budget`: full is bad. `progress`: full is the goal. */
+  tone?: 'budget' | 'progress';
+}) {
   const pct = Math.min(1, Math.max(0, share)) * 100;
   return (
     <span className="flex flex-col gap-1">
@@ -378,7 +506,13 @@ function Meter({ share, label }: { share: number; label: string }) {
         <span
           className={cn(
             'block h-full rounded-full',
-            share >= 1 ? 'bg-bad' : share >= 0.8 ? 'bg-warn' : 'bg-accent',
+            tone === 'progress'
+              ? 'bg-accent'
+              : share >= 1
+                ? 'bg-bad'
+                : share >= 0.8
+                  ? 'bg-warn'
+                  : 'bg-accent',
           )}
           style={{ width: `${pct}%` }}
         />
@@ -402,7 +536,7 @@ function Rows({ children }: { children: ReactNode }) {
   return <ul className="divide-y divide-line">{children}</ul>;
 }
 
-function Row({ title, meta, children }: { title: string; meta: string; children: ReactNode }) {
+function Row({ title, meta, children }: { title: string; meta: string; children?: ReactNode }) {
   return (
     <li className="flex items-center gap-3 py-2.5">
       <div className="min-w-0 flex-1">

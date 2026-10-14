@@ -85,6 +85,24 @@ test.describe('dashboard preview (made-up data)', () => {
     await expect(page.getByRole('button', { name: 'Staging-Lauf starten' })).toBeVisible();
   });
 
+  test('night grid progress and night-sum accuracy (C-070c)', async ({ page }) => {
+    await page.goto('/dev/admin');
+    const nights = page
+      .locator('section, div')
+      .filter({
+        has: page.getByRole('heading', { level: 2, name: 'Einzelnächte' }),
+      })
+      .last();
+    await expect(nights.getByText('3.912 von 4.200 Nächten heute')).toBeVisible();
+    const table = nights.getByRole('table');
+    await expect(table.getByRole('row')).toHaveCount(3);
+    // 320 of 524 within 3 %: below the 75 % target, so it's marked.
+    await expect(table.getByRole('cell', { name: '61 %' })).toHaveClass(/text-bad-ink/);
+    await expect(table.getByRole('cell', { name: '81 %' })).not.toHaveClass(/text-bad-ink/);
+    await expect(nights.getByText('Rosewood Munich')).toBeVisible();
+    await expect(nights.getByText('0 von 15 auf 3 % genau')).toBeVisible();
+  });
+
   test('fits a phone without horizontal scrolling', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
     await page.goto('/dev/admin');

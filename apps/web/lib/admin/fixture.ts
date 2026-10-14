@@ -41,6 +41,48 @@ export const adminHealthFixture: AdminHealth = {
     { id: 16, slug: 'villa-kennedy-frankfurt', name: 'Villa Kennedy', last_day: null },
   ],
   inactive_hotels: [{ id: 2, slug: 'hotel-de-rome-berlin', name: 'Hotel de Rome' }],
+  nights: {
+    day: '2026-10-13',
+    hotels: 35,
+    rows: 3912,
+    priced: 3720,
+    last_collected_at: '2026-10-13T11:58:00Z',
+    runs: 109,
+    errors: 0,
+  },
+  accuracy: [
+    {
+      day: '2026-10-12',
+      pairs: 524,
+      within_05: 231,
+      within_3: 320,
+      within_10: 421,
+      median_gap_pct: 1.36,
+      stays: 160,
+      stays_within_3: 96,
+      worst: [
+        { hotel_id: 7, slug: 'rosewood-munich', name: 'Rosewood Munich', pairs: 15, within_3: 0 },
+        {
+          hotel_id: 34,
+          slug: 'hotel-de-russie-rom',
+          name: 'Hotel de Russie',
+          pairs: 15,
+          within_3: 1,
+        },
+      ],
+    },
+    {
+      day: '2026-10-11',
+      pairs: 498,
+      within_05: 260,
+      within_3: 401,
+      within_10: 470,
+      median_gap_pct: 0.4,
+      stays: 155,
+      stays_within_3: 128,
+      worst: [],
+    },
+  ],
   pending_total: 64,
   pending_providers: [
     {

@@ -96,6 +96,38 @@ export const adminHealthSchema = z.object({
   }),
   stale_hotels: z.array(hotelSchema.extend({ last_day: z.string().nullable() })),
   inactive_hotels: z.array(hotelSchema),
+  /** Night grid today (UTC collection day, C-070c). */
+  nights: z.object({
+    day: z.string(),
+    hotels: count,
+    rows: count,
+    priced: count,
+    last_collected_at: z.string().nullable(),
+    runs: count,
+    errors: count,
+  }),
+  /** Night-sum accuracy, last 7 days, newest first (C-070c). */
+  accuracy: z.array(
+    z.object({
+      day: z.string(),
+      pairs: count,
+      within_05: count,
+      within_3: count,
+      within_10: count,
+      median_gap_pct: z.coerce.number().nullable(),
+      stays: count,
+      stays_within_3: count,
+      worst: z.array(
+        z.object({
+          hotel_id: count,
+          slug: z.string(),
+          name: z.string(),
+          pairs: count,
+          within_3: count,
+        }),
+      ),
+    }),
+  ),
   pending_total: count,
   pending_providers: z.array(
     z.object({
@@ -110,6 +142,7 @@ export const adminHealthSchema = z.object({
 });
 export type AdminHealth = z.infer<typeof adminHealthSchema>;
 export type AdminDay = z.infer<typeof daySchema>;
+export type AdminAccuracyDay = AdminHealth['accuracy'][number];
 
 export async function getAdminHealth(): Promise<AdminHealth> {
   return adminHealthSchema.parse(await call('rpc/admin_health', { method: 'POST', body: {} }));

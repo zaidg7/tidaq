@@ -4,6 +4,7 @@ import type {
   CatalogHotel,
   CollectorStore,
   DayReport,
+  NightAccuracyRow,
   RunKind,
   RunPatch,
   StayJob,
@@ -51,6 +52,11 @@ export function memoryStore(
     { stayId: number; day: string; bestCents: number; best: string | null }
   >();
   const stats = new Map<number, StayStatsRow>();
+  /**
+   * night_accuracy by day. The comparison itself is SQL; tests seed the row a day should get
+   * (recording a day without a seeded row stores an empty one).
+   */
+  const accuracy = new Map<string, NightAccuracyRow>();
   /** night_daily by `hotelId|night|day`: rates by provider slug and the cheapest reviewed one. */
   const nights = new Map<
     string,
@@ -269,6 +275,16 @@ export function memoryStore(
         },
       };
     },
+    async recordNightAccuracy(day) {
+      const row = accuracy.get(day) ?? { day, pairs: 0, within3: 0, medianGapPct: null, worst: [] };
+      accuracy.set(day, row);
+      return row;
+    },
+    async nightAccuracy(fromDay) {
+      return [...accuracy.values()]
+        .filter((r) => r.day >= fromDay)
+        .sort((a, b) => (a.day < b.day ? 1 : -1));
+    },
     async pruneRaw() {
       pruneCalls++;
       return 0;
@@ -309,6 +325,7 @@ export function memoryStore(
   return {
     store,
     nights,
+    accuracy,
     stays,
     runs,
     tasks,

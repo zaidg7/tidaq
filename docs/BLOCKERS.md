@@ -18,7 +18,7 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ## B-010 · Free LiteAPI sandbox key (room types, breakfast, half board)
 
-Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-072 (room/board/occupancy data, D-43)
+Status: DONE (14 Oct: GitHub secret `LITEAPI_KEY` and the cloud network secret for `api.liteapi.travel` work; a test call returned 200) · Opened: 2026-10-14 by CLOUD · Blocks: C-072 (room/board/occupancy data, D-43)
 What I need: a free LiteAPI sandbox key, stored as a secret. It has to be your account. No credit card, no cost.
 Steps for Zaid (≈ 5 min):
 
