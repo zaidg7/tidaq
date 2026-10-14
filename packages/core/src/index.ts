@@ -218,3 +218,4 @@ export {
   type OutboundStay,
 } from './outbound';
 export { hotelJsonLd, jsonLdString, SITE_ORIGIN, type HotelJsonLdInput } from './structuredData';
+export { inlineLinks, type InlinePart } from './inlineLinks';

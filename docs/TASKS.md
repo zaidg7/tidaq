@@ -76,7 +76,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-023b                                                          | Hotel page: cheapest weekend/midweek, structured data, links in              | CLOUD | S             | C-023a                            | DONE           |
 | C-026                                                           | Outbound link service `/go/*` with click logging                             | CLOUD | S             | C-022                             | DONE           |
 | L-026                                                           | Check "Zum Angebot" links open the right hotel and dates                     | LOCAL | S             | C-026                             | TODO           |
-| C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | TODO           |
+| C-027                                                           | Legal and transparency pages                                                 | CLOUD | M             | C-020a                            | DONE           |
 | C-024                                                           | City pages                                                                   | CLOUD | S             | C-023                             | TODO           |
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | TODO           |
 | C-028                                                           | SEO foundation and dynamic OG images                                         | CLOUD | M             | C-022                             | TODO           |
@@ -115,7 +115,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | Z-09  | Google Search Console                                                                          | TODO               |
 | Z-10  | Social handles                                                                                 | TODO               |
 | Z-11  | Affiliate program applications (after launch)                                                  | TODO               |
-| Z-12  | Read legal pages before launch                                                                 | TODO               |
+| Z-12  | Read legal pages before launch                                                                 | DONE (B-014)       |
 
 Tasks marked **parallel-safe** for LOCAL (no shared files with typical CLOUD work): C-003, C-007, C-015, C-027, C-029.
 
@@ -738,6 +738,8 @@ Owner: CLOUD · Size: M · Depends on: C-020a · Status: TODO · PR: –
 **Done when**
 
 - [ ] All pages linked in the footer; no TMG references anywhere
+
+**C-027 notes (DONE):** `/impressum`, `/datenschutz`, `/affiliate-hinweis`, `/ranking`, `/methodik`, each also under `/en/…` (same German slugs as every other page; the English pages say the German text is binding). Texts live in `messages/*.json` under `legal.<key>` as sections (`title`, `text[]`, `list[]`); `[label](href)` marks links (core `inlineLinks`: only `https:`, `mailto:` and site paths); `components/legal/legalRoute.tsx` turns a key into a prerendered page with canonical + hreflang. No Steuernummer line: § 5 DDG asks for a USt-IdNr. only if one exists (B-014 asks Zaid), and an empty placeholder would look broken. The ODR-platform link is gone on purpose (the EU platform closed on 20 Jul 2025). Facts in the privacy text that later tasks must keep true: no cookies or browser storage, no IPs in our code, server logs ≤ 7 days, Supabase in Frankfurt, anonymous `outbound_click` and requested stays only. **C-029** must add a section before enabling Cloudflare Web Analytics; **C-030** must match section 6 (double opt-in, consent text + time stored, delete the address on unsubscribe); **C-024** must sort overview pages by city and name as `/ranking` says. Zaid's read + Supabase DPA: B-014.
 
 ### C-028 · SEO foundation and OG images
 

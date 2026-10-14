@@ -340,5 +340,271 @@
     "inactiveTitle": "Dieses Hotel beobachten wir gerade nicht",
     "inactiveText": "Wir sammeln für dieses Hotel keine neuen Preise. Such dir ein anderes Hotel aus.",
     "home": "Zur Startseite"
+  },
+  "legal": {
+    "bindingNote": "",
+    "imprint": {
+      "metaTitle": "Impressum | Tidaq",
+      "metaDescription": "Wer hinter Tidaq steht und wie du uns erreichst.",
+      "eyebrow": "Rechtliches",
+      "title": "Impressum",
+      "updated": "Stand: 14. Oktober 2026",
+      "sections": [
+        {
+          "title": "Angaben gemäß § 5 DDG",
+          "text": ["Zaid Ghazal\nPrinz-Heinrich-Straße 17\n24106 Kiel\nDeutschland"]
+        },
+        {
+          "title": "Kontakt",
+          "text": ["E-Mail: [zaidghazal216@gmail.com](mailto:zaidghazal216@gmail.com)"]
+        },
+        {
+          "title": "Umsatzsteuer",
+          "text": ["Gemäß § 19 UStG wird keine Umsatzsteuer berechnet (Kleinunternehmerregelung)."]
+        },
+        {
+          "title": "Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV",
+          "text": ["Zaid Ghazal\nPrinz-Heinrich-Straße 17\n24106 Kiel\nDeutschland"]
+        },
+        {
+          "title": "Verbraucherstreitbeilegung",
+          "text": [
+            "Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
+          ]
+        },
+        {
+          "title": "Links zu anderen Websites",
+          "text": [
+            "Tidaq verlinkt auf Buchungsseiten und Hotel-Websites. Für deren Inhalte sind allein ihre Betreiber verantwortlich. Als wir die Links gesetzt haben, waren keine Rechtsverstöße erkennbar. Wenn uns ein Rechtsverstoß bekannt wird, entfernen wir den Link sofort."
+          ]
+        },
+        {
+          "title": "Hotelfotos",
+          "text": [
+            "Die Hotelfotos stehen unter freien Lizenzen (Wikimedia Commons). Urheber und Lizenz stehen direkt unter jedem Foto."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "metaTitle": "Datenschutz | Tidaq",
+      "metaDescription": "Welche Daten Tidaq verarbeitet, warum und wie lange. Ohne Cookies, ohne Tracking.",
+      "eyebrow": "Rechtliches",
+      "title": "Datenschutzerklärung",
+      "intro": "Kurz gesagt: Tidaq setzt keine Cookies, nutzt kein Tracking und keine Werbung, und du brauchst kein Konto. Unser eigener Code speichert keine IP-Adressen.",
+      "updated": "Stand: 14. Oktober 2026",
+      "sections": [
+        {
+          "title": "1. Verantwortlicher",
+          "text": [
+            "Zaid Ghazal\nPrinz-Heinrich-Straße 17\n24106 Kiel\nDeutschland",
+            "E-Mail: [zaidghazal216@gmail.com](mailto:zaidghazal216@gmail.com)"
+          ]
+        },
+        {
+          "title": "2. Aufruf der Website (Hosting bei Cloudflare)",
+          "text": [
+            "Tidaq läuft auf Servern von Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA. Wenn du eine Seite aufrufst, verarbeitet Cloudflare technisch nötige Daten: deine IP-Adresse, Datum und Uhrzeit, die aufgerufene Adresse, den Browser-Typ und die Seite, von der du kommst. Das ist nötig, um dir die Seite auszuliefern und sie vor Angriffen zu schützen.",
+            "Rechtsgrundlage ist unser berechtigtes Interesse an einer sicheren, funktionierenden Website (Art. 6 Abs. 1 lit. f DSGVO). Unsere Server-Protokolle bei Cloudflare werden nach spätestens 7 Tagen gelöscht. Cloudflare ist unter dem EU-US Data Privacy Framework zertifiziert."
+          ]
+        },
+        {
+          "title": "3. Keine Cookies, kein Tracking",
+          "text": [
+            "Wir setzen für Besucher keine Cookies und speichern nichts in deinem Browser. Wir nutzen keine Analyse- oder Werbedienste, die dich über Websites hinweg verfolgen. Schriften und Hotelfotos liefern wir von unserem eigenen Server aus, ohne Anfragen an Dritte."
+          ]
+        },
+        {
+          "title": "4. Datenbank (Supabase, Server in Frankfurt)",
+          "text": [
+            "Preise, Hotels und Statistiken speichern wir bei Supabase, Inc. auf Servern in Frankfurt am Main (EU). Dazu gehören auch anonyme Zählungen ohne Bezug zu dir:"
+          ],
+          "list": [
+            "Klicks auf „Zum Angebot“: Buchungsseite, Hotel, Reisedaten und Zahl der Gäste.",
+            "Reisedaten, die du auf einer Aufenthaltsseite aufrufst und für die wir Preise abfragen: Hotel, Reisedaten und Zahl der Gäste."
+          ]
+        },
+        {
+          "title": "5. Links zu Buchungsseiten",
+          "text": [
+            "Wenn du auf „Zum Angebot“ klickst, öffnet sich die Buchungsseite oder die Website des Hotels in einem neuen Tab. Wir geben dabei keine Daten über dich weiter; die Adresse enthält nur das Hotel, die Reisedaten und die Zahl der Gäste. Ab dann gilt die Datenschutzerklärung dieser Seite. Ist ein Link als „Partnerlink“ gekennzeichnet, kann die Buchungsseite oder ihr Partnernetzwerk dort eigene Cookies setzen, um eine Buchung uns zuzuordnen. Mehr dazu im [Affiliate-Hinweis](/affiliate-hinweis)."
+          ]
+        },
+        {
+          "title": "6. Preisalarm per E-Mail",
+          "text": [
+            "Diese Funktion startet in Kürze. Sobald es sie gibt, gilt: Wenn du einen Preisalarm einrichtest, speichern wir deine E-Mail-Adresse, den beobachteten Aufenthalt, den Text deiner Einwilligung und den Zeitpunkt. Wir schicken dir zuerst eine E-Mail mit einem Bestätigungslink (Double-Opt-in). Erst danach bekommst du Alarme, und nur für das, was du beobachten wolltest.",
+            "Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst sie jederzeit widerrufen: über den Abmeldelink in jeder E-Mail oder per E-Mail an uns. Dann löschen wir deine E-Mail-Adresse. Den Nachweis deiner Einwilligung bewahren wir so lange auf, wie wir ihn rechtlich brauchen können.",
+            "Die E-Mails verschickt der Dienst Resend (USA). Resend verarbeitet dafür deine E-Mail-Adresse und den Inhalt der E-Mail."
+          ]
+        },
+        {
+          "title": "7. Kontakt per E-Mail",
+          "text": [
+            "Wenn du uns schreibst, verarbeiten wir deine E-Mail-Adresse und deine Nachricht, um zu antworten (Art. 6 Abs. 1 lit. f DSGVO). Unser Postfach liegt bei Google (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland). Wir löschen die Nachricht, wenn die Sache erledigt ist, außer wir müssen sie aufbewahren."
+          ]
+        },
+        {
+          "title": "8. Auftragsverarbeitung und Übermittlung in die USA",
+          "text": [
+            "Cloudflare, Supabase und Resend verarbeiten Daten in unserem Auftrag nach Art. 28 DSGVO. Soweit Daten dabei in die USA gelangen können, ist das durch das EU-US Data Privacy Framework oder die EU-Standardvertragsklauseln abgesichert."
+          ]
+        },
+        {
+          "title": "9. Deine Rechte",
+          "text": ["Du hast das Recht auf:"],
+          "list": [
+            "Auskunft über deine Daten (Art. 15 DSGVO)",
+            "Berichtigung (Art. 16 DSGVO)",
+            "Löschung (Art. 17 DSGVO)",
+            "Einschränkung der Verarbeitung (Art. 18 DSGVO)",
+            "Datenübertragbarkeit (Art. 20 DSGVO)",
+            "Widerspruch gegen Verarbeitungen auf Grundlage berechtigter Interessen (Art. 21 DSGVO)",
+            "Widerruf einer Einwilligung mit Wirkung für die Zukunft (Art. 7 Abs. 3 DSGVO)"
+          ]
+        },
+        {
+          "title": "10. Beschwerde",
+          "text": [
+            "Du kannst dich bei einer Datenschutz-Aufsichtsbehörde beschweren. Für uns zuständig ist das Unabhängige Landeszentrum für Datenschutz Schleswig-Holstein, Holstenstraße 98, 24103 Kiel, [datenschutzzentrum.de](https://www.datenschutzzentrum.de)."
+          ]
+        },
+        {
+          "title": "11. Änderungen",
+          "text": [
+            "Wenn sich Tidaq ändert, passen wir diese Erklärung an. Es gilt die Fassung, die hier steht."
+          ]
+        }
+      ]
+    },
+    "affiliate": {
+      "metaTitle": "Affiliate-Hinweis | Tidaq",
+      "metaDescription": "Wie Tidaq Geld verdienen will und warum das die Reihenfolge der Preise nie beeinflusst.",
+      "eyebrow": "Transparenz",
+      "title": "Affiliate-Hinweis",
+      "intro": "Tidaq ist kostenlos. Später wollen wir über Partnerlinks Geld verdienen. Hier steht, wie das funktioniert und was es für dich bedeutet.",
+      "updated": "Stand: 14. Oktober 2026",
+      "sections": [
+        {
+          "title": "Wie Partnerlinks funktionieren",
+          "text": [
+            "Manche Buchungsseiten zahlen eine Provision, wenn jemand über einen Link eine Buchung abschließt. Für dich ändert sich der Preis dadurch nicht."
+          ]
+        },
+        {
+          "title": "Stand heute",
+          "text": [
+            "Wir sind noch bei keinem Partnerprogramm angemeldet. Alle Links auf Tidaq sind normale Links, an denen wir nichts verdienen."
+          ]
+        },
+        {
+          "title": "Woran du Partnerlinks erkennst",
+          "list": [
+            "In der Preistabelle steht bei der Buchungsseite „Partnerlink“.",
+            "Alle Links zu Buchungsseiten sind für Suchmaschinen als bezahlte Links markiert (rel=\"sponsored\"), auch solange wir nichts daran verdienen."
+          ]
+        },
+        {
+          "title": "Was Provisionen nie beeinflussen",
+          "list": [
+            "Die Reihenfolge der Buchungsseiten. Sie richtet sich nur nach dem Preis, den du an der Kasse erwarten kannst. Wie genau, steht unter [So sortieren wir](/ranking).",
+            "Unsere Einschätzung, ob ein Preis gut ist.",
+            "Die Ergebnisse unserer Kassen-Tests und die Preistreue der Buchungsseiten."
+          ]
+        }
+      ]
+    },
+    "ranking": {
+      "metaTitle": "So sortieren wir | Tidaq",
+      "metaDescription": "Nach welchen Kriterien Tidaq Buchungsseiten und Hotels sortiert (§ 5b UWG).",
+      "eyebrow": "Transparenz",
+      "title": "So sortieren wir",
+      "intro": "Hier steht, nach welchen Kriterien wir Angebote sortieren (§ 5b Abs. 2 UWG). Provisionen spielen dabei keine Rolle.",
+      "updated": "Stand: 14. Oktober 2026",
+      "sections": [
+        {
+          "title": "Preise auf einer Aufenthaltsseite",
+          "text": [
+            "Die Buchungsseiten stehen nach dem Gesamtpreis, den du an der Kasse erwarten kannst, der günstigste oben."
+          ],
+          "list": [
+            "Grundlage ist der Gesamtpreis für den ganzen Aufenthalt, wie ihn die Buchungsseite bei unserer letzten Abfrage gemeldet hat, mit Steuern und Gebühren so, wie sie die Seite ausweist. Eine Kurtaxe vor Ort kann dazukommen.",
+            "Haben wir eine Buchungsseite mindestens 5-mal an der Kasse getestet und lag der Preis dort im Schnitt um mehr als 1 % höher, rechnen wir diesen Aufschlag ein. Daneben steht dann „an der Kasse ≈ …“.",
+            "Bei gleichem Preis entscheidet erst der niedrigere angezeigte Preis, dann die Website des Hotels, dann der Name.",
+            "Wir zeigen nur Buchungsseiten, die wir geprüft haben. Wie viele weitere Seiten einen Preis hatten, steht unter der Tabelle."
+          ]
+        },
+        {
+          "title": "Hotels",
+          "text": [
+            "In der Suche stehen Hotels zuerst, deren Name mit deiner Eingabe beginnt, dann Treffer im Namen, dann in der Stadt. Auf Übersichtsseiten sortieren wir nach Stadt und Name."
+          ]
+        },
+        {
+          "title": "Was nie eine Rolle spielt",
+          "text": [
+            "Ob uns eine Buchungsseite eine Provision zahlt, beeinflusst weder die Reihenfolge noch die Auswahl noch unsere Einschätzung. Mehr im [Affiliate-Hinweis](/affiliate-hinweis)."
+          ]
+        }
+      ]
+    },
+    "method": {
+      "metaTitle": "So funktioniert Tidaq | Methodik",
+      "metaDescription": "Woher die Preise kommen, wie wir den Preisverlauf berechnen und wann ein Preis gut ist.",
+      "eyebrow": "Methodik",
+      "title": "So funktioniert Tidaq",
+      "intro": "Tidaq zeigt dir den Preisverlauf von Luxushotels, damit du weißt, ob ein Preis gerade gut ist. Hier steht, woher die Zahlen kommen und wo ihre Grenzen liegen.",
+      "updated": "Stand: 14. Oktober 2026",
+      "sections": [
+        {
+          "title": "Woher die Preise kommen",
+          "text": [
+            "Wir fragen die Preise jeden Tag bei einem Preisvergleichsdienst ab, der die Angebote mehrerer Buchungsseiten und der Hotels bündelt. Wir lesen keine Buchungsseiten selbst aus und buchen nichts."
+          ]
+        },
+        {
+          "title": "Was wir jeden Tag abfragen",
+          "list": [
+            "Für jedes Hotel den Preis jeder einzelnen Nacht in den nächsten 120 Tagen, für 2 Erwachsene, bei jeder Buchungsseite.",
+            "Zusätzlich echte Aufenthalte mit festen Daten, zum Beispiel Freitag bis Sonntag. Daran prüfen wir, ob die einzelnen Nächte zusammen den echten Preis ergeben.",
+            "Alle Preise in Euro, als Gesamtpreis so, wie die Buchungsseite ihn meldet."
+          ]
+        },
+        {
+          "title": "Wie der Preisverlauf eines Aufenthalts entsteht",
+          "text": [
+            "Für deine Reisedaten addieren wir die Nächte, und zwar bei derselben Buchungsseite. Wir mischen nie Seiten über verschiedene Nächte, denn so könntest du nicht buchen. Pro Tag zeigen wir den günstigsten solchen Gesamtpreis.",
+            "Bei manchen Hotels kosten einzelne Nächte zusammen oft etwas anderes als ein ganzer Aufenthalt. Das messen wir jeden Tag: Weicht die Summe über 7 Tage im Mittel um mehr als 5 % ab oder liegt sie zu selten nah am echten Preis, zeigen wir für dieses Hotel nur echte Abfragen genau deiner Daten."
+          ]
+        },
+        {
+          "title": "Wann ein Preis gut ist",
+          "text": [
+            "Wir vergleichen den heutigen Preis mit den letzten 60 Tagen. Eine Einschätzung gibt es ab 7 Tagen mit Preisen."
+          ],
+          "list": [
+            "Nah am Tiefpunkt: höchstens 2 % über dem niedrigsten Preis oder unter den günstigsten 10 % der Tage.",
+            "Guter Preis: unter den günstigsten 35 % der Tage.",
+            "Gerade teuer: unter den teuersten 25 % der Tage.",
+            "Sonst: normal."
+          ]
+        },
+        {
+          "title": "Preistreue und Kassen-Tests",
+          "text": [
+            "Wir gehen bei Buchungsseiten bis zur letzten Seite vor der Zahlung und vergleichen den Preis dort mit dem angezeigten Preis. Wir buchen nie und geben keine persönlichen Daten ein. Liegt der Preis an der Kasse höchstens 1 % über dem angezeigten, hat die Seite den Test bestanden. Daraus berechnen wir die Preistreue von 0 bis 100. Unter 5 Tests zeigen wir keine Zahl."
+          ]
+        },
+        {
+          "title": "Grenzen",
+          "list": [
+            "Preise ändern sich oft mehrmals am Tag. Wir zeigen den Stand unserer letzten Abfrage.",
+            "Zimmerkategorie, Verpflegung und Stornobedingungen können sich zwischen den Seiten unterscheiden. Wir zeigen jeweils das günstigste Angebot.",
+            "Eine Kurtaxe vor Ort ist oft nicht enthalten.",
+            "Ein guter Preis heute heißt nicht, dass er morgen nicht noch fällt."
+          ]
+        }
+      ]
+    }
   }
 }

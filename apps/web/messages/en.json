@@ -340,5 +340,269 @@
     "inactiveTitle": "We're not tracking this hotel right now",
     "inactiveText": "We don't collect new prices for this hotel. Pick another one.",
     "home": "Back to home"
+  },
+  "legal": {
+    "bindingNote": "This is a translation for your convenience. The German version is legally binding.",
+    "imprint": {
+      "metaTitle": "Imprint | Tidaq",
+      "metaDescription": "Who runs Tidaq and how to reach us.",
+      "eyebrow": "Legal",
+      "title": "Imprint",
+      "updated": "Last updated: 14 October 2026",
+      "sections": [
+        {
+          "title": "Information pursuant to § 5 DDG",
+          "text": ["Zaid Ghazal\nPrinz-Heinrich-Straße 17\n24106 Kiel\nGermany"]
+        },
+        {
+          "title": "Contact",
+          "text": ["Email: [zaidghazal216@gmail.com](mailto:zaidghazal216@gmail.com)"]
+        },
+        {
+          "title": "VAT",
+          "text": ["No VAT is charged under § 19 UStG (small business scheme)."]
+        },
+        {
+          "title": "Responsible for content pursuant to § 18 (2) MStV",
+          "text": ["Zaid Ghazal\nPrinz-Heinrich-Straße 17\n24106 Kiel\nGermany"]
+        },
+        {
+          "title": "Consumer dispute resolution",
+          "text": [
+            "We are neither willing nor obliged to take part in dispute resolution proceedings before a consumer arbitration board."
+          ]
+        },
+        {
+          "title": "Links to other websites",
+          "text": [
+            "Tidaq links to booking sites and hotel websites. Their operators alone are responsible for their content. When we set the links, no legal violations were apparent. If we learn of a violation, we remove the link right away."
+          ]
+        },
+        {
+          "title": "Hotel photos",
+          "text": [
+            "The hotel photos are under free licences (Wikimedia Commons). Author and licence are shown under each photo."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "metaTitle": "Privacy | Tidaq",
+      "metaDescription": "What data Tidaq processes, why and for how long. No cookies, no tracking.",
+      "eyebrow": "Legal",
+      "title": "Privacy policy",
+      "intro": "In short: Tidaq sets no cookies, uses no tracking and no ads, and you don't need an account. Our own code stores no IP addresses.",
+      "updated": "Last updated: 14 October 2026",
+      "sections": [
+        {
+          "title": "1. Controller",
+          "text": [
+            "Zaid Ghazal\nPrinz-Heinrich-Straße 17\n24106 Kiel\nGermany",
+            "Email: [zaidghazal216@gmail.com](mailto:zaidghazal216@gmail.com)"
+          ]
+        },
+        {
+          "title": "2. Visiting the website (hosting by Cloudflare)",
+          "text": [
+            "Tidaq runs on servers of Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA. When you open a page, Cloudflare processes technically necessary data: your IP address, date and time, the address you opened, your browser type and the page you came from. This is needed to deliver the page and to protect it from attacks.",
+            "The legal basis is our legitimate interest in a secure, working website (Art. 6(1)(f) GDPR). Our server logs at Cloudflare are deleted after 7 days at the latest. Cloudflare is certified under the EU-US Data Privacy Framework."
+          ]
+        },
+        {
+          "title": "3. No cookies, no tracking",
+          "text": [
+            "We set no cookies for visitors and store nothing in your browser. We use no analytics or ad services that follow you across websites. Fonts and hotel photos come from our own server, without requests to third parties."
+          ]
+        },
+        {
+          "title": "4. Database (Supabase, servers in Frankfurt)",
+          "text": [
+            "We store prices, hotels and statistics with Supabase, Inc. on servers in Frankfurt am Main (EU). This includes anonymous counts that aren't linked to you:"
+          ],
+          "list": [
+            "Clicks on “View offer”: booking site, hotel, travel dates and number of guests.",
+            "Travel dates you open on a stay page and that we then check prices for: hotel, travel dates and number of guests."
+          ]
+        },
+        {
+          "title": "5. Links to booking sites",
+          "text": [
+            "When you click “View offer”, the booking site or the hotel's website opens in a new tab. We pass on no data about you; the address only contains the hotel, the travel dates and the number of guests. From then on, that site's privacy policy applies. If a link is marked “Partner link”, the booking site or its partner network may set its own cookies there to attribute a booking to us. More in the [affiliate disclosure](/affiliate-hinweis)."
+          ]
+        },
+        {
+          "title": "6. Price alerts by email",
+          "text": [
+            "This feature is coming soon. Once it exists: when you set up a price alert, we store your email address, the stay you watch, the text of your consent and its time. We first send you an email with a confirmation link (double opt-in). Only after that do you get alerts, and only for what you asked to watch.",
+            "The legal basis is your consent (Art. 6(1)(a) GDPR). You can withdraw it at any time: with the unsubscribe link in every email or by email to us. We then delete your email address. We keep the proof of your consent for as long as we may legally need it.",
+            "The emails are sent by the service Resend (USA). Resend processes your email address and the content of the email for this."
+          ]
+        },
+        {
+          "title": "7. Contact by email",
+          "text": [
+            "When you write to us, we process your email address and message to reply (Art. 6(1)(f) GDPR). Our mailbox is hosted by Google (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland). We delete the message once the matter is settled, unless we have to keep it."
+          ]
+        },
+        {
+          "title": "8. Processors and transfers to the USA",
+          "text": [
+            "Cloudflare, Supabase and Resend process data on our behalf under Art. 28 GDPR. Where data may reach the USA, this is covered by the EU-US Data Privacy Framework or the EU standard contractual clauses."
+          ]
+        },
+        {
+          "title": "9. Your rights",
+          "text": ["You have the right to:"],
+          "list": [
+            "access your data (Art. 15 GDPR)",
+            "rectification (Art. 16 GDPR)",
+            "erasure (Art. 17 GDPR)",
+            "restriction of processing (Art. 18 GDPR)",
+            "data portability (Art. 20 GDPR)",
+            "object to processing based on legitimate interests (Art. 21 GDPR)",
+            "withdraw consent with effect for the future (Art. 7(3) GDPR)"
+          ]
+        },
+        {
+          "title": "10. Complaints",
+          "text": [
+            "You can complain to a data protection authority. Ours is the Unabhängiges Landeszentrum für Datenschutz Schleswig-Holstein, Holstenstraße 98, 24103 Kiel, Germany, [datenschutzzentrum.de](https://www.datenschutzzentrum.de)."
+          ]
+        },
+        {
+          "title": "11. Changes",
+          "text": ["When Tidaq changes, we update this policy. The version shown here applies."]
+        }
+      ]
+    },
+    "affiliate": {
+      "metaTitle": "Affiliate disclosure | Tidaq",
+      "metaDescription": "How Tidaq plans to earn money and why it never affects the order of prices.",
+      "eyebrow": "Transparency",
+      "title": "Affiliate disclosure",
+      "intro": "Tidaq is free. Later we want to earn money with partner links. Here is how that works and what it means for you.",
+      "updated": "Last updated: 14 October 2026",
+      "sections": [
+        {
+          "title": "How partner links work",
+          "text": [
+            "Some booking sites pay a commission when someone completes a booking through a link. The price you pay stays the same."
+          ]
+        },
+        {
+          "title": "As of today",
+          "text": [
+            "We haven't joined any partner programme yet. All links on Tidaq are plain links that earn us nothing."
+          ]
+        },
+        {
+          "title": "How to recognise partner links",
+          "list": [
+            "In the price table, the booking site says “Partner link”.",
+            "All links to booking sites are marked as paid links for search engines (rel=\"sponsored\"), even while they earn us nothing."
+          ]
+        },
+        {
+          "title": "What commissions never affect",
+          "list": [
+            "The order of the booking sites. It depends only on the price you can expect at checkout. Details under [how we sort](/ranking).",
+            "Our view on whether a price is good.",
+            "The results of our checkout tests and the booking sites' price accuracy."
+          ]
+        }
+      ]
+    },
+    "ranking": {
+      "metaTitle": "How we sort | Tidaq",
+      "metaDescription": "The criteria Tidaq uses to sort booking sites and hotels (§ 5b UWG).",
+      "eyebrow": "Transparency",
+      "title": "How we sort",
+      "intro": "These are the criteria we sort offers by (§ 5b (2) UWG). Commissions play no part.",
+      "updated": "Last updated: 14 October 2026",
+      "sections": [
+        {
+          "title": "Prices on a stay page",
+          "text": [
+            "Booking sites are sorted by the total you can expect at checkout, cheapest first."
+          ],
+          "list": [
+            "The basis is the total for the whole stay as the booking site reported it in our latest check, with taxes and fees as the site shows them. A local city tax may come on top.",
+            "If we tested a booking site at least 5 times at checkout and its price there was more than 1 % higher on average, we add that markup. You then see “at checkout ≈ …” next to it.",
+            "On equal prices, the lower listed price comes first, then the hotel's own website, then the name.",
+            "We only show booking sites we have reviewed. The note under the table says how many other sites had a price."
+          ]
+        },
+        {
+          "title": "Hotels",
+          "text": [
+            "In the search, hotels whose name starts with what you typed come first, then matches in the name, then in the city. On overview pages we sort by city and name."
+          ]
+        },
+        {
+          "title": "What never matters",
+          "text": [
+            "Whether a booking site pays us a commission affects neither the order nor the selection nor our view on a price. More in the [affiliate disclosure](/affiliate-hinweis)."
+          ]
+        }
+      ]
+    },
+    "method": {
+      "metaTitle": "How Tidaq works | Method",
+      "metaDescription": "Where the prices come from, how we build the price history and when a price is good.",
+      "eyebrow": "Method",
+      "title": "How Tidaq works",
+      "intro": "Tidaq shows you the price history of luxury hotels, so you know whether a price is good right now. Here is where the numbers come from and where their limits are.",
+      "updated": "Last updated: 14 October 2026",
+      "sections": [
+        {
+          "title": "Where the prices come from",
+          "text": [
+            "Every day we get the prices from a price comparison service that bundles the offers of several booking sites and the hotels. We don't read booking sites ourselves and we never book."
+          ]
+        },
+        {
+          "title": "What we check every day",
+          "list": [
+            "For every hotel, the price of each single night in the next 120 days, for 2 adults, on every booking site.",
+            "On top of that, real stays with fixed dates, for example Friday to Sunday. They show us whether the single nights add up to the real price.",
+            "All prices in euros, as the total the booking site reports."
+          ]
+        },
+        {
+          "title": "How a stay's price history is built",
+          "text": [
+            "For your dates we add up the nights on the same booking site. We never mix sites across nights, because you couldn't book it that way. For each day we show the cheapest such total.",
+            "At some hotels, single nights together often cost something different from a whole stay. We measure this every day: if over 7 days the sum is off by more than 5 % on median or is too rarely close to the real price, we only show real checks of your exact dates for that hotel."
+          ]
+        },
+        {
+          "title": "When a price is good",
+          "text": [
+            "We compare today's price with the last 60 days. You get a verdict once we have 7 days of prices."
+          ],
+          "list": [
+            "Near the low: at most 2 % above the lowest price, or among the cheapest 10 % of days.",
+            "Good price: among the cheapest 35 % of days.",
+            "Expensive right now: among the most expensive 25 % of days.",
+            "Otherwise: normal."
+          ]
+        },
+        {
+          "title": "Price accuracy and checkout tests",
+          "text": [
+            "We go through booking sites up to the last page before payment and compare the price there with the listed price. We never book and never enter personal data. If the checkout price is at most 1 % above the listed one, the site passes the test. From this we calculate a price accuracy score from 0 to 100. Below 5 tests we show no score."
+          ]
+        },
+        {
+          "title": "Limits",
+          "list": [
+            "Prices often change several times a day. We show the state of our latest check.",
+            "Room type, board and cancellation terms can differ between sites. We always show the cheapest offer.",
+            "A local city tax is often not included.",
+            "A good price today doesn't mean it can't drop further tomorrow."
+          ]
+        }
+      ]
+    }
   }
 }
