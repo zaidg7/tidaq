@@ -81,7 +81,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-024b                                                          | Search card: a city option opens the city page                               | CLOUD | S             | C-024                             | DONE           |
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | DONE           |
 | C-028a                                                          | SEO: canonical, hreflang, sitemap, site JSON-LD                              | CLOUD | S             | C-022                             | DONE           |
-| C-028b                                                          | Dynamic OG images for stay, hotel and city pages                             | CLOUD | S             | C-028a                            | TODO           |
+| C-028b                                                          | Share images: hotel photos and a default OG image                            | CLOUD | S             | C-028a                            | DONE           |
+| C-028c                                                          | Dynamic OG images with today's price (own Worker)                            | CLOUD | S             | C-028b                            | TODO           |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030                                                           | Watch flow with double opt-in and manage/unsubscribe                         | CLOUD | M             | C-022, Z-05                       | TODO           |
@@ -767,6 +768,13 @@ Metadata per page (DE/EN), hreflang, canonical, sitemap index per locale, robots
 
 Owner: CLOUD · Size: S · Depends on: C-028a · Status: TODO · PR: –
 `next/og` images (1200×630) for stay, hotel and city pages: brand, hotel/city name, today's price or cheapest weekend, a small sparkline for stays. Check the Workers bundle size and CPU (fall back to a pre-rendered route if `next/og` doesn't run on Workers). Default image for all other pages.
+
+**C-028b notes (DONE):** `next/og` was not added: the web Worker is already 1.26 MB gzip (`wrangler deploy --dry-run`, 14 Oct) and resvg/satori would add ~1.4 MB, close to the free plan's 3 MB limit. Instead `lib/og.ts` `openGraphFor()` (Next replaces `openGraph` per page, so every page goes through it): hotel and stay pages share the hotel's licensed 960 px photo, city pages the first hotel photo of the city, everything else `public/og/default.png` (1200×630, rendered once by `scripts/og/render.mjs` with Playwright from an HTML template; run it from `apps/web` after design changes). Prices in share images: C-028c.
+
+### C-028c · Dynamic OG images with today's price
+
+Owner: CLOUD · Size: S · Depends on: C-028b · Status: TODO · PR: –
+1200×630 images with hotel name, dates, today's price and a sparkline, for stay pages and alert emails (C-031b). Run satori + resvg in a separate small Worker (`apps/og`, own 3 MB budget, cached at the edge for a day) so the web Worker stays small; or, if Zaid moves to the Workers paid plan, use `next/og` in the web app. Measure the bundle before choosing.
 
 ### C-029 · Analytics events
 

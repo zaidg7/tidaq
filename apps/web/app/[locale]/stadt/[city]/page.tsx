@@ -10,6 +10,7 @@ import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
 import { logView } from '@/lib/data/events';
 import { getCityPage } from '@/lib/data/city';
+import { openGraphFor } from '@/lib/og';
 import { berlinToday } from '@/lib/today';
 
 // Weekend prices change every day: render per request.
@@ -35,9 +36,18 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   if (result.kind !== 'ok') return {};
   const t = await getTranslations({ locale, namespace: 'city' });
   const where = cityIn(slug, result.city.name[locale], locale);
+  const title = t('metaTitle', { where });
+  const description = t('metaDescription', { where });
+  const withPhoto = result.hotels.find((h) => h.image);
   return {
-    title: t('metaTitle', { where }),
-    description: t('metaDescription', { where }),
+    title,
+    description,
+    openGraph: openGraphFor(locale, {
+      title,
+      description,
+      photo: withPhoto?.image ?? null,
+      alt: withPhoto?.name,
+    }),
     alternates: alternatesFor(cityPath(slug), locale),
   };
 }

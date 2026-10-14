@@ -8,6 +8,7 @@ import { Footer } from '@/components/shell/Footer';
 import { Navbar } from '@/components/shell/Navbar';
 import { routing } from '@/i18n/routing';
 import { jakarta } from '@/lib/fonts';
+import { openGraphFor } from '@/lib/og';
 import '../globals.css';
 
 type Props = { children: ReactNode; params: Promise<{ locale: string }> };
@@ -25,11 +26,7 @@ export async function generateMetadata({ params }: Omit<Props, 'children'>): Pro
     metadataBase: new URL(SITE_ORIGIN),
     title: t('title'),
     description: t('description'),
-    openGraph: {
-      type: 'website',
-      siteName: 'Tidaq',
-      locale: locale === 'de' ? 'de_DE' : 'en_GB',
-    },
+    openGraph: openGraphFor(locale),
     twitter: { card: 'summary_large_image' },
     robots: { index: false, follow: false },
   };
