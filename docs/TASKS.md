@@ -81,7 +81,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-024b                                                          | Search card: a city option opens the city page                               | CLOUD | S             | C-024                             | TODO           |
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | TODO           |
 | C-028                                                           | SEO foundation and dynamic OG images                                         | CLOUD | M             | C-022                             | TODO           |
-| C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | TODO           |
+| C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030                                                           | Watch flow with double opt-in and manage/unsubscribe                         | CLOUD | M             | C-022, Z-05                       | TODO           |
 | C-031                                                           | Alert engine and emails                                                      | CLOUD | M             | C-030, C-013b                     | TODO           |
@@ -760,6 +760,8 @@ Metadata per page (DE/EN), hreflang, canonical, sitemap index per locale, robots
 
 Owner: CLOUD · Size: S · Depends on: C-020a · Status: TODO · PR: –
 Cloudflare Web Analytics snippet (cookieless) + server-side `events` inserts for search, stay_view, watch_created, watch_confirmed, outbound_click. No cookies, no IPs, no user ids. A small weekly stats query for the summary.
+
+**C-029 notes (DONE):** Server-side view counts: SQL `log_event(name, props)` (migration `20261014220354`, anon, security definer) accepts only `stay_view` (hotel, nights, adults, days ahead), `hotel_view` (hotel) and `city_view` (city), object props ≤ 400 chars, at most 20,000 a German day; `lib/data/events.ts` `logView()` runs in `after()` on the stay, hotel and city pages, skips bots (same rule as requested stays) and never throws. `outbound_click` is logged by C-026; `watch_created`/`watch_confirmed` come with C-030 (add the names to `log_event` or log them in the watch functions). No separate "search" event: the search card leads to a stay, hotel or city page, which is counted there. Weekly numbers: `select * from event_stats(7)` (service role, e.g. the Supabase connector) for the summary. Cloudflare Web Analytics needs one switch in Zaid's Cloudflare account (B-015); the privacy page (section 3 and 4) already describes it and the view counts. `rpc()` now accepts empty 204 bodies (void functions).
 
 ---
 

@@ -411,7 +411,8 @@
         {
           "title": "3. Keine Cookies, kein Tracking",
           "text": [
-            "Wir setzen für Besucher keine Cookies und speichern nichts in deinem Browser. Wir nutzen keine Analyse- oder Werbedienste, die dich über Websites hinweg verfolgen. Schriften und Hotelfotos liefern wir von unserem eigenen Server aus, ohne Anfragen an Dritte."
+            "Wir setzen für Besucher keine Cookies und speichern nichts in deinem Browser. Wir nutzen keine Analyse- oder Werbedienste, die dich über Websites hinweg verfolgen. Schriften und Hotelfotos liefern wir von unserem eigenen Server aus, ohne Anfragen an Dritte.",
+            "Um zu sehen, wie viele Menschen Tidaq nutzen und wie schnell die Seiten laden, verwenden wir Cloudflare Web Analytics. Es kommt ohne Cookies und ohne Speicherung in deinem Browser aus und verfolgt dich nicht über andere Websites. Cloudflare sieht dabei die aufgerufene Seite, die Ladezeit, den Browser-Typ und das Land und zeigt uns nur zusammengefasste Zahlen. Rechtsgrundlage ist unser berechtigtes Interesse an einer funktionierenden, schnellen Website (Art. 6 Abs. 1 lit. f DSGVO)."
           ]
         },
         {
@@ -421,7 +422,8 @@
           ],
           "list": [
             "Klicks auf „Zum Angebot“: Buchungsseite, Hotel, Reisedaten und Zahl der Gäste.",
-            "Reisedaten, die du auf einer Aufenthaltsseite aufrufst und für die wir Preise abfragen: Hotel, Reisedaten und Zahl der Gäste."
+            "Reisedaten, die du auf einer Aufenthaltsseite aufrufst und für die wir Preise abfragen: Hotel, Reisedaten und Zahl der Gäste.",
+            "Aufrufe von Aufenthalts-, Hotel- und Stadtseiten: welche Seite (Hotel, Stadt, Reisedaten), nicht wer sie aufgerufen hat."
           ]
         },
         {

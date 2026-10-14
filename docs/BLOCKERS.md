@@ -16,6 +16,17 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-015 · Turn on Cloudflare Web Analytics (cookieless visitor numbers)
+
+Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: nothing urgent (visitor numbers in the weekly summary; needed before launch)
+What I need: one switch in your Cloudflare account. It counts visits without cookies (decision D-15), so no cookie banner is needed. The privacy page already describes it.
+Steps for Zaid (≈ 3 min):
+
+1. dash.cloudflare.com → account **tidaq** → **Analytics & Logs** → **Web Analytics** → **Add a site**.
+2. Choose the domain **tidaq.com** (it's already on Cloudflare) and pick **Enable automatic setup** (Cloudflare adds the small script itself; no code change).
+3. Leave "Exclude EU visitors" off and don't enable anything that mentions cookies or session replay.
+   Where to put the result: nothing. Change this Status to DONE. The numbers appear in the same Web Analytics screen; the weekly summary will quote them.
+
 ## B-014 · Read the legal pages once, sign the Supabase data agreement (Z-12)
 
 Status: DONE (14 Oct: Zaid read the pages and signed the Supabase DPA; no USt-IdNr. assumed, so the Impressum stays as is) · Opened: 2026-10-14 by CLOUD · Blocks: nothing now

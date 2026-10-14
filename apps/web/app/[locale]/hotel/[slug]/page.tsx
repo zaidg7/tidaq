@@ -1,11 +1,14 @@
 import { cache } from 'react';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
+import { after } from 'next/server';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { hotelJsonLd, hotelPath, jsonLdString, localizedPath, type Locale } from '@tidaq/core';
 import { HotelView } from '@/components/hotel/HotelView';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
+import { logView } from '@/lib/data/events';
 import { getHotelPage } from '@/lib/data/hotel';
 import { berlinToday } from '@/lib/today';
 
@@ -63,6 +66,9 @@ export default async function HotelPageRoute(props: Props) {
       </StatusPage>
     );
   }
+  // Anonymous view count (C-029): which page, never who.
+  const userAgent = (await headers()).get('user-agent');
+  after(() => logView({ name: 'hotel_view', props: { hotel: slug } }, userAgent));
   const { hotel } = result.data;
   const city = hotel.city.name[locale];
   const jsonLd = hotelJsonLd({
