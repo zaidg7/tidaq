@@ -15,6 +15,7 @@ import {
   type StayParams,
 } from '@tidaq/core';
 import { hasSupabase, rest, rpc } from './supabase';
+import { reportError } from '@/lib/errors';
 
 const hotelRow = z.object({
   id: z.number(),
@@ -180,9 +181,7 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
             z.array(reliabilityRow),
           ).catch((error: unknown) => {
             // Without the answer, show the night history as before C-070d.
-            console.error(
-              JSON.stringify({ msg: 'night reliability failed', slug, error: String(error) }),
-            );
+            reportError('night reliability failed', error, { slug });
             return [];
           })
         : Promise.resolve([]),
@@ -352,7 +351,7 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
       },
     };
   } catch (error) {
-    console.error(JSON.stringify({ msg: 'stay unavailable', slug, error: String(error) }));
+    reportError('stay unavailable', error, { slug });
     return { kind: 'unavailable' };
   }
 }

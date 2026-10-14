@@ -150,6 +150,8 @@ export interface CollectorStore {
   recordNightAccuracy(day: string): Promise<NightAccuracyRow>;
   /** Stored accuracy days from `fromDay` on, newest first. */
   nightAccuracy(fromDay: string): Promise<NightAccuracyRow[]>;
+  /** The website's most frequent server errors since `since` (SQL `web_error_digest`, C-041c). */
+  webErrors(env: string, since: string): Promise<WebErrorRow[]>;
   /** Removes raw JSON older than 30 days (SQL `prune_raw_snapshots`, D-19). Returns the count. */
   pruneRaw(): Promise<number>;
   /**
@@ -164,6 +166,13 @@ export interface CollectorStore {
     priceCents: number,
     resendId: string | null,
   ): Promise<void>;
+}
+
+export interface WebErrorRow {
+  source: string;
+  message: string;
+  n: number;
+  lastAt: string;
 }
 
 export interface AlertWatch {

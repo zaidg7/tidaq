@@ -2,6 +2,7 @@ import 'server-only';
 import { hotelPhoto, type PhotoSize } from '@/lib/hotelPhotos';
 import { NIGHT_GRID, shiftDays, z, type NightPrice } from '@tidaq/core';
 import { hasSupabase, rest, rpc } from './supabase';
+import { reportError } from '@/lib/errors';
 
 const hotelRow = z.object({
   id: z.number(),
@@ -85,9 +86,7 @@ export async function getHotelPage(slug: string, today: string): Promise<HotelLo
         { p_day: today, p_hotel_id: hotel.id },
         z.array(reliabilityRow),
       ).catch((error: unknown) => {
-        console.error(
-          JSON.stringify({ msg: 'night reliability failed', slug, error: String(error) }),
-        );
+        reportError('night reliability failed', error, { slug });
         return [];
       }),
     ]);
@@ -142,7 +141,7 @@ export async function getHotelPage(slug: string, today: string): Promise<HotelLo
       },
     };
   } catch (error) {
-    console.error(JSON.stringify({ msg: 'hotel unavailable', slug, error: String(error) }));
+    reportError('hotel unavailable', error, { slug });
     return { kind: 'unavailable' };
   }
 }

@@ -50,8 +50,31 @@ async function checkNightAccuracy(
 }
 
 /**
+ * The website's server errors of the last 24 hours (C-041c), grouped, most frequent first. The
+ * site records them in `web_errors`; this puts them into the daily check email.
+ */
+async function checkWebErrors(store: CollectorStore, env: Env, now: Date): Promise<string[]> {
+  try {
+    const since = new Date(now.getTime() - 24 * 3600_000).toISOString();
+    const rows = await store.webErrors(env.APP_ENV, since);
+    if (rows.length === 0) return [];
+    const total = rows.reduce((sum, r) => sum + r.n, 0);
+    return [
+      `Website: ${total} server error(s) in the last 24 hours:`,
+      ...errorLines(
+        rows.map((r) => `${r.n}× ${r.source}: ${r.message} (last ${hhmm(r.lastAt)} UTC)`),
+      ),
+      'Details: Cloudflare → Workers → tidaq-web → Logs.',
+    ];
+  } catch (err) {
+    return [`Website error check failed: ${String(err).slice(0, 200)}`];
+  }
+}
+
+/**
  * Daily check after the morning collect window (C-013c): prunes raw JSON (D-19) and emails the
- * admins once if today's runs had errors, crashed, or left tasks without results.
+ * admins once if today's runs had errors, crashed, or left tasks without results, or the website
+ * logged server errors (C-041c).
  */
 export async function runDailyCheck(opts: {
   store: CollectorStore;
@@ -89,6 +112,7 @@ export async function runDailyCheck(opts: {
     problems.push(`${report.tasks.posted} task(s) posted today still have no result.`);
   }
   if (report.tasks.failed > 0) problems.push(`${report.tasks.failed} task(s) failed today.`);
+  problems.push(...(await checkWebErrors(store, env, now)));
 
   let email: SendResult | null = null;
   if (problems.length > 0) {

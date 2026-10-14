@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { isLocale, localizedPath, outboundUrl, stayPath, z } from '@tidaq/core';
 import { hasSupabase, rpc } from '@/lib/data/supabase';
+import { reportError } from '@/lib/errors';
 
 // Every click is logged and the target depends on the database: never cached.
 export const dynamic = 'force-dynamic';
@@ -106,9 +107,7 @@ export async function GET(
     }
     return NextResponse.redirect(url, { status: 302, headers: HEADERS });
   } catch (error) {
-    console.error(
-      JSON.stringify({ msg: 'outbound failed', provider, hotel, error: String(error) }),
-    );
+    reportError('outbound failed', error, { provider, hotel });
     const text =
       locale === 'en'
         ? 'We could not open the booking site just now. Please try again in a moment.'

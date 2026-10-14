@@ -32,6 +32,11 @@ const alertRows = z.array(
   }),
 );
 
+/** `web_error_digest` rows (C-041c). */
+const webErrorRows = z.array(
+  z.object({ source: z.string(), message: z.string(), n: z.number().int(), last_at: z.string() }),
+);
+
 /** A `night_accuracy` row as Postgres returns it (numeric comes back as a number or string). */
 const accuracyRow = z.object({
   day: z.string(),
@@ -417,6 +422,16 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
         }),
         'record alert',
       );
+    },
+
+    async webErrors(env, since) {
+      const rows = check(
+        await db.rpc('web_error_digest', { p_env: env, p_since: since }),
+        'load web errors',
+      );
+      return webErrorRows
+        .parse(rows)
+        .map((r) => ({ source: r.source, message: r.message, n: r.n, lastAt: r.last_at }));
     },
 
     async pruneRaw() {

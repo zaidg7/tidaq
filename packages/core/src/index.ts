@@ -249,3 +249,4 @@ export {
   type AlertKind,
   type AlertMailData,
 } from './alerts';
+export { scrubErrorText } from './errorText';

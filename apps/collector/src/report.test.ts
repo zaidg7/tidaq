@@ -41,6 +41,50 @@ describe('runDailyCheck', () => {
     expect(mail.sent).toEqual([]);
   });
 
+  it("emails the website's server errors of the last 24 hours (C-041c)", async () => {
+    const mem = await morning();
+    for (const t of mem.tasks) t.status = 'done';
+    mem.webErrors.push(
+      {
+        env: 'staging',
+        source: 'stay unavailable',
+        message: 'Supabase 500 for v_stay_public (slug=adlon)',
+        n: 3,
+        lastAt: '2026-10-12T06:41:00.000Z',
+      },
+      // Production errors and anything older than a day stay out of a staging check.
+      {
+        env: 'production',
+        source: 'deals unavailable',
+        message: 'x',
+        n: 9,
+        lastAt: '2026-10-12T07:00:00.000Z',
+      },
+      { env: 'staging', source: 'old', message: 'y', n: 1, lastAt: '2026-10-11T07:00:00.000Z' },
+    );
+    const mail = fakeMail();
+    const s = await runDailyCheck({ store: mem.store, env, now: CHECK, fetchFn: mail.fetchFn });
+    expect(s.problems).toEqual([
+      'Website: 3 server error(s) in the last 24 hours:',
+      '- 3× stay unavailable: Supabase 500 for v_stay_public (slug=adlon) (last 06:41 UTC)',
+      'Details: Cloudflare → Workers → tidaq-web → Logs.',
+    ]);
+    expect(s.email).toBe('sent');
+  });
+
+  it('reports a failed website error check instead of crashing', async () => {
+    const mem = await morning();
+    for (const t of mem.tasks) t.status = 'done';
+    mem.store.webErrors = () => Promise.reject(new Error('db down'));
+    const s = await runDailyCheck({
+      store: mem.store,
+      env,
+      now: CHECK,
+      fetchFn: fakeMail().fetchFn,
+    });
+    expect(s.problems).toEqual(['Website error check failed: Error: db down']);
+  });
+
   it('flags a day without a night-grid run on the free source (C-070a)', async () => {
     const mem = await morning();
     for (const t of mem.tasks) t.status = 'done';

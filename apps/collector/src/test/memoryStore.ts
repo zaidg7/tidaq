@@ -2,6 +2,7 @@ import type { GridStay } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from '../ingest';
 import type {
   AlertWatch,
+  WebErrorRow,
   CatalogHotel,
   CollectorStore,
   DayReport,
@@ -60,6 +61,8 @@ export function memoryStore(
   const accuracy = new Map<string, NightAccuracyRow>();
   /** Watches for the alert engine (C-031): tests push into it; recorded alerts land below. */
   const alertWatches: AlertWatch[] = [];
+  /** Website errors for the daily check (C-041c); tests push into it. */
+  const webErrors: (WebErrorRow & { env: string })[] = [];
   const recordedAlerts: {
     watchId: string;
     kind: string;
@@ -306,6 +309,11 @@ export function memoryStore(
       pruneCalls++;
       return 0;
     },
+    async webErrors(env, since) {
+      return webErrors
+        .filter((e) => e.env === env && e.lastAt >= since)
+        .map(({ env: _env, ...row }) => row);
+    },
     async alertInputs(today) {
       return alertWatches.filter((w) => w.checkIn > today);
     },
@@ -364,6 +372,7 @@ export function memoryStore(
     officialUrls,
     pruneCalls: () => pruneCalls,
     alertWatches,
+    webErrors,
     recordedAlerts,
     /** Sets the `posted_at` time for tasks recorded from now on. */
     setClock(iso: string) {
