@@ -1,11 +1,14 @@
 import { cache } from 'react';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
+import { after } from 'next/server';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { alternatesFor, cityIn, cityPath, localizedPath, type Locale } from '@tidaq/core';
 import { CityView } from '@/components/city/CityView';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
+import { logView } from '@/lib/data/events';
 import { getCityPage } from '@/lib/data/city';
 import { berlinToday } from '@/lib/today';
 
@@ -60,5 +63,8 @@ export default async function CityPageRoute(props: Props) {
       </StatusPage>
     );
   }
+  // Anonymous view count (C-029): which page, never who.
+  const userAgent = (await headers()).get('user-agent');
+  after(() => logView({ name: 'city_view', props: { city: slug } }, userAgent));
   return <CityView city={result.city} hotels={result.hotels} />;
 }

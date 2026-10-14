@@ -6,6 +6,7 @@ import { after } from 'next/server';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import {
   alternatesFor,
+  daysBetween,
   formatDateRange,
   localizedPath,
   parseStayParams,
@@ -18,6 +19,7 @@ import { EditStay } from '@/components/stay/EditStay';
 import { StayView, stayStatus } from '@/components/stay/StayView';
 import { buttonClasses } from '@/components/ui/Button';
 import { getCatalog } from '@/lib/data/catalog';
+import { logView } from '@/lib/data/events';
 import { requestStayOnView } from '@/lib/data/requestStay';
 import { getStay, type StayLoad } from '@/lib/data/stay';
 import { searchCardProps, searchHotels } from '@/lib/searchCardProps';
@@ -114,11 +116,26 @@ export default async function StayPage(props: Props) {
     realVsNights,
     nightsUnreliable,
   } = result.data;
+  const userAgent = (await headers()).get('user-agent');
   // No real check of these exact dates yet: ask for one after the response (C-070b).
   if (hotel.active && stay === null && p.checkIn >= today) {
-    const userAgent = (await headers()).get('user-agent');
     after(() => requestStayOnView(slug, p, userAgent));
   }
+  // Anonymous view count (C-029): which stay, never who.
+  after(() =>
+    logView(
+      {
+        name: 'stay_view',
+        props: {
+          hotel: slug,
+          nights: p.nights,
+          adults: p.adults,
+          daysAhead: daysBetween(today, p.checkIn),
+        },
+      },
+      userAgent,
+    ),
+  );
   const [catalog, card] = await Promise.all([getCatalog(), searchCardProps(locale)]);
   const hotels = await searchHotels(catalog?.hotels ?? [], locale);
   // An inactive hotel isn't in the catalog: keep it selectable so "Ändern" starts from here.
