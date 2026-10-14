@@ -256,9 +256,19 @@ RLS: public `select` only on catalog tables, `stay_daily`, `stay_stats`, `provid
 
 ## 7. Data collection
 
-### 7.1 The stay grid
+### 7.0 The night grid (D-42): history for any dates
 
-Charts only exist for stays we track _before_ someone asks. Each day the collector makes sure every active hotel has these stays tracked:
+Charts only exist for prices we collected _before_ someone asks, and no source sells past prices of a future stay. So every morning the collector prices **every single night** of every active hotel for the next `NIGHT_WINDOW_DAYS` (120) nights, 2 adults, on every platform the price source lists, into `night_daily` (one row per hotel, night and collection day, with `per_provider` and `best_cents`; nights without rates get an empty row so the run knows they are done).
+
+**History of a stay from nights.** For a stay check-in → check-out and a past day d: for each reviewed platform that priced **every** night of the stay on day d, total = sum of its night rates. The day's value is the cheapest of these totals. Platforms are never mixed across nights, because a stay is booked on one site. Same 60-day window, verdict and charts as tracked stays (§8.1). Computed in SQL, so any stay inside the window has up to 60 days of history on the first visit.
+
+**Honesty.** Night sums are usually the real stay price but not always (multi-night discounts, minimum stays, prices moving during the day). The fixed stay grid (§7.1) keeps running as ground truth: every day the collector compares real stay prices with the night sums for the same stays and records the share within 0.5 %, 3 % and 10 %, which the methodology page publishes. The stay a visitor opens or watches also gets a real stay check (C-022c1), shown as today's price and used for alerts. The page says "aus Einzelnächten berechnet" for the history.
+
+**Cost and pace.** 39 hotels × 120 nights ≈ 4,700 free Xotelo calls a day. The spike ran 120 nights in 42 s with 8 parallel calls (0 errors), so a day takes ~30 minutes of calls, split into runs that fit the Workers subrequest limit. Nights only run with the free source (`PRICE_SOURCE=xotelo`); with DataForSEO they would cost ~$110/month. Each new hotel adds 120 calls a day.
+
+### 7.1 The stay grid (ground truth)
+
+Charts only exist for stays we track _before_ someone asks. Since D-42 the grid is mainly the ground truth for the night sums (§7.0) and the source of real stay prices. Each day the collector makes sure every active hotel has these stays tracked:
 
 - **Weekends:** the next 6 Fri→Sun stays (2 nights)
 - **Midweek:** 2 Tue→Thu stays in the next 6 weeks
@@ -395,6 +405,8 @@ Not legal advice. Before launch, Zaid reads the final texts once (task Z-12).
 | Zaid has little time                                             | Blocked tasks   | All Zaid tasks batched, with exact steps, in `docs/ZAID.md`                                      |
 | Supabase cost or limits                                          | Budget          | Project in the Pro organization (no pause, 8 GB); raw-data pruning keeps growth around 1 GB/year |
 | Next.js on Workers limits (bundle size, CPU)                     | Deploy problems | Workers paid plan; keep pages server-light; ISR                                                  |
+| Free price source (Xotelo, unofficial) slows down, blocks or stops | No new prices | Source-independent pipeline (D-41); gentle pace; daily health check; DataForSEO fallback for stays; at scale (hundreds of hotels) a paid or partner rate feed is needed anyway |
+| Night sums differ from real stay prices | Wrong signal | Real stay checks for viewed and watched stays; accuracy measured daily on the stay grid and published (D-42) |
 
 ## 14. Operating model
 
