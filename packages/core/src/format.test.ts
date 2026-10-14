@@ -3,6 +3,7 @@ import {
   defaultLocale,
   formatDateRange,
   formatDayMonth,
+  formatDayMonthYear,
   formatWeekdayDayMonth,
   updatedAtParts,
   formatPercent,
@@ -139,6 +140,13 @@ describe('formatDayMonth', () => {
     expect(formatDayMonth('2026-10-15', 'de')).toBe('15. Okt.');
     expect(formatDayMonth('2026-05-03', 'de')).toBe('3. Mai');
     expect(formatDayMonth('2026-10-15', 'en')).toBe('15 Oct');
+  });
+});
+
+describe('formatDayMonthYear', () => {
+  it('adds the year', () => {
+    expect(formatDayMonthYear('2026-10-15', 'de')).toBe('15. Okt. 2026');
+    expect(formatDayMonthYear('2027-01-03', 'en')).toBe('3 Jan 2027');
   });
 });
 

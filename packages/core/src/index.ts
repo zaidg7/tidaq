@@ -2,6 +2,7 @@ export {
   defaultLocale,
   formatDateRange,
   formatDayMonth,
+  formatDayMonthYear,
   formatWeekdayDayMonth,
   updatedAtParts,
   formatPercent,
