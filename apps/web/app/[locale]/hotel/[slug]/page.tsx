@@ -17,6 +17,7 @@ import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
 import { logView } from '@/lib/data/events';
 import { getHotelPage } from '@/lib/data/hotel';
+import { openGraphFor } from '@/lib/og';
 import { berlinToday } from '@/lib/today';
 
 // Prices change every day: render per request.
@@ -43,9 +44,12 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   if (result.kind !== 'ok') return { title: t('metaUnavailable') };
   const { hotel } = result.data;
   const city = hotel.city.name[locale];
+  const title = t('metaTitle', { hotel: hotel.name });
+  const description = t('metaDescription', { hotel: hotel.name, city });
   return {
-    title: t('metaTitle', { hotel: hotel.name }),
-    description: t('metaDescription', { hotel: hotel.name, city }),
+    title,
+    description,
+    openGraph: openGraphFor(locale, { title, description, photo: hotel.image, alt: hotel.name }),
     alternates: alternatesFor(hotelPath(slug), locale),
   };
 }

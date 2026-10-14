@@ -240,3 +240,12 @@ export {
   type ProviderFacts,
   type TestExtra,
 } from './providerFacts';
+export {
+  ALERT,
+  alertInputFromSeries,
+  alertKind,
+  alertMail,
+  type AlertInput,
+  type AlertKind,
+  type AlertMailData,
+} from './alerts';
