@@ -1,5 +1,6 @@
 import { runToken, safeEqual } from '@tidaq/core';
 import { runAlerts } from './alerts';
+import { runDropAlerts } from './dropAlerts';
 import { runNewsletter } from './newsletter';
 import { runCollect } from './collect';
 import type { FetchFn } from './dataforseo';
@@ -177,6 +178,18 @@ export function createWorker(deps: Deps = {}) {
           }
         } catch (err) {
           await mail(env, crashEmail('newsletter', err));
+        }
+        // Preissturz-Alarm (C-080e2): today's new drops, at most one email per subscriber a day.
+        try {
+          const drops = await runDropAlerts({
+            store: storeFor(env, deps),
+            env,
+            now: now(),
+            fetchFn: deps.mailFetchFn,
+          });
+          log('drop alerts done', { ...drops });
+        } catch (err) {
+          await mail(env, crashEmail('drop alerts', err));
         }
         return;
       }

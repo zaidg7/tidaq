@@ -5,6 +5,7 @@ import type {
   GridHotel,
   GridStay,
   NightAccuracyDay,
+  PriceDropRow,
   StayOffer,
   StayState,
 } from '@tidaq/core';
@@ -153,6 +154,15 @@ export interface CollectorStore {
   nightAccuracy(fromDay: string): Promise<NightAccuracyRow[]>;
   /** Confirmed addresses with the weekly deals newsletter on (C-054b). */
   newsletterRecipients(): Promise<NewsletterRecipient[]>;
+  /**
+   * Confirmed addresses with the Preissturz-Alarm on that haven't had one today (C-080e2).
+   * `city`: a city slug, or null for all cities.
+   */
+  dropAlertRecipients(today: string): Promise<DropAlertRecipient[]>;
+  /** Today's sudden drops (SQL `radar_drops`, C-080a/d), validated. */
+  todayDrops(today: string): Promise<PriceDropRow[]>;
+  /** Records the day of the last Preissturz-Alarm for these watcher ids (one a day, C-080e2). */
+  markDropAlertsSent(ids: string[], today: string): Promise<void>;
   /** Upcoming active stays with 14+ days of data and a price today, for core `pickDeals`. */
   dealCandidates(today: string): Promise<DealRow[]>;
   /** The website's most frequent server errors since `since` (SQL `web_error_digest`, C-041c). */
@@ -182,6 +192,11 @@ export interface NewsletterRecipient {
   email: string;
   locale: 'de' | 'en';
   manageToken: string;
+}
+
+export interface DropAlertRecipient extends NewsletterRecipient {
+  id: string;
+  city: string | null;
 }
 
 export interface DealRow {

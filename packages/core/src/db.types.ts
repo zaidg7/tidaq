@@ -818,6 +818,11 @@ export type Database = {
           locale: string
           manage_token: string
           newsletter: boolean
+          drop_alerts: boolean
+          drop_at: string | null
+          drop_city: string | null
+          drop_consent_text: string | null
+          drop_sent_on: string | null
           newsletter_at: string | null
           newsletter_consent_text: string | null
           unsubscribed_at: string | null
@@ -834,6 +839,11 @@ export type Database = {
           locale?: string
           manage_token?: string
           newsletter?: boolean
+          drop_alerts?: boolean
+          drop_at?: string | null
+          drop_city?: string | null
+          drop_consent_text?: string | null
+          drop_sent_on?: string | null
           newsletter_at?: string | null
           newsletter_consent_text?: string | null
           unsubscribed_at?: string | null
@@ -850,6 +860,11 @@ export type Database = {
           locale?: string
           manage_token?: string
           newsletter?: boolean
+          drop_alerts?: boolean
+          drop_at?: string | null
+          drop_city?: string | null
+          drop_consent_text?: string | null
+          drop_sent_on?: string | null
           newsletter_at?: string | null
           newsletter_consent_text?: string | null
           unsubscribed_at?: string | null
@@ -1010,6 +1025,12 @@ export type Database = {
       }
       collector_ingest: { Args: { payload: Json }; Returns: Json }
       newsletter_off: { Args: { p_token: string }; Returns: boolean }
+      drop_alert_off: { Args: { p_token: string }; Returns: boolean }
+      drop_alert_request: {
+        Args: { p_consent_text: string; p_email: string; p_locale: string; p_city: string | null }
+        Returns: Json
+      }
+      radar_drops: { Args: { p_today: string }; Returns: Json }
       newsletter_request: {
         Args: { p_consent_text: string; p_email: string; p_locale: string }
         Returns: Json

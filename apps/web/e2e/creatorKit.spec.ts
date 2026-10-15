@@ -9,7 +9,7 @@ async function pngSize(file: Download): Promise<[number, number]> {
   return [png.readUInt32BE(16), png.readUInt32BE(20)];
 }
 
-const plain = (s: string) => s.replace(/[  ]/g, ' ');
+const plain = (s: string) => s.replace(/[\u00a0\u202f]/g, ' ');
 
 test.describe('creator kit (C-080c, sample data on /dev/admin/drops)', () => {
   test('the page is behind the admin login', async ({ page }) => {
