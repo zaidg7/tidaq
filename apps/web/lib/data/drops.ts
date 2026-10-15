@@ -23,13 +23,13 @@ export type DropsLoad =
   | { kind: 'unavailable' };
 
 /**
- * Today's sudden price drops (C-080a, SQL `price_drops`), one entry per hotel with its photo.
+ * Today's sudden price drops (C-080a; SQL `radar_drops`, which adds the usual price, C-080d), one entry per hotel with its photo.
  * Cached per request: the radar, the homepage teaser and city pages share one read.
  */
 export const getDrops = cache(async (today: string): Promise<DropsLoad> => {
   if (!hasSupabase()) return { kind: 'unavailable' };
   try {
-    const rows = await rpc('price_drops', { p_today: today }, z.array(priceDropRowSchema));
+    const rows = await rpc('radar_drops', { p_today: today }, z.array(priceDropRowSchema));
     const seenAt = rows.reduce<string | null>(
       (max, r) => (max === null || r.seen_at > max ? r.seen_at : max),
       null,
@@ -45,6 +45,30 @@ export const getDrops = cache(async (today: string): Promise<DropsLoad> => {
   } catch (error) {
     reportError('drops unavailable', error);
     return { kind: 'unavailable' };
+  }
+});
+
+const statsRow = z.object({
+  day: z.string(),
+  nights: z.number().int().nonnegative(),
+  hotels: z.number().int().nonnegative(),
+  cities: z.number().int().nonnegative(),
+  sites: z.number().int().nonnegative(),
+});
+export type RadarStats = z.infer<typeof statsRow>;
+
+/**
+ * What the night grid checked on its latest day (C-080d, SQL `radar_stats`): the proof line on the
+ * radar ("Heute geprüft: 5.722 Nächte in 82 Hotels"). Null without data or on a read error.
+ */
+export const getRadarStats = cache(async (today: string): Promise<RadarStats | null> => {
+  if (!hasSupabase()) return null;
+  try {
+    const [row] = await rpc('radar_stats', { p_today: today }, z.array(statsRow));
+    return row && row.nights > 0 ? row : null;
+  } catch (error) {
+    reportError('radar stats unavailable', error);
+    return null;
   }
 });
 

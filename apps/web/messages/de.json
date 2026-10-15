@@ -820,13 +820,12 @@
     "metaDescription": "Wo der Preis für eine Nacht in einem Fünf-Sterne-Hotel seit gestern am stärksten gefallen ist, auf einen neuen Tiefpunkt. Jeden Tag neu, mit beiden Preisen.",
     "eyebrow": "Preisstürze · live",
     "title": "Preisstürze in Luxushotels",
-    "intro": "Wir prüfen jeden Tag den Preis jeder Nacht in unseren Fünf-Sterne-Hotels. Hier steht, wo der günstigste Preis seit dem Vortag am stärksten gefallen ist, und zwar auf einen neuen Tiefpunkt.",
+    "intro": "Fünf-Sterne-Hotels, deren Preis für eine Nacht seit gestern stark gefallen ist, auf einen neuen Tiefpunkt. Echte Preise, jeden Tag neu.",
     "asOf": "Stand: {when}",
     "today": "heute, {time}",
     "yesterday": "gestern, {time}",
     "statNights": "{n, plural, one {# Nacht} other {# Nächte}} günstiger",
     "statHotels": "in {n, plural, one {# Hotel} other {# Hotels}}",
-    "statBiggest": "größter Sturz {pct}",
     "filterCity": "Nach Stadt filtern",
     "filterWhen": "Nach Reisezeit filtern",
     "sortLabel": "Sortieren",
@@ -871,7 +870,17 @@
     "homeEyebrow": "Live",
     "homeTitle": "Preisstürze seit gestern",
     "homeAll": "Alle Preisstürze",
-    "cityTitle": "Preisstürze {where}"
+    "cityTitle": "Preisstürze {where}",
+    "heroEyebrow": "Größter Preissturz seit gestern",
+    "heroCta": "Preisverlauf ansehen",
+    "usual": "Sonst um {price}",
+    "proof": "{nights, number} Nächte in {hotels} Hotels auf {sites} Buchungsseiten geprüft",
+    "welcome": {
+      "title": "Hi! Schön, dass du von {source} kommst.",
+      "fair": "Sortiert nur nach dem Preissturz",
+      "free": "Kostenlos, ohne Anmeldung",
+      "label": "Darum Tidaq"
+    }
   },
   "drop": {
     "metaTitle": "{hotel}: {pct} für {date} | Tidaq",

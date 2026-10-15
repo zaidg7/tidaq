@@ -266,6 +266,7 @@ export {
   groupDrops,
   priceDropRowSchema,
   sortDrops,
+  usualCents,
   type DropSort,
   type DropWhen,
   type HotelDrops,

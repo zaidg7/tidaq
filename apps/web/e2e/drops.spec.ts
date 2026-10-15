@@ -6,32 +6,55 @@ const STAY = (slug: string) =>
 const DROP = (slug: string) => new RegExp(`^/preissturz/${slug}/\\d{4}-\\d{2}-\\d{2}$`);
 
 test.describe('Preissturz-Radar (C-080a, sample data on /dev/drops)', () => {
-  test('biggest drop first, both prices, site and new-low line', async ({ page }) => {
+  test('the biggest drop is the hero: both prices, usual price, site, new low', async ({
+    page,
+  }) => {
     await page.goto('/dev/drops');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Preisstürze in Luxushotels');
     const main = page.getByRole('main');
-    await expect(main).toContainText('8 Nächte günstiger');
-    await expect(main).toContainText('in 4 Hotels');
-    await expect(main).toContainText('größter Sturz −31 %');
+    await expect(main).toContainText('8 Nächte günstiger in 4 Hotels');
+    await expect(main).toContainText('5.722 Nächte in 82 Hotels auf 4 Buchungsseiten geprüft');
 
-    const cards = main.getByRole('list', { name: 'Preisstürze' }).getByRole('listitem');
-    await expect(cards).toHaveCount(4);
-    const top = cards.first();
-    await expect(top.getByRole('link', { name: 'Baur au Lac' })).toHaveAttribute(
+    const hero = main.getByRole('article', { name: 'Baur au Lac' });
+    await expect(hero.getByRole('link', { name: 'Baur au Lac' })).toHaveAttribute(
       'href',
       DROP('baur-au-lac-zuerich'),
     );
-    await expect(top).toContainText('Preis um −31 % gefallen');
-    await expect(top).toContainText('684 €');
-    await expect(top).toContainText('Vortag 989 €');
-    await expect(top).toContainText('305 € weniger bei Booking.com');
-    await expect(top).toContainText('Niedrigster Preis seit 10 Tagen');
-    // Four more nights: three as links, then "+1 weitere".
-    await expect(top.getByRole('link')).toHaveCount(4);
-    await expect(top).toContainText('+1 weitere');
+    await expect(hero).toContainText('Größter Preissturz seit gestern');
+    await expect(hero).toContainText('Preis um −31 % gefallen');
+    await expect(hero).toContainText('684 €');
+    await expect(hero).toContainText('Vortag 989 €');
+    await expect(hero).toContainText('305 € weniger bei Booking.com');
+    await expect(hero).toContainText('Sonst um 1.029 € · Niedrigster Preis seit 10 Tagen');
 
-    await expect(cards.nth(1)).toContainText('137 € weniger direkt beim Hotel');
-    await expect(cards.nth(2)).toContainText('Niedrigster Preis, seit wir messen');
+    // The hero leaves the grid.
+    const cards = main.getByRole('list', { name: 'Preisstürze' }).getByRole('listitem');
+    await expect(cards).toHaveCount(3);
+    await expect(cards.first()).toContainText('137 € weniger direkt beim Hotel');
+    await expect(cards.nth(1)).toContainText('Niedrigster Preis, seit wir messen');
+    await expect(cards.nth(1)).not.toContainText('Sonst um');
+  });
+
+  test('a card lists its other nights', async ({ page }) => {
+    await page.goto('/dev/drops?stadt=zuerich');
+    const cards = page
+      .getByRole('main')
+      .getByRole('list', { name: 'Preisstürze' })
+      .getByRole('listitem');
+    await expect(cards).toHaveCount(1);
+    // Four more nights: three as links, then "+1 weitere".
+    await expect(cards.first().getByRole('link')).toHaveCount(4);
+    await expect(cards.first()).toContainText('+1 weitere');
+  });
+
+  test('a social bio link lands on the radar with a short welcome', async ({ page }) => {
+    await page.goto('/tiktok');
+    await expect(page).toHaveURL(/\/preissturz\?ref=tiktok$/);
+    await page.goto('/dev/drops?ref=tiktok');
+    await expect(page.getByText('Hi! Schön, dass du von TikTok kommst.')).toBeVisible();
+    await expect(page.getByRole('article', { name: 'Baur au Lac' })).toBeInViewport();
+    await page.goto('/dev/drops');
+    await expect(page.getByText(/Schön, dass du von/)).toHaveCount(0);
   });
 
   test('filters and sorting are links that keep each other', async ({ page }) => {

@@ -1,5 +1,5 @@
 import { useLocale, useTranslations } from 'next-intl';
-import { TrendingDown } from 'lucide-react';
+import { Check, TrendingDown } from 'lucide-react';
 import {
   DROP_SORTS,
   DROP_WHENS,
@@ -17,9 +17,15 @@ import { Card } from '@/components/ui/Card';
 import { ChipLink } from '@/components/ui/Chip';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
-import type { HotelDropsWithPhoto } from '@/lib/data/drops';
+import type { HotelDropsWithPhoto, RadarStats } from '@/lib/data/drops';
 import { routes } from '@/lib/routes';
-import { DropCard, dropPercent } from './DropCard';
+import { DropCard } from './DropCard';
+import { DropHero } from './DropHero';
+
+/** Social bio links that land on the radar (`/tiktok` → `/preissturz?ref=tiktok`, C-080d). */
+export const DROP_SOURCES = ['tiktok', 'instagram'] as const;
+export type DropSource = (typeof DROP_SOURCES)[number];
+const SOURCE_NAME: Record<DropSource, string> = { tiktok: 'TikTok', instagram: 'Instagram' };
 
 export interface DropFilters {
   city: string | null;
@@ -53,6 +59,8 @@ export function DropsView({
   filters,
   seenAt,
   now,
+  checked = null,
+  source = null,
 }: {
   /** Every hotel with a drop (for the city chips and headline numbers). */
   all: HotelDropsWithPhoto[];
@@ -61,6 +69,10 @@ export function DropsView({
   filters: DropFilters;
   seenAt: string | null;
   now: Date;
+  /** What the night grid checked today: the proof line. */
+  checked?: RadarStats | null;
+  /** Set when the visitor came through a social bio link: shows the welcome strip. */
+  source?: DropSource | null;
 }) {
   const t = useTranslations('drops');
   const locale = useLocale() as Locale;
@@ -80,10 +92,18 @@ export function DropsView({
   );
   const filtered = filters.city !== null || filters.when !== null;
   const seen = seenAt ? updatedAtParts(seenAt, now, locale) : null;
+  // The biggest drop gets the hero spot on the unfiltered default view and leaves the grid.
+  const hero = !filtered && filters.sort === 'pct' ? (shown[0] ?? null) : null;
+  const grid = hero ? shown.slice(1) : shown;
 
   return (
     <div className="mx-auto w-full max-w-[1080px] px-5 pt-8 pb-16 md:px-7 lg:pt-14 lg:pb-[88px]">
       <header className="max-w-[44em]">
+        {source && (
+          <p className="mb-4 inline-flex rounded-full bg-accent-soft px-4 py-2 text-[14px] font-semibold text-accent">
+            {t('welcome.title', { source: SOURCE_NAME[source] })}
+          </p>
+        )}
         <p className="text-eyebrow flex items-center gap-2 text-accent">
           <span aria-hidden="true" className="relative flex size-2">
             <span className="absolute inline-flex size-full rounded-full bg-good opacity-60 motion-safe:animate-ping" />
@@ -92,29 +112,57 @@ export function DropsView({
           {t('eyebrow')}
         </p>
         <h1 className="text-h2 mt-2">{t('title')}</h1>
-        <p className="text-lead mt-4 text-muted-ink">{t('intro')}</p>
-        {seen && (
-          <p className="text-meta mt-3 text-muted-ink">
-            {t('asOf', {
-              when:
-                seen.day === 'today'
-                  ? t('today', { time: seen.time })
-                  : seen.day === 'yesterday'
-                    ? t('yesterday', { time: seen.time })
-                    : `${seen.date}, ${seen.time}`,
-            })}
+        {/* Visitors from a bio link saw the idea in the video: straight to the drops. */}
+        <p className={cn('text-lead mt-3 text-muted-ink', source && 'sr-only')}>{t('intro')}</p>
+        {(seen || stats.hotels > 0) && (
+          <p className="text-meta mt-2 text-muted-ink">
+            {seen &&
+              t('asOf', {
+                when:
+                  seen.day === 'today'
+                    ? t('today', { time: seen.time })
+                    : seen.day === 'yesterday'
+                      ? t('yesterday', { time: seen.time })
+                      : `${seen.date}, ${seen.time}`,
+              })}
+            {seen && stats.hotels > 0 && ' · '}
+            {stats.hotels > 0 && (
+              <span className="font-semibold text-fg">
+                {t('statNights', { n: stats.nights })} {t('statHotels', { n: stats.hotels })}
+              </span>
+            )}
           </p>
         )}
       </header>
 
+      {hero && (
+        <div className="mt-6">
+          <DropHero group={hero} />
+        </div>
+      )}
+
       {stats.hotels > 0 && (
-        <p className="mt-6 flex flex-wrap gap-x-5 gap-y-1 text-[15px] font-semibold">
-          <span>{t('statNights', { n: stats.nights })}</span>
-          <span className="text-muted-ink">{t('statHotels', { n: stats.hotels })}</span>
-          <span className="text-good-ink">
-            {t('statBiggest', { pct: dropPercent(stats.biggest, locale) })}
-          </span>
-        </p>
+        <ul
+          aria-label={t('welcome.label')}
+          className="mt-5 grid gap-x-6 gap-y-1.5 text-[14px] font-semibold sm:flex sm:flex-wrap"
+        >
+          {checked && (
+            <li className="flex gap-2">
+              <Icon icon={Check} size={16} className="mt-0.5 shrink-0 text-good-ink" />
+              {t('proof', {
+                nights: checked.nights,
+                hotels: checked.hotels,
+                sites: checked.sites,
+              })}
+            </li>
+          )}
+          {(['fair', 'free'] as const).map((k) => (
+            <li key={k} className="flex gap-2">
+              <Icon icon={Check} size={16} className="mt-0.5 shrink-0 text-good-ink" />
+              {t(`welcome.${k}`)}
+            </li>
+          ))}
+        </ul>
       )}
 
       {stats.hotels > 0 && (
@@ -170,16 +218,18 @@ export function DropsView({
       )}
 
       {shown.length > 0 ? (
-        <ul
-          aria-label={t('listLabel')}
-          className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {shown.map((g) => (
-            <li key={g.hotel.id}>
-              <DropCard group={g} />
-            </li>
-          ))}
-        </ul>
+        grid.length > 0 && (
+          <ul
+            aria-label={t('listLabel')}
+            className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {grid.map((g) => (
+              <li key={g.hotel.id}>
+                <DropCard group={g} />
+              </li>
+            ))}
+          </ul>
+        )
       ) : (
         <Card variant="float" radius="search" className="mt-10 max-w-[44em] lg:p-8">
           <span className="grid size-12 place-items-center rounded-full bg-accent-soft text-accent">

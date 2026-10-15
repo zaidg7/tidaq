@@ -44,6 +44,13 @@ export const securityHeaders = [
 const nextConfig: NextConfig = {
   transpilePackages: ['@tidaq/core'],
   poweredByHeader: false,
+  // Short links for social bios (C-080d): land on the radar with a welcome for that platform.
+  async redirects() {
+    return ['tiktok', 'instagram'].flatMap((ref) => [
+      { source: `/${ref}`, destination: `/preissturz?ref=${ref}`, permanent: false },
+      { source: `/en/${ref}`, destination: `/en/preissturz?ref=${ref}`, permanent: false },
+    ]);
+  },
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
   },

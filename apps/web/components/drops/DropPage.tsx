@@ -9,6 +9,7 @@ import {
   localizedPath,
   stayPath,
   updatedAtParts,
+  usualCents,
   type DailyPrice,
   type Locale,
   type PriceDrop,
@@ -35,7 +36,10 @@ export async function dropFacts(g: HotelDropsWithPhoto, d: PriceDrop, locale: Lo
   const nowP = formatPrice(d.nowCents, locale);
   const was = formatPrice(d.prevCents, locale);
   const site = d.provider.direct ? t('atDirect') : t('atSite', { provider: d.provider.name });
-  const low = d.priorDays >= 2 ? td('newLow', { days: d.priorDays + 1 }) : td('firstLow');
+  const usual = usualCents(d);
+  const newLow = d.priorDays >= 2 ? td('newLow', { days: d.priorDays + 1 }) : td('firstLow');
+  const low =
+    usual !== null ? `${td('usual', { price: formatPrice(usual, locale) })} · ${newLow}` : newLow;
   const seen = updatedAtParts(d.seenAt, now, locale);
   const saved = d.provider.direct
     ? td('savedDirect', { amount: formatPrice(d.savedCents, locale) })
@@ -48,7 +52,8 @@ export async function dropFacts(g: HotelDropsWithPhoto, d: PriceDrop, locale: Lo
     now: nowP,
     was: td('was', { price: was }),
     saved,
-    low,
+    // One short line on the image: the new low only.
+    low: newLow,
     asOf: t('storyAsOf', { date: seen.date, time: seen.time }),
     url: t('storyUrl'),
   };
