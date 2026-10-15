@@ -358,11 +358,11 @@
     "noDataTitle": "Für diesen Aufenthalt gibt es noch keine Preise",
     "noDataText": "Wir prüfen die Preise jeden Morgen. Sobald ein Anbieter für alle Nächte einen Preis meldet, siehst du ihn hier. Ab dem 7. Tag mit Preis sagen wir dir, ob der Preis gerade tief ist.",
     "untrackedTitle": "So weit im Voraus haben wir noch keine Preise",
-    "untrackedText": "Wir sammeln jeden Morgen die Preise jeder Nacht für die nächsten {days} Tage. Diese Daten liegen weiter in der Zukunft. Wir merken sie jetzt vor, solange heute noch Platz ist, und prüfen sie ab dann jeden Morgen. Schau später wieder vorbei.",
+    "untrackedText": "Wir sammeln jeden Morgen die Preise jeder Nacht für die nächsten {days} Tage. Diese Daten liegen weiter in der Zukunft.",
     "historyHow": "So rechnen wir",
     "realVsNights": "Für genau diese Daten zeigen die Anbieter heute {real}, die Summe der Nächte liegt bei {nights}.",
     "historyNights": "Der Verlauf ist die Summe der Preise der einzelnen Nächte beim selben Anbieter.",
-    "untrackedGuestsText": "Den Verlauf jeder Nacht sammeln wir für {adults} Erwachsene. Diesen Aufenthalt merken wir jetzt vor, solange heute noch Platz ist, und prüfen ihn ab dann jeden Morgen. Schau später wieder vorbei.",
+    "untrackedGuestsText": "Den Verlauf jeder Nacht sammeln wir für {adults} Erwachsene. Für andere Gästezahlen prüfen wir den ganzen Aufenthalt.",
     "untrackedGuestsTitle": "Für {adults, plural, one {# Person} other {# Personen}} gibt es noch keinen Verlauf",
     "pastTitle": "Dieser Aufenthalt ist schon vorbei",
     "pastText": "Wähl neue Daten, dann siehst du die aktuellen Preise.",
@@ -413,9 +413,11 @@
       "error": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
     },
     "realOnlyTitle": "Für dieses Hotel prüfen wir ganze Aufenthalte",
-    "realOnlyText": "Hier kosten einzelne Nächte oft anders als der ganze Aufenthalt. Deshalb zeigen wir nur Preise, die wir für genau diese Daten abgefragt haben. Wir merken die Daten jetzt vor, solange heute noch Platz ist. Die ersten Preise kommen meist nach wenigen Minuten.",
+    "realOnlyText": "Hier kosten einzelne Nächte oft anders als der ganze Aufenthalt. Deshalb zeigen wir nur Preise, die wir für genau diese Daten abgefragt haben.",
     "historyRealOnly": "Der Verlauf zeigt nur Preise, die wir für genau diese Daten abgefragt haben. Bei diesem Hotel kosten einzelne Nächte oft anders als der ganze Aufenthalt.",
-    "trustDetails": ", Preistreue von {provider} im Detail"
+    "trustDetails": ", Preistreue von {provider} im Detail",
+    "requestCreated": "Wir prüfen diese Daten ab jetzt jeden Tag. Die ersten Preise kommen meist nach ein paar Minuten, lad die Seite dann neu.",
+    "requestFull": "Heute nehmen wir keine neuen Daten mehr an. Öffne die Seite morgen noch einmal, dann prüfen wir sie. Oder wähl unten Daten, die wir schon prüfen."
   },
   "hotel": {
     "metaTitle": "{hotel}: Preise jeder Nacht | Tidaq",

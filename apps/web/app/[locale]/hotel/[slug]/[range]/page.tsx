@@ -144,9 +144,19 @@ async function StayPageBody(props: Props) {
     nightsUnreliable,
   } = result.data;
   const userAgent = (await headers()).get('user-agent');
-  // No real check of these exact dates yet: ask for one after the response (C-070b).
+  const status = stayStatus(
+    hotel.active,
+    stay !== null || result.data.inNightGrid,
+    series,
+    p.checkIn,
+    today,
+  );
+  // No real check of these exact dates yet: ask for one (C-070b). With nothing else to show, wait
+  // for the answer so the page says what really happens (C-132a); otherwise after the response.
+  let request: Awaited<ReturnType<typeof requestStayOnView>> = null;
   if (hotel.active && stay === null && p.checkIn >= today) {
-    after(() => requestStayOnView(slug, p, userAgent));
+    if (status === 'untracked') request = await requestStayOnView(slug, p, userAgent);
+    else after(() => requestStayOnView(slug, p, userAgent));
   }
   // Anonymous view count (C-029): which stay, never who.
   after(() =>
@@ -180,13 +190,8 @@ async function StayPageBody(props: Props) {
       drop={dropped && <DropCallout group={dropped.group} drop={dropped.drop} />}
       hotel={hotel}
       params={p}
-      status={stayStatus(
-        hotel.active,
-        stay !== null || result.data.inNightGrid,
-        series,
-        p.checkIn,
-        today,
-      )}
+      status={status}
+      request={request}
       series={series}
       providerByDay={providerByDay}
       updatedAt={updatedAt}

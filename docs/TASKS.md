@@ -146,7 +146,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-129 | Own photos for the last 17 hotels from LiteAPI images, if allowed (list in B-021) | CLOUD | S | B-021 | BLOCKED (B-021) |
 | C-130 | Desktop review fixes (Zaid, 15 Oct): no public "Als Story teilen", hero hairline + readable text, search panels open upward, laptop hero fits the bar | CLOUD | S | – | DONE ([#112](https://github.com/zaidg7/tidaq/pull/112); panels pick their side in `usePanelSide`) |
 | C-131 | Hotels page: per region a carousel of 3 cards with arrow buttons (one card per click); names as "Hotel, Stadt" unless the name has the city | CLOUD | S | – | DONE (PR pending; `Carousel` in components/ui, core `hotelWithCity`) |
-| C-132 | Hotel page: a price chart, a clear "pick dates → price history" flow, own dates that work at hotels with unreliable nights (Rosewood München) | CLOUD | M | – | TODO |
+| C-132a | Own dates at hotels with unreliable nights (Rosewood München) get a real check: `request_stay` no longer answers "full" to everyone; scheduled runs keep 30 of the daily cap for visitor requests; the page says what really happens | CLOUD | S | – | DONE (PR pending; needs the production collector deploy) |
+| C-132b | Hotel page: a price chart of the nightly prices and a clear "pick dates → price history" flow (Zaid: calendar shown, then unclear what to do) | CLOUD | M | C-132a | TODO |
 | C-133 | Partner links open the hotel with dates filled in on Agoda, Trip.com, Expedia & co. (Booking.com already does) | CLOUD | S | – | TODO |
 | C-134 | Cities page: premium pass (bigger photos, more feel, same data) | CLOUD | S | – | TODO |
 | C-135 | Children in the guest picker: needs prices per child age (LiteAPI occupancies, D-43); until then adults only | CLOUD | S | C-075 | TODO |

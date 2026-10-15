@@ -120,9 +120,10 @@ describe('PRICE_SOURCE=xotelo (D-41)', () => {
 
   it('morning: the daily cap still limits the jobs', async () => {
     const mem = memoryStore(hotels, { aliases: ALIASES });
+    // 33 minus the 30 kept for visitor requests (C-132a).
     const summary = await runPosting({
       store: mem.store,
-      env: testEnv({ PRICE_SOURCE: 'xotelo', DAILY_TASK_CAP: '3' }),
+      env: testEnv({ PRICE_SOURCE: 'xotelo', DAILY_TASK_CAP: '33' }),
       now: at('2026-10-14T05:00:00Z'),
       kind: 'morning',
     });

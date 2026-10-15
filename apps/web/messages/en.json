@@ -358,11 +358,11 @@
     "noDataTitle": "No prices for this stay yet",
     "noDataText": "We check prices every morning. As soon as a provider reports a price for every night, you’ll see it here. From the 7th day with a price we tell you whether the price is low right now.",
     "untrackedTitle": "No prices this far ahead yet",
-    "untrackedText": "Every morning we collect the price of every night for the next {days} days. These dates are further out. We note them now, as long as there’s room today, and check them every morning from then on. Check back later.",
+    "untrackedText": "Every morning we collect the price of every night for the next {days} days. These dates are further out.",
     "historyHow": "How we calculate",
     "realVsNights": "For exactly these dates providers show {real} today; the nights add up to {nights}.",
     "historyNights": "The history is the sum of the single nights’ prices at the same provider.",
-    "untrackedGuestsText": "We collect the history of every night for {adults} adults. We note this stay now, as long as there’s room today, and check it every morning from then on. Check back later.",
+    "untrackedGuestsText": "We collect the history of every night for {adults} adults. For other guest counts we check the whole stay.",
     "untrackedGuestsTitle": "No history for {adults, plural, one {# person} other {# people}} yet",
     "pastTitle": "This stay is in the past",
     "pastText": "Pick new dates to see the current prices.",
@@ -413,9 +413,11 @@
       "error": "That didn't work just now. Please try again in a moment."
     },
     "realOnlyTitle": "For this hotel we check whole stays",
-    "realOnlyText": "Here, single nights often cost something different from the whole stay. So we only show prices we checked for exactly these dates. We're queueing these dates now, as long as there's room today. The first prices usually arrive within a few minutes.",
+    "realOnlyText": "Here, single nights often cost something different from the whole stay. So we only show prices we checked for exactly these dates.",
     "historyRealOnly": "The history only shows prices we checked for exactly these dates. At this hotel, single nights often cost something different from the whole stay.",
-    "trustDetails": ", {provider} price accuracy in detail"
+    "trustDetails": ", {provider} price accuracy in detail",
+    "requestCreated": "We check these dates every day from now on. The first prices usually arrive within a few minutes, so reload the page then.",
+    "requestFull": "We can't take new dates today. Open this page again tomorrow and we'll check them. Or pick dates below that we already check."
   },
   "hotel": {
     "metaTitle": "{hotel}: prices for every night | Tidaq",

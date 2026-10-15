@@ -40,6 +40,12 @@ export interface BudgetResult<J extends CollectJob> {
 export const COST_PER_TASK_USD = 0.0008;
 /** Share of the monthly budget at which Zaid gets an email (C-013 step 5). */
 export const MONTHLY_ALERT_SHARE = 0.8;
+/**
+ * Tasks a day kept free for stays visitors open (C-132a, D-42 "the stay a visitor opens gets a
+ * real check"): the morning and evening runs stop this many tasks below the daily cap, the
+ * request runs may use the full cap. Same as `request_stay`'s daily limit of new requests.
+ */
+export const REQUEST_RESERVE = 30;
 /** Evening run: only stays checking in within this many days, plus watched stays (C-013 step 3). */
 export const EVENING_WINDOW_DAYS = 21;
 
