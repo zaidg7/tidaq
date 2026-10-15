@@ -9,7 +9,7 @@ import {
   useState,
   type KeyboardEvent,
 } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   dayDiff,
   dayRole,
@@ -37,6 +37,8 @@ export type CalendarLabels = {
   nextMonth: string;
   chooseIn: string;
   chooseOut: string;
+  /** The three steps above the calendar (C-132b): check-in, check-out, see the history. */
+  steps: [string, string, string];
   clear: string;
   checkIn: string;
   checkOut: string;
@@ -235,8 +237,43 @@ export function PriceCalendar({
     return parts.filter(Boolean).join(', ');
   };
 
+  // Where the visitor is: 1 check-in, 2 check-out, 3 see the history (C-132b).
+  const step = chosen ? 3 : draft.checkIn ? 2 : 1;
+
   return (
     <div>
+      <ol className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-2 text-[14px] font-semibold md:mb-8">
+        {labels.steps.map((text, i) => {
+          const n = i + 1;
+          return (
+            <li key={text} className="flex items-center gap-2">
+              {i > 0 && <span aria-hidden="true" className="h-px w-4 bg-line-strong md:w-8" />}
+              <span
+                aria-current={n === step ? 'step' : undefined}
+                className={cn(
+                  'inline-flex h-9 items-center gap-2 rounded-full pr-3.5 pl-1.5',
+                  n === step
+                    ? 'bg-ink text-white'
+                    : n < step
+                      ? 'bg-surface-2 text-ink'
+                      : 'text-muted',
+                )}
+              >
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    'grid size-6 place-items-center rounded-full text-[12.5px] tabular-nums',
+                    n === step ? 'bg-white text-ink' : 'border border-line-strong',
+                  )}
+                >
+                  {n < step ? '✓' : n}
+                </span>
+                {text}
+              </span>
+            </li>
+          );
+        })}
+      </ol>
       <div ref={grids} className="relative">
         <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-between">
           <IconButton
@@ -333,9 +370,10 @@ export function PriceCalendar({
           {chosen && (
             <a
               href={localizedPath(stayPath(slug, chosen.checkIn, chosen.checkOut, 2), locale)}
-              className={buttonClasses({ size: 'sm' })}
+              className={cn(buttonClasses(), 'gap-2')}
             >
               {labels.show}
+              <Icon icon={ArrowRight} size={18} />
             </a>
           )}
         </div>

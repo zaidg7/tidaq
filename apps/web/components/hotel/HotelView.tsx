@@ -21,6 +21,7 @@ import { Icon } from '@/components/ui/Icon';
 import { cardPhoto } from '@/lib/photos';
 import type { HotelPage } from '@/lib/data/hotel';
 import { routes } from '@/lib/routes';
+import { NightCurve } from './NightCurve';
 import { PriceCalendar, type CalendarLabels } from './PriceCalendar';
 
 type Props = {
@@ -37,8 +38,9 @@ type Props = {
 
 /**
  * Hotel page (C-023a, mockup B language): the hotel's photo with the page on a sheet over it,
- * then the cheapest upcoming 5 nights and week (C-023b, C-125), the price calendar of every night
- * (night grid, D-42) → pick dates → stay page with the history, and the alert for this hotel.
+ * then the cheapest upcoming 5 nights and week (C-023b, C-125), the price of every night as a
+ * chart (C-132b), the price calendar of every night (night grid, D-42) with three numbered steps
+ * → pick dates → stay page with the history, and the alert for this hotel.
  */
 export function HotelView({ data, today, now, drops, alert }: Props) {
   const t = useTranslations('hotel');
@@ -67,6 +69,7 @@ export function HotelView({ data, today, now, drops, alert }: Props) {
     nextMonth: t('nextMonth'),
     chooseIn: t('chooseIn'),
     chooseOut: t('chooseOut'),
+    steps: [t('stepIn'), t('stepOut'), t('stepShow')],
     clear: t('clear'),
     checkIn: t('checkIn'),
     checkOut: t('checkOut'),
@@ -169,40 +172,43 @@ export function HotelView({ data, today, now, drops, alert }: Props) {
             />
           </div>
         ) : (
-          <section aria-labelledby="calendar-title" className="mt-10 md:mt-14">
-            <h2
-              id="calendar-title"
-              className="text-[22px] font-semibold tracking-[-0.02em] md:text-[28px]"
-            >
-              {t('calendarTitle')}
-            </h2>
-            <p className="mt-1 mb-4 max-w-[46em] text-[15px] text-muted md:mb-5">
-              {t('calendarText')}
-            </p>
-            <div className="rounded-panel border border-[#ece9f1] bg-surface p-4 shadow-[0_16px_40px_rgba(21,19,28,0.06)] md:p-8">
-              {nightsUnreliable && (
-                <p className="mb-4 rounded-input bg-warn-soft px-4 py-3 text-[14px] font-semibold text-warn">
-                  {t('unreliableNote')}
-                </p>
-              )}
-              <PriceCalendar
-                slug={hotel.slug}
-                nights={nights}
-                levels={priceLevels(nights.map((n) => n.bestCents))}
-                providers={providerNames}
-                nightsUnreliable={nightsUnreliable}
-                today={today}
-                locale={locale}
-                labels={labels}
-              />
-              {updated && (
-                <p className="mt-4 text-[13px] text-muted">
-                  {tv(`updated${updated.day}`, { time: updated.time, date: updated.date })} ·{' '}
-                  {tv('source')}
-                </p>
-              )}
-            </div>
-          </section>
+          <>
+            <NightCurve nights={nights} />
+            <section aria-labelledby="calendar-title" className="mt-10 md:mt-14">
+              <h2
+                id="calendar-title"
+                className="text-[22px] font-semibold tracking-[-0.02em] md:text-[28px]"
+              >
+                {t('calendarTitle')}
+              </h2>
+              <p className="mt-1 mb-4 max-w-[46em] text-[15px] text-muted md:mb-5">
+                {t('calendarText')}
+              </p>
+              <div className="rounded-panel border border-[#ece9f1] bg-surface p-4 shadow-[0_16px_40px_rgba(21,19,28,0.06)] md:p-8">
+                {nightsUnreliable && (
+                  <p className="mb-4 rounded-input bg-warn-soft px-4 py-3 text-[14px] font-semibold text-warn">
+                    {t('unreliableNote')}
+                  </p>
+                )}
+                <PriceCalendar
+                  slug={hotel.slug}
+                  nights={nights}
+                  levels={priceLevels(nights.map((n) => n.bestCents))}
+                  providers={providerNames}
+                  nightsUnreliable={nightsUnreliable}
+                  today={today}
+                  locale={locale}
+                  labels={labels}
+                />
+                {updated && (
+                  <p className="mt-4 text-[13px] text-muted">
+                    {tv(`updated${updated.day}`, { time: updated.time, date: updated.date })} ·{' '}
+                    {tv('source')}
+                  </p>
+                )}
+              </div>
+            </section>
+          </>
         )}
 
         {hotel.active && alert && <div className="mt-10 md:mt-14">{alert}</div>}

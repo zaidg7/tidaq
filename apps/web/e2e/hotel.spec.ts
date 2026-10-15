@@ -23,14 +23,36 @@ test.describe('hotel page (C-023a, sample data on /dev/hotel)', () => {
     await expect(page.getByText('Stand: heute, 10:58 Uhr')).toBeVisible();
   });
 
+  test('the price of every night as a chart, cheapest and dearest in words (C-132b)', async ({
+    page,
+  }) => {
+    await page.goto('/dev/hotel/calendar');
+    const curve = page.getByRole('region', { name: 'So ändert sich der Preis pro Nacht' });
+    await expect(
+      curve.getByText(/^Günstigste Nacht: [\d.]+\s€ am \d+\. \w+\.? · Teuerste:/),
+    ).toBeVisible();
+    // The calendar comes after it: the chart shows when, the calendar is where you pick.
+    const order = await page.evaluate(() =>
+      [...document.querySelectorAll('h2')].map((h) => h.textContent),
+    );
+    expect(order.indexOf('So ändert sich der Preis pro Nacht')).toBeLessThan(
+      order.indexOf('Preise jeder Nacht'),
+    );
+  });
+
   test('picking dates shows the total on one site and links to the stay', async ({ page }) => {
     await page.goto('/dev/hotel/calendar');
     const calendar = page.getByRole('region', { name: 'Preise jeder Nacht' });
     await expect(calendar.getByText('Wähle deine Anreise.')).toBeVisible();
+    // C-132b: three numbered steps say where you are.
+    const step = calendar.locator('[aria-current="step"]');
+    await expect(step).toHaveText(/Anreise wählen/);
     await calendar.locator('[data-day="2026-10-14"]').click();
     await expect(calendar.getByText('Wähle deine Abreise.')).toBeVisible();
+    await expect(step).toHaveText(/Abreise wählen/);
     await calendar.locator('[data-day="2026-10-16"]').click();
     await expect(calendar.getByText(/^2 Nächte · 14\.–16\. Okt\.$/)).toBeVisible();
+    await expect(step).toHaveText(/Preisverlauf ansehen/);
     await expect(
       calendar.getByText(/^1\.\d{3}\s€ bei Booking\.com, alle Nächte auf derselben Seite$/),
     ).toBeVisible();

@@ -431,7 +431,7 @@
     "bestFacts": "{nights} Nächte für 2 Erwachsene bei {provider}",
     "jsonLdDescription": "Fünf-Sterne-Hotel in {city}. Tidaq zeigt den Preis jeder Nacht und den Preisverlauf deines Aufenthalts.",
     "calendarTitle": "Preise jeder Nacht",
-    "calendarText": "Günstigster Preis pro Nacht für 2 Erwachsene, über alle geprüften Buchungsseiten. Wähle An- und Abreise, um den Gesamtpreis und den Verlauf zu sehen.",
+    "calendarText": "Günstigster Preis pro Nacht für 2 Erwachsene, über alle geprüften Buchungsseiten. Wähl deine Daten, dann zeigen wir dir den Gesamtpreis und wie er sich entwickelt hat.",
     "prevMonth": "Vorheriger Monat",
     "nextMonth": "Nächster Monat",
     "chooseIn": "Wähle deine Anreise.",
@@ -459,7 +459,12 @@
     "inactiveTitle": "Dieses Hotel beobachten wir gerade nicht",
     "inactiveText": "Wir sammeln für dieses Hotel keine neuen Preise. Such dir ein anderes Hotel aus.",
     "home": "Zur Startseite",
-    "fiveStars": "Fünf Sterne"
+    "fiveStars": "Fünf Sterne",
+    "curveTitle": "So ändert sich der Preis pro Nacht",
+    "curveText": "Günstigste Nacht: {low} am {lowDay} · Teuerste: {high} am {highDay} · Grün heißt günstig.",
+    "stepIn": "Anreise wählen",
+    "stepOut": "Abreise wählen",
+    "stepShow": "Preisverlauf ansehen"
   },
   "legal": {
     "bindingNote": "",
