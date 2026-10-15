@@ -14,7 +14,7 @@ import { berlinToday } from '@/lib/today';
 const SITES = 4;
 /**
  * Homepage hero (PREMIUM.md §10.1, mockup B): full-bleed rooftop photo with top and bottom
- * scrims, the navbar white on top of it, bottom-left five gold stars, "Fünf Sterne, wenn sie günstig sind." and one
+ * scrims, the navbar white on top of it, bottom-left five gold stars, "Luxushotels buchen, wenn der Preis fällt." and one
  * sentence. Desktop: the search bar overlaps the photo's bottom edge by 46 px,
  * the proof row sits under it. Phones: the "Wohin?" pill sits in the photo.
  */

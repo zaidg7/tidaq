@@ -6,7 +6,7 @@ test.describe('homepage', () => {
   test('photo hero with the headline, search and proof line', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Fünf Sterne, wenn sie günstig sind.',
+      'Luxushotels buchen, wenn der Preis fällt.',
     );
     await expect(page.getByText(/^Wir prüfen jeden Morgen die Preise/).last()).toBeVisible();
     await expect(page.getByRole('button', { name: 'Preis prüfen' })).toBeVisible();
