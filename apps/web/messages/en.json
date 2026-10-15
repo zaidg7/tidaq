@@ -687,6 +687,7 @@
     "unavailable": "The hotel list is unavailable right now. Please try again in a moment."
   },
   "watchMail": {
+    "eyebrow": "Price alert",
     "stay": "{hotel}, {dates}, {adults, plural, one {# adult} other {# adults}}",
     "confirmSubject": "Please confirm your price alert",
     "confirmPreheader": "One click left, then we'll tell you when the price drops.",
@@ -813,6 +814,7 @@
     "unavailable": "The current numbers can't be loaded right now. Reload the page later."
   },
   "newsletterMail": {
+    "eyebrow": "Deals of the week",
     "confirmSubject": "Please confirm your sign-up for the deals",
     "confirmPreheader": "One click left, then you get the deals every Monday.",
     "confirmHeading": "Please confirm your sign-up",
@@ -963,6 +965,7 @@
     "textHotel": "We email you as soon as {hotel} gets much cheaper overnight, for any date. Or pick a whole city. At most one email a day. Free, unsubscribe in one click."
   },
   "dropAlertMail": {
+    "eyebrow": "Price drop alert",
     "confirmSubject": "Please confirm your price drop alert",
     "confirmPreheader": "One click left, then we'll email you about new price drops.",
     "confirmHeading": "Please confirm your price drop alert",

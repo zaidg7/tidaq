@@ -69,6 +69,7 @@ export async function requestDropAlert(
       confirm
         ? {
             preheader: t('confirmPreheader'),
+            eyebrow: t('eyebrow'),
             heading: t('confirmHeading'),
             paragraphs: [
               req.hotel ? t('confirmTextHotel', { hotel: req.hotel.name }) : t('confirmText'),
@@ -80,6 +81,7 @@ export async function requestDropAlert(
           }
         : {
             preheader: t('addedPreheader'),
+            eyebrow: t('eyebrow'),
             heading: t('addedHeading'),
             paragraphs: [
               req.hotel ? t('addedTextHotel', { hotel: req.hotel.name }) : t('addedText'),
