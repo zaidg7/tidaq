@@ -8,7 +8,7 @@ test.describe('desktop shell', () => {
     // The homepage hides the navbar CTA while its search card is visible; other pages show it.
     await page.goto('/dev/ui');
     const nav = page.getByRole('navigation', { name: 'Hauptnavigation' });
-    for (const name of ['Hotels', 'Deals', 'Kassen-Check', 'So funktioniert’s']) {
+    for (const name of ['Preisstürze', 'Hotels', 'Kassen-Check', 'So funktioniert’s']) {
       await expect(nav.getByRole('link', { name })).toBeVisible();
     }
     await expect(

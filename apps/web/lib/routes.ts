@@ -7,6 +7,7 @@ export const routes = {
   search: '/#suche',
   hotels: '/hotels',
   deals: '/deals',
+  drops: '/preissturz',
   checkoutCheck: '/kassen-check',
   method: '/methodik',
   ranking: '/ranking',
@@ -17,10 +18,13 @@ export const routes = {
 
 export type RouteKey = keyof typeof routes;
 
-/** Navbar order (CRAFT.md §3 Navbar): Hotels · Deals · Kassen-Check · So funktioniert's. */
+/**
+ * Navbar order (CRAFT.md §3 Navbar): Preisstürze · Hotels · Kassen-Check · So funktioniert's.
+ * The radar (C-080a) took the place of Deals, which stays in the footer and on the radar page.
+ */
 export const navRoutes = [
+  'drops',
   'hotels',
-  'deals',
   'checkoutCheck',
   'method',
 ] as const satisfies readonly RouteKey[];

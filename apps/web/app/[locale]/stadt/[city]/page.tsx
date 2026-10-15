@@ -4,12 +4,21 @@ import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { after } from 'next/server';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { alternatesFor, cityIn, cityPath, localizedPath, type Locale } from '@tidaq/core';
+import {
+  alternatesFor,
+  cityIn,
+  cityPath,
+  filterDrops,
+  localizedPath,
+  type Locale,
+} from '@tidaq/core';
 import { CityView } from '@/components/city/CityView';
+import { DropsTeaser, dropsHref } from '@/components/drops/DropsTeaser';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
 import { logView } from '@/lib/data/events';
 import { getCityPage } from '@/lib/data/city';
+import { getDrops } from '@/lib/data/drops';
 import { openGraphFor } from '@/lib/og';
 import { berlinToday } from '@/lib/today';
 
@@ -55,9 +64,12 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function CityPageRoute(props: Props) {
   const { locale, slug } = await resolve(props);
   setRequestLocale(locale);
-  const [result, t] = await Promise.all([
-    load(slug, berlinToday()),
+  const today = berlinToday();
+  const [result, t, drops, td] = await Promise.all([
+    load(slug, today),
     getTranslations({ locale, namespace: 'stay' }),
+    getDrops(today),
+    getTranslations({ locale, namespace: 'drops' }),
   ]);
   if (result.kind === 'missing') notFound();
   if (result.kind === 'unavailable') {
@@ -76,5 +88,20 @@ export default async function CityPageRoute(props: Props) {
   // Anonymous view count (C-029): which page, never who.
   const userAgent = (await headers()).get('user-agent');
   after(() => logView({ name: 'city_view', props: { city: slug } }, userAgent));
-  return <CityView city={result.city} hotels={result.hotels} />;
+  // The city's sudden drops (C-080a); the teaser renders nothing without any.
+  const cityDrops =
+    drops.kind === 'ok' ? filterDrops(drops.drops, { city: slug, when: null, today }) : [];
+  return (
+    <CityView city={result.city} hotels={result.hotels}>
+      {cityDrops.length > 0 && (
+        <DropsTeaser
+          drops={cityDrops}
+          locale={locale}
+          title={td('cityTitle', { where: cityIn(slug, result.city.name[locale], locale) })}
+          href={dropsHref(locale, slug)}
+          id="city-drops"
+        />
+      )}
+    </CityView>
+  );
 }

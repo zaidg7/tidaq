@@ -94,7 +94,8 @@
     "cta": "Preise ansehen",
     "menuOpen": "Menü öffnen",
     "menuClose": "Menü schließen",
-    "menuTitle": "Menü"
+    "menuTitle": "Menü",
+    "drops": "Preisstürze"
   },
   "footer": {
     "tagline": "Preisverlauf für Luxushotels. Damit du weißt, ob ein Preis gerade gut ist.",
@@ -109,7 +110,8 @@
       "ranking": "So sortieren wir",
       "affiliate": "Affiliate-Hinweis",
       "imprint": "Impressum",
-      "privacy": "Datenschutz"
+      "privacy": "Datenschutz",
+      "drops": "Preisstürze"
     },
     "copyright": "© {year} Tidaq",
     "source": "Preise jeden Morgen von den Buchungsseiten. Ohne Cookies."
@@ -812,5 +814,63 @@
     "manageButton": "Anmeldung verwalten",
     "footerWhy": "Du bekommst diese E-Mail, weil auf tidaq.com die Deals per E-Mail für diese Adresse bestellt wurden.",
     "footerManage": "Abbestellen oder Alarme ändern: {url}"
+  },
+  "drops": {
+    "metaTitle": "Preisstürze in Luxushotels, live | Tidaq",
+    "metaDescription": "Wo der Preis für eine Nacht in einem Fünf-Sterne-Hotel seit gestern am stärksten gefallen ist, auf einen neuen Tiefpunkt. Jeden Tag neu, mit beiden Preisen.",
+    "eyebrow": "Preisstürze · live",
+    "title": "Preisstürze in Luxushotels",
+    "intro": "Wir prüfen jeden Tag den Preis jeder Nacht in unseren Fünf-Sterne-Hotels. Hier steht, wo der günstigste Preis seit dem Vortag am stärksten gefallen ist, und zwar auf einen neuen Tiefpunkt.",
+    "asOf": "Stand: {when}",
+    "today": "heute, {time}",
+    "yesterday": "gestern, {time}",
+    "statNights": "{n, plural, one {# Nacht} other {# Nächte}} günstiger",
+    "statHotels": "in {n, plural, one {# Hotel} other {# Hotels}}",
+    "statBiggest": "größter Sturz {pct}",
+    "filterCity": "Nach Stadt filtern",
+    "filterWhen": "Nach Reisezeit filtern",
+    "sortLabel": "Sortieren",
+    "allCities": "Alle Städte",
+    "when": {
+      "all": "Jederzeit",
+      "week": "Nächste 7 Tage",
+      "month": "Nächste 30 Tage",
+      "later": "Später"
+    },
+    "sort": {
+      "pct": "Größter Sturz",
+      "eur": "Meiste Ersparnis",
+      "soon": "Bald"
+    },
+    "listLabel": "Preisstürze",
+    "dropLabel": "Preis um {pct} gefallen",
+    "night": "{date} · 1 Nacht, 2 Erwachsene",
+    "was": "Vortag {price}",
+    "saved": "{amount} weniger bei {provider}",
+    "savedDirect": "{amount} weniger direkt beim Hotel",
+    "newLow": "Niedrigster Preis seit {days} Tagen",
+    "firstLow": "Niedrigster Preis, seit wir messen",
+    "more": "Auch günstiger:",
+    "moreCount": "+{n} weitere",
+    "emptyTitle": "Gerade keine Preisstürze",
+    "emptyText": "Wir prüfen die Preise den ganzen Tag. Sobald der Preis einer Nacht um mindestens 15 % auf einen neuen Tiefpunkt fällt, steht er hier.",
+    "emptyFiltered": "Mit diesen Filtern gibt es gerade keinen Preissturz.",
+    "emptyReset": "Filter zurücksetzen",
+    "emptyCta": "Alle Hotels ansehen",
+    "unavailable": "Die Preisstürze lassen sich gerade nicht laden. Versuch es gleich noch einmal.",
+    "retry": "Neu laden",
+    "howTitle": "So erkennen wir einen Preissturz",
+    "how": {
+      "compare": "Wir vergleichen den günstigsten Preis einer Nacht auf geprüften Buchungsseiten mit unserer Abfrage vom Vortag.",
+      "threshold": "Er muss um mindestens 15 % und 50 € gefallen sein und unter jedem Preis liegen, den wir für diese Nacht in den 14 Tagen davor gesehen haben.",
+      "confirm": "Sehr große Stürze zeigen wir nur, wenn eine zweite Seite den Preis bestätigt.",
+      "check": "Preise ändern sich oft mehrmals am Tag. Prüf den Preis auf der Buchungsseite, bevor du buchst."
+    },
+    "howLink": "Mehr zur Methodik",
+    "dealsLink": "Lieber Aufenthalte unter ihrem 30-Tage-Schnitt? Zu den Deals",
+    "homeEyebrow": "Live",
+    "homeTitle": "Preisstürze seit gestern",
+    "homeAll": "Alle Preisstürze",
+    "cityTitle": "Preisstürze {where}"
   }
 }
