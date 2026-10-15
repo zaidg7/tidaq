@@ -3,12 +3,13 @@
 import { headers } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 import { clientIp, createRateLimiter, isLocale, parseEuroCents } from '@tidaq/core';
+import { verifyTurnstile } from '@/lib/turnstile';
 import { requestWatch, type WatchRequestStatus } from '@/lib/watch/watch';
 
 export type WatchFormState =
   | { status: 'idle' }
   | {
-      status: WatchRequestStatus | 'rate_limited' | 'bad_price';
+      status: WatchRequestStatus | 'rate_limited' | 'bot' | 'bad_price';
       previewUrl?: string;
       /** What was entered, so a failed attempt keeps the form filled (React resets forms). */
       values?: { email: string; target: string; consent: boolean };
@@ -43,6 +44,8 @@ async function submit(form: FormData): Promise<Exclude<WatchFormState, { status:
   const h = await headers();
   const ip = clientIp(h);
   if (ip && limiter.limited(ip)) return { status: 'rate_limited' };
+  // A person, not a bot (C-030c); off without TURNSTILE_SECRET_KEY.
+  if (!(await verifyTurnstile(form, ip))) return { status: 'bot' };
 
   const locale = isLocale(str(form, 'locale')) ? (str(form, 'locale') as 'de' | 'en') : 'de';
   const priceInput = str(form, 'target');

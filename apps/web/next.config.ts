@@ -11,16 +11,16 @@ const dev = process.env.NODE_ENV === 'development';
  * party is Cloudflare Web Analytics (beacon script and its endpoint, B-015). Inline scripts stay
  * allowed: the App Router streams its payload in inline scripts, and nonces would force every
  * page to render per request. `next dev` also needs eval for fast refresh.
- * When Turnstile comes (C-030c), add https://challenges.cloudflare.com to script-src and frame-src.
+ * Turnstile (C-030c) loads its script and challenge frame from challenges.cloudflare.com.
  */
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ''} https://static.cloudflareinsights.com`,
+  `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ''} https://static.cloudflareinsights.com https://challenges.cloudflare.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
   `connect-src 'self' https://cloudflareinsights.com${dev ? ' ws:' : ''}`,
-  "frame-src 'none'",
+  'frame-src https://challenges.cloudflare.com',
   "frame-ancestors 'none'",
   "object-src 'none'",
   "base-uri 'self'",

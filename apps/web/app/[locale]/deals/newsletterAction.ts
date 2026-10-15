@@ -3,12 +3,13 @@
 import { headers } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 import { clientIp, createRateLimiter, isLocale } from '@tidaq/core';
+import { verifyTurnstile } from '@/lib/turnstile';
 import { requestNewsletter, type NewsletterStatus } from '@/lib/watch/newsletter';
 
 export type NewsletterFormState =
   | { status: 'idle' }
   | {
-      status: NewsletterStatus | 'rate_limited';
+      status: NewsletterStatus | 'rate_limited' | 'bot';
       previewUrl?: string;
       /** What was entered, so a failed attempt keeps the form filled (React resets forms). */
       values?: { email: string; consent: boolean };
@@ -37,6 +38,8 @@ async function submit(form: FormData): Promise<Exclude<NewsletterFormState, { st
   const h = await headers();
   const ip = clientIp(h);
   if (ip && limiter.limited(ip)) return { status: 'rate_limited' };
+  // A person, not a bot (C-030c); off without TURNSTILE_SECRET_KEY.
+  if (!(await verifyTurnstile(form, ip))) return { status: 'bot' };
   if (form.get('consent') !== 'on') return { status: 'invalid' };
 
   const locale = isLocale(str(form, 'locale')) ? (str(form, 'locale') as 'de' | 'en') : 'de';

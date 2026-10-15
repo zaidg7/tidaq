@@ -400,6 +400,7 @@ function WatchCard({
     too_many: t('watchResults.too_many'),
     too_soon: t('watchResults.too_soon'),
     rate_limited: t('watchResults.rate_limited'),
+    bot: t('watchResults.bot'),
     bad_price: t('watchResults.bad_price'),
     error: t('watchResults.error'),
   };

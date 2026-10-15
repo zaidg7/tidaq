@@ -6,6 +6,7 @@ import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server
 import { SITE_ORIGIN } from '@tidaq/core';
 import { Footer } from '@/components/shell/Footer';
 import { Navbar } from '@/components/shell/Navbar';
+import { WebAnalytics } from '@/components/shell/WebAnalytics';
 import { routing } from '@/i18n/routing';
 import { jakarta } from '@/lib/fonts';
 import { openGraphFor } from '@/lib/og';
@@ -48,6 +49,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           </main>
           <Footer locale={locale} />
         </NextIntlClientProvider>
+        <WebAnalytics />
       </body>
     </html>
   );

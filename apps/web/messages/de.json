@@ -262,6 +262,7 @@
       "invalid": "Bitte gib eine gültige E-Mail-Adresse ein und setz den Haken.",
       "too_soon": "Wir haben dir gerade schon eine E-Mail geschickt. Schau in dein Postfach oder versuch es in einer Minute noch einmal.",
       "rate_limited": "Zu viele Versuche in kurzer Zeit. Warte bitte ein paar Minuten.",
+      "bot": "Die Sicherheitsprüfung hat nicht geklappt. Lad die Seite neu und versuch es noch einmal.",
       "error": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
     }
   },
@@ -338,6 +339,7 @@
       "too_many": "Du hast schon 10 aktive Alarme. Beende einen in deiner letzten E-Mail, dann geht ein neuer.",
       "too_soon": "Gerade eben kam schon eine Anfrage für diese Adresse. Versuch es in einer Minute noch einmal.",
       "rate_limited": "Zu viele Anfragen in kurzer Zeit. Versuch es in ein paar Minuten noch einmal.",
+      "bot": "Die Sicherheitsprüfung hat nicht geklappt. Lad die Seite neu und versuch es noch einmal.",
       "bad_price": "Gib den Wunschpreis als Zahl ein, z. B. 1.100.",
       "error": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
     },
@@ -458,7 +460,8 @@
           "title": "3. Keine Cookies, kein Tracking",
           "text": [
             "Wir setzen für Besucher keine Cookies und speichern nichts in deinem Browser. Wir nutzen keine Analyse- oder Werbedienste, die dich über Websites hinweg verfolgen. Schriften und Hotelfotos liefern wir von unserem eigenen Server aus, ohne Anfragen an Dritte.",
-            "Um zu sehen, wie viele Menschen Tidaq nutzen und wie schnell die Seiten laden, verwenden wir Cloudflare Web Analytics. Es kommt ohne Cookies und ohne Speicherung in deinem Browser aus und verfolgt dich nicht über andere Websites. Cloudflare sieht dabei die aufgerufene Seite, die Ladezeit, den Browser-Typ und das Land und zeigt uns nur zusammengefasste Zahlen. Rechtsgrundlage ist unser berechtigtes Interesse an einer funktionierenden, schnellen Website (Art. 6 Abs. 1 lit. f DSGVO)."
+            "Um zu sehen, wie viele Menschen Tidaq nutzen und wie schnell die Seiten laden, verwenden wir Cloudflare Web Analytics. Es kommt ohne Cookies und ohne Speicherung in deinem Browser aus und verfolgt dich nicht über andere Websites. Cloudflare sieht dabei die aufgerufene Seite, die Ladezeit, den Browser-Typ und das Land und zeigt uns nur zusammengefasste Zahlen. Rechtsgrundlage ist unser berechtigtes Interesse an einer funktionierenden, schnellen Website (Art. 6 Abs. 1 lit. f DSGVO).",
+            "Damit niemand unsere Formulare missbraucht, um fremden Menschen E-Mails zu schicken, prüft Cloudflare Turnstile beim Abschicken eines Alarm- oder Newsletter-Formulars, ob ein Mensch es ausfüllt. Meist merkst du davon nichts; selten erscheint ein Kästchen zum Anklicken. Cloudflare verarbeitet dafür nur die technischen Daten, die es für diese Prüfung braucht (zum Beispiel Browsermerkmale und deine IP-Adresse), setzt bei uns keine Cookies und sieht nicht, was du ins Formular schreibst. Rechtsgrundlage ist unser berechtigtes Interesse, Missbrauch zu verhindern (Art. 6 Abs. 1 lit. f DSGVO). Details: Turnstile Privacy Addendum von Cloudflare."
           ]
         },
         {
@@ -956,6 +959,7 @@
       "invalid": "Bitte gib eine gültige E-Mail-Adresse ein und setz den Haken.",
       "too_soon": "Wir haben dir gerade schon eine E-Mail geschickt. Schau in dein Postfach oder versuch es in einer Minute noch einmal.",
       "rate_limited": "Zu viele Versuche in kurzer Zeit. Warte bitte ein paar Minuten.",
+      "bot": "Die Sicherheitsprüfung hat nicht geklappt. Lad die Seite neu und versuch es noch einmal.",
       "error": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
     },
     "scope": "Alarm für",
