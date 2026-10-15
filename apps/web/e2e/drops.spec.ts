@@ -197,6 +197,26 @@ test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
     await expect(others.getByRole('listitem')).toHaveCount(3);
   });
 
+  test('straight to the site with the price: labelled partner link, new tab', async ({ page }) => {
+    await page.goto('/dev/drops?share');
+    const offer = page.getByRole('link', { name: 'Zum Angebot bei Booking.com (neuer Tab)' });
+    await expect(offer).toHaveAttribute(
+      'href',
+      /^\/go\/booking-com\/baur-au-lac-zuerich\?in=\d{4}-\d{2}-\d{2}&out=\d{4}-\d{2}-\d{2}&adults=2&lang=de$/,
+    );
+    await expect(offer).toHaveAttribute('target', '_blank');
+    await expect(offer).toHaveAttribute('rel', 'sponsored nofollow noopener');
+    await expect(page.getByText(/^Partnerlink: Bucht jemand darüber/)).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Mehr dazu' })).toHaveAttribute(
+      'href',
+      '/affiliate-hinweis',
+    );
+    // The hotel's own site needs its address: no button, the stay page stays the way on.
+    await page.goto('/dev/drops?share=hotel-adlon-kempinski-berlin');
+    await expect(page.getByRole('link', { name: /neuer Tab/ })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: 'Alle Anbieter und Preisverlauf' })).toBeVisible();
+  });
+
   test('"Als Story teilen" makes a 1080 × 1920 PNG (download where sharing files is unsupported)', async ({
     page,
   }) => {

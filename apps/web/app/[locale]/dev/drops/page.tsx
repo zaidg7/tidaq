@@ -78,6 +78,7 @@ export default async function DevDropsPage({
         drop={group.top}
         series={history(group.top.prevCents, group.top.nowCents, today)}
         others={all.filter((g) => g !== group)}
+        offer={group.top.provider.direct ? null : { partner: group.hotel.slug.startsWith('baur') }}
         locale={locale}
         today={today}
         now={new Date()}

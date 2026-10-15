@@ -3,6 +3,7 @@ import { cache } from 'react';
 import {
   addDays,
   findDrop,
+  hasOutboundSearch,
   parseDropKey,
   groupDrops,
   priceDropRowSchema,
@@ -14,7 +15,8 @@ import {
 import { getCatalog, type CatalogHotel } from './catalog';
 import { reportError } from '@/lib/errors';
 import { hotelPhoto, type PhotoSize } from '@/lib/hotelPhotos';
-import { hasSupabase, rpc } from './supabase';
+import { isAffiliate } from './stay';
+import { hasSupabase, rest, rpc } from './supabase';
 
 export type HotelDropsWithPhoto = HotelDrops & { image: PhotoSize | null };
 
@@ -93,6 +95,8 @@ export type DropPageLoad =
       series: DailyPrice[];
       /** Other hotels on today's radar, biggest drop first. */
       others: HotelDropsWithPhoto[];
+      /** The drop's site, when we can send visitors there (C-080g); `partner` = affiliate link. */
+      offer: { partner: boolean } | null;
     }
   /** Not (or no longer) on the radar: the price rose again, or the night has passed. */
   | { kind: 'over'; hotel: CatalogHotel; image: HotelDropsWithPhoto['image'] }
@@ -119,6 +123,17 @@ export const getDropPage = cache(
         : { kind: 'missing' };
     }
     let series: DailyPrice[] = [];
+    // The site's link (C-080g): only sites we can search; the hotel's own site needs its URL.
+    const offerSlug = found.drop.provider.slug;
+    const offerLoad = hasOutboundSearch(offerSlug)
+      ? rest(
+          `providers?select=affiliate_template&slug=eq.${encodeURIComponent(offerSlug)}`,
+          z.object({ affiliate_template: z.string().nullable() }),
+        ).catch((error: unknown) => {
+          reportError('drop offer unavailable', error);
+          return null;
+        })
+      : Promise.resolve(null);
     try {
       const rows = await rpc(
         'stay_history_from_nights',
@@ -135,9 +150,11 @@ export const getDropPage = cache(
       // The drop itself is known; the page shows it without the chart.
       reportError('drop history unavailable', error);
     }
+    const offerRow = (await offerLoad)?.[0];
     return {
       kind: 'ok',
       ...found,
+      offer: offerRow ? { partner: isAffiliate(offerRow.affiliate_template) } : null,
       series,
       others: load.drops.filter((g) => g.hotel.slug !== slug),
     };
