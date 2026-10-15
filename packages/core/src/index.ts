@@ -269,3 +269,4 @@ export {
   type PriceDrop,
   type PriceDropRow,
 } from './drops';
+export { NEWSLETTER, newsletterMail, type NewsletterDeal } from './newsletter';
