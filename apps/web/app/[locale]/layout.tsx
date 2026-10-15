@@ -8,7 +8,7 @@ import { Footer } from '@/components/shell/Footer';
 import { Navbar } from '@/components/shell/Navbar';
 import { WebAnalytics } from '@/components/shell/WebAnalytics';
 import { routing } from '@/i18n/routing';
-import { jakarta } from '@/lib/fonts';
+import { instrumentSans } from '@/lib/fonts';
 import { openGraphFor } from '@/lib/og';
 import '../globals.css';
 
@@ -40,7 +40,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   const { error } = await getMessages();
 
   return (
-    <html lang={locale} className={jakarta.variable}>
+    <html lang={locale} className={instrumentSans.variable}>
       <body className="flex min-h-dvh flex-col">
         <NextIntlClientProvider messages={{ error }}>
           <Navbar locale={locale} />

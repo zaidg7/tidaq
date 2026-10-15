@@ -1,11 +1,13 @@
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { Instrument_Sans } from 'next/font/google';
 
 /**
- * Plus Jakarta Sans as a variable font (one file, weights 200–800), self-hosted by next/font at
- * build time: no request to Google at runtime. Weights in use: 500, 600, 700, 800 (CRAFT.md §2).
+ * Instrument Sans (Clean Premium, PREMIUM.md §3.2): one variable family, weights 400–700, self-hosted
+ * by next/font at build time, so visitors never contact Google (D-15). Headings use 600–700; no
+ * thin or italic display type.
  */
-export const jakarta = Plus_Jakarta_Sans({
+export const instrumentSans = Instrument_Sans({
   subsets: ['latin', 'latin-ext'],
   display: 'swap',
-  variable: '--font-jakarta',
+  variable: '--font-instrument',
+  adjustFontFallback: true,
 });
