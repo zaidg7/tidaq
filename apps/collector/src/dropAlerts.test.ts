@@ -110,8 +110,8 @@ describe('runDropAlerts (C-080e2)', () => {
     expect(paris?.subject.replace(/[\u00a0\u202f]/g, ' ')).toBe(
       'Preissturz: −30 % im Hotel 1 und 1 weiterer',
     );
-    expect(paris?.text).toContain('https://tidaq.com/preissturz/hotel-1/2026-11-20');
-    expect(paris?.text).toContain('https://tidaq.com/preissturz?stadt=paris');
+    expect(paris?.text).toContain('https://tidaq.com/price-drops/hotel-1/2026-11-20');
+    expect(paris?.text).toContain('https://tidaq.com/price-drops?stadt=paris');
     expect(paris?.text).not.toContain('Hotel 4');
     expect(paris?.text).not.toContain('Hotel 2');
     expect(paris?.headers['List-Unsubscribe']).toContain('44444441-4444-4444-8444-444444444444');
@@ -119,7 +119,7 @@ describe('runDropAlerts (C-080e2)', () => {
     expect(all?.subject.replace(/[\u00a0\u202f]/g, ' ')).toBe(
       'Price drop: −30% at Hotel 1 and 2 more',
     );
-    expect(all?.text).toContain('https://tidaq.com/en/preissturz/hotel-2/2026-11-20');
+    expect(all?.text).toContain('https://tidaq.com/en/price-drops/hotel-2/2026-11-20');
 
     expect(mem.dropRecipients.map((r) => r.sentOn)).toEqual([TODAY, TODAY, TODAY, null]);
     // A second run the same day sends nothing new.
@@ -154,8 +154,8 @@ describe('runDropAlerts (C-080e2)', () => {
     // The radar button isn't filtered to a city without a city alarm.
     expect(only?.text).not.toContain('?stadt=');
     expect(both?.text).toContain('Neue Preisstürze in Paris und deinen Hotels');
-    expect(both?.text).toContain('https://tidaq.com/preissturz/hotel-2/2026-11-20');
-    expect(both?.text).toContain('https://tidaq.com/preissturz?stadt=paris');
+    expect(both?.text).toContain('https://tidaq.com/price-drops/hotel-2/2026-11-20');
+    expect(both?.text).toContain('https://tidaq.com/price-drops?stadt=paris');
     expect(mem.dropRecipients.map((r) => r.sentOn)).toEqual([TODAY, TODAY, null]);
   });
 

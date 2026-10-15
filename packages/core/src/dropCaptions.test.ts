@@ -39,7 +39,7 @@ describe('cityTag', () => {
 
   it('puts the city first', () => {
     expect(dropHashtags('Berlin')).toBe(
-      '#berlin #luxushotel #fünfsterne #hoteldeal #preissturz #reisen',
+      '#berlin #luxushotel #fünfsterne #hoteldeal #pricedrop #reisen',
     );
   });
 });
@@ -50,7 +50,7 @@ describe('dropCaption', () => {
     expect(g).toBeDefined();
     if (!g) return;
     const text = plain(dropCaption(g, g.top));
-    expect(text).toContain('Preissturz im Baur au Lac, Zürich');
+    expect(text).toContain('Price Drop im Baur au Lac, Zürich');
     expect(text).toContain(
       'Nacht vom Di, 27. Okt.: 684 € statt 989 € am Vortag (−31 %) bei Booking.com.',
     );
@@ -58,7 +58,7 @@ describe('dropCaption', () => {
     expect(text).toContain('Stand: 15. Okt., 08:12.');
     expect(text).toContain('prüf sie vor dem Buchen');
     expect(text).toContain(CAPTION.url);
-    expect(text.endsWith('#zürich #luxushotel #fünfsterne #hoteldeal #preissturz #reisen')).toBe(
+    expect(text.endsWith('#zürich #luxushotel #fünfsterne #hoteldeal #pricedrop #reisen')).toBe(
       true,
     );
   });
@@ -115,7 +115,7 @@ describe('topCaption', () => {
   it('numbers the hotels biggest first with the latest check time and every city tag', () => {
     const text = plain(topCaption(groups));
     expect(text.split('\n')[0]).toBe(
-      'Die 2 größten Preisstürze in Luxushotels seit gestern (Stand: 15. Okt., 09:40):',
+      'Die 2 größten Price Drops in Luxushotels seit gestern (Stand: 15. Okt., 09:40):',
     );
     expect(text).toContain(
       '1. Baur au Lac, Zürich: 684 € statt 989 € (−31 %), Nacht vom Di, 27. Okt.',
@@ -126,12 +126,12 @@ describe('topCaption', () => {
 
   it('the weekly version says "diese Woche"', () => {
     expect(plain(topCaption(groups, 'week')).split('\n')[0]).toBe(
-      'Die 2 größten Preisstürze in Luxushotels diese Woche (Stand: 15. Okt., 09:40):',
+      'Die 2 größten Price Drops in Luxushotels diese Woche (Stand: 15. Okt., 09:40):',
     );
   });
 
   it('handles one hotel and none', () => {
-    expect(topCaption(groups.slice(0, 1))).toMatch(/^Der größte Preissturz in Luxushotels/);
+    expect(topCaption(groups.slice(0, 1))).toMatch(/^Der größte Price Drop in Luxushotels/);
     expect(topCaption([])).toBe('');
   });
 });

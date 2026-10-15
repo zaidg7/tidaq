@@ -20,22 +20,22 @@ test.describe('creator kit (C-080c, sample data on /dev/admin/drops)', () => {
   test('every drop has a caption and a story image', async ({ page }) => {
     await page.goto('/dev/admin/drops');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Preisstürze für Social Media',
+      'Price Drops für Social Media',
     );
     const items = page
       .getByRole('main')
-      .getByRole('list', { name: 'Preisstürze' })
+      .getByRole('list', { name: 'Price Drops' })
       .getByRole('listitem');
     await expect(items).toHaveCount(5);
     const first = items.first();
     await expect(first.getByRole('heading')).toHaveText('1. Baur au Lac');
     const caption = plain(await first.getByLabel('Text für Baur au Lac').inputValue());
-    expect(caption).toContain('Preissturz im Baur au Lac, Zürich');
+    expect(caption).toContain('Price Drop im Baur au Lac, Zürich');
     expect(caption).toMatch(/: 3\.420 € statt 4\.945 € am Vortag \(−31 %\) bei Booking\.com\./);
     expect(caption).toContain('#zürich');
     await expect(first.getByRole('link', { name: 'Seite öffnen' })).toHaveAttribute(
       'href',
-      /^\/preissturz\/baur-au-lac-zuerich\/\d{4}-\d{2}-\d{2}--\d{4}-\d{2}-\d{2}$/,
+      /^\/price-drops\/baur-au-lac-zuerich\/\d{4}-\d{2}-\d{2}--\d{4}-\d{2}-\d{2}$/,
     );
 
     const download = page.waitForEvent('download');
@@ -52,7 +52,7 @@ test.describe('creator kit (C-080c, sample data on /dev/admin/drops)', () => {
     await page.goto('/dev/admin/drops');
     const caption = plain(await page.getByLabel('Text für die Top 5').inputValue());
     expect(caption.split('\n')[0]).toMatch(
-      /^Die 5 größten Preisstürze in Luxushotels seit gestern/,
+      /^Die 5 größten Price Drops in Luxushotels seit gestern/,
     );
     expect(caption).toContain('1. Baur au Lac, Zürich: 3.420 € statt 4.945 € (−31 %)');
 
@@ -72,7 +72,7 @@ test.describe('creator kit (C-080c, sample data on /dev/admin/drops)', () => {
     await page.goto('/dev/admin/drops');
     const first = page
       .getByRole('main')
-      .getByRole('list', { name: 'Preisstürze' })
+      .getByRole('list', { name: 'Price Drops' })
       .getByRole('listitem')
       .first();
     await first.getByRole('button', { name: 'Text kopieren' }).click();
@@ -93,6 +93,6 @@ test.describe('creator kit (C-080c, sample data on /dev/admin/drops)', () => {
     ).toHaveAttribute('aria-current', 'page');
     await expect(page.getByRole('heading', { name: 'Top 5 der Woche' })).toBeVisible();
     const caption = plain(await page.getByLabel('Text für die Top 5').inputValue());
-    expect(caption.split('\n')[0]).toMatch(/^Die 5 größten Preisstürze in Luxushotels diese Woche/);
+    expect(caption.split('\n')[0]).toMatch(/^Die 5 größten Price Drops in Luxushotels diese Woche/);
   });
 });

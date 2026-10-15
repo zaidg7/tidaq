@@ -117,7 +117,7 @@ export type DropPageLoad =
   | { kind: 'unavailable' };
 
 /**
- * A shareable drop page (C-080b, `/preissturz/[hotel]/[night]`): the drop from today's radar plus
+ * A shareable drop page (C-080b, `/price-drops/[hotel]/[night]`): the drop from today's radar plus
  * the night's price history from the night grid. Links shared yesterday keep working: once the
  * drop is gone the page says so and points to the current price.
  */

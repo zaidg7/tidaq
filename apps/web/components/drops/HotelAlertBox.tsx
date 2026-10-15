@@ -8,7 +8,7 @@ import { dropAlertLabels } from './DropAlertSection';
 /**
  * "Price Alert für dieses Hotel" (mockup B drop page): a soft violet box with one line on what it
  * does, the address and a dark button. On the drop and hotel pages; carries the
- * `#preissturz-alarm` anchor there.
+ * `#price-alert` anchor there.
  */
 export async function HotelAlertBox({
   locale,

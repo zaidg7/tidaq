@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('Preissturz-Alarm (C-080e1)', () => {
+test.describe('Price Alert (C-080e1)', () => {
   test('radar: the alert band, city choice, consent never pre-ticked, failure keeps the input', async ({
     page,
   }) => {
     // The navbar's Price Alert lands on the band.
-    await page.goto('/dev/drops?stadt=berlin#preissturz-alarm');
+    await page.goto('/dev/drops?stadt=berlin#price-alert');
     const section = page.getByRole('region', { name: 'Verpass keinen Price Drop.' });
     await expect(section).toBeInViewport();
 
@@ -42,7 +42,7 @@ test.describe('Preissturz-Alarm (C-080e1)', () => {
 
     // The gone-drop page keeps the full form: this hotel first, a whole city one tap away.
     await page.goto('/dev/drops?over');
-    const scope = page.getByRole('region', { name: 'Preissturz-Alarm' }).getByLabel('Alarm für');
+    const scope = page.getByRole('region', { name: 'Price Alert' }).getByLabel('Alarm für');
     await expect(scope).toHaveValue('hotel:hotel-adlon-kempinski-berlin');
     await expect(scope.locator('option').first()).toHaveText('Nur Hotel Adlon Kempinski');
     await expect(scope.locator('option').nth(1)).toHaveText('Alle Städte');
@@ -62,20 +62,20 @@ test.describe('Preissturz-Alarm (C-080e1)', () => {
     await expect(onHotel.locator('input[name="city"]')).toHaveValue(/^hotel:/);
   });
 
-  test('manage page: stop only the Preissturz-Alarm', async ({ page }) => {
+  test('manage page: stop only the Price Alert', async ({ page }) => {
     await page.goto('/dev/watch');
-    const drops = page.getByRole('region', { name: 'Preissturz-Alarm' });
+    const drops = page.getByRole('region', { name: 'Price Alert' });
     await expect(drops).toContainText(
-      'Du bekommst neue Preisstürze in Paris, höchstens einmal am Tag.',
+      'Du bekommst neue Price Drops in Paris, höchstens einmal am Tag.',
     );
-    await expect(drops.getByRole('button', { name: 'Preissturz-Alarm beenden' })).toBeVisible();
+    await expect(drops.getByRole('button', { name: 'Price Alert beenden' })).toBeVisible();
     // Followed hotels (C-080k1), each with its own stop button.
-    const hotels = drops.getByRole('list', { name: 'Hotels mit Preissturz-Alarm' });
+    const hotels = drops.getByRole('list', { name: 'Hotels mit Price Alert' });
     await expect(hotels).toContainText(
       'Du bekommst eine E-Mail, wenn Hotel Adlon Kempinski über Nacht deutlich günstiger wird.',
     );
     await expect(
-      hotels.getByRole('button', { name: 'Preissturz-Alarm für Hotel Adlon Kempinski beenden' }),
+      hotels.getByRole('button', { name: 'Price Alert für Hotel Adlon Kempinski beenden' }),
     ).toBeVisible();
   });
 

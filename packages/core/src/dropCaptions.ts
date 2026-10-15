@@ -8,9 +8,9 @@ import { formatPrice, updatedAtParts } from './format';
  */
 
 export const CAPTION = {
-  url: 'tidaq.com/preissturz',
+  url: 'tidaq.com/price-drops',
   /** Always added; the city tag comes first. */
-  tags: ['luxushotel', 'fünfsterne', 'hoteldeal', 'preissturz', 'reisen'],
+  tags: ['luxushotel', 'fünfsterne', 'hoteldeal', 'pricedrop', 'reisen'],
   topSize: 5,
 } as const;
 
@@ -47,11 +47,11 @@ export function dropCaption(g: HotelDrops, d: PriceDrop): string {
       : 'Niedrigster Preis, seit wir messen.';
   const usual = usualCents(d);
   return [
-    `Preissturz im ${g.hotel.name}, ${g.city.name.de} 📉`,
+    `Price Drop im ${g.hotel.name}, ${g.city.name.de} 📉`,
     `${when(d)}: ${formatPrice(d.nowCents, 'de')} statt ${formatPrice(d.prevCents, 'de')} am Vortag (${formatDrop(d.drop, 'de')}) ${site(d)}.`,
     usual !== null ? `Sonst um ${formatPrice(usual, 'de')}. ${low}` : low,
     `Stand: ${seenText(d.seenAt)}. Preise ändern sich oft, prüf sie vor dem Buchen.`,
-    `Alle Preisstürze mit Preisverlauf: ${CAPTION.url}`,
+    `Alle Price Drops mit Preisverlauf: ${CAPTION.url}`,
     '',
     dropHashtags(g.city.name.de),
   ].join('\n');
@@ -72,7 +72,7 @@ export function topCaption(groups: readonly HotelDrops[], period: 'day' | 'week'
   );
   const cities = [...new Set(top.map((g) => cityTag(g.city.name.de)))];
   return [
-    `${top.length === 1 ? 'Der größte Preissturz' : `Die ${top.length} größten Preisstürze`} in Luxushotels ${period === 'week' ? 'diese Woche' : 'seit gestern'} (Stand: ${seenText(seen)}):`,
+    `${top.length === 1 ? 'Der größte Price Drop' : `Die ${top.length} größten Price Drops`} in Luxushotels ${period === 'week' ? 'diese Woche' : 'seit gestern'} (Stand: ${seenText(seen)}):`,
     ...lines,
     '',
     `Preise ändern sich oft, prüf sie vor dem Buchen. Alle mit Preisverlauf: ${CAPTION.url}`,

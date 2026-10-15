@@ -8,7 +8,7 @@ test.describe('"Aus unseren Videos" on the bio-link landing (C-080j)', () => {
     const section = page.getByRole('region', { name: 'Aus unseren Videos' });
     await expect(section).toBeVisible();
     const links = section
-      .getByRole('list', { name: 'Preisstürze aus unseren Videos' })
+      .getByRole('list', { name: 'Price Drops aus unseren Videos' })
       .getByRole('link');
     await expect(links).toHaveCount(3);
 
@@ -29,7 +29,7 @@ test.describe('"Aus unseren Videos" on the bio-link landing (C-080j)', () => {
     expect(claridges).toContain('Preis von heute ansehen');
     await expect(links.nth(2)).toHaveAttribute(
       'href',
-      /^\/preissturz\/claridges-london\/\d{4}-\d{2}-\d{2}--\d{4}-\d{2}-\d{2}$/,
+      /^\/price-drops\/claridges-london\/\d{4}-\d{2}-\d{2}--\d{4}-\d{2}-\d{2}$/,
     );
   });
 
@@ -45,7 +45,7 @@ test.describe('"Aus unseren Videos" on the bio-link landing (C-080j)', () => {
 
   test('the creator kit has "Gepostet auf" toggles per drop', async ({ page }) => {
     await page.goto('/dev/admin/drops');
-    const kit = page.getByRole('list', { name: 'Preisstürze' });
+    const kit = page.getByRole('list', { name: 'Price Drops' });
     const tiktok = kit.getByRole('button', { name: 'Baur au Lac auf TikTok gepostet' });
     await expect(tiktok).toHaveAttribute('aria-pressed', 'false');
     await expect(kit.getByRole('button', { name: /auf Instagram gepostet$/ })).toHaveCount(5);

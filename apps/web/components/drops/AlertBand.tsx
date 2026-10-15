@@ -21,7 +21,7 @@ const STACK = [
  * sign-up as one white line (fields stacked on phones), and on the right what an alert looks like,
  * made from real drops (time = when we saw them). The same band on every page that offers the
  * alert; `city` preselects the city (city pages, a filtered radar). Without previews the form
- * stands alone. It carries the `#preissturz-alarm` anchor the navbar's Price Alert links to.
+ * stands alone. It carries the `#price-alert` anchor the navbar's Price Alert links to.
  */
 export async function AlertBand({
   locale,

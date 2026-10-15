@@ -49,11 +49,11 @@ const TEXT = {
   de: {
     subject: (pct: string, hotel: string, more: number) =>
       more === 0
-        ? `Preissturz: ${pct} im ${hotel}`
-        : `Preissturz: ${pct} im ${hotel} und ${more} ${more === 1 ? 'weiterer' : 'weitere'}`,
-    preheader: (where: string) => `Neue Preisstürze in Fünf-Sterne-Hotels ${where}, Stand heute.`,
-    heading: (where: string) => `Neue Preisstürze ${where}`,
-    eyebrow: 'Preissturz-Alarm',
+        ? `Price Drop: ${pct} im ${hotel}`
+        : `Price Drop: ${pct} im ${hotel} und ${more} ${more === 1 ? 'weiterer' : 'weitere'}`,
+    preheader: (where: string) => `Neue Price Drops in Fünf-Sterne-Hotels ${where}, Stand heute.`,
+    heading: (where: string) => `Neue Price Drops ${where}`,
+    eyebrow: 'Price Alert',
     all: 'in allen Städten',
     in: (city: string) => `in ${city}`,
     hotels: 'in deinen Hotels',
@@ -66,9 +66,9 @@ const TEXT = {
     usual: (u: string) => `, sonst um ${u}`,
     stay: (n: number) => (n === 2 ? ' (Wochenende, 2 Nächte)' : ` (${n} Nächte)`),
     more: (n: number) => ` · ${n === 1 ? '1 weitere Nacht' : `${n} weitere Nächte`} günstiger`,
-    button: 'Alle Preisstürze ansehen',
+    button: 'Alle Price Drops ansehen',
     hint: 'Preise ändern sich oft mehrmals am Tag. Prüf den Preis auf der Buchungsseite, bevor du buchst.',
-    why: 'Du bekommst diese E-Mail, weil du auf tidaq.com den Preissturz-Alarm bestellt hast. Höchstens eine am Tag.',
+    why: 'Du bekommst diese E-Mail, weil du auf tidaq.com den Price Alert bestellt hast. Höchstens eine am Tag.',
     manage: (u: string) => `Abbestellen oder Alarme ändern: ${u}`,
   },
   en: {

@@ -27,7 +27,7 @@ const PAGES = [
   '/dev/hotel/calendar?drop',
   '/dev/stay/tracked?drop',
   '/en/dev/drops',
-  '/preissturz',
+  '/price-drops',
   '/dev/provider?p=booking-com',
   '/dev/provider?p=method',
   '/dev/watch',

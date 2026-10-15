@@ -15,9 +15,9 @@ export function KitHeader({
       <Link href="/admin" className="text-meta font-semibold text-accent">
         ← Übersicht
       </Link>
-      <h1 className="text-h2">Preisstürze für Social Media</h1>
+      <h1 className="text-h2">Price Drops für Social Media</h1>
       <p className="text-muted-ink">
-        Die größten Preisstürze von heute als Story-Bild mit fertigem Text. Auf dem Handy öffnet
+        Die größten Price Drops von heute als Story-Bild mit fertigem Text. Auf dem Handy öffnet
         „Story-Bild“ direkt das Teilen-Menü (Instagram, TikTok), am Computer wird das Bild
         gespeichert. Alle Zahlen sind echte Abfragen mit Datum: nichts dazuschreiben, was nicht
         stimmt, und keine „nur heute“-Sprüche.

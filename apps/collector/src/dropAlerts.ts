@@ -94,7 +94,7 @@ export async function runDropAlerts(opts: {
       dropUrl: (slug, stay) => SITE_ORIGIN + localizedPath(dropPath(slug, stay), r.locale),
       radarUrl:
         SITE_ORIGIN +
-        localizedPath('/preissturz', r.locale) +
+        localizedPath('/price-drops', r.locale) +
         (r.cityAlarm && r.city ? `?stadt=${encodeURIComponent(r.city)}` : ''),
       manageUrl: SITE_ORIGIN + localizedPath(`/alarm/verwalten/${r.manageToken}`, r.locale),
     });

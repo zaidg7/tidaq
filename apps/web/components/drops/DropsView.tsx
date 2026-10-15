@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { CalendarRange, Check, TrendingDown } from 'lucide-react';
+import { CalendarRange, Check, TrendingDown, X } from 'lucide-react';
 import {
   DROP_SORTS,
   DROPS,
+  dropMonth,
   dropMonths,
   dropStats,
   heroDrop,
@@ -17,16 +18,16 @@ import {
   type Locale,
 } from '@tidaq/core';
 import { buttonClasses } from '@/components/ui/Button';
-import { ChipLink } from '@/components/ui/Chip';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
 import type { HotelDropsWithPhoto, RadarStats } from '@/lib/data/drops';
 import { routes } from '@/lib/routes';
 import { dropTextClass } from './DropBadge';
 import { DropCard } from './DropCard';
+import { DropFilterSheet } from './DropFilterSheet';
 import { DropHero } from './DropHero';
 
-/** Social bio links that land on the radar (`/tiktok` → `/preissturz?ref=tiktok`, C-080d). */
+/** Social bio links that land on the radar (`/tiktok` → `/price-drops?ref=tiktok`, C-080d). */
 export const DROP_SOURCES = ['tiktok', 'instagram'] as const;
 export type DropSource = (typeof DROP_SOURCES)[number];
 const SOURCE_NAME: Record<DropSource, string> = { tiktok: 'TikTok', instagram: 'Instagram' };
@@ -61,7 +62,7 @@ export function applyDropFilters(
 }
 
 /**
- * `/preissturz` (C-080a), the Preissturz-Radar: every hotel whose price for a 5- or 7-night trip
+ * `/price-drops` (C-080a), the Preissturz-Radar: every hotel whose price for a 5- or 7-night trip
  * fell sharply since the day before to a new low (C-125), biggest drop first. City, start month,
  * trip length and sort are URL parameters (`?stadt=paris&monat=2026-12&dauer=7&sort=eur`), so
  * every view can be shared as a link.
@@ -115,6 +116,24 @@ export function DropsView({
   );
   const months = dropMonths(all);
   const filtered = filters.city !== null || filters.month !== null || filters.nights !== null;
+  // The chosen filters as removable tags next to the Filter button.
+  type Tag = { key: string; label: string; clear: Partial<DropFilters> };
+  const tags: Tag[] = [];
+  if (filters.city) {
+    const name = cities.find(([slug]) => slug === filters.city)?.[1] ?? filters.city;
+    tags.push({ key: 'city', label: name, clear: { city: null } });
+  }
+  if (filters.month) {
+    const label = formatMonth(filters.month, locale, today);
+    tags.push({ key: 'month', label, clear: { month: null } });
+  }
+  if (filters.nights) {
+    const label = t('nightsChip', { n: filters.nights });
+    tags.push({ key: 'nights', label, clear: { nights: null } });
+  }
+  if (filters.sort !== 'pct') {
+    tags.push({ key: 'sort', label: t(`sort.${filters.sort}`), clear: { sort: 'pct' } });
+  }
   const seen = seenAt ? updatedAtParts(seenAt, now, locale) : null;
   // The biggest drop with real history gets the hero spot on the unfiltered default view and
   // leaves the grid (C-080d2).
@@ -227,75 +246,66 @@ export function DropsView({
         )}
 
         {stats.hotels > 0 && (
-          <div className="mt-8 flex flex-col gap-3 md:mt-12">
-            {cities.length > 1 && (
-              <nav aria-label={t('filterCity')} className="-mx-[18px] md:mx-0">
-                <ul className="snap-row flex gap-2 overflow-x-auto px-[18px] pb-1 md:flex-wrap md:overflow-visible md:px-0">
-                  <li className="shrink-0">
-                    <ChipLink href={href({ city: null })} selected={!filters.city}>
-                      {t('allCities')}
-                    </ChipLink>
-                  </li>
-                  {cities.map(([slug, name]) => (
-                    <li key={slug} className="shrink-0">
-                      <ChipLink href={href({ city: slug })} selected={filters.city === slug}>
-                        {name}
-                      </ChipLink>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            )}
-            {months.length > 1 && (
-              <nav aria-label={t('filterMonth')} className="-mx-[18px] md:mx-0">
-                <ul className="snap-row flex gap-2 overflow-x-auto px-[18px] pb-1 md:flex-wrap md:overflow-visible md:px-0">
-                  <li className="shrink-0">
-                    <ChipLink href={href({ month: null })} selected={!filters.month}>
-                      {t('monthAll')}
-                    </ChipLink>
-                  </li>
-                  {months.map((m) => (
-                    <li key={m} className="shrink-0">
-                      <ChipLink href={href({ month: m })} selected={filters.month === m}>
-                        {formatMonth(m, locale, today)}
-                      </ChipLink>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            )}
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <nav aria-label={t('filterNights')} className="-mx-[18px] md:mx-0">
-                <ul className="snap-row flex gap-2 overflow-x-auto px-[18px] pb-1 md:px-0">
-                  <li className="shrink-0">
-                    <ChipLink href={href({ nights: null })} selected={!filters.nights}>
-                      {t('nightsAll')}
-                    </ChipLink>
-                  </li>
-                  {DROPS.tripLengths.map((n) => (
-                    <li key={n} className="shrink-0">
-                      <ChipLink href={href({ nights: n })} selected={filters.nights === n}>
-                        {t('nightsChip', { n })}
-                      </ChipLink>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-              <nav aria-label={t('sortLabel')} className="-mx-[18px] md:mx-0">
-                <ul className="snap-row flex items-center gap-2 overflow-x-auto px-[18px] pb-1 md:px-0">
-                  <li aria-hidden="true" className="shrink-0 pr-1 text-[14px] text-muted">
-                    {t('sortLabel')}:
-                  </li>
-                  {DROP_SORTS.map((s) => (
-                    <li key={s} className="shrink-0">
-                      <ChipLink href={href({ sort: s })} selected={filters.sort === s}>
-                        {t(`sort.${s}`)}
-                      </ChipLink>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </div>
+          // One decision at a time (Zaid, C-125): a single Filter button holds city, month,
+          // length and sort; what's chosen shows as small tags you can remove with one tap.
+          <div
+            role="group"
+            aria-label={t('filterGroup')}
+            className="mt-8 flex flex-wrap items-center gap-2 md:mt-12"
+          >
+            <DropFilterSheet
+              base={base}
+              current={{
+                city: filters.city ?? '',
+                month: filters.month ?? '',
+                nights: filters.nights ? String(filters.nights) : '',
+                sort: filters.sort,
+              }}
+              facets={all.map((g) => ({
+                city: g.city.slug,
+                trips: [g.top, ...g.more].map((d) => [dropMonth(d.night), d.nights] as const),
+              }))}
+              cities={cities.map(([value, label]) => ({ value, label }))}
+              months={months.map((m) => ({ value: m, label: formatMonth(m, locale, today) }))}
+              nights={[
+                { value: '', label: t('nightsAll') },
+                ...DROPS.tripLengths.map((n) => ({
+                  value: String(n),
+                  label: t('nightsChip', { n }),
+                })),
+              ]}
+              sorts={DROP_SORTS.map((s) => ({ value: s, label: t(`sort.${s}`) }))}
+              labels={{
+                button: t('filterButton'),
+                title: t('filterTitle'),
+                close: t('filterClose'),
+                city: t('filterCity'),
+                cityAll: t('allCities'),
+                month: t('filterMonth'),
+                monthAll: t('monthAll'),
+                nights: t('filterNights'),
+                sort: t('sortLabel'),
+                reset: t('filterReset'),
+                showOne: t('filterShowOne'),
+                // Raw: the sheet fills in the live count itself.
+                showMany: t.raw('filterShowMany') as string,
+                showNone: t('filterShowNone'),
+              }}
+            />
+            {tags.map((tag) => (
+              <a
+                key={tag.key}
+                href={href(tag.clear)}
+                aria-label={t('filterRemove', { name: tag.label })}
+                className="inline-flex h-11 items-center gap-1.5 rounded-full bg-surface-2 pr-3 pl-4 text-[14px] font-semibold text-ink transition-colors hover:bg-line"
+              >
+                {tag.label}
+                <Icon icon={X} size={16} className="text-muted" />
+              </a>
+            ))}
+            <p className="ml-auto text-[14px] text-muted" aria-live="polite">
+              {t('resultCount', { n: shown.length })}
+            </p>
           </div>
         )}
 

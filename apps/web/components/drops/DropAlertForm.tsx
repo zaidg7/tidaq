@@ -2,7 +2,7 @@
 
 import { useActionState, useId } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { dropAlertAction, type DropAlertFormState } from '@/app/[locale]/preissturz/alertAction';
+import { dropAlertAction, type DropAlertFormState } from '@/app/[locale]/price-drops/alertAction';
 import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/Field';
 import { Icon } from '@/components/ui/Icon';

@@ -291,9 +291,9 @@ export function parseDropKey(key: string): { night: string; checkOut: string } |
   return n >= 1 && n <= DROPS.maxNights ? { night, checkOut } : null;
 }
 
-/** The shareable page of one drop, without locale prefix: `/preissturz/adlon/2026-10-18` (C-080b). */
+/** The shareable page of one drop, without locale prefix: `/price-drops/adlon/2026-10-18` (C-080b). */
 export function dropPath(slug: string, d: { night: string; checkOut: string }): string {
-  return `/preissturz/${slug}/${dropKey(d)}`;
+  return `/price-drops/${slug}/${dropKey(d)}`;
 }
 
 /** "Di, 27. Okt." or, for a longer stay, "Di, 3. Nov. – So, 8. Nov." (C-080f, C-125). */

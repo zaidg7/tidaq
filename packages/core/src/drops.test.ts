@@ -213,8 +213,10 @@ describe('dropPath, dropKey and findDrop (C-080b/f)', () => {
   const trip = { night: '2026-11-03', checkOut: '2026-11-10' };
 
   it('builds the share path for a night and a weekend', () => {
-    expect(dropPath('hotel-adlon', night)).toBe('/preissturz/hotel-adlon/2026-10-18');
-    expect(dropPath('hotel-adlon', weekend)).toBe('/preissturz/hotel-adlon/2026-10-23--2026-10-25');
+    expect(dropPath('hotel-adlon', night)).toBe('/price-drops/hotel-adlon/2026-10-18');
+    expect(dropPath('hotel-adlon', weekend)).toBe(
+      '/price-drops/hotel-adlon/2026-10-23--2026-10-25',
+    );
   });
 
   it('reads keys back and rejects anything else', () => {

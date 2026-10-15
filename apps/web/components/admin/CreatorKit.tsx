@@ -29,7 +29,7 @@ export interface KitItem {
   thumb: string | null;
   story: StoryText;
   caption: string;
-  /** The drop page, e.g. `/preissturz/baur-au-lac-zuerich/2026-10-27`. */
+  /** The drop page, e.g. `/price-drops/baur-au-lac-zuerich/2026-10-27`. */
   path: string;
   fileName: string;
   /** For "Gepostet auf" (C-080j). */
@@ -75,7 +75,7 @@ export function CreatorKit({
     setBusy(key);
     try {
       const files = await make();
-      const done = await shareOrDownload(files, { title: 'Tidaq Preissturz', text });
+      const done = await shareOrDownload(files, { title: 'Tidaq Price Drop', text });
       if (done === 'downloaded') {
         setToast(files.length > 1 ? `${files.length} Bilder gespeichert` : 'Bild gespeichert');
       }
@@ -144,7 +144,7 @@ export function CreatorKit({
         </Card>
       )}
 
-      <ol aria-label="Preisstürze" className="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
+      <ol aria-label="Price Drops" className="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
         {items.map((item, i) => (
           <li key={item.key}>
             <Card className="flex h-full flex-col gap-4">

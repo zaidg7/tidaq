@@ -27,7 +27,7 @@ import { dropsHref } from './DropsTeaser';
 export const WEEK_TOP = 10;
 
 /**
- * `/preissturz/woche` (C-080h): the week's drops at a glance. Headline numbers, the top 10 (each
+ * `/price-drops/woche` (C-080h): the week's drops at a glance. Headline numbers, the top 10 (each
  * hotel's biggest drop of the week, with the day we saw it and a link to the stay's price
  * history, since the price may have moved since), the cities where prices fell most, and the
  * Preissturz-Alarm. A page that is full even on a quiet day, and the weekly social format.

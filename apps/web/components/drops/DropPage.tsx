@@ -115,7 +115,7 @@ function meterFacts(series: readonly DailyPrice[], d: PriceDrop, today: string) 
 }
 
 /**
- * `/preissturz/[hotel]/[night]` (C-080b, mockup B drop page; a 5- or 7-night trip, C-125): the
+ * `/price-drops/[hotel]/[night]` (C-080b, mockup B drop page; a 5- or 7-night trip, C-125): the
  * hotel's photo, a sheet sliding over it with the hotel, the stay as chips and the drop card
  * (huge "−54 %", both prices, the new low), the way to the site, then how the price moved, where
  * today sits (meter and one sentence), the hotel's other drops, a Price Alert for this hotel and

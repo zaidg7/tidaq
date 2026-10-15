@@ -26,7 +26,7 @@ export interface StoryText {
   low: string;
   /** "Stand 15. Okt., 08:12 · 1 Nacht, 2 Erwachsene" */
   asOf: string;
-  /** "tidaq.com/preissturz" */
+  /** "tidaq.com/price-drops" */
   url: string;
 }
 

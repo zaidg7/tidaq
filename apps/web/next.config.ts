@@ -44,12 +44,24 @@ export const securityHeaders = [
 const nextConfig: NextConfig = {
   transpilePackages: ['@tidaq/core'],
   poweredByHeader: false,
-  // Short links for social bios (C-080d): land on the radar with a welcome for that platform.
   async redirects() {
-    return ['tiktok', 'instagram'].flatMap((ref) => [
-      { source: `/${ref}`, destination: `/preissturz?ref=${ref}`, permanent: false },
-      { source: `/en/${ref}`, destination: `/en/preissturz?ref=${ref}`, permanent: false },
-    ]);
+    return [
+      // Short links for social bios (C-080d): land on the radar with a welcome for that platform.
+      ...['tiktok', 'instagram'].flatMap((ref) => [
+        { source: `/${ref}`, destination: `/price-drops?ref=${ref}`, permanent: false },
+        { source: `/en/${ref}`, destination: `/en/price-drops?ref=${ref}`, permanent: false },
+      ]),
+      // The radar moved from /preissturz to /price-drops (C-125, Zaid: no "Sturz"); links that
+      // were already shared (videos, emails, story images) keep working.
+      ...['', '/en'].flatMap((prefix) => [
+        { source: `${prefix}/preissturz`, destination: `${prefix}/price-drops`, permanent: true },
+        {
+          source: `${prefix}/preissturz/:path*`,
+          destination: `${prefix}/price-drops/:path*`,
+          permanent: true,
+        },
+      ]),
+    ];
   },
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];

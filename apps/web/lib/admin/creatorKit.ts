@@ -60,7 +60,7 @@ export async function creatorKit(
   const firstDrop = list[0]?.top;
   if (!first || !firstDrop) return { items, top: null };
   const cover: CoverText = {
-    eyebrow: period === 'week' ? 'Preisstürze der Woche' : 'Preisstürze seit gestern',
+    eyebrow: period === 'week' ? 'Price Drops der Woche' : 'Price Drops seit gestern',
     title: `Top ${Math.min(5, items.length)} in Luxushotels`,
     rows: items.slice(0, 5).map((i) => ({ pct: i.pct, hotel: i.hotel, place: i.place })),
     asOf: first.story.asOf,

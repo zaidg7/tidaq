@@ -106,36 +106,36 @@ describe('dropAlertMail', () => {
       groups: g,
       cityName,
       ...(hotels && { hotels }),
-      dropUrl: (s, d) => `https://tidaq.com/preissturz/${s}/${dropKey(d)}`,
-      radarUrl: 'https://tidaq.com/preissturz',
+      dropUrl: (s, d) => `https://tidaq.com/price-drops/${s}/${dropKey(d)}`,
+      radarUrl: 'https://tidaq.com/price-drops',
       manageUrl: 'https://tidaq.com/alarm/verwalten/abc',
     });
 
   it('names the biggest drop in the subject and lists every hotel with both prices', () => {
     const { subject, content } = mail('de', null);
-    expect(plain(subject)).toBe('Preissturz: −31 % im Baur au Lac und 1 weiterer');
-    expect(content.heading).toBe('Neue Preisstürze in allen Städten');
+    expect(plain(subject)).toBe('Price Drop: −31 % im Baur au Lac und 1 weiterer');
+    expect(content.heading).toBe('Neue Price Drops in allen Städten');
     const [first, second] = content.items ?? [];
     expect(first?.title).toBe('Baur au Lac');
     expect(plain(first?.badge ?? '')).toBe('−31 %');
-    expect(content.eyebrow).toBe('Preissturz-Alarm');
+    expect(content.eyebrow).toBe('Price Alert');
     expect(plain(first?.meta ?? '')).toBe(
       'Zürich · Di, 27. Okt. · 684 € statt 989 € am Vortag, sonst um 1.029 € · 1 weitere Nacht günstiger',
     );
-    expect(first?.url).toBe('https://tidaq.com/preissturz/baur-au-lac-zuerich/2026-10-27');
+    expect(first?.url).toBe('https://tidaq.com/price-drops/baur-au-lac-zuerich/2026-10-27');
     // One earlier check only: no "usual" price.
     expect(plain(second?.meta ?? '')).not.toContain('sonst um');
-    expect(content.button.url).toBe('https://tidaq.com/preissturz');
+    expect(content.button.url).toBe('https://tidaq.com/price-drops');
     expect(content.footer.join(' ')).toContain('Höchstens eine am Tag.');
     expect(content.footer.join(' ')).toContain('https://tidaq.com/alarm/verwalten/abc');
   });
 
   it('city wording, a single hotel and English', () => {
     expect(mail('de', 'Zürich', groups.slice(0, 1)).content.heading).toBe(
-      'Neue Preisstürze in Zürich',
+      'Neue Price Drops in Zürich',
     );
     expect(plain(mail('de', 'Zürich', groups.slice(0, 1)).subject)).toBe(
-      'Preissturz: −31 % im Baur au Lac',
+      'Price Drop: −31 % im Baur au Lac',
     );
     const en = mail('en', 'Zurich');
     expect(plain(en.subject)).toBe('Price drop: −31% at Baur au Lac and 1 more');
@@ -144,15 +144,15 @@ describe('dropAlertMail', () => {
 
   it('followed hotels in the heading (C-080k)', () => {
     expect(mail('de', null, groups, 'only').content.heading).toBe(
-      'Neue Preisstürze in deinen Hotels',
+      'Neue Price Drops in deinen Hotels',
     );
     expect(mail('de', 'Paris', groups, 'also').content.heading).toBe(
-      'Neue Preisstürze in Paris und deinen Hotels',
+      'Neue Price Drops in Paris und deinen Hotels',
     );
     expect(mail('en', null, groups, 'only').content.heading).toBe('New price drops at your hotels');
     // All cities already include every hotel.
     expect(mail('de', null, groups, 'also').content.heading).toBe(
-      'Neue Preisstürze in allen Städten',
+      'Neue Price Drops in allen Städten',
     );
   });
 
@@ -168,7 +168,7 @@ describe('dropAlertMail', () => {
     const item = mail('de', null, [w]).content.items?.[0];
     expect(plain(item?.meta ?? '')).toContain('Fr, 23. Okt. – So, 25. Okt. (Wochenende, 2 Nächte)');
     expect(item?.url).toBe(
-      'https://tidaq.com/preissturz/baur-au-lac-zuerich/2026-10-23--2026-10-25',
+      'https://tidaq.com/price-drops/baur-au-lac-zuerich/2026-10-23--2026-10-25',
     );
   });
 

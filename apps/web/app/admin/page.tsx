@@ -27,7 +27,7 @@ export default async function AdminHome({ searchParams }: Props) {
           href="/admin/preisstuerze"
           className={buttonClasses({ variant: 'ghost', size: 'sm' })}
         >
-          Preisstürze für Social Media
+          Price Drops für Social Media
         </Link>
         <Link href="/admin/audit" className={buttonClasses({ variant: 'primary', size: 'sm' })}>
           Kassen-Check eintragen
