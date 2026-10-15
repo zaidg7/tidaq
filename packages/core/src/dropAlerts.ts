@@ -4,6 +4,8 @@ import type { MailContent } from './mailTemplate';
 
 /** Preissturz-Alarm emails (C-080e2). */
 export const DROP_ALERTS = {
+  /** Drops seen within this many hours before the send are new. */
+  windowHours: 24,
   /** Hotels per email, biggest drop first. */
   maxHotels: 5,
   /** Recipients per Resend batch request (Resend's limit is 100). */
@@ -11,18 +13,20 @@ export const DROP_ALERTS = {
 } as const;
 
 /**
- * The drops one subscriber gets: only those seen today (a drop is never mailed twice), in their
- * city (null = all), one entry per hotel, biggest first, at most `DROP_ALERTS.maxHotels`.
+ * The drops one subscriber gets: only those seen since `since` (epoch ms; the send runs daily, so
+ * "the last 24 hours" mails every drop once, also those the night grid found after yesterday's
+ * send), in their city (null = all), one entry per hotel, biggest first, at most
+ * `DROP_ALERTS.maxHotels`.
  */
 export function dropsFor<T extends HotelDrops>(
   groups: readonly T[],
   city: string | null,
-  today: string,
+  since: number,
 ): T[] {
   const out: T[] = [];
   for (const g of groups) {
     if (city && g.city.slug !== city) continue;
-    const fresh = [g.top, ...g.more].filter((d) => d.seenDay === today);
+    const fresh = [g.top, ...g.more].filter((d) => Date.parse(d.seenAt) >= since);
     const [top, ...rest] = fresh.sort((a, b) => b.drop - a.drop || a.night.localeCompare(b.night));
     if (top) out.push({ ...g, top, more: rest.sort((a, b) => a.night.localeCompare(b.night)) });
   }

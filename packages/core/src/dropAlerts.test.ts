@@ -4,6 +4,8 @@ import { groupDrops, type PriceDropRow } from './drops';
 import { renderMail } from './mailTemplate';
 
 const TODAY = '2026-10-15';
+/** The send's window: the 24 hours before 07:55 UTC on TODAY. */
+const SINCE = Date.parse('2026-10-14T07:55:00Z');
 const plain = (s: string) => s.replace(/[\u00a0\u202f]/g, ' ');
 
 let id = 0;
@@ -47,29 +49,32 @@ describe('dropsFor', () => {
   const groups = groupDrops([
     hotel(1, 'paris', 0.2),
     hotel(2, 'zuerich', 0.4),
-    hotel(3, 'paris', 0.3, { seen_day: '2026-10-14' }),
+    // Seen before yesterday's send: already mailed.
+    hotel(3, 'paris', 0.3, { seen_day: '2026-10-14', seen_at: '2026-10-14T05:00:00Z' }),
     hotel(4, 'paris', 0.16),
-    hotel(4, 'paris', 0.25, { seen_day: '2026-10-14' }),
+    hotel(4, 'paris', 0.25, { seen_day: '2026-10-14', seen_at: '2026-10-14T04:10:00Z' }),
+    // Found after yesterday's send: new for today's.
+    hotel(5, 'paris', 0.18, { seen_day: '2026-10-14', seen_at: '2026-10-14T08:30:00Z' }),
   ]);
 
-  it('keeps only drops seen today, in the city, biggest first', () => {
-    const paris = dropsFor(groups, 'paris', TODAY);
-    expect(paris.map((g) => g.hotel.id)).toEqual([1, 4]);
-    // Hotel 4's biggest drop was yesterday's: today's smaller one becomes its entry.
-    expect(paris[1]?.top.drop).toBe(0.16);
-    expect(paris[1]?.more).toEqual([]);
+  it('keeps only drops seen since the last send, in the city, biggest first', () => {
+    const paris = dropsFor(groups, 'paris', SINCE);
+    expect(paris.map((g) => g.hotel.id)).toEqual([1, 5, 4]);
+    // Hotel 4's biggest drop was mailed yesterday: today's smaller one becomes its entry.
+    expect(paris[2]?.top.drop).toBe(0.16);
+    expect(paris[2]?.more).toEqual([]);
   });
 
   it('all cities when no city is set, at most maxHotels', () => {
-    expect(dropsFor(groups, null, TODAY).map((g) => g.hotel.id)).toEqual([2, 1, 4]);
+    expect(dropsFor(groups, null, SINCE).map((g) => g.hotel.id)).toEqual([2, 1, 5, 4]);
     const many = groupDrops(
       Array.from({ length: 8 }, (_, i) => hotel(10 + i, 'paris', 0.2 + i / 100)),
     );
-    expect(dropsFor(many, null, TODAY)).toHaveLength(DROP_ALERTS.maxHotels);
+    expect(dropsFor(many, null, SINCE)).toHaveLength(DROP_ALERTS.maxHotels);
   });
 
   it('nothing when the city had no drop today', () => {
-    expect(dropsFor(groups, 'london', TODAY)).toEqual([]);
+    expect(dropsFor(groups, 'london', SINCE)).toEqual([]);
   });
 });
 

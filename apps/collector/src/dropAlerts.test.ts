@@ -75,8 +75,8 @@ function setup() {
     drop(1, 'paris', 0.3),
     drop(2, 'zuerich', 0.2),
     drop(3, 'paris', 0.25),
-    // Seen yesterday: already on yesterday's radar, never mailed again.
-    drop(4, 'paris', 0.4, { seen_day: '2026-10-14' }),
+    // Seen before yesterday's send: already mailed, never again.
+    drop(4, 'paris', 0.4, { seen_day: '2026-10-14', seen_at: '2026-10-14T03:00:00Z' }),
   );
   mem.dropRecipients.push(
     subscriber(1, 'paris'),
@@ -154,7 +154,9 @@ describe('runDropAlerts (C-080e2)', () => {
 
   it('skips when there is no drop today or nobody subscribed', async () => {
     const empty = memoryStore([]);
-    empty.drops.push(drop(1, 'paris', 0.3, { seen_day: '2026-10-14' }));
+    empty.drops.push(
+      drop(1, 'paris', 0.3, { seen_day: '2026-10-14', seen_at: '2026-10-14T06:00:00Z' }),
+    );
     empty.dropRecipients.push(subscriber(1, null));
     expect((await runDropAlerts({ store: empty.store, env: live, now: NOW })).skipped).toBe(
       'no_drops',

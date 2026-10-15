@@ -20,9 +20,9 @@ const FROM = 'Tidaq <alarm@tidaq.com>';
 
 export interface DropAlertRunSummary {
   today: string;
-  /** No drop today or nobody subscribed: nothing to send. */
+  /** No new drop since the last send or nobody subscribed: nothing to send. */
   skipped: 'no_drops' | 'no_recipients' | null;
-  /** Hotels with a drop seen today. */
+  /** Hotels with a drop seen in the last 24 hours. */
   hotels: number;
   recipients: number;
   /** Recipients with at least one drop in their city. */
@@ -33,8 +33,9 @@ export interface DropAlertRunSummary {
 }
 
 /**
- * Preissturz-Alarm (C-080e2), in the daily cron after the newsletter: today's drops (only those
- * seen today, so a drop is never mailed twice), per subscriber the ones in their city (or all),
+ * Preissturz-Alarm (C-080e2), in the daily cron after the newsletter: the drops seen in the 24
+ * hours since the last send (each drop is mailed once, also those the night grid found after the
+ * previous send), per subscriber the ones in their city (or all),
  * one email each with their own manage and one-click unsubscribe links, sent through Resend's
  * batch API; sent addresses get today's date, so nobody gets two in a day. Real emails only when
  * the alerts are live (production, ALERTS_DRY_RUN=false, a key); otherwise it logs counts.
@@ -61,7 +62,10 @@ export async function runDropAlerts(opts: {
     dryRun: !live,
   };
 
-  const groups = groupDrops((await store.todayDrops(today)).filter((d) => d.seen_day === today));
+  const since = now.getTime() - DROP_ALERTS.windowHours * 3_600_000;
+  const groups = groupDrops(
+    (await store.todayDrops(today)).filter((d) => Date.parse(d.seen_at) >= since),
+  );
   summary.hotels = groups.length;
   if (groups.length === 0) return { ...summary, skipped: 'no_drops' };
 
@@ -70,7 +74,7 @@ export async function runDropAlerts(opts: {
   if (recipients.length === 0) return { ...summary, skipped: 'no_recipients' };
 
   const jobs = recipients
-    .map((r) => ({ r, drops: dropsFor(groups, r.city, today) }))
+    .map((r) => ({ r, drops: dropsFor(groups, r.city, since) }))
     .filter((j) => j.drops.length > 0);
   summary.matched = jobs.length;
   if (!live) {
