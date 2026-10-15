@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { addDays } from './dates';
-import { verdictFacts } from './verdict';
+import { meter, verdictFacts } from './verdict';
 
 const TODAY = '2026-10-13';
 const series = (prices: number[]) =>
@@ -40,5 +40,20 @@ describe('verdictFacts', () => {
       verdictOn: '2026-10-19',
       firstDay: null,
     });
+  });
+});
+
+describe('meter', () => {
+  it('splits where the verdict states split', () => {
+    expect(meter(0)?.zone).toBe('cheap');
+    expect(meter(0.35)?.zone).toBe('cheap');
+    expect(meter(0.5)?.zone).toBe('normal');
+    expect(meter(0.75)?.zone).toBe('dear');
+    expect(meter(1)).toEqual({ position: 1, zone: 'dear', bounds: [0.35, 0.75] });
+  });
+  it('clamps and handles no percentile', () => {
+    expect(meter(1.4)?.position).toBe(1);
+    expect(meter(-0.2)?.position).toBe(0);
+    expect(meter(null)).toBeNull();
   });
 });

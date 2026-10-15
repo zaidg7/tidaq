@@ -11,7 +11,7 @@ import {
   type StayStatsResult,
 } from '@tidaq/core';
 import { PriceDelta } from '@/components/ui/PriceDelta';
-import { RangeBar } from '@/components/ui/RangeBar';
+import { Meter } from '@/components/ui/Meter';
 import { StateChip } from '@/components/ui/StateChip';
 import { cn } from '@/lib/cn';
 import { VerdictPrice } from './VerdictPrice';
@@ -32,7 +32,7 @@ type Props = {
 
 /**
  * The verdict block of the stay panel and the homepage example (CRAFT.md §3), in this order:
- * state chip, XL price with the totals line, delta, range bar, one fact sentence, "Stand".
+ * state chip, XL price with the totals line, delta, meter (C-112), one fact sentence, "Stand".
  * Every sentence is about the past, never a forecast.
  */
 export function VerdictBlock({
@@ -89,15 +89,19 @@ export function VerdictBlock({
           <PriceDelta ratio={delta} since={since} className="scrub-fade" />
         )}
       </div>
-      {!collecting && stats.lowCents !== null && stats.highCents !== null && (
-        <RangeBar
-          lowCents={stats.lowCents}
-          highCents={stats.highCents}
-          nowCents={stats.nowCents}
-          since={sinceDay}
-          className="scrub-fade"
-        />
-      )}
+      {!collecting &&
+        stats.lowCents !== null &&
+        stats.highCents !== null &&
+        stats.percentile !== null && (
+          <Meter
+            percentile={stats.percentile}
+            lowCents={stats.lowCents}
+            highCents={stats.highCents}
+            nowCents={stats.nowCents}
+            since={sinceDay}
+            className="scrub-fade"
+          />
+        )}
       {/* "seit 15. Aug." at the end of a sentence must not end in "..". */}
       <p className="scrub-fade font-semibold text-fg">{fact.replace(/\.\.$/, '.')}</p>
       {updated && (
