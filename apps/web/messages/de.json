@@ -973,7 +973,7 @@
       "threshold": "Er muss um mindestens 15 % und 50 € gefallen sein und unter jedem Preis liegen, den wir für diesen Aufenthalt in den 14 Tagen davor gesehen haben.",
       "trip": "Alle Nächte müssen auf derselben Buchungsseite frei sein, so wie du sie buchen würdest. Einzelne günstige Nächte zeigen wir nicht: Dafür fliegt niemand los.",
       "confirm": "Sehr große Drops zeigen wir nur, wenn eine zweite Seite den Preis bestätigt.",
-      "check": "Preise ändern sich oft mehrmals am Tag. Deshalb prüfen wir jeden Price Drop alle 30 Minuten noch einmal auf seiner Buchungsseite und nehmen ihn heraus, sobald er dort nicht mehr gilt."
+      "check": "Preise ändern sich oft mehrmals am Tag. Deshalb prüfen wir jeden Price Drop alle 30 Minuten noch einmal auf seiner Buchungsseite. Du siehst nur Drops, die dort in der letzten Stunde noch galten."
     },
     "howLink": "Mehr zur Methodik",
     "dealsLink": "Lieber Aufenthalte unter ihrem 30-Tage-Schnitt? Zu den Deals",
@@ -1052,8 +1052,8 @@
     "seenShort": "Geprüft {when} {site}.",
     "ctaGo": "Bei {provider} ansehen",
     "ctaGoDirect": "Auf der Hotelseite ansehen",
-    "partnerCheck": "Partnerlink. Prüf den Preis vor dem Buchen, er ändert sich oft.",
-    "checkNote": "Prüf den Preis vor dem Buchen, er ändert sich oft.",
+    "partnerCheck": "Partnerlink. Günstigster Tarif der Seite, oft ohne kostenlose Stornierung. Prüf den Preis vor dem Buchen.",
+    "checkNote": "Günstigster Tarif der Seite, oft ohne kostenlose Stornierung. Prüf den Preis vor dem Buchen.",
     "stayLink": "Alle Seiten und Preise für diese Daten",
     "chartTitle": "So hat sich der Preis bewegt",
     "chartLead": "Preis für diese Nacht, jeden Morgen gemessen.",
