@@ -13,11 +13,20 @@ export const DEFAULT_OG = { url: '/og/default.png', width: 1200, height: 630 };
  */
 export function openGraphFor(
   locale: Locale,
-  opts: { title?: string; description?: string; photo?: PhotoSize | null; alt?: string } = {},
+  opts: {
+    title?: string;
+    description?: string;
+    photo?: PhotoSize | null;
+    alt?: string;
+    /** A ready preview image (C-028c: the drop card), ahead of the photo. */
+    image?: { url: string; width: number; height: number } | null;
+  } = {},
 ): NonNullable<Metadata['openGraph']> {
-  const image = opts.photo
-    ? { url: opts.photo.src, width: opts.photo.width, height: opts.photo.height, alt: opts.alt }
-    : { ...DEFAULT_OG, alt: 'Tidaq' };
+  const image = opts.image
+    ? { ...opts.image, alt: opts.alt }
+    : opts.photo
+      ? { url: opts.photo.src, width: opts.photo.width, height: opts.photo.height, alt: opts.alt }
+      : { ...DEFAULT_OG, alt: 'Tidaq' };
   return {
     type: 'website',
     siteName: 'Tidaq',

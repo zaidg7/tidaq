@@ -82,7 +82,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-025                                                           | Deals page                                                                   | CLOUD | S             | C-022                             | DONE           |
 | C-028a                                                          | SEO: canonical, hreflang, sitemap, site JSON-LD                              | CLOUD | S             | C-022                             | DONE           |
 | C-028b                                                          | Share images: hotel photos and a default OG image                            | CLOUD | S             | C-028a                            | DONE           |
-| C-028c                                                          | Dynamic OG images with today's price (own Worker)                            | CLOUD | S             | C-028b, B-017                     | BLOCKED        |
+| C-028c                                                          | Dynamic OG images with today's price (Supabase Edge Function)                            | CLOUD | S             | C-028b, B-017 (not needed)                     | DONE        |
+| C-028d | Preview cards for stay pages (today's price + 30-day line) via the same function | CLOUD | S | C-028c | TODO |
 | C-080a | Preissturz-Radar: daily sudden price drops, /preissturz, home and city teasers | CLOUD | M | C-013g, C-024 | DONE |
 | C-080b | Shareable drop page per hotel and night + in-browser story image (Web Share) | CLOUD | M | C-080a | DONE |
 | C-080c | Creator kit in /admin: top drops, captions, story images for TikTok/Instagram | CLOUD | S | C-080b | DONE |
@@ -1076,6 +1077,10 @@ Cloudflare Turnstile (keys from B-016) on every form that sends an email: watch 
 ### C-082 · Cloudflare Web Analytics
 Owner: CLOUD · Size: S · Depends on: B-015 · Status: DONE · PR: see `[C-082]`
 **Notes (DONE):** Automatic setup wasn't offered, so Cloudflare gave Zaid a snippet. `components/shell/WebAnalytics.tsx` in the public layout (not /admin) adds the beacon in the browser **only on tidaq.com / www.tidaq.com**: pages are prerendered for every environment, so staging, previews and CI never send data. The token is public by design. The CSP already allowed `static.cloudflareinsights.com` and `cloudflareinsights.com` (C-041a). Numbers: Cloudflare dashboard → Analytics & Logs → Web Analytics; the weekly summary quotes them.
+
+### C-028c notes (DONE, 15 Oct)
+
+Drop pages (`/preissturz/[hotel]/[night]`) share a 1200×630 **"−31 %" card** instead of the bare hotel photo: Supabase Edge Function `og-drop` (`supabase/functions/og-drop/index.tsx`, deployed with the Supabase connector, `verify_jwt: false` because crawlers fetch it) on the Pro plan we already pay for (B-017: no Workers Paid plan needed). It reads the drop itself from today's `radar_drops` / `radar_weekend_drops` (anon), so nobody can render made-up numbers; unknown or finished drops get a plain Tidaq card. Layout: hotel photo full-bleed with a dark gradient, logo, green "−54 %" pill, "PREISSTURZ", hotel name, city · dates · 2 Erwachsene, the price big, "statt … am Vortag bei …", photo credit (CC licence). Photo: the Wikimedia JPEG from `hotels.image_url` fetched by the function (our self-hosted copies are WebP, which satori/resvg can't read), embedded as a data URI. Output re-encoded PNG → JPEG (upng-js + jpeg-js, quality 82): ~145 KB in ~1.6 s, small enough for WhatsApp. Cache-Control 1 h / 6 h CDN. Web: core `dropOgImageUrl(SUPABASE_URL, slug, stay, locale)` + `OG_IMAGE`; `openGraphFor` takes `image`. Without `SUPABASE_URL` (local, CI) the photo stays. **Redeploy the function after editing the file** (Supabase connector `deploy_edge_function`, or `supabase functions deploy og-drop --no-verify-jwt`). Follow-up C-028d: stay pages.
 
 ## Checklists
 
