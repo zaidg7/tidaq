@@ -52,6 +52,12 @@ export interface ChartGeometry {
   lastIsCurrent: boolean;
   /** Dashed average line; null when absent, for sparse data, or when it would sit on a flat line. */
   avg: { cents: number; y: number } | null;
+  /**
+   * The usual range (PREMIUM.md §8): the middle half of the regular prices (25th to 75th
+   * percentile), drawn as a soft band labelled "üblich". Null for sparse or flat data and when the
+   * band would be thinner than a line.
+   */
+  usual: { lowCents: number; highCents: number; yTop: number; yBottom: number } | null;
   /** Fewer than `CHART.minLinePoints`: dots only. */
   sparse: boolean;
   /** All prices within 0.5 %: no low marker. */
@@ -80,6 +86,8 @@ export const CHART = {
   /** No data for this many days before `to`: show the "no data since" band. */
   staleDays: 2,
   xTickCount: 4,
+  /** The usual-range band is left out when thinner than this share of the plot height. */
+  usualMinHeight: 0.02,
 } as const;
 
 const STEP_FACTORS = [5, 2.5, 2, 1];
@@ -115,6 +123,18 @@ interface ChartWindow {
   to: string;
   /** Average for the dashed line, e.g. `avg30Cents`; omitted → no line. */
   avgCents?: number | null;
+}
+
+/** Linear-interpolated quantile (0..1) of `values`; undefined for an empty list. */
+export function quantile(values: readonly number[], q: number): number | undefined {
+  if (values.length === 0) return undefined;
+  const s = [...values].sort((a, b) => a - b);
+  const pos = (s.length - 1) * Math.min(1, Math.max(0, q));
+  const lower = Math.floor(pos);
+  const upper = Math.ceil(pos);
+  const a = s[lower] as number;
+  const b = s[upper] as number;
+  return a + (b - a) * (pos - lower);
 }
 
 function median(values: number[]): number {
@@ -230,6 +250,17 @@ export function chartGeometry(series: readonly DailyPrice[], window: ChartWindow
       ? null
       : { cents: avgCents, y: yOf(avgCents) };
 
+  let usual: ChartGeometry['usual'] = null;
+  if (!sparse && !flat && regular.length >= CHART.minLinePoints) {
+    const q1 = Math.round(quantile(regular, 0.25) as number);
+    const q3 = Math.round(quantile(regular, 0.75) as number);
+    const yTop = yOf(q3);
+    const yBottom = yOf(q1);
+    if (yBottom - yTop >= CHART.usualMinHeight) {
+      usual = { lowCents: q1, highCents: q3, yTop, yBottom };
+    }
+  }
+
   const yTicks = gridTicks(lo, hi)
     // A grid line exactly under a flat price line would hide it.
     .filter((c) => flatValue === null || Math.abs(c - flatValue) >= flatValue * CHART.flatShare)
@@ -256,6 +287,7 @@ export function chartGeometry(series: readonly DailyPrice[], window: ChartWindow
     last,
     lastIsCurrent,
     avg,
+    usual,
     sparse,
     flat,
     band,
