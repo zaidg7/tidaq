@@ -81,8 +81,8 @@ function nextFriday(): number {
  * Sample drops (C-080a/f): five hotels, one with several nights, one a first-ever low, one a
  * Friday-to-Sunday weekend.
  */
-export function sampleDrops(): HotelDropsWithPhoto[] {
-  return groupDrops([
+export function sampleRows(): PriceDropRow[] {
+  return [
     row(FAIRMONT, nextFriday(), 98_000, 124_000, BOOKING, 6, 2),
     row(BAUR, 12, 68_400, 98_900, BOOKING),
     row(BAUR, 13, 71_200, 96_000, BOOKING),
@@ -92,5 +92,12 @@ export function sampleDrops(): HotelDropsWithPhoto[] {
     row(ADLON, 3, 38_900, 52_600, ['adlon', 'Hotelseite', true]),
     row(CLARIDGES, 41, 112_000, 138_000, EXPEDIA, 1),
     row(ARTS, 6, 31_500, 38_100, BOOKING),
-  ]).map((g) => ({ ...g, image: hotelPhoto(g.hotel.slug)?.[960] ?? null }));
+  ];
+}
+
+export function sampleDrops(): HotelDropsWithPhoto[] {
+  return groupDrops(sampleRows()).map((g) => ({
+    ...g,
+    image: hotelPhoto(g.hotel.slug)?.[960] ?? null,
+  }));
 }

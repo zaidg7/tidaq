@@ -22,7 +22,10 @@ test.describe('creator kit (C-080c, sample data on /dev/admin/drops)', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Preisstürze für Social Media',
     );
-    const items = page.getByRole('main').getByRole('listitem');
+    const items = page
+      .getByRole('main')
+      .getByRole('list', { name: 'Preisstürze' })
+      .getByRole('listitem');
     await expect(items).toHaveCount(5);
     const first = items.first();
     await expect(first.getByRole('heading')).toHaveText('1. Baur au Lac');
@@ -65,10 +68,29 @@ test.describe('creator kit (C-080c, sample data on /dev/admin/drops)', () => {
   test('"Text kopieren" puts the caption on the clipboard', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await page.goto('/dev/admin/drops');
-    const first = page.getByRole('main').getByRole('listitem').first();
+    const first = page
+      .getByRole('main')
+      .getByRole('list', { name: 'Preisstürze' })
+      .getByRole('listitem')
+      .first();
     await first.getByRole('button', { name: 'Text kopieren' }).click();
     await expect(page.getByRole('status')).toHaveText('Text kopiert');
     const copied = await page.evaluate(() => navigator.clipboard.readText());
     expect(copied).toBe(await first.getByLabel('Text für Baur au Lac').inputValue());
+  });
+
+  test('weekly set (C-080h): its own tab, heading and caption', async ({ page }) => {
+    await page.goto('/dev/admin/drops');
+    await page
+      .getByRole('navigation', { name: 'Zeitraum' })
+      .getByRole('link', { name: 'Diese Woche' })
+      .click();
+    await expect(page).toHaveURL(/zeitraum=woche/);
+    await expect(
+      page.getByRole('navigation', { name: 'Zeitraum' }).getByRole('link', { name: 'Diese Woche' }),
+    ).toHaveAttribute('aria-current', 'page');
+    await expect(page.getByRole('heading', { name: 'Top 5 der Woche' })).toBeVisible();
+    const caption = plain(await page.getByLabel('Text für die Top 5').inputValue());
+    expect(caption.split('\n')[0]).toMatch(/^Die 5 größten Preisstürze in Luxushotels diese Woche/);
   });
 });

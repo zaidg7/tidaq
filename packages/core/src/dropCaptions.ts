@@ -53,8 +53,11 @@ export function dropCaption(g: HotelDrops, d: PriceDrop): string {
   ].join('\n');
 }
 
-/** Caption for the day's top list (carousel or slideshow), biggest drop first. */
-export function topCaption(groups: readonly HotelDrops[]): string {
+/**
+ * Caption for a top list (carousel or slideshow), biggest drop first: today's ("seit gestern")
+ * or the week's (C-080h, "diese Woche").
+ */
+export function topCaption(groups: readonly HotelDrops[], period: 'day' | 'week' = 'day'): string {
   const top = groups.slice(0, CAPTION.topSize);
   const first = top[0];
   if (!first) return '';
@@ -65,7 +68,7 @@ export function topCaption(groups: readonly HotelDrops[]): string {
   );
   const cities = [...new Set(top.map((g) => cityTag(g.city.name.de)))];
   return [
-    `${top.length === 1 ? 'Der größte Preissturz' : `Die ${top.length} größten Preisstürze`} in Luxushotels seit gestern (Stand: ${seenText(seen)}):`,
+    `${top.length === 1 ? 'Der größte Preissturz' : `Die ${top.length} größten Preisstürze`} in Luxushotels ${period === 'week' ? 'diese Woche' : 'seit gestern'} (Stand: ${seenText(seen)}):`,
     ...lines,
     '',
     `Preise ändern sich oft, prüf sie vor dem Buchen. Alle mit Preisverlauf: ${CAPTION.url}`,

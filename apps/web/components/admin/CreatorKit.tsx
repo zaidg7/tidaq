@@ -50,7 +50,15 @@ export function CreatorKit({
   top,
 }: {
   items: KitItem[];
-  top: { caption: string; cover: CoverText; date: string } | null;
+  top: {
+    caption: string;
+    cover: CoverText;
+    date: string;
+    /** "Top 5 des Tages" or "Top 5 der Woche" (C-080h). */
+    heading: string;
+    /** File name start, e.g. `tidaq-top5` or `tidaq-woche`. */
+    filePrefix: string;
+  } | null;
 }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -88,7 +96,7 @@ export function CreatorKit({
       {top && (
         <Card className="flex flex-col gap-4">
           <div>
-            <h2 className="text-h3">Top 5 des Tages</h2>
+            <h2 className="text-h3">{top.heading}</h2>
             <p className="text-meta text-muted-ink">
               Titelbild und fünf Storys als Karussell oder TikTok-Fotopost, dazu der Text.
             </p>
@@ -107,7 +115,7 @@ export function CreatorKit({
                   async () => {
                     const canvas = document.createElement('canvas');
                     await drawCover(canvas, top.cover, font());
-                    const cover = await canvasFile(canvas, `tidaq-top5-${top.date}-0.png`);
+                    const cover = await canvasFile(canvas, `${top.filePrefix}-${top.date}-0.png`);
                     const stories = [];
                     for (const item of topSet) stories.push(await storyFile(item));
                     return [cover, ...stories];
@@ -130,7 +138,7 @@ export function CreatorKit({
         </Card>
       )}
 
-      <ol className="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
+      <ol aria-label="Preisstürze" className="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
         {items.map((item, i) => (
           <li key={item.key}>
             <Card className="flex h-full flex-col gap-4">

@@ -265,3 +265,42 @@ export function findDrop<T extends HotelDrops>(
     [group.top, ...group.more].find((d) => d.night === stay.night && d.checkOut === stay.checkOut);
   return group && drop ? { group, drop } : null;
 }
+
+/** The weekly recap (C-080h): how many drops, in how many hotels, how big. */
+export interface WeekSummary {
+  /** Drop events (a night or weekend seen falling on one day). */
+  drops: number;
+  hotels: number;
+  weekends: number;
+  /** Average drop, 0.23 = 23 %. */
+  average: number;
+  biggest: number;
+  /** Cities by number of drops, then biggest drop. */
+  cities: { slug: string; name: { de: string; en: string }; drops: number; biggest: number }[];
+}
+
+/** Summarises a week of drop rows (SQL `radar_week`): every row is one drop event. */
+export function weekSummary(rows: readonly PriceDropRow[]): WeekSummary {
+  const cities = new Map<string, WeekSummary['cities'][number]>();
+  for (const r of rows) {
+    const c = cities.get(r.city_slug) ?? {
+      slug: r.city_slug,
+      name: { de: r.city_name_de, en: r.city_name_en },
+      drops: 0,
+      biggest: 0,
+    };
+    c.drops += 1;
+    c.biggest = Math.max(c.biggest, r.drop_pct);
+    cities.set(r.city_slug, c);
+  }
+  return {
+    drops: rows.length,
+    hotels: new Set(rows.map((r) => r.hotel_id)).size,
+    weekends: rows.filter((r) => r.check_out && daysBetween(r.night, r.check_out) > 1).length,
+    average: rows.length ? rows.reduce((s, r) => s + r.drop_pct, 0) / rows.length : 0,
+    biggest: rows.reduce((m, r) => Math.max(m, r.drop_pct), 0),
+    cities: [...cities.values()].sort(
+      (a, b) => b.drops - a.drops || b.biggest - a.biggest || a.name.de.localeCompare(b.name.de),
+    ),
+  };
+}

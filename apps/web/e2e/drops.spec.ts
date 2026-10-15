@@ -272,3 +272,50 @@ test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
     }
   });
 });
+
+test.describe('weekly recap (C-080h, sample data on /dev/drops?week)', () => {
+  test('headline numbers, ranked hotels with the day seen, cities', async ({ page }) => {
+    await page.goto('/dev/drops?week');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Die größten Preisstürze der Woche',
+    );
+    const main = page.getByRole('main');
+    await expect(main).toContainText('9 Preisstürze');
+    await expect(main).toContainText('in 5 Hotels');
+    await expect(main).toContainText('größter −31 %');
+    await expect(main).toContainText('1 Wochenende');
+
+    const top = main.getByRole('region', { name: 'Top 5' }).getByRole('listitem');
+    await expect(top).toHaveCount(5);
+    await expect(top.first()).toContainText('Baur au Lac');
+    await expect(top.first()).toContainText(/gesehen \p{L}{2}, \d+\. \p{L}+\./u);
+    // Each hotel links to its stay's price history; the weekend to its 2 nights.
+    const weekend = top.filter({ hasText: 'Fairmont Hotel Vier Jahreszeiten' });
+    const href = await weekend.getByRole('link').getAttribute('href');
+    const m = /\/(\d{4}-\d{2}-\d{2})--(\d{4}-\d{2}-\d{2})\?adults=2$/.exec(href ?? '');
+    expect((Date.parse(m?.[2] ?? '') - Date.parse(m?.[1] ?? '')) / 86_400_000).toBe(2);
+
+    const cities = main.getByRole('region', { name: 'Wo es diese Woche am meisten fiel' });
+    await expect(cities.getByRole('link').first()).toHaveAttribute(
+      'href',
+      '/preissturz?stadt=zuerich',
+    );
+    await expect(main.getByRole('link', { name: 'Preisstürze von heute ansehen' })).toHaveAttribute(
+      'href',
+      '/preissturz',
+    );
+  });
+
+  test('the radar links to it; empty week and the real route without a database', async ({
+    page,
+  }) => {
+    await page.goto('/dev/drops');
+    await expect(
+      page.getByRole('link', { name: /Wochenrückblick: die größten Preisstürze der Woche/ }),
+    ).toHaveAttribute('href', '/preissturz/woche');
+    await page.goto('/dev/drops?week&empty');
+    await expect(page.getByText(/noch keinen Preissturz/)).toBeVisible();
+    await page.goto('/preissturz/woche');
+    await expect(page.getByRole('link', { name: 'Neu laden' })).toBeVisible();
+  });
+});

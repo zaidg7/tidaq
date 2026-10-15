@@ -11,6 +11,8 @@ import {
   type DailyPrice,
   type HotelDrops,
   type PriceDrop,
+  weekSummary,
+  type WeekSummary,
 } from '@tidaq/core';
 import { getCatalog, type CatalogHotel } from './catalog';
 import { reportError } from '@/lib/errors';
@@ -160,3 +162,45 @@ export const getDropPage = cache(
     };
   },
 );
+
+/** Days in the weekly recap (C-080h). */
+export const WEEK_DAYS = 7;
+
+export type WeekLoad =
+  | {
+      kind: 'ok';
+      /** One entry per hotel with its biggest drop of the week on top, biggest first. */
+      groups: HotelDropsWithPhoto[];
+      summary: WeekSummary;
+      from: string;
+      to: string;
+    }
+  | { kind: 'unavailable' };
+
+/**
+ * The week's drops (C-080h, SQL `radar_week`): the recap page and the creator kit's weekly set.
+ * Recomputed from the night grid, about 150 ms in SQL.
+ */
+export const getWeek = cache(async (today: string): Promise<WeekLoad> => {
+  if (!hasSupabase()) return { kind: 'unavailable' };
+  try {
+    const rows = await rpc(
+      'radar_week',
+      { p_today: today, p_days: WEEK_DAYS },
+      z.array(priceDropRowSchema),
+    );
+    return {
+      kind: 'ok',
+      groups: groupDrops(rows).map((g) => ({
+        ...g,
+        image: hotelPhoto(g.hotel.slug)?.[960] ?? null,
+      })),
+      summary: weekSummary(rows),
+      from: addDays(today, -(WEEK_DAYS - 1)),
+      to: today,
+    };
+  } catch (error) {
+    reportError('drop week unavailable', error);
+    return { kind: 'unavailable' };
+  }
+});

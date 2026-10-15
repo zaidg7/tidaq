@@ -111,7 +111,8 @@
       "affiliate": "Affiliate-Hinweis",
       "imprint": "Impressum",
       "privacy": "Datenschutz",
-      "drops": "Preisstürze"
+      "drops": "Preisstürze",
+      "dropsWeek": "Wochenrückblick"
     },
     "copyright": "© {year} Tidaq",
     "source": "Preise jeden Morgen von den Buchungsseiten. Ohne Cookies."
@@ -891,7 +892,8 @@
     },
     "alertCta": "Preissturz-Alarm einrichten: Wir sagen dir Bescheid",
     "stay": "{n, plural, one {# Nacht} other {# Nächte}}, 2 Erwachsene",
-    "weekendBadge": "Wochenende"
+    "weekendBadge": "Wochenende",
+    "weekLink": "Wochenrückblick: die größten Preisstürze der Woche"
   },
   "drop": {
     "metaTitle": "{hotel}: {pct} für {date} | Tidaq",
@@ -966,5 +968,26 @@
     "manageButton": "Alarm verwalten",
     "footerWhy": "Du bekommst diese E-Mail, weil auf tidaq.com der Preissturz-Alarm für diese Adresse bestellt wurde.",
     "footerManage": "Abbestellen oder Alarme ändern: {url}"
+  },
+  "dropsWeek": {
+    "metaTitle": "Die größten Preisstürze der Woche in Luxushotels | Tidaq",
+    "metaDescription": "Alle Preisstürze der letzten 7 Tage in Fünf-Sterne-Hotels: wie viele, wie groß, wo. Mit beiden Preisen und Link zum Preisverlauf.",
+    "eyebrow": "Wochenrückblick",
+    "title": "Die größten Preisstürze der Woche",
+    "range": "{from} bis {to}",
+    "statDrops": "{n, plural, one {# Preissturz} other {# Preisstürze}}",
+    "statHotels": "in {n, plural, one {# Hotel} other {# Hotels}}",
+    "statAverage": "im Schnitt {pct}",
+    "statBiggest": "größter {pct}",
+    "statWeekends": "{n, plural, one {# Wochenende} other {# Wochenenden}}",
+    "topTitle": "Top {n}",
+    "topText": "Pro Hotel der größte Preissturz der Woche. Der Preis kann seitdem wieder gestiegen sein: Der Preisverlauf zeigt den aktuellen Stand.",
+    "seen": "gesehen {date}",
+    "history": "Preisverlauf",
+    "citiesTitle": "Wo es diese Woche am meisten fiel",
+    "cityDrops": "{n, plural, one {# Preissturz} other {# Preisstürze}}, größter {pct}",
+    "today": "Preisstürze von heute ansehen",
+    "empty": "In den letzten 7 Tagen gab es noch keinen Preissturz. Wir prüfen jeden Tag, schau bald wieder rein.",
+    "unavailable": "Der Wochenrückblick lässt sich gerade nicht laden. Versuch es gleich noch einmal."
   }
 }
