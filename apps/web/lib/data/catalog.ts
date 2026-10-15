@@ -1,6 +1,7 @@
 import 'server-only';
 import { z } from '@tidaq/core';
 import { hasSupabase, rest } from './supabase';
+import { reportError } from '@/lib/errors';
 
 const hotelRow = z.object({
   slug: z.string(),
@@ -37,7 +38,7 @@ export async function getCatalog(): Promise<Catalog | null> {
     }));
     return { hotels, cityCount: new Set(hotels.map((h) => h.city.slug)).size };
   } catch (error) {
-    console.error('catalog unavailable', { error: String(error) });
+    reportError('catalog unavailable', error);
     return null;
   }
 }

@@ -2,6 +2,7 @@ import 'server-only';
 import { hotelPhoto, type PhotoSize } from '@/lib/hotelPhotos';
 import { addDays, z } from '@tidaq/core';
 import { hasSupabase, rest, rpc } from './supabase';
+import { reportError } from '@/lib/errors';
 
 const cityRow = z.object({
   id: z.number(),
@@ -77,9 +78,7 @@ export async function getCityPage(slug: string, today: string): Promise<CityLoad
       rpc('city_best_weekends', { p_city: slug, p_today: today }, z.array(weekendRow)),
       rpc('night_reliability', { p_day: today }, z.array(reliabilityRow)).catch(
         (error: unknown) => {
-          console.error(
-            JSON.stringify({ msg: 'night reliability failed', slug, error: String(error) }),
-          );
+          reportError('night reliability failed', error, { slug });
           // Unknown reliability: show no totals from nights rather than possibly wrong ones.
           return null;
         },
@@ -126,7 +125,7 @@ export async function getCityPage(slug: string, today: string): Promise<CityLoad
       }),
     };
   } catch (error) {
-    console.error(JSON.stringify({ msg: 'city unavailable', slug, error: String(error) }));
+    reportError('city unavailable', error, { slug });
     return { kind: 'unavailable' };
   }
 }
@@ -159,7 +158,7 @@ export async function getHotelDirectory(): Promise<DirectoryCity[] | null> {
     }
     return [...bySlug.values()];
   } catch (error) {
-    console.error(JSON.stringify({ msg: 'directory unavailable', error: String(error) }));
+    reportError('directory unavailable', error);
     return null;
   }
 }

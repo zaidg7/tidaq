@@ -3,6 +3,7 @@ import { DEALS, pickDeals, z } from '@tidaq/core';
 import { berlinToday } from '@/lib/today';
 import { hasSupabase, rest } from './supabase';
 import { hotelPhoto } from '@/lib/hotelPhotos';
+import { reportError } from '@/lib/errors';
 
 const dealRow = z.object({
   stay_id: z.number(),
@@ -74,7 +75,7 @@ export async function getDeals(limit = 3): Promise<Deal[] | null> {
       imageUrl: hotelPhoto(d.hotel_slug)?.[960].src ?? null,
     }));
   } catch (error) {
-    console.error('deals unavailable', { error: String(error) });
+    reportError('deals unavailable', error);
     return null;
   }
 }

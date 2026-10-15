@@ -1,6 +1,7 @@
 import 'server-only';
 import { z, type StayParams } from '@tidaq/core';
 import { hasSupabase, rpc } from './supabase';
+import { reportError } from '@/lib/errors';
 
 /** Crawlers, link previews and audits: they must not use up the day's stay requests. */
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless|curl|wget/i;
@@ -30,7 +31,7 @@ export async function requestStayOnView(
       2500,
     );
   } catch (error) {
-    console.error(JSON.stringify({ msg: 'request_stay failed', slug, error: String(error) }));
+    reportError('request_stay failed', error, { slug });
     return null;
   }
 }

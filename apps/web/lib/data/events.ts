@@ -2,6 +2,7 @@ import 'server-only';
 import { z } from '@tidaq/core';
 import { isBot } from './requestStay';
 import { hasSupabase, rpc } from './supabase';
+import { reportError } from '@/lib/errors';
 
 export type ViewEvent =
   | {
@@ -21,8 +22,6 @@ export async function logView(event: ViewEvent, userAgent: string | null): Promi
   try {
     await rpc('log_event', { p_name: event.name, p_props: event.props }, z.unknown(), 2000);
   } catch (error) {
-    console.error(
-      JSON.stringify({ msg: 'log event failed', name: event.name, error: String(error) }),
-    );
+    reportError('log event failed', error, { name: event.name });
   }
 }

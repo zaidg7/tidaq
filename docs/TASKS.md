@@ -96,7 +96,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034                      | TODO           |
 | C-041a                                                          | Launch hardening: axe checks, security headers                               | CLOUD | S             | C-031a                            | DONE           |
 | C-041b                                                          | Launch hardening: Lighthouse, backups, rate limits, robots                   | CLOUD | S             | C-041a                            | DONE           |
-| C-041c                                                          | Launch hardening: daily email with the website's server errors               | CLOUD | S             | C-041b                            | TODO           |
+| C-041c                                                          | Launch hardening: daily email with the website's server errors               | CLOUD | S             | C-041b                            | DONE           |
 | C-042                                                           | Trust report page "150 Checkouts getestet"                                   | CLOUD | S             | L-033, C-034                      | TODO           |
 | C-043                                                           | Launch content pack for Zaid                                                 | CLOUD | S             | C-042                             | TODO           |
 | C-044                                                           | Go live on tidaq.com                                                         | CLOUD | S             | C-041c, L-040, Z-12               | TODO           |
@@ -926,8 +926,10 @@ Lighthouse ≥ 90 (mobile) on home, stay, hotel (measure on staging, fix what's 
 
 ### C-041c · Daily email with the website's server errors
 
-Owner: CLOUD · Size: S · Depends on: C-041b · Status: TODO · PR: –
+Owner: CLOUD · Size: S · Depends on: C-041b · Status: DONE · PR: see `[C-041c]`
 Error monitoring: the website's server errors (handled fallbacks and unhandled ones) are stored without personal data and listed in the admins' daily check email, so Zaid hears about problems without opening Cloudflare.
+
+**C-041c notes (DONE):** Table `web_errors` (migration `20261014233908`, service role only): a ring buffer of 5,000 rows (oldest slot overwritten, so no deletes are ever needed), at most 1,000 entries per environment and day; SQL `log_web_error` and `web_error_digest`. Web `lib/errors.ts`: `reportError(source, error, ctx)` logs to Workers Logs and, after the response (`after()`), stores the error; every handled fallback in `lib/data/*`, the watch flow, mail and `/go` uses it. `instrumentation.ts` `onRequestError` stores unhandled errors with the route pattern only (404s and redirects are skipped). Core `scrubErrorText` masks addresses and UUID tokens and drops query strings before anything is stored. The collector's daily check (07:55 UTC) adds "Website: N server error(s) in the last 24 hours" with the top lines to its email.
 
 ### C-042 · Trust report page
 
@@ -942,7 +944,7 @@ Owner: CLOUD · Size: S · Depends on: C-042 · Status: TODO · PR: –
 ### C-044 · Go live
 
 Owner: CLOUD · Size: S · Depends on: C-041, L-040, Z-12 · Status: TODO · PR: –
-Final launch checklist (below), production deploy to tidaq.com, collector prod caps set, Search Console sitemap submitted, smoke test in production, announce in the weekly summary issue. **Alerts:** set the production collector's `ALERTS_DRY_RUN` to `"false"` (`apps/collector/wrangler.jsonc`) in the launch PR; until then no alert email reaches users (C-031a).
+Final launch checklist (below), production deploy to tidaq.com, collector prod caps set, Search Console sitemap submitted, smoke test in production, announce in the weekly summary issue. **Alerts:** set the production collector's `ALERTS_DRY_RUN` to `"false"` (`apps/collector/wrangler.jsonc`) in the launch PR; until then no alert email reaches users (C-031a). **Indexing:** the production web deploy is what makes tidaq.com indexable (C-041b); after it, `curl -sI https://tidaq.com/` must show **no** `X-Robots-Tag` and `/robots.txt` must allow crawling, then submit the sitemap in Search Console (Z-09).
 
 ---
 

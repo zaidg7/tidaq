@@ -10,6 +10,7 @@ import {
 } from '@tidaq/core';
 import { hasServiceRole, serviceRest } from '@/lib/admin/db';
 import { mailIsLive, sendMail } from '@/lib/mail';
+import { reportError } from '@/lib/errors';
 
 /**
  * Price-alert watches (C-030): double opt-in, one-click manage and unsubscribe, no login. The
@@ -121,7 +122,7 @@ export async function requestWatch(req: WatchRequest, origin: string): Promise<W
       ...(!mailIsLive() && { previewUrl: confirm ? confirmUrl : manageUrl }),
     };
   } catch (error) {
-    console.error(JSON.stringify({ msg: 'watch request failed', error: String(error) }));
+    reportError('watch request failed', error);
     return { status: 'error' };
   }
 }

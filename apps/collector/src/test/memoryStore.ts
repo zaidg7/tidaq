@@ -3,6 +3,7 @@ import type { IngestPayload, OpenTask } from '../ingest';
 import type {
   AlertOffer,
   AlertWatch,
+  WebErrorRow,
   CatalogHotel,
   CollectorStore,
   DayReport,
@@ -61,6 +62,8 @@ export function memoryStore(
   const accuracy = new Map<string, NightAccuracyRow>();
   /** Watches for the alert engine (C-031): tests push into it; recorded alerts land below. */
   const alertWatches: AlertWatch[] = [];
+  /** Website errors for the daily check (C-041c); tests push into it. */
+  const webErrors: (WebErrorRow & { env: string })[] = [];
   /** Today's offers per watch id (C-031b). */
   const alertOffers = new Map<string, AlertOffer[]>();
   const recordedAlerts: {
@@ -309,6 +312,11 @@ export function memoryStore(
       pruneCalls++;
       return 0;
     },
+    async webErrors(env, since) {
+      return webErrors
+        .filter((e) => e.env === env && e.lastAt >= since)
+        .map((e) => ({ source: e.source, message: e.message, n: e.n, lastAt: e.lastAt }));
+    },
     async alertInputs(today) {
       return alertWatches.filter((w) => w.checkIn > today);
     },
@@ -370,6 +378,7 @@ export function memoryStore(
     officialUrls,
     pruneCalls: () => pruneCalls,
     alertWatches,
+    webErrors,
     alertOffers,
     recordedAlerts,
     /** Sets the `posted_at` time for tasks recorded from now on. */

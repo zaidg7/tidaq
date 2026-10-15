@@ -1,4 +1,5 @@
 import 'server-only';
+import { reportError } from '@/lib/errors';
 
 export interface Mail {
   to: string;
@@ -54,12 +55,12 @@ export async function sendMail(mail: Mail): Promise<boolean> {
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) {
-      console.error(JSON.stringify({ msg: 'mail failed', kind: mail.kind, status: res.status }));
+      reportError('mail failed', `Resend HTTP ${res.status}`, { kind: mail.kind });
       return false;
     }
     return true;
   } catch (error) {
-    console.error(JSON.stringify({ msg: 'mail failed', kind: mail.kind, error: String(error) }));
+    reportError('mail failed', error, { kind: mail.kind });
     return false;
   }
 }

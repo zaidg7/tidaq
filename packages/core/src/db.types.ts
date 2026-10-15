@@ -991,6 +991,11 @@ export type Database = {
         Returns: undefined
       }
       collector_ingest: { Args: { payload: Json }; Returns: Json }
+      log_web_error: { Args: { p_env: string; p_source: string; p_message: string }; Returns: undefined }
+      web_error_digest: {
+        Args: { p_env: string; p_since: string }
+        Returns: { source: string; message: string; n: number; last_at: string }[]
+      }
       night_accuracy_pairs: {
         Args: { p_day: string }
         Returns: {

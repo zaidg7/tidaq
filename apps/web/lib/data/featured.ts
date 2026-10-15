@@ -12,6 +12,7 @@ import {
   type StayStatsResult,
 } from '@tidaq/core';
 import { hasSupabase, rest } from './supabase';
+import { reportError } from '@/lib/errors';
 
 const stayRow = z.object({
   stay_id: z.number(),
@@ -167,7 +168,7 @@ export async function getFeaturedStay(now = new Date()): Promise<FeaturedStay | 
       updatedAt: picked.updated_at,
     };
   } catch (err) {
-    console.error(JSON.stringify({ msg: 'featured stay unavailable', error: String(err) }));
+    reportError('featured stay unavailable', err);
     return null;
   }
 }

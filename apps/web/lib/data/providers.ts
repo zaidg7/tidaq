@@ -1,6 +1,7 @@
 import 'server-only';
 import { providerFactsSchema, type ProviderFacts } from '@tidaq/core';
 import { hasSupabase, rpc } from './supabase';
+import { reportError } from '@/lib/errors';
 
 export type ProviderFactsLoad =
   | { kind: 'ok'; facts: ProviderFacts }
@@ -16,7 +17,7 @@ export async function getProviderFacts(): Promise<ProviderFactsLoad> {
   try {
     return { kind: 'ok', facts: await rpc('provider_facts', {}, providerFactsSchema) };
   } catch (error) {
-    console.error(JSON.stringify({ msg: 'provider facts failed', error: String(error) }));
+    reportError('provider facts failed', error);
     return { kind: 'unavailable' };
   }
 }

@@ -39,5 +39,18 @@ select
     as anon_can_read_night_reliability,
   not has_function_privilege('anon', 'public.night_accuracy_pairs(date)', 'execute')
     as anon_cannot_read_night_pairs,
+  -- C-034: public provider facts are aggregates only; single checkout tests stay private.
+  has_function_privilege('anon', 'public.provider_facts()', 'execute') as anon_can_read_provider_facts,
+  -- C-030a/C-031: everything with addresses or alerts is service role only.
+  not has_function_privilege('anon', 'public.alert_inputs(date)', 'execute')
+    as anon_cannot_read_alert_inputs,
+  not has_function_privilege('anon', 'public.alert_offers(uuid,date)', 'execute')
+    as anon_cannot_read_alert_offers,
+  -- C-041c: website errors are written and read by the service role only.
+  not has_table_privilege('anon', 'public.web_errors', 'select') as anon_cannot_read_web_errors,
+  not has_function_privilege('anon', 'public.log_web_error(text,text,text)', 'execute')
+    as anon_cannot_log_web_errors,
+  not has_function_privilege('anon', 'public.web_error_digest(text,timestamptz)', 'execute')
+    as anon_cannot_read_web_error_digest,
   (select count(*) = 0 from pg_tables where schemaname = 'public' and not rowsecurity)
     as all_tables_have_rls;
