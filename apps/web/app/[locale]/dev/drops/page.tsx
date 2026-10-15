@@ -6,8 +6,9 @@ import { DropAlertSection } from '@/components/drops/DropAlertSection';
 import { DropOver, DropPage } from '@/components/drops/DropPage';
 import { DropsTeaser, dropsHref } from '@/components/drops/DropsTeaser';
 import { applyDropFilters, DROP_SOURCES, DropsView } from '@/components/drops/DropsView';
+import { FromVideos, videoItems } from '@/components/drops/FromVideos';
 import { WeekView } from '@/components/drops/WeekView';
-import { ADLON, sampleDrops as sample, sampleRows } from '@/lib/dropsSample';
+import { ADLON, sampleDrops as sample, samplePosted, sampleRows } from '@/lib/dropsSample';
 import { berlinToday } from '@/lib/today';
 
 // Dev pages exist on staging and locally only; APP_ENV is read per request.
@@ -32,7 +33,7 @@ function history(prevCents: number, nowCents: number, today: string): DailyPrice
 /**
  * `/dev/drops`: the radar with sample data. `?empty`: empty state; `?teaser`: the section;
  * `?share` or `?share=<slug>`: a drop page (C-080b); `?over`: a drop that's gone; `?ref=tiktok`:
- * the welcome for social bio links (C-080d); `?week`: the weekly recap (C-080h).
+ * the welcome for social bio links (C-080d) with "Aus unseren Videos" (C-080j); `?week`: the weekly recap (C-080h).
  */
 export default async function DevDropsPage({
   params,
@@ -107,6 +108,7 @@ export default async function DevDropsPage({
     );
   }
   const { filters, shown } = applyDropFilters(all, q, today);
+  const source = DROP_SOURCES.find((x) => x === q.ref) ?? null;
   return (
     <DropsView
       all={all}
@@ -115,7 +117,8 @@ export default async function DevDropsPage({
       seenAt={all[0]?.top.seenAt ?? null}
       now={new Date()}
       checked={all.length ? { day: today, nights: 5722, hotels: 82, cities: 27, sites: 4 } : null}
-      source={DROP_SOURCES.find((x) => x === q.ref) ?? null}
+      source={source}
+      videos={source && <FromVideos items={videoItems(samplePosted(), all)} />}
       alert={
         <DropAlertSection
           locale={locale}

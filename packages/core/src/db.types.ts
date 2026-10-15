@@ -1032,6 +1032,7 @@ export type Database = {
       }
       radar_drops: { Args: { p_today: string }; Returns: Json }
       radar_weekend_drops: { Args: { p_today: string }; Returns: Json }
+      posted_drops_recent: { Args: { p_today: string; p_days?: number }; Returns: Json }
       newsletter_request: {
         Args: { p_consent_text: string; p_email: string; p_locale: string }
         Returns: Json

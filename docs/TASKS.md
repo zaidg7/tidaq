@@ -94,6 +94,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-080g | Drop page: "Zum Angebot bei …" straight to the site with the price | CLOUD | S | C-080b, C-026 | DONE |
 | C-080h | Weekly recap /preissturz/woche + weekly set in the creator kit | CLOUD | M | C-080f | DONE |
 | C-080i | Drops on hotel and stay pages (callout with both prices) | CLOUD | S | C-080f | DONE |
+| C-080j | "Aus unseren Videos": posted drops first on the TikTok/Instagram landing | CLOUD | M | C-080d, C-080c | DONE |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
@@ -1049,6 +1050,11 @@ Owner: CLOUD · Size: M · Depends on: C-080f · Status: DONE · PR: see `[C-080
 
 Owner: CLOUD · Size: S · Depends on: C-080f · Status: DONE · PR: see `[C-080i]`
 **Notes (DONE):** People who come through search or a hotel link land on hotel and stay pages, not on the radar. `DropCallout` (green, `aside`): on a hotel page with drops today, "Preissturz bei diesem Hotel" with its biggest drop ("Di, 27. Okt. (1 Nacht): 684 € statt 989 € am Vortag, −31 % bei Booking.com."), "Zum Preissturz" and up to 4 chips for its other nights/weekends; on a stay page whose exact stay (night or weekend, 2 adults) is on today's radar, "Preissturz seit gestern: Dieser Aufenthalt kostet heute …". Both pages read the radar with the request-cached `getDrops` (two extra Supabase calls per page view, in parallel with the page's own reads). Dev: `?drop` on `/dev/hotel/[variant]` and `/dev/stay/[variant]`.
+
+### C-080j · "Aus unseren Videos"
+
+Owner: CLOUD · Size: M · Depends on: C-080d, C-080c · Status: DONE · PR: see `[C-080j]`
+**Notes (DONE):** A TikTok viewer saw one hotel in the video, taps the bio link and must find that hotel at once, even if the drop left the radar since. Creator kit: every drop has "Gepostet auf [TikTok] [Instagram]" toggles (plain form posts to `markPostedAction`; the server looks the drop up again in today's radar or the week and saves a snapshot). Migration `20261015094502_posted_drops`: table `posted_drops` (RLS on, no policies, service role only; one row per stay and platform) and `posted_drops_recent(p_today, p_days = 7)` (anon-readable: posts of the last week whose check-in is ahead, newest first, one row per stay with its platforms, max 12). Core `postedDrops.ts`: `postedDropRowSchema`, `postedDrops` (max 6), `postedStatus` (still on today's radar → the current drop), `postedDropInsert`; `PriceDrop` gained `priorLowCents` and `confirmed` for the snapshot. Landing: on `/preissturz?ref=tiktok|instagram` (`/tiktok`, `/instagram`) the section "Aus unseren Videos" sits between the title and the hero: a swipe row on phones, 3 columns on desktop. Each card: photo, hotel, city and dates, "Im Video vom Mi, 14. Okt.: −21 %", then "Läuft noch" with today's prices or "Vorbei · Preis von heute ansehen"; it links to the drop page (which shows "Dieser Preissturz ist vorbei" with today's price when it's gone). Only one extra Supabase call, and only for bio-link visitors. **For Zaid:** after posting, tap the platform under the drop in /admin/preisstuerze. Sample: `/dev/drops?ref=tiktok`.
 
 ## Checklists
 

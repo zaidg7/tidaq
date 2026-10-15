@@ -6,6 +6,10 @@ import {
   hasOutboundSearch,
   parseDropKey,
   groupDrops,
+  POSTED,
+  postedDropRowSchema,
+  postedDrops,
+  type PostedDrop,
   priceDropRowSchema,
   z,
   type DailyPrice,
@@ -202,5 +206,25 @@ export const getWeek = cache(async (today: string): Promise<WeekLoad> => {
   } catch (error) {
     reportError('drop week unavailable', error);
     return { kind: 'unavailable' };
+  }
+});
+
+/**
+ * Drops we showed in our TikTok and Instagram posts during the last week (C-080j, SQL
+ * `posted_drops_recent`), newest post first. An extra on the bio-link landing: empty when the
+ * read fails, so the radar still renders.
+ */
+export const getPosted = cache(async (today: string): Promise<PostedDrop[]> => {
+  if (!hasSupabase()) return [];
+  try {
+    const rows = await rpc(
+      'posted_drops_recent',
+      { p_today: today, p_days: POSTED.days },
+      z.array(postedDropRowSchema),
+    );
+    return postedDrops(rows);
+  } catch (error) {
+    reportError('posted drops unavailable', error);
+    return [];
   }
 });

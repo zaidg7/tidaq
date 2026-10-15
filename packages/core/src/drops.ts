@@ -73,9 +73,13 @@ export interface PriceDrop {
   priorDays: number;
   /** Average cheapest price over those earlier checks. */
   priorAvgCents: number;
+  /** Lowest of those earlier checks (today's price is below it: a new low). */
+  priorLowCents: number;
   provider: { slug: string; name: string; direct: boolean };
   /** Reviewed sites with a price for this night. */
   offers: number;
+  /** A second reviewed site was within 10 % of the price. */
+  confirmed: boolean;
 }
 
 export interface HotelDrops {
@@ -101,8 +105,10 @@ function toDrop(r: PriceDropRow): PriceDrop {
     savedCents: r.prev_cents - r.now_cents,
     priorDays: r.prior_days,
     priorAvgCents: r.prior_avg_cents,
+    priorLowCents: r.prior_low_cents,
     provider: { slug: r.provider_slug, name: r.provider_name, direct: r.provider_direct },
     offers: r.offers,
+    confirmed: r.confirmed,
   };
 }
 
