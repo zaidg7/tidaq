@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import { Search, X } from 'lucide-react';
-import { localizedPath, type Locale } from '@tidaq/core';
+import type { Locale } from '@tidaq/core';
 import { IconButton } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
@@ -14,6 +14,10 @@ import type { SearchIndex } from './types';
 const SearchBar = dynamic(() => import('./SearchBar').then((m) => m.SearchBar), {
   ssr: false,
   loading: () => <div className="h-[76px] rounded-search border border-line bg-surface" />,
+});
+
+const PhoneSearch = dynamic(() => import('./PhoneSearch').then((m) => m.PhoneSearch), {
+  ssr: false,
 });
 
 const EMPTY: SearchIndex = { cities: [], hotels: [], popular: [], cheap: [] };
@@ -50,13 +54,15 @@ function loadIndex(locale: Locale): Promise<SearchIndex> {
  * Navbar search (PREMIUM.md §12, C-107b). From 1280 px a compact pill "Hotel oder Stadt ·
  * Daten · Gäste"; below, an icon. Either opens the full search bar in place, in a panel that
  * drops from the top (no jump to the homepage). On the homepage the pill fades in only once the
- * hero search has scrolled away. Phones keep the jump to the hero search until C-109.
+ * hero search has scrolled away. On phones the icon opens the full-screen search (C-109).
  */
 export function NavSearch({ locale, today, guestOptions, labels }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [heroVisible, setHeroVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [index, setIndex] = useState<SearchIndex>(EMPTY);
+  // Phones: the full-screen search, mounted on first use and reopened by bumping the key.
+  const [phoneKey, setPhoneKey] = useState(0);
 
   useEffect(() => {
     const hero = document.getElementById(HERO_ID);
@@ -72,7 +78,8 @@ export function NavSearch({ locale, today, guestOptions, labels }: Props) {
 
   const open = () => {
     if (!window.matchMedia(DESKTOP).matches) {
-      window.location.assign(`${localizedPath('/', locale)}#${HERO_ID}`);
+      prefetch();
+      setPhoneKey((k) => k + 1);
       return;
     }
     prefetch();
@@ -126,6 +133,15 @@ export function NavSearch({ locale, today, guestOptions, labels }: Props) {
       >
         <Icon icon={Search} />
       </IconButton>
+      {phoneKey > 0 && (
+        <PhoneSearch
+          index={index}
+          today={today}
+          locale={locale}
+          labels={labels}
+          openKey={phoneKey}
+        />
+      )}
       <dialog
         ref={dialog}
         aria-label={labels.dialog}

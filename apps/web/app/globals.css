@@ -742,3 +742,39 @@
     transform: translateY(-16px);
   }
 }
+
+/* Phone search (C-109): a full-screen sheet that rises in; each step slides in from the right. */
+.phone-search {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--surface);
+  color: var(--ink);
+}
+.phone-search[open] {
+  animation: search-rise var(--t-panel) var(--ease-out) both;
+}
+.phone-search::backdrop {
+  background: transparent;
+}
+@keyframes search-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+}
+.phone-step {
+  animation: step-in var(--t-base) var(--ease-out) both;
+}
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}

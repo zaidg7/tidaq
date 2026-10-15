@@ -55,10 +55,11 @@ test.describe('navbar search', () => {
     await expect(page.getByRole('dialog', { name: 'Suche' })).toBeVisible();
   });
 
-  test('phones still go to the hero search (until C-109)', async ({ page }) => {
+  test('phones: the icon opens the full-screen search', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/impressum');
     await page.getByRole('banner').getByRole('button', { name: 'Hotel oder Stadt suchen' }).click();
-    await expect(page).toHaveURL(/\/#suche$/);
+    await expect(page.getByRole('dialog', { name: 'Suche' })).toBeVisible();
+    await expect(page).toHaveURL(/\/impressum$/);
   });
 });

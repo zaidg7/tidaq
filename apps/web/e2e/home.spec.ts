@@ -14,31 +14,6 @@ test.describe('homepage', () => {
     await expect(live.getByText('Günstigster')).toBeVisible();
   });
 
-  test('search explains what is missing and focuses the field (phone card)', async ({ page }) => {
-    // Phones keep the search card until the full-screen search (C-109).
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/');
-    const form = page.getByRole('form', { name: 'Preise suchen' });
-    await form.getByRole('button', { name: 'Preise ansehen' }).click();
-    await expect(form.getByRole('alert')).toHaveText('Wähl ein Hotel.');
-    await expect(form.getByLabel('Hotel', { exact: true })).toBeFocused();
-  });
-
-  test('a fixed field clears its error (phone card)', async ({ page }) => {
-    // Phones keep the search card until the full-screen search (C-109).
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/');
-    const form = page.getByRole('form', { name: 'Preise suchen' });
-    await form.getByRole('button', { name: 'Preise ansehen' }).click();
-    await expect(form.getByRole('alert')).toHaveText('Wähl ein Hotel.');
-    // Picking a check-in (today, focused when the picker opens) doesn't clear the hotel error.
-    await page.keyboard.press('Escape'); // the error focused the hotel field and opened its list
-    await form.getByRole('button', { name: /^Anreise/ }).click();
-    await page.keyboard.press('Enter');
-    await page.keyboard.press('Escape');
-    await expect(form.getByRole('alert')).toHaveText('Wähl ein Hotel.');
-  });
-
   test('how it works, the labelled checkout example and the closing CTA', async ({ page }) => {
     await page.goto('/');
     const how = page.getByRole('region', { name: 'Drei Schritte zum richtigen Moment' });

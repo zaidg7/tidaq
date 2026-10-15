@@ -2,14 +2,16 @@
 
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { ChevronDown, CircleAlert, Search } from 'lucide-react';
-import { hotelPath, localizedPath, stayPath, type Locale } from '@tidaq/core';
+import type { Locale } from '@tidaq/core';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
 import { DatePopover, type DatePopoverLabels } from './DatePopover';
 import { DestinationField, type DestinationLabels } from './DestinationField';
 import { GuestsPopover, type GuestsLabels } from './GuestsPopover';
-import type { Destination, HotelNights, SearchIndex } from './types';
+import type { PhoneSearchLabels } from './PhoneSearch';
+import type { SearchIndex } from './types';
+import { dateRange, useSearch } from './useSearch';
 
 export type SearchBarLabels = {
   label: string;
@@ -29,6 +31,8 @@ export type SearchBarLabels = {
   destination: DestinationLabels;
   datePopover: DatePopoverLabels;
   guestsPopover: GuestsLabels;
+  /** The phone flow's own words (C-109). */
+  phone: PhoneSearchLabels;
 };
 
 type Props = {
@@ -43,43 +47,6 @@ type Props = {
   autoFocus?: boolean;
   className?: string;
 };
-
-type Field = 'where' | 'dates';
-
-const MAX_NIGHTS = 30;
-const DAY_MS = 86_400_000;
-
-/** Nights per hotel, fetched once per page view. */
-const nightsCache = new Map<string, Promise<HotelNights>>();
-const NO_NIGHTS: HotelNights = { nights: [], weekends: [] };
-
-function loadNights(slug: string): Promise<HotelNights> {
-  let request = nightsCache.get(slug);
-  if (!request) {
-    request = fetch(`/api/hotel-nights?slug=${encodeURIComponent(slug)}`)
-      .then((r) => (r.ok ? (r.json() as Promise<HotelNights>) : NO_NIGHTS))
-      .catch(() => {
-        nightsCache.delete(slug);
-        return NO_NIGHTS;
-      });
-    nightsCache.set(slug, request);
-  }
-  return request;
-}
-
-function nightsBetween(from: string, to: string): number {
-  return Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / DAY_MS);
-}
-
-/** "12. Dez. – 14. Dez." / "12 Dec – 14 Dec". */
-function dateRange(from: string, to: string, locale: Locale): string {
-  const f = new Intl.DateTimeFormat(locale === 'de' ? 'de-DE' : 'en-GB', {
-    day: 'numeric',
-    month: 'short',
-    timeZone: 'UTC',
-  });
-  return `${f.format(new Date(`${from}T00:00:00Z`))} – ${f.format(new Date(`${to}T00:00:00Z`))}`;
-}
 
 /**
  * Desktop search bar (PREMIUM.md §9.1): one white bar, three segments and the button,
@@ -103,29 +70,11 @@ export function SearchBar({
   const formRef = useRef<HTMLFormElement>(null);
   const datesRef = useRef<HTMLButtonElement>(null);
   const guestsRef = useRef<HTMLButtonElement>(null);
-  const [dest, setDest] = useState<Destination>(null);
+  const search = useSearch({ index, today, locale, errors: labels });
+  const { dest, checkIn, checkOut, adults, nights, error } = search;
   const [panel, setPanel] = useState(false);
   const [popover, setPopover] = useState<'dates' | 'guests' | null>(null);
-  const [hotelNights, setHotelNights] = useState<{ slug: string; data: HotelNights } | null>(null);
-  const [checkIn, setCheckIn] = useState('');
-  const [checkOut, setCheckOut] = useState('');
-  const [adults, setAdults] = useState(2);
-  const [submitted, setSubmitted] = useState(false);
   const [shaking, setShaking] = useState(false);
-  const [going, setGoing] = useState(false);
-
-  const nights = checkIn && checkOut ? nightsBetween(checkIn, checkOut) : null;
-  const hotelSlug = dest?.kind === 'hotel' ? dest.slug : null;
-
-  // A picked hotel's nightly prices tint the calendar.
-  useEffect(() => {
-    if (!hotelSlug) return;
-    let live = true;
-    void loadNights(hotelSlug).then((data) => live && setHotelNights({ slug: hotelSlug, data }));
-    return () => {
-      live = false;
-    };
-  }, [hotelSlug]);
 
   // A click outside the bar closes an open popover.
   useEffect(() => {
@@ -142,48 +91,18 @@ export function SearchBar({
     ref.current?.focus();
   };
 
-  const problem = (): { field: Field; text: string } | null => {
-    if (!dest) return { field: 'where', text: labels.missing };
-    if (dest.kind === 'city' || (!checkIn && !checkOut)) return null;
-    if (!checkIn || !checkOut) return { field: 'dates', text: labels.datesMissing };
-    if (checkIn < today) return { field: 'dates', text: labels.past };
-    if (checkOut <= checkIn) return { field: 'dates', text: labels.order };
-    if ((nights ?? 0) > MAX_NIGHTS) return { field: 'dates', text: labels.tooLong };
-    return null;
-  };
-  const error = submitted ? problem() : null;
-
-  const go = (path: string) => {
-    setGoing(true);
-    window.location.assign(localizedPath(path, locale));
-  };
-
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    const p = problem();
+    const p = search.submit();
     if (p?.field === 'where') {
       // Restart the shake even when it's already running.
       setShaking(false);
       requestAnimationFrame(() => setShaking(true));
       whereRef.current?.focus();
       setPanel(true);
-      return;
-    }
-    if (p) {
+    } else if (p) {
       datesRef.current?.focus();
-      return;
     }
-    if (!dest) return;
-    if (dest.kind === 'city') {
-      const city = index.cities.find((c) => c.slug === dest.slug);
-      if (city) {
-        setGoing(true);
-        window.location.assign(city.href);
-      }
-      return;
-    }
-    go(checkIn && checkOut ? stayPath(dest.slug, checkIn, checkOut, adults) : hotelPath(dest.slug));
   };
 
   const errorId = `${id}-error`;
@@ -223,7 +142,7 @@ export function SearchBar({
             id={`${id}-where`}
             index={index}
             value={dest}
-            onChange={setDest}
+            onChange={search.setDest}
             onPicked={(next) => {
               datesRef.current?.focus();
               // A hotel without dates yet: straight on to the calendar.
@@ -312,7 +231,7 @@ export function SearchBar({
         <Button
           type="submit"
           size="lg"
-          loading={going}
+          loading={search.going}
           className="ml-2 h-full shrink-0 rounded-[22px] px-6"
         >
           <Icon icon={Search} size={18} />
@@ -338,16 +257,13 @@ export function SearchBar({
           id={`${id}-dates-popover`}
           checkIn={checkIn}
           checkOut={checkOut}
-          onChange={(nextIn, nextOut) => {
-            setCheckIn(nextIn);
-            setCheckOut(nextOut);
-          }}
+          onChange={search.setDates}
           onClose={() => closeTo(datesRef)}
           onNext={() => {
             setPopover('guests');
             guestsRef.current?.focus();
           }}
-          hotel={hotelSlug && hotelNights?.slug === hotelSlug ? hotelNights.data : null}
+          hotel={search.hotel}
           today={today}
           locale={locale}
           labels={labels.datePopover}
@@ -357,7 +273,7 @@ export function SearchBar({
         <GuestsPopover
           id={`${id}-guests-popover`}
           adults={adults}
-          onChange={setAdults}
+          onChange={search.setAdults}
           onClose={() => closeTo(guestsRef)}
           labels={labels.guestsPopover}
         />

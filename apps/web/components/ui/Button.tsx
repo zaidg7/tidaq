@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { Icon } from './Icon';
@@ -124,6 +124,8 @@ type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string;
   children: ReactNode;
   variant?: 'ghost' | 'subtle' | 'onPhoto';
+  /** React 19: a plain prop, passed through to the <button>. */
+  ref?: Ref<HTMLButtonElement>;
 };
 
 /** 44 px round icon button (menu, search, close, back, share). */

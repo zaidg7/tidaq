@@ -1078,6 +1078,17 @@
     "flexTotal": "for {n} nights",
     "flexCheapest": "Cheapest",
     "flexNone": "No weekend prices for this month yet.",
-    "flexHint": "Pick a hotel to see its cheapest weekends here."
+    "flexHint": "Pick a hotel to see its cheapest weekends here.",
+    "pillTitle": "Where to?",
+    "pillText": "Hotel or city · Dates · Guests",
+    "dialog": "Search",
+    "stepWhere": "Where to?",
+    "stepWhen": "When?",
+    "stepWho": "Who?",
+    "close": "Close",
+    "back": "Back",
+    "skip": "Skip",
+    "clearAll": "Clear all",
+    "submitPhone": "See prices"
   }
 }

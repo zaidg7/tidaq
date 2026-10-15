@@ -1080,6 +1080,17 @@
     "flexTotal": "für {n} Nächte",
     "flexCheapest": "Am günstigsten",
     "flexNone": "Für diesen Monat haben wir noch keine Wochenendpreise.",
-    "flexHint": "Wähl ein Hotel, dann siehst du hier seine günstigsten Wochenenden."
+    "flexHint": "Wähl ein Hotel, dann siehst du hier seine günstigsten Wochenenden.",
+    "pillTitle": "Wohin?",
+    "pillText": "Hotel oder Stadt · Daten · Gäste",
+    "dialog": "Suche",
+    "stepWhere": "Wohin?",
+    "stepWhen": "Wann?",
+    "stepWho": "Wer?",
+    "close": "Schließen",
+    "back": "Zurück",
+    "skip": "Überspringen",
+    "clearAll": "Alles löschen",
+    "submitPhone": "Preise ansehen"
   }
 }
