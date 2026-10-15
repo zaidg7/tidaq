@@ -1059,6 +1059,17 @@
     "resultsOther": "{n} results",
     "noMatch": "Nothing found. Try a city like Berlin or Vienna.",
     "missing": "Pick a hotel or a city.",
-    "clear": "Clear"
+    "clear": "Clear",
+    "clearDates": "Clear dates",
+    "next": "Next",
+    "legendCheap": "cheaper",
+    "legendDear": "dearer",
+    "pricesNote": "Price per night, 2 adults",
+    "perNight": "{price} per night",
+    "levels": "very cheap|cheap|average|expensive|very expensive",
+    "adults": "Adults",
+    "adultsHint": "Prices are for the whole room",
+    "fewer": "One adult fewer",
+    "more": "One adult more"
   }
 }

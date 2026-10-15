@@ -33,3 +33,8 @@ export type SearchIndex = {
 };
 
 export type Destination = { kind: 'hotel' | 'city'; slug: string } | null;
+
+/** `/api/hotel-nights`: today's price of every night at one hotel, level 0 (cheap) … 4 (dear). */
+export type HotelNights = {
+  nights: { night: string; cents: number | null; level: number | null }[];
+};

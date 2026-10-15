@@ -1061,6 +1061,17 @@
     "resultsOther": "{n} Treffer",
     "noMatch": "Nichts gefunden. Versuch eine Stadt wie Berlin oder Wien.",
     "missing": "Wähl ein Hotel oder eine Stadt.",
-    "clear": "Eingabe löschen"
+    "clear": "Eingabe löschen",
+    "clearDates": "Daten löschen",
+    "next": "Weiter",
+    "legendCheap": "günstiger",
+    "legendDear": "teurer",
+    "pricesNote": "Preis pro Nacht, 2 Erwachsene",
+    "perNight": "{price} pro Nacht",
+    "levels": "sehr günstig|günstig|mittel|teuer|sehr teuer",
+    "adults": "Erwachsene",
+    "adultsHint": "Preise gelten fürs ganze Zimmer",
+    "fewer": "Ein Erwachsener weniger",
+    "more": "Ein Erwachsener mehr"
   }
 }

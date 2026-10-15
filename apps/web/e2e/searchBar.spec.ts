@@ -103,3 +103,62 @@ test.describe('search bar', () => {
     );
   });
 });
+
+test.describe('dates and guests (C-108)', () => {
+  test('a picked hotel tints the calendar with its nightly prices', async ({ page }) => {
+    await page.goto('/dev/search');
+    await where(page).fill('dolder');
+    await page.keyboard.press('Enter');
+    const dates = page.getByRole('dialog', { name: 'Reisedaten' });
+    await expect(dates).toBeVisible();
+    await expect(dates.getByText('Preis pro Nacht, 2 Erwachsene')).toBeVisible();
+    // Keyboard focus lands on today, which names its price.
+    await expect(dates.locator('td:focus')).toHaveAttribute('aria-label', /heute, .+ pro Nacht/);
+    await expect(dates.getByRole('gridcell', { name: /pro Nacht/ }).first()).toBeVisible();
+  });
+
+  test('range, Weiter, guests stepper and submit with adults', async ({ page }) => {
+    await page.goto('/dev/search');
+    await where(page).fill('dolder');
+    await page.keyboard.press('Enter');
+    const dates = page.getByRole('dialog', { name: 'Reisedaten' });
+    // From today: → (tomorrow) Enter = check-in, → → Enter = check-out two nights later.
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Enter');
+    await expect(dates.getByText(/^2 Nächte · /)).toBeVisible();
+    await expect(bar(page).getByRole('button', { name: /^Reisedaten · 2 Nächte/ })).toBeVisible();
+
+    await dates.getByRole('button', { name: 'Weiter' }).click();
+    const guests = page.getByRole('dialog', { name: 'Gäste' });
+    await expect(guests.getByRole('button', { name: 'Ein Erwachsener mehr' })).toBeFocused();
+    await guests.getByRole('button', { name: 'Ein Erwachsener mehr' }).click();
+    await expect(bar(page).getByRole('button', { name: /^Gäste 3 Erwachsene/ })).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(guests).toBeHidden();
+    await expect(bar(page).getByRole('button', { name: /^Gäste/ })).toBeFocused();
+
+    await bar(page).getByRole('button', { name: 'Preis prüfen' }).click();
+    await expect(page).toHaveURL(
+      /\/hotel\/the-dolder-grand-zuerich\/\d{4}-\d\d-\d\d--\d{4}-\d\d-\d\d\?adults=3$/,
+    );
+  });
+
+  test('Esc and a click outside close the calendar', async ({ page }) => {
+    await page.goto('/dev/search');
+    const trigger = bar(page).getByRole('button', { name: /^Reisedaten/ });
+    await trigger.click();
+    const dates = page.getByRole('dialog', { name: 'Reisedaten' });
+    await expect(dates).toBeVisible();
+    // A city or no destination: no prices in the cells.
+    await expect(dates.getByRole('gridcell', { name: /pro Nacht/ })).toHaveCount(0);
+    await page.keyboard.press('Escape');
+    await expect(dates).toBeHidden();
+    await expect(trigger).toBeFocused();
+    await trigger.click();
+    await page.mouse.click(20, 20);
+    await expect(dates).toBeHidden();
+  });
+});

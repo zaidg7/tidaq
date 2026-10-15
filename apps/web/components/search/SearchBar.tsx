@@ -1,14 +1,15 @@
 'use client';
 
-import { useId, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { ChevronDown, CircleAlert, Search } from 'lucide-react';
 import { hotelPath, localizedPath, stayPath, type Locale } from '@tidaq/core';
-import { DateRangePicker, type PickerLabels } from '@/components/home/DateRangePicker';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
+import { DatePopover, type DatePopoverLabels } from './DatePopover';
 import { DestinationField, type DestinationLabels } from './DestinationField';
-import type { Destination, SearchIndex } from './types';
+import { GuestsPopover, type GuestsLabels } from './GuestsPopover';
+import type { Destination, HotelNights, SearchIndex } from './types';
 
 export type SearchBarLabels = {
   label: string;
@@ -26,7 +27,8 @@ export type SearchBarLabels = {
   /** With `{n}`. */
   nightsOther: string;
   destination: DestinationLabels;
-  picker: PickerLabels;
+  datePopover: DatePopoverLabels;
+  guestsPopover: GuestsLabels;
 };
 
 type Props = {
@@ -47,6 +49,24 @@ type Field = 'where' | 'dates';
 const MAX_NIGHTS = 30;
 const DAY_MS = 86_400_000;
 
+/** Nights per hotel, fetched once per page view. */
+const nightsCache = new Map<string, Promise<HotelNights['nights']>>();
+
+function loadNights(slug: string): Promise<HotelNights['nights']> {
+  let request = nightsCache.get(slug);
+  if (!request) {
+    request = fetch(`/api/hotel-nights?slug=${encodeURIComponent(slug)}`)
+      .then((r) => (r.ok ? (r.json() as Promise<HotelNights>) : { nights: [] }))
+      .then((body) => body.nights)
+      .catch(() => {
+        nightsCache.delete(slug);
+        return [];
+      });
+    nightsCache.set(slug, request);
+  }
+  return request;
+}
+
 function nightsBetween(from: string, to: string): number {
   return Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / DAY_MS);
 }
@@ -66,7 +86,8 @@ function dateRange(from: string, to: string, locale: Locale): string {
  * "Hotel oder Stadt · Reisedaten · Gäste · Preis prüfen". The active segment lifts out in white
  * while the bar turns `--surface-2`. Picking a destination moves on to the dates. Submit
  * (§9.3): hotel + dates → stay page, hotel only → hotel page, city → city page, nothing → the
- * panel opens and the field shakes. Dates and guests get their own popovers in C-108.
+ * panel opens and the field shakes. Dates open a two-month popover that shows the picked
+ * hotel's price for every night (C-108); guests a stepper.
  */
 export function SearchBar({
   index,
@@ -79,10 +100,16 @@ export function SearchBar({
 }: Props) {
   const id = useId();
   const whereRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const datesRef = useRef<HTMLButtonElement>(null);
+  const guestsRef = useRef<HTMLButtonElement>(null);
   const [dest, setDest] = useState<Destination>(null);
   const [panel, setPanel] = useState(false);
-  const [picker, setPicker] = useState<'in' | 'out' | null>(null);
+  const [popover, setPopover] = useState<'dates' | 'guests' | null>(null);
+  const [hotelNights, setHotelNights] = useState<{
+    slug: string;
+    nights: HotelNights['nights'];
+  } | null>(null);
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [adults, setAdults] = useState(2);
@@ -91,6 +118,32 @@ export function SearchBar({
   const [going, setGoing] = useState(false);
 
   const nights = checkIn && checkOut ? nightsBetween(checkIn, checkOut) : null;
+  const hotelSlug = dest?.kind === 'hotel' ? dest.slug : null;
+
+  // A picked hotel's nightly prices tint the calendar.
+  useEffect(() => {
+    if (!hotelSlug) return;
+    let live = true;
+    void loadNights(hotelSlug).then((n) => live && setHotelNights({ slug: hotelSlug, nights: n }));
+    return () => {
+      live = false;
+    };
+  }, [hotelSlug]);
+
+  // A click outside the bar closes an open popover.
+  useEffect(() => {
+    if (!popover) return;
+    const onDown = (e: PointerEvent) => {
+      if (!formRef.current?.contains(e.target as Node)) setPopover(null);
+    };
+    document.addEventListener('pointerdown', onDown);
+    return () => document.removeEventListener('pointerdown', onDown);
+  }, [popover]);
+
+  const closeTo = (ref: { current: HTMLButtonElement | null }) => {
+    setPopover(null);
+    ref.current?.focus();
+  };
 
   const problem = (): { field: Field; text: string } | null => {
     if (!dest) return { field: 'where', text: labels.missing };
@@ -146,6 +199,7 @@ export function SearchBar({
 
   return (
     <form
+      ref={formRef}
       onSubmit={onSubmit}
       noValidate
       aria-label={labels.label}
@@ -154,7 +208,8 @@ export function SearchBar({
       <div
         className={cn(
           'flex h-[76px] items-stretch rounded-search border border-line bg-surface p-2 shadow-3',
-          'transition-colors duration-[var(--t-base)] ease-out has-[.seg:focus-within]:bg-surface-2',
+          'transition-colors duration-[var(--t-base)] ease-out',
+          'has-[.seg:focus-within]:bg-surface-2 has-[.seg[data-active]]:bg-surface-2',
         )}
       >
         <Segment
@@ -175,10 +230,13 @@ export function SearchBar({
             onPicked={(next) => {
               datesRef.current?.focus();
               // A hotel without dates yet: straight on to the calendar.
-              if (next.kind === 'hotel' && !checkIn) setPicker('in');
+              if (next.kind === 'hotel' && !checkIn) setPopover('dates');
             }}
             open={panel}
-            onOpenChange={setPanel}
+            onOpenChange={(o) => {
+              setPanel(o);
+              if (o) setPopover(null);
+            }}
             labels={labels.destination}
             invalid={error?.field === 'where'}
             describedBy={error?.field === 'where' ? errorId : undefined}
@@ -191,6 +249,7 @@ export function SearchBar({
           htmlFor={`${id}-dates`}
           labelId={`${id}-dates-label`}
           invalid={error?.field === 'dates'}
+          active={popover === 'dates'}
           className="flex-1"
         >
           <span
@@ -208,33 +267,50 @@ export function SearchBar({
             id={`${id}-dates`}
             type="button"
             aria-haspopup="dialog"
+            aria-expanded={popover === 'dates'}
+            aria-controls={popover === 'dates' ? `${id}-dates-popover` : undefined}
             aria-labelledby={`${id}-dates-label ${id}-dates-value`}
             aria-invalid={error?.field === 'dates' || undefined}
             aria-describedby={error?.field === 'dates' ? errorId : undefined}
-            onClick={() => setPicker(checkIn && !checkOut ? 'out' : 'in')}
+            onClick={() => setPopover(popover === 'dates' ? null : 'dates')}
             className="control"
           />
         </Segment>
         <Divider />
-        <Segment label={labels.guests} htmlFor={`${id}-guests`} className="flex-[0.85]">
+        <Segment
+          label={labels.guests}
+          htmlFor={`${id}-guests`}
+          labelId={`${id}-guests-label`}
+          active={popover === 'guests'}
+          className="flex-[0.85]"
+        >
           <span aria-hidden="true" className="flex items-center justify-between gap-2">
-            <span className="truncate text-[15px] leading-snug font-semibold text-ink">
+            <span
+              id={`${id}-guests-value`}
+              className="truncate text-[15px] leading-snug font-semibold text-ink"
+            >
               {guestOptions[adults - 1]}
             </span>
-            <Icon icon={ChevronDown} size={16} className="shrink-0 text-muted" />
+            <Icon
+              icon={ChevronDown}
+              size={16}
+              className={cn(
+                'shrink-0 text-muted transition-transform duration-[var(--t-fast)]',
+                popover === 'guests' && 'rotate-180',
+              )}
+            />
           </span>
-          <select
+          <button
+            ref={guestsRef}
             id={`${id}-guests`}
-            value={adults}
-            onChange={(e) => setAdults(Number(e.target.value))}
+            type="button"
+            aria-haspopup="dialog"
+            aria-expanded={popover === 'guests'}
+            aria-controls={popover === 'guests' ? `${id}-guests-popover` : undefined}
+            aria-labelledby={`${id}-guests-label ${id}-guests-value`}
+            onClick={() => setPopover(popover === 'guests' ? null : 'guests')}
             className="control"
-          >
-            {guestOptions.map((label, i) => (
-              <option key={label} value={i + 1}>
-                {label}
-              </option>
-            ))}
-          </select>
+          />
         </Segment>
         <Button
           type="submit"
@@ -260,19 +336,35 @@ export function SearchBar({
           {error.text}
         </p>
       )}
-      <DateRangePicker
-        openOn={picker}
-        onClose={() => setPicker(null)}
-        checkIn={checkIn}
-        checkOut={checkOut}
-        onChange={(nextIn, nextOut) => {
-          setCheckIn(nextIn);
-          setCheckOut(nextOut);
-        }}
-        today={today}
-        locale={locale}
-        labels={labels.picker}
-      />
+      {popover === 'dates' && (
+        <DatePopover
+          id={`${id}-dates-popover`}
+          checkIn={checkIn}
+          checkOut={checkOut}
+          onChange={(nextIn, nextOut) => {
+            setCheckIn(nextIn);
+            setCheckOut(nextOut);
+          }}
+          onClose={() => closeTo(datesRef)}
+          onNext={() => {
+            setPopover('guests');
+            guestsRef.current?.focus();
+          }}
+          nights={hotelSlug && hotelNights?.slug === hotelSlug ? hotelNights.nights : null}
+          today={today}
+          locale={locale}
+          labels={labels.datePopover}
+        />
+      )}
+      {popover === 'guests' && (
+        <GuestsPopover
+          id={`${id}-guests-popover`}
+          adults={adults}
+          onChange={setAdults}
+          onClose={() => closeTo(guestsRef)}
+          labels={labels.guestsPopover}
+        />
+      )}
     </form>
   );
 }
@@ -288,6 +380,8 @@ type SegmentProps = {
   invalid?: boolean;
   /** Shown in place of the label (which stays for screen readers). */
   error?: string;
+  /** Its popover is open: stays lifted while focus is inside the popover. */
+  active?: boolean;
   className?: string;
   /** A failed submit shakes the segment (6 px, twice). */
   shaking?: boolean;
@@ -305,6 +399,7 @@ function Segment({
   labelId,
   invalid,
   error,
+  active,
   className,
   shaking,
   onShakeEnd,
@@ -313,10 +408,12 @@ function Segment({
   return (
     <div
       onAnimationEnd={(e) => e.animationName === 'shake' && onShakeEnd?.()}
+      data-active={active || undefined}
       className={cn(
         'seg relative flex min-w-0 flex-col justify-center gap-0.5 rounded-card px-5',
         'transition-[background-color,box-shadow] duration-[var(--t-fast)] ease-out',
         'hover:bg-surface-2 focus-within:bg-surface focus-within:shadow-2 focus-within:hover:bg-surface',
+        active && 'bg-surface shadow-2 hover:bg-surface',
         invalid && 'shadow-[inset_0_0_0_2px_var(--high)]',
         shaking && 'shake',
         className,
