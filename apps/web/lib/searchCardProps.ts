@@ -75,3 +75,47 @@ export async function searchHotels(
     };
   });
 }
+
+/** Strings for the desktop `SearchBar` (C-107); the date picker shares the card's. */
+export async function searchBarProps(locale: Locale) {
+  const ts = await getTranslations({ locale, namespace: 'search' });
+  const tb = await getTranslations({ locale, namespace: 'searchBar' });
+  const card = await searchCardProps(locale);
+  return {
+    guestOptions: card.guestOptions,
+    labels: {
+      label: tb('label'),
+      where: tb('where'),
+      dates: tb('dates'),
+      datesPlaceholder: tb('datesPlaceholder'),
+      guests: tb('guests'),
+      submit: tb('submit'),
+      missing: tb('missing'),
+      datesMissing: ts('datesMissing'),
+      order: ts('order'),
+      tooLong: ts('tooLong'),
+      past: ts('past'),
+      nightsOne: ts('nightsOne'),
+      nightsOther: ts('nightsOther', { n: '{n}' }),
+      picker: card.labels.picker,
+      destination: {
+        placeholder: tb('wherePlaceholder'),
+        listLabel: tb('listLabel'),
+        popular: tb('popular'),
+        cheap: tb('cheap'),
+        cities: tb('cities'),
+        hotels: tb('hotels'),
+        cityHotels: [tb('cityHotelsOne'), tb('cityHotelsOther', { n: '{n}' })] as [string, string],
+        dropBadge: tb('dropBadge'),
+        dropPct: tb('dropPct', { pct: '{pct}' }),
+        results: [tb('resultsNone'), tb('resultsOne'), tb('resultsOther', { n: '{n}' })] as [
+          string,
+          string,
+          string,
+        ],
+        noMatch: tb('noMatch'),
+        clear: tb('clear'),
+      },
+    },
+  };
+}

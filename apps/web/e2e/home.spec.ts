@@ -14,7 +14,9 @@ test.describe('homepage', () => {
     await expect(live.getByText('Günstigster')).toBeVisible();
   });
 
-  test('search explains what is missing and focuses the field', async ({ page }) => {
+  test('search explains what is missing and focuses the field (phone card)', async ({ page }) => {
+    // Phones keep the search card until the full-screen search (C-109).
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     const form = page.getByRole('form', { name: 'Preise suchen' });
     await form.getByRole('button', { name: 'Preise ansehen' }).click();
@@ -22,18 +24,9 @@ test.describe('homepage', () => {
     await expect(form.getByLabel('Hotel', { exact: true })).toBeFocused();
   });
 
-  test('the navbar search leads back to the search card (until C-107 docks it)', async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto('/');
-    await page.mouse.wheel(0, 1400);
-    await page.getByRole('banner').getByRole('link', { name: 'Hotel oder Stadt suchen' }).click();
-    await expect(page).toHaveURL(/#suche$/);
-    await expect(page.getByRole('form', { name: 'Preise suchen' })).toBeInViewport();
-  });
-
-  test('a fixed field clears its error', async ({ page }) => {
+  test('a fixed field clears its error (phone card)', async ({ page }) => {
+    // Phones keep the search card until the full-screen search (C-109).
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     const form = page.getByRole('form', { name: 'Preise suchen' });
     await form.getByRole('button', { name: 'Preise ansehen' }).click();

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { foldText, matchesCity, matchHotels } from './search';
+import { foldText, highlightRange, matchCities, matchesCity, matchHotels } from './search';
 
 const hotels = [
   { slug: 'baur-au-lac', name: 'Baur au Lac', city: 'Zürich' },
@@ -67,5 +67,42 @@ describe('matchesCity', () => {
     expect(matchesCity('adlon', 'Berlin')).toBe(false);
     expect(matchesCity('', 'Berlin')).toBe(false);
     expect(matchesCity('  ', 'Berlin')).toBe(false);
+  });
+});
+
+describe('matchCities', () => {
+  const cities = [{ name: 'Zürich' }, { name: 'Berlin' }, { name: 'New York' }, { name: 'Bern' }];
+  it('returns the cities the query starts, by name', () => {
+    expect(matchCities('ber', cities).map((c) => c.name)).toEqual(['Berlin', 'Bern']);
+    expect(matchCities('zuerich', cities).map((c) => c.name)).toEqual(['Zürich']);
+    expect(matchCities('york', cities).map((c) => c.name)).toEqual(['New York']);
+    expect(matchCities('', cities)).toEqual([]);
+  });
+});
+
+describe('highlightRange', () => {
+  const mark = (text: string, q: string) => {
+    const r = highlightRange(text, q);
+    return r && text.slice(r[0], r[1]);
+  };
+  it('marks the query in the original spelling', () => {
+    expect(mark('Zürich', 'zur')).toBe('Zür');
+    expect(mark('Zürich', 'zuer')).toBe('Zür');
+    expect(mark('Zürich', 'ZÜRICH')).toBe('Zürich');
+    expect(mark('Hotel Adlon Kempinski', 'adlon kem')).toBe('Adlon Kem');
+  });
+  it('prefers a word start over a match inside a word', () => {
+    expect(highlightRange('Rosewood London', 'lon')).toEqual([9, 12]);
+    expect(mark('Hotel Adlon', 'lon')).toBe('lon');
+  });
+  it('handles ß, punctuation and single query words', () => {
+    expect(mark('Schloss Elmau', 'schloß')).toBe('Schloss');
+    expect(mark('Straße 1', 'strasse')).toBe('Straße');
+    expect(mark('Mandarin Oriental, München', 'muenchen')).toBe('München');
+    expect(mark('Hotel Adlon Kempinski', 'berlin adlon')).toBe('Adlon');
+  });
+  it('returns null without a match or query', () => {
+    expect(highlightRange('Berlin', 'xyz')).toBeNull();
+    expect(highlightRange('Berlin', '  ')).toBeNull();
   });
 });

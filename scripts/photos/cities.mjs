@@ -1,5 +1,5 @@
 // C-105: city photos (Unsplash License: free for commercial use, no permission needed) copied once
-// into apps/web/public/cities/<slug>-{480,960,1600}.webp with a 24 px blur placeholder, listed in
+// into apps/web/public/cities/<slug>-{160,480,960,1600}.webp with a 24 px blur placeholder, listed in
 // apps/web/lib/cityPhotos.generated.ts. Used for city tiles, city pages, the home hero and as the
 // labelled "Stadtbild" fallback for hotels without their own photo (PREMIUM.md §7.1).
 //
@@ -14,7 +14,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const webRequire = createRequire(join(root, 'apps/web/package.json'));
 const sharp = createRequire(webRequire.resolve('next/package.json'))('sharp');
 const outDir = join(root, 'apps/web/public/cities');
-const WIDTHS = [480, 960, 1600];
+const WIDTHS = [160, 480, 960, 1600];
 const list = JSON.parse(readFileSync(join(root, 'scripts/photos/cities.json'), 'utf8'));
 mkdirSync(outDir, { recursive: true });
 

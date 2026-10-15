@@ -2,10 +2,12 @@ import { CITY_PHOTOS } from './cityPhotos.generated';
 import type { HotelPhoto, PhotoSize } from './hotelPhotos';
 
 /**
- * A self-hosted city photo (C-105, Unsplash License): 480, 960 and 1600 px, a blur placeholder,
+ * A self-hosted city photo (C-105, Unsplash License): 160, 480, 960 and 1600 px, a blur placeholder,
  * the German alt text and the Unsplash page it came from.
  */
 export type CityPhoto = {
+  /** Thumbnails: search chips and rows (C-107). */
+  160: PhotoSize;
   480: PhotoSize;
   960: PhotoSize;
   1600: PhotoSize;

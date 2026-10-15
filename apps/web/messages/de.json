@@ -96,7 +96,12 @@
     "menuClose": "Menü schließen",
     "menuTitle": "Menü",
     "drops": "Price Drops",
-    "menuAlert": "Price Alert aktivieren"
+    "menuAlert": "Price Alert aktivieren",
+    "pillWhere": "Hotel oder Stadt",
+    "pillWhen": "Daten",
+    "pillWho": "Gäste",
+    "searchDialog": "Suche",
+    "searchClose": "Suche schließen"
   },
   "footer": {
     "tagline": "Preise für Fünf-Sterne-Hotels. Jeden Morgen neu geprüft.",
@@ -1033,5 +1038,29 @@
   },
   "photo": {
     "cityTag": "Stadtbild"
+  },
+  "searchBar": {
+    "label": "Preise suchen",
+    "where": "Hotel oder Stadt",
+    "wherePlaceholder": "Wohin geht's?",
+    "dates": "Reisedaten",
+    "datesPlaceholder": "Daten wählen",
+    "guests": "Gäste",
+    "submit": "Preis prüfen",
+    "listLabel": "Ziele",
+    "popular": "Beliebte Städte",
+    "cheap": "Gerade günstig",
+    "cities": "Städte",
+    "hotels": "Hotels",
+    "cityHotelsOne": "Stadt · 1 Hotel",
+    "cityHotelsOther": "Stadt · {n} Hotels",
+    "dropBadge": "Price Drop",
+    "dropPct": "−{pct} %",
+    "resultsNone": "Nichts gefunden",
+    "resultsOne": "1 Treffer",
+    "resultsOther": "{n} Treffer",
+    "noMatch": "Nichts gefunden. Versuch eine Stadt wie Berlin oder Wien.",
+    "missing": "Wähl ein Hotel oder eine Stadt.",
+    "clear": "Eingabe löschen"
   }
 }
