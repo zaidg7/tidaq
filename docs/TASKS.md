@@ -154,6 +154,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-136 | Search popovers compact: dates 600 px with smaller cells, destination 420 px, guests 340 px (Zaid: "not so HUGE") | CLOUD | S | – | DONE (PR pending) |
 | C-137 | No pill selections anywhere (D-49): section nav, text tabs, selects/steppers, text lines | CLOUD | M | – | DONE (PR pending) |
 | C-138 | Hero "Fünf Sterne, wenn sie günstig sind." with gold stars; popovers centred over their field; stronger carousel arrows; cities hero in two lines on a Maldives photo | CLOUD | S | – | DONE (PR pending) |
+| C-139 | Live check of Price Drops: each drop's exact trip re-asked on its site every 30 min (own 5-min cron); gone drops disappear, live ones show the checked price and time | CLOUD | M | – | DONE (PR pending; needs the production collector deploy) |
+| C-140 | One direct button to the offer on every drop; official websites for all hotels; hotel website rows in the price table like the others | CLOUD | S | – | TODO |
+| C-141 | Hero line rewritten (German first) and own photos for the last 17 hotels | CLOUD | S | – | TODO |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034, C-123               | TODO           |
 | C-041a                                                          | Launch hardening: axe checks, security headers                               | CLOUD | S             | C-031a                            | DONE           |

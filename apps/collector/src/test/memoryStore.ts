@@ -10,6 +10,8 @@ import type {
   CatalogHotel,
   CollectorStore,
   DayReport,
+  DropCheckJob,
+  DropCheckRow,
   NightAccuracyRow,
   RunKind,
   RunPatch,
@@ -71,6 +73,9 @@ export function memoryStore(
   /** Preissturz-Alarm (C-080e2): subscribers with the day of their last email, and drops. */
   const dropRecipients: (DropAlertRecipient & { sentOn: string | null })[] = [];
   const drops: PriceDropRow[] = [];
+  /** Live checks of drops (C-139): tests push due jobs; recorded checks land in dropChecks. */
+  const dropCheckJobs: DropCheckJob[] = [];
+  const dropChecks: DropCheckRow[] = [];
   /** Website errors for the daily check (C-041c); tests push into it. */
   const webErrors: (WebErrorRow & { env: string })[] = [];
   /** Today's offers per watch id (C-031b). */
@@ -365,6 +370,12 @@ export function memoryStore(
         w.lastAlertAt = new Date().toISOString();
       }
     },
+    async dropCheckJobs(_today, _staleMinutes, limit) {
+      return dropCheckJobs.slice(0, limit);
+    },
+    async recordDropChecks(rows) {
+      dropChecks.push(...rows);
+    },
     async nightJobs(today, window, limit) {
       const jobs: { hotelId: number; xoteloKey: string; night: string }[] = [];
       for (let i = 0; i < window; i++) {
@@ -417,6 +428,8 @@ export function memoryStore(
     dealCandidates,
     dropRecipients,
     drops,
+    dropCheckJobs,
+    dropChecks,
     alertOffers,
     recordedAlerts,
     /** Sets the `posted_at` time for tasks recorded from now on. */

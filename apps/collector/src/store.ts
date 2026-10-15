@@ -35,6 +35,29 @@ export interface StayJob {
  */
 export type RunKind = 'morning' | 'evening' | 'collect' | 'manual' | 'request' | 'nights';
 
+/** A Price Drop due for its live check (SQL `drop_check_jobs`, C-139). */
+export interface DropCheckJob {
+  hotelId: number;
+  xoteloKey: string;
+  night: string;
+  checkOut: string;
+  providerSlug: string;
+  /** The drop's total when it was found, cents. */
+  nowCents: number;
+}
+
+/** One live check's answer (table `drop_checks`). */
+export interface DropCheckRow {
+  hotelId: number;
+  night: string;
+  checkOut: string;
+  providerSlug: string;
+  checkedAt: string;
+  live: boolean;
+  cents: number | null;
+  bestCents: number | null;
+}
+
 /** A (hotel, night) pair still to price today (SQL `night_jobs`, C-070a). */
 export interface NightJob {
   hotelId: number;
@@ -146,6 +169,10 @@ export interface CollectorStore {
   dayReport(today: string): Promise<DayReport>;
   /** Nights without a row for `today`, nearest first (SQL `night_jobs`). */
   nightJobs(today: string, window: number, limit: number): Promise<NightJob[]>;
+  /** Price Drops whose last live check is older than `staleMinutes`, oldest first (C-139). */
+  dropCheckJobs(today: string, staleMinutes: number, limit: number): Promise<DropCheckJob[]>;
+  /** Stores live checks, one row per trip (upsert). */
+  recordDropChecks(rows: readonly DropCheckRow[]): Promise<void>;
   /** Stores a batch of nights (SQL `night_ingest`). Returns the rows written. */
   ingestNights(payload: NightIngestPayload): Promise<number>;
   /** Compares `day`'s night sums with its real stay prices and stores the result (C-070c). */

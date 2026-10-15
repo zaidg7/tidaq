@@ -354,6 +354,43 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
       return rows.map((r) => ({ hotelId: r.hotel_id, xoteloKey: r.xotelo_key, night: r.night }));
     },
 
+    async dropCheckJobs(today, staleMinutes, limit) {
+      const rows = check(
+        await db.rpc('drop_check_jobs', {
+          p_today: today,
+          p_stale_minutes: staleMinutes,
+          p_limit: limit,
+        }),
+        'load drop check jobs',
+      );
+      return rows.map((r) => ({
+        hotelId: r.hotel_id,
+        xoteloKey: r.xotelo_key,
+        night: r.night,
+        checkOut: r.check_out,
+        providerSlug: r.provider_slug,
+        nowCents: r.now_cents,
+      }));
+    },
+
+    async recordDropChecks(rows) {
+      checkOk(
+        await db.from('drop_checks').upsert(
+          rows.map((r) => ({
+            hotel_id: r.hotelId,
+            night: r.night,
+            check_out: r.checkOut,
+            provider_slug: r.providerSlug,
+            checked_at: r.checkedAt,
+            live: r.live,
+            cents: r.cents,
+            best_cents: r.bestCents,
+          })),
+        ),
+        'store drop checks',
+      );
+    },
+
     async ingestNights(payload) {
       const res = await db.rpc('night_ingest', {
         payload:

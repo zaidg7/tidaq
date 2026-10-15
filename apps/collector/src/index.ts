@@ -1,3 +1,4 @@
+import { runDropChecks } from './dropChecks';
 import { runToken, safeEqual } from '@tidaq/core';
 import { runAlerts } from './alerts';
 import { runDropAlerts } from './dropAlerts';
@@ -31,6 +32,8 @@ export const CRON_EVENING = '0 17 * * *';
 export const CRON_COLLECT = '*/2 * * * *';
 /** Daily check after the morning collect window: prune raw JSON, email problems (C-013c). */
 export const CRON_DAILY = '55 7 * * *';
+/** Live check of Price Drops (C-139): its own invocation, so it never takes night-grid requests. */
+export const CRON_DROPS = '*/5 * * * *';
 
 /** Seams for tests: the real worker uses Supabase and global fetch. */
 export interface Deps {
@@ -191,6 +194,16 @@ export function createWorker(deps: Deps = {}) {
         } catch (err) {
           await mail(env, crashEmail('drop alerts', err));
         }
+        return;
+      }
+      if (controller.cron === CRON_DROPS) {
+        const summary = await runDropChecks({
+          store: storeFor(env, deps),
+          env,
+          now: now(),
+          fetchFn: deps.fetchFn,
+        });
+        if (summary.checked > 0) log('drop checks done', { ...summary });
         return;
       }
       if (controller.cron === CRON_COLLECT) {

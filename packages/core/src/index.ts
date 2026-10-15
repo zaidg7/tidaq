@@ -297,6 +297,7 @@ export {
   type PriceDrop,
   type PriceDropRow,
 } from './drops';
+export { DROP_CHECK, judgeDropCheck, type DropCheckOffer, type DropCheckResult } from './dropCheck';
 export {
   PLATFORMS,
   POSTED,
