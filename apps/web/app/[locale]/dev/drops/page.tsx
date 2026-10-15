@@ -88,6 +88,7 @@ export default async function DevDropsPage({
         series={history(group.top.prevCents, group.top.nowCents, today)}
         others={all.filter((g) => g !== group)}
         offer={group.top.provider.direct ? null : { partner: group.hotel.slug.startsWith('baur') }}
+        credit={group.image?.city ? null : { text: 'Beispiel-Fotograf, CC BY-SA 4.0', href: null }}
         locale={locale}
         today={today}
         now={new Date()}

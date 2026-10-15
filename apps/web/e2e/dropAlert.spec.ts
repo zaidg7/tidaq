@@ -35,20 +35,19 @@ test.describe('Preissturz-Alarm (C-080e1)', () => {
   });
 
   test('drop pages and hotel pages offer "only this hotel" first (C-080k1)', async ({ page }) => {
+    // The drop page (mockup B): the alert is for this hotel, only the address to enter.
     await page.goto('/dev/drops?share');
-    const section = page.getByRole('region', { name: 'Preissturz-Alarm' });
-    const scope = section.getByLabel('Alarm für');
-    await expect(scope).toHaveValue('hotel:baur-au-lac-zuerich');
-    await expect(scope.locator('option').first()).toHaveText('Nur Baur au Lac');
-    await expect(scope.locator('option').nth(1)).toHaveText('Alle Städte');
-    await expect(section).toContainText('sobald Baur au Lac über Nacht deutlich günstiger wird');
-    // A whole city is still one tap away.
-    await scope.selectOption('zuerich');
+    const onDrop = page.getByRole('region', { name: 'Price Alert für dieses Hotel' });
+    await expect(onDrop.locator('input[name="city"]')).toHaveValue('hotel:baur-au-lac-zuerich');
+    await expect(onDrop).toContainText('wenn Baur au Lac wieder billiger wird');
 
+    // The gone-drop page keeps the full form: this hotel first, a whole city one tap away.
     await page.goto('/dev/drops?over');
-    await expect(
-      page.getByRole('region', { name: 'Preissturz-Alarm' }).getByLabel('Alarm für'),
-    ).toHaveValue('hotel:hotel-adlon-kempinski-berlin');
+    const scope = page.getByRole('region', { name: 'Preissturz-Alarm' }).getByLabel('Alarm für');
+    await expect(scope).toHaveValue('hotel:hotel-adlon-kempinski-berlin');
+    await expect(scope.locator('option').first()).toHaveText('Nur Hotel Adlon Kempinski');
+    await expect(scope.locator('option').nth(1)).toHaveText('Alle Städte');
+    await scope.selectOption('berlin');
 
     await page.goto('/dev/hotel/calendar');
     const onHotel = page.getByRole('region', { name: 'Preissturz-Alarm' });

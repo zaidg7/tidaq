@@ -104,6 +104,8 @@ export type DropPageLoad =
       others: HotelDropsWithPhoto[];
       /** The drop's site, when we can send visitors there (C-080g); `partner` = affiliate link. */
       offer: { partner: boolean } | null;
+      /** Credit for the hotel's own photo ("Toglenn, CC BY-SA 3.0"); null for city photos. */
+      credit: { text: string; href: string | null } | null;
     }
   /** Not (or no longer) on the radar: the price rose again, or the night has passed. */
   | { kind: 'over'; hotel: CatalogHotel; image: HotelDropsWithPhoto['image'] }
@@ -141,6 +143,19 @@ export const getDropPage = cache(
           return null;
         })
       : Promise.resolve(null);
+    // The licence asks for the author's name next to the photo (C-011c).
+    const creditLoad = found.group.image?.city
+      ? Promise.resolve(null)
+      : rest(
+          `hotels?select=image_credit,image_source_url&slug=eq.${encodeURIComponent(slug)}`,
+          z.object({
+            image_credit: z.string().nullable(),
+            image_source_url: z.string().nullable(),
+          }),
+        ).catch((error: unknown) => {
+          reportError('drop photo credit unavailable', error);
+          return null;
+        });
     try {
       const rows = await rpc(
         'stay_history_from_nights',
@@ -158,10 +173,20 @@ export const getDropPage = cache(
       reportError('drop history unavailable', error);
     }
     const offerRow = (await offerLoad)?.[0];
+    const creditRow = (await creditLoad)?.[0];
     return {
       kind: 'ok',
       ...found,
       offer: offerRow ? { partner: isAffiliate(offerRow.affiliate_template) } : null,
+      credit: creditRow?.image_credit
+        ? {
+            // Stored as "Foto: Name, Lizenz, via Wikimedia Commons"; the page adds its own prefix.
+            text: creditRow.image_credit
+              .replace(/^(Foto|Photo):\s*/i, '')
+              .replace(/,?\s*via Wikimedia Commons$/i, ''),
+            href: creditRow.image_source_url,
+          }
+        : null,
       series,
       others: load.drops.filter((g) => g.hotel.slug !== slug),
     };

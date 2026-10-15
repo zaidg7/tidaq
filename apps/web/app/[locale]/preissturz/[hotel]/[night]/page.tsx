@@ -88,6 +88,7 @@ async function DropRouteBody(props: Props) {
         series={load.series}
         others={load.others}
         offer={load.offer}
+        credit={load.credit}
         locale={locale}
         today={today}
         now={new Date()}

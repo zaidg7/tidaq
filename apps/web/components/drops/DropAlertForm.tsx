@@ -50,7 +50,8 @@ export function DropAlertForm({
   labels: DropAlertFormLabels;
   /** `bar`: one white line (E-Mail | Stadt | Aktivieren) on a dark section (homepage, mockup B);
    *  on phones the fields stack inside the white card. */
-  variant?: 'card' | 'bar';
+  /** `hotel` (drop page, mockup B): only the email and a dark button; the alert is for `hotel`. */
+  variant?: 'card' | 'bar' | 'hotel';
 }) {
   const id = useId();
   const [state, action, pending] = useActionState(dropAlertAction, { status: 'idle' });
@@ -93,6 +94,58 @@ export function DropAlertForm({
       <input id={`${id}-website`} name="website" tabIndex={-1} autoComplete="off" />
     </div>
   );
+
+  if (variant === 'hotel' && hotel && labels.bar) {
+    return (
+      <form key={JSON.stringify(values)} action={action} className="relative flex flex-col gap-2.5">
+        <input type="hidden" name="locale" value={locale} />
+        <input type="hidden" name="city" value={`${HOTEL_PREFIX}${hotel.slug}`} />
+        {honeypot}
+        <label htmlFor={`${id}-email`} className="text-[14px] font-semibold">
+          {labels.bar.email}
+        </label>
+        <input
+          id={`${id}-email`}
+          name="email"
+          type="email"
+          required
+          autoComplete="email"
+          inputMode="email"
+          placeholder={labels.bar.placeholder}
+          defaultValue={values?.email}
+          aria-describedby={state.status !== 'idle' ? `${id}-error` : undefined}
+          className="min-h-[52px] rounded-[14px] border border-line-strong bg-surface px-4 text-[17px] text-ink transition-[border-color,box-shadow] duration-[var(--t-fast)] placeholder:text-faint focus:border-accent focus:shadow-halo focus:outline-none"
+        />
+        <label className="mt-1 flex items-start gap-2.5 text-[13.5px] leading-snug text-muted">
+          <input
+            type="checkbox"
+            name="consent"
+            required
+            defaultChecked={values?.consent}
+            className="mt-0.5 size-4 shrink-0 accent-[var(--accent)]"
+          />
+          <span>
+            {labels.consent}{' '}
+            <a
+              href={labels.privacyHref}
+              className="font-semibold text-accent underline-offset-2 hover:underline"
+            >
+              {labels.privacy}
+            </a>
+          </span>
+        </label>
+        {state.status !== 'idle' && (
+          <p id={`${id}-error`} role="alert" className="text-[13.5px] font-semibold text-high">
+            {labels.results[state.status]}
+          </p>
+        )}
+        <Turnstile locale={locale} />
+        <Button type="submit" variant="dark" block loading={pending} className="min-h-[54px]">
+          {labels.bar.submitPhone}
+        </Button>
+      </form>
+    );
+  }
 
   if (variant === 'bar' && labels.bar) {
     const b = labels.bar;
