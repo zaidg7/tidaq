@@ -20,6 +20,8 @@ const PAGES = [
   '/dev/deals',
   '/dev/drops',
   '/dev/drops?teaser',
+  '/dev/drops?share',
+  '/dev/drops?over',
   '/en/dev/drops',
   '/preissturz',
   '/dev/provider?p=booking-com',
@@ -36,7 +38,13 @@ const PAGES = [
 ];
 
 /** Desktop layouts differ most on these; every page runs at phone width. */
-const DESKTOP = new Set(['/', '/dev/stay/tracked', '/dev/hotel/calendar', '/dev/drops']);
+const DESKTOP = new Set([
+  '/',
+  '/dev/stay/tracked',
+  '/dev/hotel/calendar',
+  '/dev/drops',
+  '/dev/drops?share',
+]);
 
 for (const path of PAGES) {
   for (const width of DESKTOP.has(path) ? [390, 1280] : [390]) {
