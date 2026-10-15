@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { isLocale, localizedPath } from '@tidaq/core';
+import { dropAlertOff } from '@/lib/watch/dropAlerts';
 import { newsletterOff } from '@/lib/watch/newsletter';
 import { confirmWatch, removeWatch, unsubscribe, WATCH_PATHS } from '@/lib/watch/watch';
 
@@ -43,5 +44,15 @@ export async function newsletterOffAction(form: FormData) {
   const ok = await newsletterOff(token).catch(() => false);
   redirect(
     `${localizedPath(WATCH_PATHS.manage(token), locale)}?${ok ? 'newsletter-aus' : 'fehler'}=1`,
+  );
+}
+
+/** Stops the Preissturz-Alarm only (C-080e1). */
+export async function dropAlertOffAction(form: FormData) {
+  const locale = localeOf(form);
+  const token = str(form, 'token');
+  const ok = await dropAlertOff(token).catch(() => false);
+  redirect(
+    `${localizedPath(WATCH_PATHS.manage(token), locale)}?${ok ? 'preissturz-aus' : 'fehler'}=1`,
   );
 }

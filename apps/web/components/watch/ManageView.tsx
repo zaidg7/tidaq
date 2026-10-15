@@ -1,6 +1,11 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { formatDateRange, formatPrice, localizedPath, stayPath, type Locale } from '@tidaq/core';
-import { newsletterOffAction, removeAction, unsubscribeAction } from '@/app/[locale]/alarm/actions';
+import {
+  dropAlertOffAction,
+  newsletterOffAction,
+  removeAction,
+  unsubscribeAction,
+} from '@/app/[locale]/alarm/actions';
 import { buttonClasses } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import type { ManageData } from '@/lib/watch/watch';
@@ -92,6 +97,29 @@ export function ManageView({
             );
           })}
         </ul>
+      )}
+
+      {data.drop_alerts && (
+        <section aria-labelledby="drops-title" className="mt-10">
+          <h2 id="drops-title" className="text-h3">
+            {t('dropsTitle')}
+          </h2>
+          <Card className="mt-3 flex flex-wrap items-center justify-between gap-4">
+            <p className="max-w-[30em] text-[15px]">
+              {data.drop_city
+                ? t('dropsCity', {
+                    city: locale === 'de' ? data.drop_city.name_de : data.drop_city.name_en,
+                  })
+                : t('dropsAll')}
+            </p>
+            <form action={dropAlertOffAction}>
+              {hidden}
+              <button type="submit" className={buttonClasses({ variant: 'ghost', size: 'sm' })}>
+                {t('dropsOff')}
+              </button>
+            </form>
+          </Card>
+        </section>
       )}
 
       {data.newsletter && (

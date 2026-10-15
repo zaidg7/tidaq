@@ -9,6 +9,7 @@ import {
   DropsView,
   type DropSource,
 } from '@/components/drops/DropsView';
+import { DropAlertSection } from '@/components/drops/DropAlertSection';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
 import { getDrops, getRadarStats } from '@/lib/data/drops';
@@ -66,6 +67,7 @@ export default async function DropsPage({ params, searchParams }: Props) {
       now={new Date()}
       checked={checked}
       source={source}
+      alert={<DropAlertSection locale={locale} defaultCity={filters.city} />}
     />
   );
 }

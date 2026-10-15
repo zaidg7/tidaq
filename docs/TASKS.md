@@ -87,7 +87,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-080b | Shareable drop page per hotel and night + in-browser story image (Web Share) | CLOUD | M | C-080a | DONE |
 | C-080c | Creator kit in /admin: top drops, captions, story images for TikTok/Instagram | CLOUD | S | C-080b | DONE |
 | C-080d | TikTok landing: hero drop above the fold, usual-price anchor, live proof, /tiktok | CLOUD | M | C-080a | DONE |
-| C-080e | Preissturz-Alarm: email sign-up for drops in a city (or all), daily send | CLOUD | M | C-080d, C-031a | TODO |
+| C-080e1 | Preissturz-Alarm sign-up: city or all, double opt-in, manage, privacy | CLOUD | M | C-080d, C-031a | DONE |
+| C-080e2 | Preissturz-Alarm send: daily email with new drops (dry run until launch) | CLOUD | M | C-080e1 | TODO |
 | C-080f | Weekend drops (2 nights, same site) on the radar | CLOUD | M | C-080a | TODO |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
@@ -1010,8 +1011,13 @@ The radar's job is turning a TikTok viewer into a user, not producing posts (Zai
 
 ### C-080e · Preissturz-Alarm
 
-Owner: CLOUD · Size: M · Depends on: C-080d, C-031a · Status: TODO
+Owner: CLOUD · Size: M · Depends on: C-080d, C-031a · Status: e1 DONE, e2 TODO
 The conversion step for TikTok visitors: "Schick mir Preisstürze in Paris" (or all cities) on the radar (under the hero), drop pages and city pages. Double opt-in through `watchers` like the newsletter (one address, manage page, one-click unsubscribe). The collector sends at most one email per day per subscriber, only with drops not sent before (the hotel and night), biggest first, with photo-less list rows (hotel, night, both prices, usual price, link to the drop page). Dry run until launch like the alerts. Mind the Workers 50 subrequests per cron run (batch API). Privacy §6 gets one sentence.
+
+**C-080e1 notes (DONE):** Migration `20261015082112_drop_alerts`: `watchers` gets `drop_alerts`, `drop_city` (city slug, null = all), `drop_consent_text`, `drop_at`, `drop_sent_on` (for e2's one-a-day rule); SQL `drop_alert_request(email, locale, consent, city)` (same 1-minute resend guard and 7-day cleanup as the newsletter; `email_kind` confirm / added / already, "already" = same city) and `drop_alert_off`; `watch_manage` returns `drop_alerts` and `drop_city` (with names). Web: `lib/watch/dropAlerts.ts`, server action `app/[locale]/preissturz/alertAction.ts` (honeypot, 5 per 10 min per IP), `DropAlertForm` (city select with "Alle Städte" first, email, consent never pre-ticked; works without JS) inside `DropAlertSection` (cities from the catalog; the preselected city is always offered). Placed on the radar (after the drops, with a "Preissturz-Alarm einrichten" jump link under the hero; preselects the city filter), drop pages (the drop's city), the "Preissturz vorbei" page and city pages. Manage page: "Preissturz-Alarm" section with "Preissturz-Alarm beenden" (other alerts stay); confirmation notice for alarm-only addresses. Confirm and "added" mails: `dropAlertMail` messages. Privacy §6: one paragraph (heading and anchor unchanged). Nothing is sent to subscribers yet (e2).
+
+**C-080e2 (TODO):** collector, in the daily cron after the newsletter: read today's drops (`radar_drops`, `seen_day = today`), the confirmed subscribers (`drop_alerts`, not unsubscribed, `drop_sent_on` before today), pick per subscriber the drops in their city (or all), top 5 hotels biggest first; skip people with none. Core `dropAlertMail` (subject "−31 % im Baur au Lac und 3 weitere Preisstürze"; list rows: hotel, city, night, both prices, usual price, link to the drop page) + `renderMail`; Resend batch API (100 per call) with `List-Unsubscribe`; then set `drop_sent_on = today` for the sent ids (one PATCH per batch). Live only with the alerts' conditions; dry run logs counts.
+
 
 ### C-080f · Weekend drops
 

@@ -13,6 +13,7 @@ import {
   type Locale,
 } from '@tidaq/core';
 import { CityView } from '@/components/city/CityView';
+import { DropAlertSection } from '@/components/drops/DropAlertSection';
 import { DropsTeaser, dropsHref } from '@/components/drops/DropsTeaser';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
@@ -94,14 +95,17 @@ export default async function CityPageRoute(props: Props) {
   return (
     <CityView city={result.city} hotels={result.hotels}>
       {cityDrops.length > 0 && (
-        <DropsTeaser
-          drops={cityDrops}
-          locale={locale}
-          title={td('cityTitle', { where: cityIn(slug, result.city.name[locale], locale) })}
-          href={dropsHref(locale, slug)}
-          id="city-drops"
-        />
+        <div className="mb-14 lg:mb-[88px]">
+          <DropsTeaser
+            drops={cityDrops}
+            locale={locale}
+            title={td('cityTitle', { where: cityIn(slug, result.city.name[locale], locale) })}
+            href={dropsHref(locale, slug)}
+            id="city-drops"
+          />
+        </div>
       )}
+      <DropAlertSection locale={locale} defaultCity={{ slug, name: result.city.name[locale] }} />
     </CityView>
   );
 }
