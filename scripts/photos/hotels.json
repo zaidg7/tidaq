@@ -1,0 +1,583 @@
+[
+  {
+    "slug": "1-hotel-south-beach-miami",
+    "name": "1 Hotel South Beach",
+    "city": "Miami",
+    "lat": 25.799442,
+    "lng": -80.12735
+  },
+  {
+    "slug": "aman-tokyo",
+    "name": "Aman Tokyo",
+    "city": "Tokyo",
+    "lat": 35.685333,
+    "lng": 139.76512
+  },
+  {
+    "slug": "bairro-alto-hotel-lissabon",
+    "name": "Bairro Alto Hotel",
+    "city": "Lisbon",
+    "lat": 38.71029,
+    "lng": -9.143291
+  },
+  {
+    "slug": "baur-au-lac-zuerich",
+    "name": "Baur au Lac",
+    "city": "Zurich",
+    "lat": 47.367301,
+    "lng": 8.539371
+  },
+  {
+    "slug": "bulgari-hotel-milano",
+    "name": "Bulgari Hotel Milano",
+    "city": "Milan",
+    "lat": 45.469849,
+    "lng": 9.189536
+  },
+  {
+    "slug": "bvlgari-hotel-shanghai",
+    "name": "Bvlgari Hotel Shanghai",
+    "city": "Shanghai",
+    "lat": 31.244722,
+    "lng": 121.47722
+  },
+  {
+    "slug": "bvlgari-resort-dubai",
+    "name": "Bvlgari Resort Dubai",
+    "city": "Dubai",
+    "lat": 25.210024,
+    "lng": 55.236145
+  },
+  {
+    "slug": "capella-bangkok",
+    "name": "Capella Bangkok",
+    "city": "Bangkok",
+    "lat": 13.713078,
+    "lng": 100.51073
+  },
+  {
+    "slug": "cheval-blanc-randheli-malediven",
+    "name": "Cheval Blanc Randheli",
+    "city": "Maldives",
+    "lat": 5.691827,
+    "lng": 73.34082
+  },
+  {
+    "slug": "claridges-london",
+    "name": "Claridge's",
+    "city": "London",
+    "lat": 51.512421,
+    "lng": -0.147861
+  },
+  {
+    "slug": "crown-sydney",
+    "name": "Crown Sydney",
+    "city": "Sydney",
+    "lat": -33.861965,
+    "lng": 151.20103
+  },
+  {
+    "slug": "emirates-palace-mandarin-oriental-abu-dhabi",
+    "name": "Emirates Palace Mandarin Oriental",
+    "city": "Abu Dhabi",
+    "lat": 24.46095,
+    "lng": 54.31773
+  },
+  {
+    "slug": "faena-miami-beach",
+    "name": "Faena Miami Beach",
+    "city": "Miami",
+    "lat": 25.807365,
+    "lng": -80.12348
+  },
+  {
+    "slug": "fairmont-hotel-vier-jahreszeiten-hamburg",
+    "name": "Fairmont Hotel Vier Jahreszeiten",
+    "city": "Hamburg",
+    "lat": 53.555618,
+    "lng": 9.991549
+  },
+  {
+    "slug": "four-seasons-hotel-abu-dhabi-at-al-maryah-island",
+    "name": "Four Seasons Hotel Abu Dhabi at Al Maryah Island",
+    "city": "Abu Dhabi",
+    "lat": 24.50276,
+    "lng": 54.387886
+  },
+  {
+    "slug": "four-seasons-hotel-bangkok-at-chao-phraya-river",
+    "name": "Four Seasons Hotel Bangkok at Chao Phraya River",
+    "city": "Bangkok",
+    "lat": 13.712029,
+    "lng": 100.51096
+  },
+  {
+    "slug": "four-seasons-hotel-george-v-paris",
+    "name": "Four Seasons Hotel George V",
+    "city": "Paris",
+    "lat": 48.868801,
+    "lng": 2.300831
+  },
+  {
+    "slug": "four-seasons-hotel-istanbul-at-sultanahmet",
+    "name": "Four Seasons Hotel Istanbul At Sultanahmet",
+    "city": "Istanbul",
+    "lat": 41.00654,
+    "lng": 28.980116
+  },
+  {
+    "slug": "four-seasons-hotel-madrid",
+    "name": "Four Seasons Hotel Madrid",
+    "city": "Madrid",
+    "lat": 40.41721,
+    "lng": -3.700329
+  },
+  {
+    "slug": "four-seasons-hotel-new-york",
+    "name": "Four Seasons Hotel New York",
+    "city": "New York",
+    "lat": 40.762413,
+    "lng": -73.97127
+  },
+  {
+    "slug": "four-seasons-hotel-ritz-lisbon",
+    "name": "Four Seasons Hotel Ritz Lisbon",
+    "city": "Lisbon",
+    "lat": 38.725555,
+    "lng": -9.155383
+  },
+  {
+    "slug": "four-seasons-hotel-tokyo-at-otemachi",
+    "name": "Four Seasons Hotel Tokyo at Otemachi",
+    "city": "Tokyo",
+    "lat": 35.688015,
+    "lng": 139.7632
+  },
+  {
+    "slug": "four-seasons-resort-dubai-at-jumeirah-beach",
+    "name": "Four Seasons Resort Dubai at Jumeirah Beach",
+    "city": "Dubai",
+    "lat": 25.202333,
+    "lng": 55.24021
+  },
+  {
+    "slug": "hotel-adlon-kempinski-berlin",
+    "name": "Hotel Adlon Kempinski",
+    "city": "Berlin",
+    "lat": 52.516074,
+    "lng": 13.380427
+  },
+  {
+    "slug": "hotel-arts-barcelona",
+    "name": "Hotel Arts Barcelona",
+    "city": "Barcelona",
+    "lat": 41.387057,
+    "lng": 2.196421
+  },
+  {
+    "slug": "hotel-atlantic-hamburg",
+    "name": "Hotel Atlantic Hamburg",
+    "city": "Hamburg",
+    "lat": 53.556773,
+    "lng": 10.00502
+  },
+  {
+    "slug": "hotel-bayerischer-hof-muenchen",
+    "name": "Hotel Bayerischer Hof",
+    "city": "Munich",
+    "lat": 48.140343,
+    "lng": 11.573731
+  },
+  {
+    "slug": "hotel-bel-air-los-angeles",
+    "name": "Hotel Bel-Air",
+    "city": "Los Angeles",
+    "lat": 34.086597,
+    "lng": -118.44635
+  },
+  {
+    "slug": "hotel-de-russie-rom",
+    "name": "Hotel de Russie",
+    "city": "Rome",
+    "lat": 41.909944,
+    "lng": 12.477458
+  },
+  {
+    "slug": "hotel-eden-rom",
+    "name": "Hotel Eden",
+    "city": "Rome",
+    "lat": 41.906644,
+    "lng": 12.486368
+  },
+  {
+    "slug": "hotel-hassler-roma",
+    "name": "Hotel Hassler Roma",
+    "city": "Rome",
+    "lat": 41.906038,
+    "lng": 12.4838
+  },
+  {
+    "slug": "hotel-sacher-wien",
+    "name": "Hotel Sacher Wien",
+    "city": "Vienna",
+    "lat": 48.204001,
+    "lng": 16.369796
+  },
+  {
+    "slug": "intercontinental-amstel-amsterdam",
+    "name": "InterContinental Amstel Amsterdam",
+    "city": "Amsterdam",
+    "lat": 52.3601,
+    "lng": 4.9049
+  },
+  {
+    "slug": "le-bristol-paris",
+    "name": "Le Bristol Paris",
+    "city": "Paris",
+    "lat": 48.871686,
+    "lng": 2.3148
+  },
+  {
+    "slug": "lowell-hotel-new-york",
+    "name": "Lowell Hotel",
+    "city": "New York",
+    "lat": 40.76574,
+    "lng": -73.96922
+  },
+  {
+    "slug": "majestic-hotel-spa-barcelona",
+    "name": "Majestic Hotel & Spa Barcelona",
+    "city": "Barcelona",
+    "lat": 41.39344,
+    "lng": 2.163987
+  },
+  {
+    "slug": "mandarin-oriental-barcelona",
+    "name": "Mandarin Oriental Barcelona",
+    "city": "Barcelona",
+    "lat": 41.391168,
+    "lng": 2.166577
+  },
+  {
+    "slug": "mandarin-oriental-bosphorus-istanbul",
+    "name": "Mandarin Oriental Bosphorus",
+    "city": "Istanbul",
+    "lat": 41.057217,
+    "lng": 29.035538
+  },
+  {
+    "slug": "mandarin-oriental-conservatorium-amsterdam",
+    "name": "Mandarin Oriental Conservatorium",
+    "city": "Amsterdam",
+    "lat": 52.358586,
+    "lng": 4.879509
+  },
+  {
+    "slug": "mandarin-oriental-hong-kong",
+    "name": "Mandarin Oriental Hong Kong",
+    "city": "Hong Kong",
+    "lat": 22.28201,
+    "lng": 114.15937
+  },
+  {
+    "slug": "mandarin-oriental-jumeira-dubai",
+    "name": "Mandarin Oriental Jumeira",
+    "city": "Dubai",
+    "lat": 25.217043,
+    "lng": 55.251072
+  },
+  {
+    "slug": "mandarin-oriental-milan",
+    "name": "Mandarin Oriental Milan",
+    "city": "Milan",
+    "lat": 45.469461,
+    "lng": 9.190876
+  },
+  {
+    "slug": "mandarin-oriental-munich",
+    "name": "Mandarin Oriental Munich",
+    "city": "Munich",
+    "lat": 48.137299,
+    "lng": 11.58094
+  },
+  {
+    "slug": "mandarin-oriental-ritz-madrid",
+    "name": "Mandarin Oriental Ritz",
+    "city": "Madrid",
+    "lat": 40.41576,
+    "lng": -3.692608
+  },
+  {
+    "slug": "marina-bay-sands-singapur",
+    "name": "Marina Bay Sands",
+    "city": "Singapore",
+    "lat": 1.28376,
+    "lng": 103.8591
+  },
+  {
+    "slug": "palais-coburg-wien",
+    "name": "Palais Coburg",
+    "city": "Vienna",
+    "lat": 48.205633,
+    "lng": 16.376718
+  },
+  {
+    "slug": "park-hyatt-milano",
+    "name": "Park Hyatt Milano",
+    "city": "Milan",
+    "lat": 45.465287,
+    "lng": 9.18887
+  },
+  {
+    "slug": "park-hyatt-sydney",
+    "name": "Park Hyatt Sydney",
+    "city": "Sydney",
+    "lat": -33.855675,
+    "lng": 151.20937
+  },
+  {
+    "slug": "park-hyatt-tokyo",
+    "name": "Park Hyatt Tokyo",
+    "city": "Tokyo",
+    "lat": 35.68565,
+    "lng": 139.69109
+  },
+  {
+    "slug": "park-hyatt-vienna",
+    "name": "Park Hyatt Vienna",
+    "city": "Vienna",
+    "lat": 48.210524,
+    "lng": 16.368359
+  },
+  {
+    "slug": "park-hyatt-zurich",
+    "name": "Park Hyatt Zurich",
+    "city": "Zurich",
+    "lat": 47.366321,
+    "lng": 8.536055
+  },
+  {
+    "slug": "pullman-quay-grand-sydney-harbour",
+    "name": "Pullman Quay Grand Sydney Harbour",
+    "city": "Sydney",
+    "lat": -33.860733,
+    "lng": 151.21294
+  },
+  {
+    "slug": "raffles-sentosa-singapore",
+    "name": "Raffles Sentosa Singapore",
+    "city": "Singapore",
+    "lat": 1.2462,
+    "lng": 103.82768
+  },
+  {
+    "slug": "raffles-singapore",
+    "name": "Raffles Singapore",
+    "city": "Singapore",
+    "lat": 1.294904,
+    "lng": 103.854485
+  },
+  {
+    "slug": "rosewood-abu-dhabi",
+    "name": "Rosewood Abu Dhabi",
+    "city": "Abu Dhabi",
+    "lat": 24.499517,
+    "lng": 54.38761
+  },
+  {
+    "slug": "rosewood-hong-kong",
+    "name": "Rosewood Hong Kong",
+    "city": "Hong Kong",
+    "lat": 22.2948,
+    "lng": 114.175575
+  },
+  {
+    "slug": "rosewood-munich",
+    "name": "Rosewood Munich",
+    "city": "Munich",
+    "lat": 48.141091,
+    "lng": 11.574705
+  },
+  {
+    "slug": "santo-mauro-madrid",
+    "name": "Santo Mauro Madrid",
+    "city": "Madrid",
+    "lat": 40.4309,
+    "lng": -3.69353
+  },
+  {
+    "slug": "shangri-la-paris",
+    "name": "Shangri-La Paris",
+    "city": "Paris",
+    "lat": 48.863928,
+    "lng": 2.293403
+  },
+  {
+    "slug": "sofitel-frankfurt-opera",
+    "name": "Sofitel Frankfurt Opera",
+    "city": "Frankfurt",
+    "lat": 50.116047,
+    "lng": 8.673466
+  },
+  {
+    "slug": "steigenberger-icon-frankfurter-hof-frankfurt",
+    "name": "Steigenberger Icon Frankfurter Hof",
+    "city": "Frankfurt",
+    "lat": 50.110291,
+    "lng": 8.67605
+  },
+  {
+    "slug": "the-abu-dhabi-edition",
+    "name": "The Abu Dhabi EDITION",
+    "city": "Abu Dhabi",
+    "lat": 24.452242,
+    "lng": 54.33706
+  },
+  {
+    "slug": "the-beverly-hills-hotel-los-angeles",
+    "name": "The Beverly Hills Hotel",
+    "city": "Los Angeles",
+    "lat": 34.08182,
+    "lng": -118.41341
+  },
+  {
+    "slug": "the-dolder-grand-zuerich",
+    "name": "The Dolder Grand",
+    "city": "Zurich",
+    "lat": 47.372746,
+    "lng": 8.573195
+  },
+  {
+    "slug": "the-florentin-frankfurt",
+    "name": "The Florentin",
+    "city": "Frankfurt",
+    "lat": 50.097247,
+    "lng": 8.669524
+  },
+  {
+    "slug": "the-fontenay-hamburg",
+    "name": "The Fontenay",
+    "city": "Hamburg",
+    "lat": 53.565408,
+    "lng": 9.997912
+  },
+  {
+    "slug": "the-ivens-lissabon",
+    "name": "The Ivens",
+    "city": "Lisbon",
+    "lat": 38.709663,
+    "lng": -9.140262
+  },
+  {
+    "slug": "the-peninsula-beverly-hills-los-angeles",
+    "name": "The Peninsula Beverly Hills",
+    "city": "Los Angeles",
+    "lat": 34.066025,
+    "lng": -118.41065
+  },
+  {
+    "slug": "the-peninsula-istanbul",
+    "name": "The Peninsula Istanbul",
+    "city": "Istanbul",
+    "lat": 41.023014,
+    "lng": 28.977926
+  },
+  {
+    "slug": "the-peninsula-shanghai",
+    "name": "The Peninsula Shanghai",
+    "city": "Shanghai",
+    "lat": 31.241257,
+    "lng": 121.48882
+  },
+  {
+    "slug": "the-ritz-carlton-berlin",
+    "name": "The Ritz-Carlton Berlin",
+    "city": "Berlin",
+    "lat": 52.510384,
+    "lng": 13.375274
+  },
+  {
+    "slug": "the-ritz-carlton-maldives-fari-islands",
+    "name": "The Ritz-Carlton Maldives, Fari Islands",
+    "city": "Maldives",
+    "lat": 4.61758,
+    "lng": 73.574936
+  },
+  {
+    "slug": "the-ritz-carlton-new-york-central-park",
+    "name": "The Ritz-Carlton New York, Central Park",
+    "city": "New York",
+    "lat": 40.76527,
+    "lng": -73.976
+  },
+  {
+    "slug": "the-ritz-london",
+    "name": "The Ritz London",
+    "city": "London",
+    "lat": 51.507078,
+    "lng": -0.141627
+  },
+  {
+    "slug": "the-savoy-london",
+    "name": "The Savoy",
+    "city": "London",
+    "lat": 51.510149,
+    "lng": -0.12052
+  },
+  {
+    "slug": "the-setai-miami-beach",
+    "name": "The Setai Miami Beach",
+    "city": "Miami",
+    "lat": 25.795895,
+    "lng": -80.128845
+  },
+  {
+    "slug": "the-shanghai-edition",
+    "name": "The Shanghai EDITION",
+    "city": "Shanghai",
+    "lat": 31.237886,
+    "lng": 121.485916
+  },
+  {
+    "slug": "the-siam-bangkok",
+    "name": "The Siam",
+    "city": "Bangkok",
+    "lat": 13.781123,
+    "lng": 100.506035
+  },
+  {
+    "slug": "the-st-regis-saadiyat-island-resort-abu-dhabi",
+    "name": "The St. Regis Saadiyat Island Resort",
+    "city": "Abu Dhabi",
+    "lat": 24.54112,
+    "lng": 54.424747
+  },
+  {
+    "slug": "upper-house-hong-kong",
+    "name": "Upper House Hong Kong",
+    "city": "Hong Kong",
+    "lat": 22.27779,
+    "lng": 114.16638
+  },
+  {
+    "slug": "waldorf-astoria-amsterdam",
+    "name": "Waldorf Astoria Amsterdam",
+    "city": "Amsterdam",
+    "lat": 52.364764,
+    "lng": 4.896946
+  },
+  {
+    "slug": "waldorf-astoria-berlin",
+    "name": "Waldorf Astoria Berlin",
+    "city": "Berlin",
+    "lat": 52.505693,
+    "lng": 13.333014
+  },
+  {
+    "slug": "waldorf-astoria-maldives-ithaafushi",
+    "name": "Waldorf Astoria Maldives Ithaafushi",
+    "city": "Maldives",
+    "lat": 4.013934,
+    "lng": 73.39258
+  }
+]

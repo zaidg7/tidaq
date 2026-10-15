@@ -146,7 +146,13 @@
     "tableHide": "Tabelle ausblenden",
     "date": "Datum",
     "price": "Bester Preis",
-    "provider": "Anbieter"
+    "provider": "Anbieter",
+    "usual": "üblich",
+    "usualLegend": "Üblich: {low} bis {high}",
+    "range": "Zeitraum",
+    "range14": "14 T",
+    "range30": "30 T",
+    "rangeAll": "Alles"
   },
   "verdict": {
     "near_low": "Nah am tiefsten Preis seit {since}.",
@@ -1024,5 +1030,8 @@
     "livePrices": "{now} statt {was}",
     "over": "Vorbei",
     "overText": "Preis von heute ansehen"
+  },
+  "photo": {
+    "cityTag": "Stadtbild"
   }
 }

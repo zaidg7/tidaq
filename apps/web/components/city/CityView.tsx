@@ -1,3 +1,4 @@
+import { CityPhotoTag } from '@/components/ui/CityPhotoTag';
 import type { ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import {
@@ -69,20 +70,23 @@ function HotelCard({ hotel, locale }: { hotel: CityHotel; locale: Locale }) {
   const w = hotel.weekend;
   return (
     <Card interactive padded={false} className="flex h-full flex-col overflow-hidden">
-      {hotel.image ? (
-        // eslint-disable-next-line @next/next/no-img-element -- licensed photo, self-hosted 960 px (C-011c)
-        <img
-          src={hotel.image.src}
-          alt=""
-          width={hotel.image.width}
-          height={hotel.image.height}
-          loading="lazy"
-          decoding="async"
-          className="bg-placeholder aspect-[16/10] w-full object-cover"
-        />
-      ) : (
-        <div aria-hidden="true" className="bg-placeholder aspect-[16/10] w-full" />
-      )}
+      <div className="relative">
+        {hotel.image ? (
+          // eslint-disable-next-line @next/next/no-img-element -- licensed photo, self-hosted 960 px (C-011c)
+          <img
+            src={hotel.image.src}
+            alt=""
+            width={hotel.image.width}
+            height={hotel.image.height}
+            loading="lazy"
+            decoding="async"
+            className="bg-placeholder aspect-[16/10] w-full object-cover"
+          />
+        ) : (
+          <div aria-hidden="true" className="bg-placeholder aspect-[16/10] w-full" />
+        )}
+        <CityPhotoTag image={hotel.image} />
+      </div>
       <div className="flex flex-1 flex-col p-5">
         <a
           href={localizedPath(hotelPath(hotel.slug), locale)}

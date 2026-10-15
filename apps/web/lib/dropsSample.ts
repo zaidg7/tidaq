@@ -1,6 +1,6 @@
 import { addDays, groupDrops, postedDrops, type PriceDropRow, type PostedDrop } from '@tidaq/core';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
-import { hotelPhoto } from '@/lib/hotelPhotos';
+import { hotelImage } from '@/lib/photos';
 import { berlinToday } from '@/lib/today';
 
 /** Sample price drops for `/dev/drops` and `/dev/admin/drops` (C-080), relative to today. */
@@ -98,7 +98,7 @@ export function sampleRows(): PriceDropRow[] {
 export function sampleDrops(): HotelDropsWithPhoto[] {
   return groupDrops(sampleRows()).map((g) => ({
     ...g,
-    image: hotelPhoto(g.hotel.slug)?.[960] ?? null,
+    image: hotelImage(g.hotel.slug, g.city.slug, 960),
   }));
 }
 

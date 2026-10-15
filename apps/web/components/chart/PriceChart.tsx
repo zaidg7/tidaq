@@ -23,12 +23,15 @@ type Props = {
   avgCents?: number | null;
   /** Best provider per day for the readout and the table, if known. */
   providerByDay?: Readonly<Record<string, string>>;
+  /** Colour of today's dot: the verdict (PREMIUM.md §8). Default ink. */
+  todayTone?: 'good' | 'normal' | 'high';
   className?: string;
 };
 
+const TONE = { good: 'var(--good)', normal: 'var(--ink)', high: 'var(--high)' } as const;
+
 const pct = (f: number) => `${Math.round(f * 10_000) / 100}%`;
-const LABEL =
-  'text-[11.5px] leading-none font-semibold whitespace-nowrap text-muted-ink tabular-nums';
+const LABEL = 'text-[11.5px] leading-none font-medium whitespace-nowrap text-muted tabular-nums';
 
 /**
  * Price chart (CRAFT.md §3 Price chart), rendered on the server. Layout, all at a fixed height
@@ -39,7 +42,15 @@ const LABEL =
  * - a readout row above the plot for the scrub chip, a legend for the average below it.
  * `ChartScrub` (client) adds pointer, touch and keyboard; a table is the non-visual fallback.
  */
-export function PriceChart({ series, from, to, avgCents = null, providerByDay, className }: Props) {
+export function PriceChart({
+  series,
+  from,
+  to,
+  avgCents = null,
+  providerByDay,
+  todayTone = 'normal',
+  className,
+}: Props) {
   const t = useTranslations('chart');
   const locale = useLocale() as Locale;
   const g = chartGeometry(series, { from, to, avgCents });
@@ -110,7 +121,7 @@ export function PriceChart({ series, from, to, avgCents = null, providerByDay, c
             ))}
           </div>
           <div className="absolute inset-y-0 right-2 left-[var(--gutter)]">
-            <Plot g={g} summary={summary} locale={locale} t={t} />
+            <Plot g={g} summary={summary} locale={locale} t={t} todayColor={TONE[todayTone]} />
             {g.points.length > 0 && (
               <ChartScrub
                 days={scrubDays}
@@ -127,7 +138,13 @@ export function PriceChart({ series, from, to, avgCents = null, providerByDay, c
       </div>
 
       <div className="mt-1 flex flex-wrap items-start justify-between gap-x-6">
-        {g.avg && (
+        {g.usual && (
+          <p className="text-meta flex min-h-11 items-center gap-2 text-muted">
+            <span aria-hidden="true" className="h-3 w-[18px] shrink-0 rounded-[3px] bg-surface-2" />
+            {t('usualLegend', { low: price(g.usual.lowCents), high: price(g.usual.highCents) })}
+          </p>
+        )}
+        {g.avg && !g.usual && (
           <p className="text-meta flex min-h-11 items-center gap-2 text-muted-ink">
             <svg aria-hidden="true" width="18" height="2" className="shrink-0">
               <line
@@ -213,9 +230,10 @@ type PlotProps = {
   summary: string;
   locale: Locale;
   t: ReturnType<typeof useTranslations<'chart'>>;
+  todayColor: string;
 };
 
-function Plot({ g, summary, locale, t }: PlotProps) {
+function Plot({ g, summary, locale, t, todayColor }: PlotProps) {
   const gradientId = useId();
   const price = (cents: number) => formatPrice(cents, locale);
   const lowAlign = g.low && g.low.x > 0.8 ? '-100%' : g.low && g.low.x < 0.15 ? '0%' : '-50%';
@@ -243,6 +261,16 @@ function Plot({ g, summary, locale, t }: PlotProps) {
             strokeDasharray="4 4"
           />
         )}
+        {g.usual && (
+          <rect
+            x="0"
+            y={pct(g.usual.yTop)}
+            width="100%"
+            height={pct(g.usual.yBottom - g.usual.yTop)}
+            rx="6"
+            fill="var(--surface-2)"
+          />
+        )}
         {!g.sparse && (
           <svg
             viewBox="0 0 1000 1000"
@@ -260,7 +288,7 @@ function Plot({ g, summary, locale, t }: PlotProps) {
                 y1={CHART.inset.top * 1000}
                 y2={g.baseY * 1000}
               >
-                <stop offset="0" stopColor="var(--accent)" stopOpacity="0.16" />
+                <stop offset="0" stopColor="var(--accent)" stopOpacity="0.12" />
                 <stop offset="1" stopColor="var(--accent)" stopOpacity="0" />
               </linearGradient>
             </defs>
@@ -268,19 +296,25 @@ function Plot({ g, summary, locale, t }: PlotProps) {
               .filter((seg) => seg.length > 1)
               .map((seg) => (
                 <g key={seg[0]?.day}>
-                  <path d={areaPath(seg, 1000, 1000, g.baseY)} fill={`url(#${gradientId})`} />
                   <path
+                    className="chart-area"
+                    d={areaPath(seg, 1000, 1000, g.baseY)}
+                    fill={`url(#${gradientId})`}
+                  />
+                  <path
+                    className="chart-line"
+                    pathLength={1}
                     d={linePath(seg, 1000, 1000)}
                     fill="none"
-                    stroke="var(--accent)"
-                    strokeWidth="2.25"
+                    stroke="var(--ink)"
+                    strokeWidth="2.5"
                     strokeLinejoin="round"
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
                   />
                 </g>
               ))}
-            {g.avg && (
+            {g.avg && !g.usual && (
               <line
                 x1="0"
                 x2="1000"
@@ -297,7 +331,7 @@ function Plot({ g, summary, locale, t }: PlotProps) {
         {singles
           .filter((p) => p.day !== g.last?.day || !g.lastIsCurrent)
           .map((p) => (
-            <circle key={p.day} cx={pct(p.x)} cy={pct(p.y)} r="3.5" fill="var(--accent)" />
+            <circle key={p.day} cx={pct(p.x)} cy={pct(p.y)} r="3.5" fill="var(--ink)" />
           ))}
         {g.low && !g.sparse && (
           <circle
@@ -310,13 +344,13 @@ function Plot({ g, summary, locale, t }: PlotProps) {
           />
         )}
         {g.last && g.lastIsCurrent && !g.last.outlier && (
-          <>
-            <circle cx={pct(g.last.x)} cy={pct(g.last.y)} r="8" fill="var(--surface)" />
-            <circle cx={pct(g.last.x)} cy={pct(g.last.y)} r="5" fill="var(--accent)" />
-          </>
+          <g className="chart-today">
+            <circle cx={pct(g.last.x)} cy={pct(g.last.y)} r="9" fill="var(--surface)" />
+            <circle cx={pct(g.last.x)} cy={pct(g.last.y)} r="6" fill={todayColor} />
+          </g>
         )}
         {g.last && !g.lastIsCurrent && !g.sparse && !g.last.outlier && (
-          <circle cx={pct(g.last.x)} cy={pct(g.last.y)} r="3.5" fill="var(--accent)" />
+          <circle cx={pct(g.last.x)} cy={pct(g.last.y)} r="3.5" fill="var(--ink)" />
         )}
       </svg>
 
@@ -335,6 +369,14 @@ function Plot({ g, summary, locale, t }: PlotProps) {
               {formatDayMonth(tk.day, locale)}
             </span>
           ))}
+        {g.usual && (
+          <span
+            className="chart-halo absolute left-1.5 text-[11px] leading-none font-semibold text-muted"
+            style={{ top: pct(g.usual.yTop), transform: 'translateY(5px)' }}
+          >
+            {t('usual')}
+          </span>
+        )}
         {g.points.length === 0 && (
           <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 px-4 text-center text-[13.5px] font-semibold text-muted-ink">
             {t('empty')}

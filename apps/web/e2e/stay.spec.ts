@@ -17,7 +17,7 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
 
     await expect(page.getByRole('heading', { name: 'Unsere Einschätzung' })).toBeVisible();
     await expect(page.getByText('Guter Preis im Vergleich zu den letzten 58 Tagen.')).toBeVisible();
-    await expect(page.getByText('Als Tabelle anzeigen')).toBeVisible();
+    await expect(page.getByText('Als Tabelle anzeigen').locator('visible=true')).toHaveCount(1);
 
     const others = page.getByRole('region', { name: 'Weitere Termine in diesem Hotel' });
     await expect(others.getByRole('link')).toHaveCount(4);
@@ -25,6 +25,30 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
       'href',
       '/hotel/hotel-adlon-kempinski-berlin/2026-10-16--2026-10-18?adults=2',
     );
+  });
+
+  test('price history: 30 days first, 14 T / Alles switch, usual range legend (C-111)', async ({
+    page,
+  }) => {
+    await page.goto('/dev/stay/tracked');
+    const ranges = page.getByRole('radiogroup', { name: 'Zeitraum' });
+    await expect(ranges.getByRole('radio', { name: '30 T' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    await expect(page.getByText(/^Üblich: /).locator('visible=true')).toHaveCount(1);
+    const visibleChart = page.locator('figure:visible');
+    await expect(visibleChart).toHaveCount(1);
+    const thirty = await visibleChart.locator('svg[role="img"]').getAttribute('aria-label');
+    await ranges.getByRole('radio', { name: '14 T' }).click();
+    await expect(ranges.getByRole('radio', { name: '14 T' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    await expect(page.locator('figure:visible')).toHaveCount(1);
+    expect(
+      await page.locator('figure:visible svg[role="img"]').getAttribute('aria-label'),
+    ).not.toBe(thirty);
   });
 
   test('provider table: sorted by expected checkout price, with Preistreue (C-022b)', async ({

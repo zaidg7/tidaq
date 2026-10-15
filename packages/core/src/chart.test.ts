@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { addDays } from './dates';
-import { areaPath, CHART, chartGeometry, gridTicks, linePath } from './chart';
+import { areaPath, CHART, chartGeometry, gridTicks, linePath, quantile } from './chart';
 import type { DailyPrice } from './stats';
 
 const FROM = '2026-09-01';
@@ -235,5 +235,47 @@ describe('paths', () => {
   it('closes the area at the baseline', () => {
     expect(areaPath(pts, 200, 100, 0.9)).toBe('M0 50L100 25L100 90L0 90Z');
     expect(areaPath([], 200, 100, 0.9)).toBe('');
+  });
+});
+
+describe('usual range (C-111)', () => {
+  const run = (n: number, price: (i: number) => number) => days('2026-10-01', n, price);
+
+  it('quantile interpolates between neighbours', () => {
+    expect(quantile([10, 20, 30, 40], 0.5)).toBe(25);
+    expect(quantile([10, 20, 30, 40], 0.25)).toBe(17.5);
+    expect(quantile([5], 0.75)).toBe(5);
+    expect(quantile([], 0.5)).toBeUndefined();
+  });
+
+  it('spans the middle half of the regular prices, top above bottom', () => {
+    const series = run(20, (i) => 100_000 + i * 1_000);
+    const g = chartGeometry(series, { from: '2026-10-01', to: '2026-10-20' });
+    expect(g.usual).not.toBeNull();
+    expect(g.usual?.lowCents).toBe(104_750);
+    expect(g.usual?.highCents).toBe(114_250);
+    expect(g.usual?.yTop ?? 1).toBeLessThan(g.usual?.yBottom ?? 0);
+  });
+
+  it('is left out for sparse and flat series', () => {
+    const sparse = chartGeometry(
+      run(4, (i) => 100_000 + i * 5_000),
+      {
+        from: '2026-10-01',
+        to: '2026-10-04',
+      },
+    );
+    expect(sparse.usual).toBeNull();
+    const flat = chartGeometry(
+      run(14, () => 100_000),
+      { from: '2026-10-01', to: '2026-10-14' },
+    );
+    expect(flat.usual).toBeNull();
+  });
+
+  it('ignores outliers', () => {
+    const series = run(14, (i) => (i === 5 ? 900_000 : 100_000 + (i % 3) * 2_000));
+    const g = chartGeometry(series, { from: '2026-10-01', to: '2026-10-14' });
+    expect(g.usual?.highCents).toBeLessThanOrEqual(104_000);
   });
 });
