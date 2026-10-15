@@ -24,16 +24,13 @@ test.describe('homepage', () => {
     await expect(form.getByLabel('Hotel', { exact: true })).toBeFocused();
   });
 
-  test('the navbar CTA hides while the search card is visible and leads back to it', async ({
+  test('the navbar search leads back to the search card (until C-107 docks it)', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
-    const cta = page.getByRole('banner').getByRole('link', { name: 'Preise ansehen' });
-    await expect(cta).toHaveCount(0); // aria-hidden while the card is on screen
     await page.mouse.wheel(0, 1400);
-    await expect(cta).toBeVisible();
-    await cta.click();
+    await page.getByRole('banner').getByRole('link', { name: 'Hotel oder Stadt suchen' }).click();
     await expect(page).toHaveURL(/#suche$/);
     await expect(page.getByRole('form', { name: 'Preise suchen' })).toBeInViewport();
   });

@@ -8,18 +8,18 @@ import { navRoutes, routes } from '@/lib/routes';
 import { cn } from '@/lib/cn';
 import { LocaleLinks } from './LocaleLinks';
 import { MobileMenu } from './MobileMenu';
-import { NavCta } from './NavCta';
+import { DROP_ALERT_ID } from '@/components/drops/alertId';
 import { NavLinks } from './NavLinks';
 
 const iconLink = cn(
-  'inline-grid size-11 shrink-0 place-items-center rounded-full text-fg',
-  'transition-colors duration-[180ms] ease-soft hover:bg-accent-soft',
+  'inline-grid size-11 shrink-0 place-items-center rounded-full text-ink',
+  'transition-colors duration-[var(--t-fast)] ease-out hover:bg-surface-2',
 );
 
 /**
- * Sticky navbar (CRAFT.md §3 Navbar): transparent at the top, frosted once the page scrolls
- * (`.site-header` in globals.css, pure CSS). Desktop: logo, links, language, search, CTA.
- * Mobile: logo, search, menu sheet.
+ * Sticky navbar (PREMIUM.md §12): transparent at the top, frosted once the page scrolls
+ * (`.site-header` in globals.css, pure CSS). Desktop: logo, links, language, search, Price Alert.
+ * Mobile: logo, search, menu sheet. The docked search pill comes with the search (C-107).
  */
 export async function Navbar({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'nav' });
@@ -35,11 +35,11 @@ export async function Navbar({ locale }: { locale: Locale }) {
           {t('skip')}
         </a>
       </div>
-      <div className="mx-auto flex h-[60px] max-w-[1080px] items-center gap-2 px-5 md:px-7 lg:h-[72px]">
+      <div className="mx-auto flex h-16 max-w-[1240px] items-center gap-2 px-4 md:px-6 lg:h-[72px] lg:px-10">
         <a
           href={localizedPath(routes.home, locale)}
           aria-label={t('home')}
-          className="-ml-1 inline-flex h-11 items-center rounded-cell px-1"
+          className="-ml-1 inline-flex h-11 items-center rounded-input px-1"
         >
           <Logo label={null} />
         </a>
@@ -60,9 +60,15 @@ export async function Navbar({ locale }: { locale: Locale }) {
         >
           <Icon icon={Search} />
         </a>
-        <span className="ml-1 hidden lg:block">
-          <NavCta href={localizedPath(routes.search, locale)} label={t('cta')} />
-        </span>
+        {/* `cn` doesn't merge conflicting classes: the wrapper hides the button on phones. */}
+        <div className="ml-1 hidden lg:block">
+          <a
+            href={`${localizedPath(routes.drops, locale)}#${DROP_ALERT_ID}`}
+            className={buttonClasses({ variant: 'secondary', size: 'sm' })}
+          >
+            {t('cta')}
+          </a>
+        </div>
         <MobileMenu
           items={items}
           locale={locale}
@@ -72,7 +78,9 @@ export async function Navbar({ locale }: { locale: Locale }) {
             close: t('menuClose'),
             title: t('menuTitle'),
             language: tl('label'),
+            alert: t('menuAlert'),
           }}
+          alertHref={`${localizedPath(routes.drops, locale)}#${DROP_ALERT_ID}`}
         />
       </div>
     </header>
