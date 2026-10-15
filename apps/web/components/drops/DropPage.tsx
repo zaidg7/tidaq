@@ -278,6 +278,7 @@ export async function DropPage({
         <DropAlertSection
           locale={locale}
           defaultCity={{ slug: g.city.slug, name: g.city.name[locale] }}
+          hotel={{ slug: g.hotel.slug, name: g.hotel.name }}
         />
       </div>
 
@@ -342,6 +343,7 @@ export async function DropOver({
         <DropAlertSection
           locale={locale}
           defaultCity={hotel.city ? { slug: hotel.city.slug, name: hotel.city.name[locale] } : null}
+          hotel={{ slug: hotel.slug, name: hotel.name }}
         />
       </div>
     </>

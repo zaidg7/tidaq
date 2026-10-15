@@ -3,6 +3,8 @@
 import { headers } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 import { clientIp, createRateLimiter, isLocale } from '@tidaq/core';
+import { HOTEL_PREFIX } from '@/components/drops/alertId';
+import { getCatalog } from '@/lib/data/catalog';
 import { requestDropAlert, type DropAlertStatus } from '@/lib/watch/dropAlerts';
 
 export type DropAlertFormState =
@@ -48,9 +50,25 @@ async function submit(form: FormData): Promise<Exclude<DropAlertFormState, { sta
   const host = h.get('x-forwarded-host') ?? h.get('host') ?? 'tidaq.com';
   const proto = h.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https');
   const city = str(form, 'city');
+  // One hotel (C-080k1): its name for the email comes from the catalog, never from the form.
+  let hotel: { slug: string; name: string } | null = null;
+  if (city.startsWith(HOTEL_PREFIX)) {
+    const slug = city.slice(HOTEL_PREFIX.length);
+    const catalog = await getCatalog();
+    if (!catalog) return { status: 'error' };
+    const found = catalog.hotels.find((x) => x.slug === slug);
+    if (!found) return { status: 'invalid' };
+    hotel = { slug: found.slug, name: found.name };
+  }
   return requestDropAlert(
     // The sentence next to the checkbox, stored as proof of consent.
-    { email: str(form, 'email'), locale, consentText: t('consent'), city: city || null },
+    {
+      email: str(form, 'email'),
+      locale,
+      consentText: t('consent'),
+      city: hotel ? null : city || null,
+      hotel,
+    },
     `${proto}://${host}`,
   );
 }

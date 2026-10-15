@@ -12,6 +12,7 @@ import {
   localizedPath,
   type Locale,
 } from '@tidaq/core';
+import { DropAlertSection } from '@/components/drops/DropAlertSection';
 import { DropCallout } from '@/components/drops/DropCallout';
 import { HotelView } from '@/components/hotel/HotelView';
 import { StatusPage } from '@/components/shell/StatusPage';
@@ -108,6 +109,13 @@ export default async function HotelPageRoute(props: Props) {
         data={result.data}
         today={today}
         drops={dropGroup && <DropCallout group={dropGroup} />}
+        alert={
+          <DropAlertSection
+            locale={locale}
+            defaultCity={{ slug: hotel.city.slug, name: city }}
+            hotel={{ slug: hotel.slug, name: hotel.name }}
+          />
+        }
       />
     </>
   );

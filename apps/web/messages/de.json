@@ -483,7 +483,7 @@
           "text": [
             "Diese Funktion startet in Kürze. Sobald es sie gibt, gilt: Wenn du einen Preisalarm einrichtest, speichern wir deine E-Mail-Adresse, den beobachteten Aufenthalt, den Text deiner Einwilligung und den Zeitpunkt. Wir schicken dir zuerst eine E-Mail mit einem Bestätigungslink (Double-Opt-in). Erst danach bekommst du Alarme, und nur für das, was du beobachten wolltest.",
             "Für die Deals per E-Mail (einmal pro Woche, nur wenn du sie bestellst) speichern wir deine E-Mail-Adresse, deine Sprache, den Text deiner Einwilligung und den Zeitpunkt. Auch hier gilt Double-Opt-in. Du kannst nur die Deals abbestellen (auf der Verwaltungsseite, Link in jeder E-Mail); deine Preisalarme bleiben dann bestehen.",
-            "Für den Preissturz-Alarm (höchstens eine E-Mail am Tag, nur wenn du ihn bestellst) speichern wir deine E-Mail-Adresse, deine Sprache, die gewählte Stadt (oder „alle Städte“), den Text deiner Einwilligung, den Zeitpunkt und den Tag der letzten E-Mail, damit du nie mehr als eine am Tag bekommst. Auch hier gilt Double-Opt-in, und du kannst nur den Preissturz-Alarm beenden; deine anderen Alarme bleiben dann bestehen.",
+            "Für den Preissturz-Alarm (höchstens eine E-Mail am Tag, nur wenn du ihn bestellst) speichern wir deine E-Mail-Adresse, deine Sprache, die gewählte Stadt (oder „alle Städte“) bzw. die Hotels, denen du folgst, den Text deiner Einwilligung, den Zeitpunkt und den Tag der letzten E-Mail, damit du nie mehr als eine am Tag bekommst. Auch hier gilt Double-Opt-in, und du kannst nur den Preissturz-Alarm oder einzelne Hotels beenden; deine anderen Alarme bleiben dann bestehen.",
             "Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst sie jederzeit widerrufen: über den Abmeldelink in jeder E-Mail oder per E-Mail an uns. Dann löschen wir deine E-Mail-Adresse, alle deine Alarme und den Nachweis deiner Einwilligung. Bestätigst du eine Adresse nicht, löschen wir sie nach 7 Tagen.",
             "Die E-Mails verschickt der Dienst Resend (USA). Resend verarbeitet dafür deine E-Mail-Adresse und den Inhalt der E-Mail.",
             "Wir messen nicht, ob du unsere E-Mails öffnest oder auf Links darin klickst."
@@ -742,7 +742,11 @@
     "dropsAll": "Du bekommst neue Preisstürze in allen Städten, höchstens einmal am Tag.",
     "dropsCity": "Du bekommst neue Preisstürze in {city}, höchstens einmal am Tag.",
     "dropsOff": "Preissturz-Alarm beenden",
-    "dropsOffDone": "Du bekommst keine Preisstürze mehr per E-Mail. Deine anderen Alarme bleiben aktiv."
+    "dropsOffDone": "Du bekommst keine Preisstürze mehr per E-Mail. Deine anderen Alarme bleiben aktiv.",
+    "dropsHotels": "Hotels mit Preissturz-Alarm",
+    "dropsHotel": "Du bekommst eine E-Mail, wenn {hotel} über Nacht deutlich günstiger wird.",
+    "dropsHotelOffLabel": "Preissturz-Alarm für {hotel} beenden",
+    "dropsHotelOffDone": "Für dieses Hotel bekommst du keine Preisstürze mehr. Deine anderen Alarme bleiben aktiv."
   },
   "provider": {
     "metaTitle": "{name}: Preistreue und Preise im Vergleich | Tidaq",
@@ -951,7 +955,10 @@
       "too_soon": "Wir haben dir gerade schon eine E-Mail geschickt. Schau in dein Postfach oder versuch es in einer Minute noch einmal.",
       "rate_limited": "Zu viele Versuche in kurzer Zeit. Warte bitte ein paar Minuten.",
       "error": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
-    }
+    },
+    "scope": "Alarm für",
+    "onlyHotel": "Nur {hotel}",
+    "textHotel": "Wir schreiben dir, sobald {hotel} über Nacht deutlich günstiger wird, egal für welches Datum. Oder wähl eine ganze Stadt. Höchstens eine E-Mail am Tag. Kostenlos, abmelden mit einem Klick."
   },
   "dropAlertMail": {
     "confirmSubject": "Bitte bestätige deinen Preissturz-Alarm",
@@ -967,7 +974,9 @@
     "addedText": "Ab morgen schicken wir dir neue Preisstürze, höchstens einmal am Tag.",
     "manageButton": "Alarm verwalten",
     "footerWhy": "Du bekommst diese E-Mail, weil auf tidaq.com der Preissturz-Alarm für diese Adresse bestellt wurde.",
-    "footerManage": "Abbestellen oder Alarme ändern: {url}"
+    "footerManage": "Abbestellen oder Alarme ändern: {url}",
+    "confirmTextHotel": "Du möchtest von Tidaq eine E-Mail bekommen, wenn {hotel} über Nacht deutlich günstiger wird.",
+    "addedTextHotel": "Ab morgen schreiben wir dir, wenn {hotel} über Nacht deutlich günstiger wird, höchstens einmal am Tag."
   },
   "dropsWeek": {
     "metaTitle": "Die größten Preisstürze der Woche in Luxushotels | Tidaq",
