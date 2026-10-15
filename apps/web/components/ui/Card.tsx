@@ -2,12 +2,12 @@ import type { HTMLAttributes } from 'react';
 import { cn } from '@/lib/cn';
 
 type Props = HTMLAttributes<HTMLDivElement> & {
-  /** `float`: two-layer violet shadow (search card, stay panel). `flat`: 1 px border only. */
+  /** `float`: border + soft neutral shadow (panels that sit above the page). `flat`: 1 px border only. */
   variant?: 'flat' | 'float';
-  /** `search`: the larger 26 px radius of the search card. */
+  /** `search`: the larger 28 px panel radius. */
   radius?: 'card' | 'search';
   /**
-   * Lifts 2 px with a stronger shadow on hover (cards that are links). A link inside puts the
+   * Lifts 4 px with a stronger shadow on hover (cards that are links, PREMIUM.md §6). A link inside puts the
    * focus ring on the whole card; give it `after:absolute after:inset-0` to stretch its hit area.
    */
   interactive?: boolean;
@@ -15,7 +15,7 @@ type Props = HTMLAttributes<HTMLDivElement> & {
   padded?: boolean;
 };
 
-/** White surface (CRAFT.md §3 Card). Shadows only where it floats or reacts. */
+/** White surface (PREMIUM.md §3.3). Shadows only where it floats or reacts. */
 export function Card({
   variant = 'flat',
   radius = 'card',
@@ -30,11 +30,11 @@ export function Card({
         'relative bg-surface [overflow-wrap:anywhere]',
         padded && 'p-5 lg:p-6',
         radius === 'search' ? 'rounded-search' : 'rounded-card',
-        variant === 'float' ? 'border border-accent/10 shadow-float' : 'border border-line',
+        variant === 'float' ? 'border border-line shadow-2' : 'border border-line',
         interactive &&
           cn(
-            'transition-[transform,box-shadow,border-color] duration-[180ms] ease-soft',
-            'hover:-translate-y-0.5 hover:border-line-strong hover:shadow-hover motion-reduce:hover:translate-y-0',
+            'transition-[transform,box-shadow,border-color] duration-[var(--t-base)] ease-out',
+            'hover:-translate-y-1 hover:border-line-strong hover:shadow-2 active:scale-[0.99] motion-reduce:hover:translate-y-0',
             'has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-accent',
             '[&_a:focus-visible]:outline-none',
           ),
