@@ -112,7 +112,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | **Phase 3b: Clean Premium overhaul** (weeks 42–48, spec `docs/design/PREMIUM.md`) | | | | | |
 | C-100 | Clean Premium spec, D-44, overhaul task list (`docs/design/PREMIUM.md`) | CLOUD | S | C-083 | DONE ([#98](https://github.com/zaidg7/tidaq/pull/98)) |
 | C-101 | Mockups v2 with Zaid's feedback + icon options (canvas) | CLOUD | S | C-100 | DONE |
-| C-102 | Foundations: tokens, Instrument Sans, type, spacing, motion, focus | CLOUD | M | C-100 | IN PROGRESS |
+| C-102 | Foundations: tokens, Instrument Sans, type, spacing, motion, focus | CLOUD | M | C-100 | DONE ([#99](https://github.com/zaidg7/tidaq/pull/99)) |
 | C-103 | Primitives: Button, Chip, Badge, Field, Toast, Skeleton, Segmented, Accordion, Sheet | CLOUD | M | C-102 | TODO |
 | C-104 | Photos A: Commons sweep for every hotel, picks, focal points, AVIF/WebP + blur-up | CLOUD | M | C-102 | TODO |
 | C-105 | Photos B: city photos, fallback with "Stadtbild", every hotel shows a photo | CLOUD | S | C-104 | TODO |
@@ -958,6 +958,8 @@ Zaid picked direction B "Clean Premium" (canvas "Tidaq design directions", 15 Oc
 ### C-101 · Mockups v2 (Owner CLOUD · S · DONE)
 
 Canvas boards "B · Clean Premium" updated with Zaid's feedback: "Price Drops" wording, readable heavy hero type, "Beliebte Ziele" instead of the 25-numbers section and the how-it-works cards, dark Price Alert section with alert previews instead of the room photo, wordmark only. Board "Icon-Ideen v2": five symbols (t-Monogramm, Tür, Rezeptionsglocke, Schlüsselanhänger, Ort mit Stern) → B-020.
+
+**C-102 notes (DONE, [#99](https://github.com/zaidg7/tidaq/pull/99)):** Instrument Sans (`lib/fonts.ts`), PREMIUM.md tokens in `globals.css`. Soft Modern token names are aliases of the new ones (`fg`→`ink`, `bad`→`high`, `shadow-float`→`shadow-2`, …) so unrebuilt pages work; new code uses the new names; C-123 removes the aliases. `font-extrabold` = 700. Calendar tints stay soft until C-112. Visual baselines re-rendered.
 
 ### C-102 … C-123
 
