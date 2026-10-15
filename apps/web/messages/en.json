@@ -431,7 +431,7 @@
     "bestFacts": "{nights} nights for 2 adults on {provider}",
     "jsonLdDescription": "Five-star hotel in {city}. Tidaq shows the price of every night and the price history of your stay.",
     "calendarTitle": "Prices for every night",
-    "calendarText": "Cheapest price per night for 2 adults across all booking sites we check. Pick check-in and check-out to see the total and the history.",
+    "calendarText": "Cheapest price per night for 2 adults, across all booking sites we check. Pick your dates and we show the total and how it has moved.",
     "prevMonth": "Previous month",
     "nextMonth": "Next month",
     "chooseIn": "Pick your check-in.",
@@ -459,7 +459,12 @@
     "inactiveTitle": "We're not tracking this hotel right now",
     "inactiveText": "We don't collect new prices for this hotel. Pick another one.",
     "home": "Back to home",
-    "fiveStars": "Five stars"
+    "fiveStars": "Five stars",
+    "curveTitle": "How the price per night changes",
+    "curveText": "Cheapest night: {low} on {lowDay} · Most expensive: {high} on {highDay} · Green means cheap.",
+    "stepIn": "Pick check-in",
+    "stepOut": "Pick check-out",
+    "stepShow": "See price history"
   },
   "legal": {
     "bindingNote": "This is a translation for your convenience. The German version is legally binding.",
