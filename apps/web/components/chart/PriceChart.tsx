@@ -371,7 +371,7 @@ function Plot({ g, summary, locale, t, todayColor }: PlotProps) {
           ))}
         {g.usual && (
           <span
-            className="absolute right-1.5 text-[11px] leading-none font-semibold text-muted"
+            className="chart-halo absolute left-1.5 text-[11px] leading-none font-semibold text-muted"
             style={{ top: pct(g.usual.yTop), transform: 'translateY(5px)' }}
           >
             {t('usual')}
