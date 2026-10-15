@@ -807,6 +807,8 @@ export type Database = {
       }
       watchers: {
         Row: {
+          confirm_sent_at: string | null
+          confirm_token: string
           confirmed_at: string | null
           consent_at: string
           consent_text: string
@@ -814,9 +816,15 @@ export type Database = {
           email: string
           id: string
           locale: string
+          manage_token: string
+          newsletter: boolean
+          newsletter_at: string | null
+          newsletter_consent_text: string | null
           unsubscribed_at: string | null
         }
         Insert: {
+          confirm_sent_at?: string | null
+          confirm_token?: string
           confirmed_at?: string | null
           consent_at: string
           consent_text: string
@@ -824,9 +832,15 @@ export type Database = {
           email: string
           id?: string
           locale?: string
+          manage_token?: string
+          newsletter?: boolean
+          newsletter_at?: string | null
+          newsletter_consent_text?: string | null
           unsubscribed_at?: string | null
         }
         Update: {
+          confirm_sent_at?: string | null
+          confirm_token?: string
           confirmed_at?: string | null
           consent_at?: string
           consent_text?: string
@@ -834,6 +848,10 @@ export type Database = {
           email?: string
           id?: string
           locale?: string
+          manage_token?: string
+          newsletter?: boolean
+          newsletter_at?: string | null
+          newsletter_consent_text?: string | null
           unsubscribed_at?: string | null
         }
         Relationships: []
@@ -991,6 +1009,11 @@ export type Database = {
         Returns: undefined
       }
       collector_ingest: { Args: { payload: Json }; Returns: Json }
+      newsletter_off: { Args: { p_token: string }; Returns: boolean }
+      newsletter_request: {
+        Args: { p_consent_text: string; p_email: string; p_locale: string }
+        Returns: Json
+      }
       log_web_error: { Args: { p_env: string; p_source: string; p_message: string }; Returns: undefined }
       web_error_digest: {
         Args: { p_env: string; p_since: string }

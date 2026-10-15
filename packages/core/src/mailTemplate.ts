@@ -8,6 +8,8 @@ export interface MailContent {
   preheader: string;
   heading: string;
   paragraphs: string[];
+  /** A list of linked entries after the paragraphs (e.g. the deals of the week). */
+  items?: { title: string; meta: string; url: string }[];
   button: { label: string; url: string };
   /** A secondary text link under the button (e.g. the booking site in alert emails). */
   link?: { label: string; url: string };
@@ -31,6 +33,8 @@ export function renderMail(c: MailContent): { html: string; text: string } {
     `<p style="margin:0 0 16px;${FONT};font-size:16px;line-height:1.5;color:#2a2440">${escapeHtml(t)}</p>`;
   const small = (t: string) =>
     `<p style="margin:0 0 8px;${FONT};font-size:12.5px;line-height:1.5;color:#6b6585">${escapeHtml(t)}</p>`;
+  const item = (i: { title: string; meta: string; url: string }) =>
+    `<p style="margin:0 0 14px;${FONT};font-size:16px;line-height:1.45"><a href="${escapeHtml(i.url)}" style="color:#1b1530;font-weight:700;text-decoration:underline">${escapeHtml(i.title)}</a><br><span style="font-size:14px;color:#6b6585">${escapeHtml(i.meta)}</span></p>`;
   const html = `<!doctype html><html><body style="margin:0;padding:0;background:#f5f3fc">
 <span style="display:none;max-height:0;overflow:hidden">${escapeHtml(c.preheader)}</span>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f3fc"><tr><td align="center" style="padding:32px 16px">
@@ -39,6 +43,7 @@ export function renderMail(c: MailContent): { html: string; text: string } {
 <p style="margin:0 0 24px;${FONT};font-size:20px;font-weight:800;color:#1b1530">tidaq<span style="color:#6d4aff">.</span></p>
 <h1 style="margin:0 0 16px;${FONT};font-size:22px;line-height:1.25;color:#1b1530">${escapeHtml(c.heading)}</h1>
 ${c.paragraphs.map(p).join('\n')}
+${(c.items ?? []).map(item).join('\n')}
 <p style="margin:24px 0"><a href="${escapeHtml(c.button.url)}" style="display:inline-block;background:#6d4aff;color:#ffffff;${FONT};font-size:16px;font-weight:600;text-decoration:none;padding:14px 24px;border-radius:999px">${escapeHtml(c.button.label)}</a></p>
 ${small(c.button.url)}
 ${c.link ? `<p style="margin:16px 0 0;${FONT};font-size:16px;line-height:1.5"><a href="${escapeHtml(c.link.url)}" style="color:#6d4aff;font-weight:600">${escapeHtml(c.link.label)}</a></p>` : ''}
@@ -52,6 +57,7 @@ ${c.footer.map(small).join('\n')}
     c.heading,
     '',
     ...c.paragraphs.flatMap((t) => [t, '']),
+    ...(c.items ?? []).flatMap((i) => [i.title, i.meta, i.url, '']),
     `${c.button.label}: ${c.button.url}`,
     ...(c.link ? ['', `${c.link.label}: ${c.link.url}`] : []),
     '',

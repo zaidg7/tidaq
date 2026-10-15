@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { z, type Database } from '@tidaq/core';
+import { DEALS, z, type Database } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from './ingest';
 import type {
   CatalogHotel,
@@ -29,6 +29,32 @@ const alertRows = z.array(
     last_alert_cents: z.number().int().nullable(),
     last_alert_at: z.string().nullable(),
     series: z.array(z.object({ day: z.string(), cents: z.number().int() })),
+  }),
+);
+
+/** Newsletter recipients (C-054b): confirmed, subscribed addresses. */
+const recipientRows = z.array(
+  z.object({
+    email: z.string().email(),
+    locale: z.enum(['de', 'en']),
+    manage_token: z.string().uuid(),
+  }),
+);
+
+/** `v_stay_public` rows for the weekly deals (C-054b). */
+const dealRows = z.array(
+  z.object({
+    stay_id: z.number().int(),
+    hotel_slug: z.string(),
+    hotel_name: z.string(),
+    city_name_de: z.string(),
+    city_name_en: z.string(),
+    check_in: z.string(),
+    check_out: z.string(),
+    adults: z.number().int(),
+    now_cents: z.number().int().nullable(),
+    avg30_cents: z.number().int().nullable(),
+    days_tracked: z.number().int().nullable(),
   }),
 );
 
@@ -462,6 +488,51 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
         }),
         'record alert',
       );
+    },
+
+    async newsletterRecipients() {
+      const rows = check(
+        await db
+          .from('watchers')
+          .select('email, locale, manage_token')
+          .eq('newsletter', true)
+          .not('confirmed_at', 'is', null)
+          .is('unsubscribed_at', null)
+          .limit(5000),
+        'load newsletter recipients',
+      );
+      return recipientRows
+        .parse(rows)
+        .map((r) => ({ email: r.email, locale: r.locale, manageToken: r.manage_token }));
+    },
+
+    async dealCandidates(today) {
+      const rows = check(
+        await db
+          .from('v_stay_public')
+          .select(
+            'stay_id, hotel_slug, hotel_name, city_name_de, city_name_en, check_in, check_out, adults, now_cents, avg30_cents, days_tracked',
+          )
+          .eq('active', true)
+          .gt('check_in', today)
+          .gte('days_tracked', DEALS.minDays)
+          .not('now_cents', 'is', null)
+          .not('avg30_cents', 'is', null)
+          .limit(1000),
+        'load deal candidates',
+      );
+      return dealRows.parse(rows).map((r) => ({
+        stayId: r.stay_id,
+        hotelSlug: r.hotel_slug,
+        hotelName: r.hotel_name,
+        cityName: { de: r.city_name_de, en: r.city_name_en },
+        checkIn: r.check_in,
+        checkOut: r.check_out,
+        adults: r.adults,
+        nowCents: r.now_cents,
+        avg30Cents: r.avg30_cents,
+        daysTracked: r.days_tracked,
+      }));
     },
 
     async webErrors(env, since) {
