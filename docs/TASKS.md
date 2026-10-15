@@ -121,7 +121,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-108 | Search 2: calendar engine with price tints, date + guests popovers | CLOUD | M | C-107 | TODO |
 | C-109 | Search 3: phone full-screen search flow | CLOUD | M | C-108 | TODO |
 | C-110 | Search 4: submit routing, loading states, loading.tsx skeletons | CLOUD | S | C-109 | TODO |
-| C-111 | Charts 1: price history redesign | CLOUD | M | C-102 | TODO |
+| C-111 | Charts 1: price history redesign | CLOUD | M | C-102 | DONE |
 | C-112 | Charts 2: meter, story chart, site bars, calendar cells | CLOUD | M | C-111 | TODO |
 | C-113 | Drop page redesign (TikTok landing) | CLOUD | M | C-105, C-112 | TODO |
 | C-114 | Price Drops page + /price-drops routes + Deals as a view | CLOUD | M | C-113 | TODO |
@@ -962,6 +962,8 @@ Canvas boards "B · Clean Premium" updated with Zaid's feedback: "Price Drops" w
 **C-102 notes (DONE, [#99](https://github.com/zaidg7/tidaq/pull/99)):** Instrument Sans (`lib/fonts.ts`), PREMIUM.md tokens in `globals.css`. Soft Modern token names are aliases of the new ones (`fg`→`ink`, `bad`→`high`, `shadow-float`→`shadow-2`, …) so unrebuilt pages work; new code uses the new names; C-123 removes the aliases. `font-extrabold` = 700. Calendar tints stay soft until C-112. Visual baselines re-rendered.
 
 **C-103 notes (DONE, [#100](https://github.com/zaidg7/tidaq/pull/100)):** Button variants `secondary` (alias `ghost`), `subtle`, `onPhoto`, `dark`; sizes 44/52/60; `trailing` slot. `Chip` ink when selected; `Badge` tones `drop`, `onPhoto`; `TextField` label above; ink `Toast`; shimmer `Skeleton`. New `Segmented`, `Accordion`, `Sheet` (`components/ui`). The old `menu-sheet`/`date-sheet` dialogs move onto `Sheet` in C-106/C-108.
+
+**C-111 notes (DONE):** `PriceChart`: ink line drawn in (`.chart-line`, `pathLength=1`), soft accent area, the usual range (core `chartGeometry().usual`, 25th–75th percentile of regular prices, ≥ 7 points) as a grey band labelled "üblich" with a legend instead of the dashed average, low marker kept, today's dot in the verdict colour (`todayTone`) with a pop, dark scrub pill. `ChartRanges` (14 T · 30 T · Alles) on the stay page renders one chart per range on the server and shows one. The stay page's layout itself is C-116.
 
 ### C-102 … C-123
 
