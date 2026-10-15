@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  heroDrop,
   usualCents,
   dropPath,
   dropStats,
@@ -190,5 +191,22 @@ describe('usualCents (C-080d)', () => {
     const [below] = groupDrops([row({ prior_days: 5, prior_avg_cents: 40_000 })]);
     expect(few && usualCents(few.top)).toBeNull();
     expect(below && usualCents(below.top)).toBeNull();
+  });
+});
+
+describe('heroDrop (C-080d2)', () => {
+  const g = groupDrops([
+    row({ hotel_id: 1, hotel_name: 'A', drop_pct: 0.7, prior_days: 1 }),
+    row({ hotel_id: 2, hotel_name: 'B', drop_pct: 0.3, prior_days: 3 }),
+    row({ hotel_id: 3, hotel_name: 'C', drop_pct: 0.2, prior_days: 9 }),
+  ]);
+
+  it('prefers the biggest drop with enough history', () => {
+    expect(heroDrop(g)?.hotel.name).toBe('B');
+  });
+
+  it('falls back to the biggest, and to null without drops', () => {
+    expect(heroDrop(g.slice(0, 1))?.hotel.name).toBe('A');
+    expect(heroDrop([])).toBeNull();
   });
 });

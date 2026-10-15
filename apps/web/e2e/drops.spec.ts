@@ -20,7 +20,7 @@ test.describe('Preissturz-Radar (C-080a, sample data on /dev/drops)', () => {
       'href',
       DROP('baur-au-lac-zuerich'),
     );
-    await expect(hero).toContainText('Größter Preissturz seit gestern');
+    await expect(hero).toContainText('Preissturz des Tages');
     await expect(hero).toContainText('Preis um −31 % gefallen');
     await expect(hero).toContainText('684 €');
     await expect(hero).toContainText('Vortag 989 €');

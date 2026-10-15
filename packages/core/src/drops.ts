@@ -176,6 +176,15 @@ export function sortDrops<T extends HotelDrops>(groups: readonly T[], sort: Drop
   return copy.sort(byDrop);
 }
 
+/**
+ * The radar's hero (C-080d2): the biggest drop that rests on real history (at least
+ * `DROPS.usualMinDays` earlier checks), so the first thing a visitor sees isn't a drop measured
+ * against a single earlier price. Without such a drop, simply the biggest. `groups` biggest first.
+ */
+export function heroDrop<T extends HotelDrops>(groups: readonly T[]): T | null {
+  return groups.find((g) => g.top.priorDays >= DROPS.usualMinDays) ?? groups[0] ?? null;
+}
+
 /** Headline numbers for the radar: drops (nights), hotels, cities, the biggest drop. */
 export function dropStats(groups: readonly HotelDrops[]) {
   return {

@@ -87,6 +87,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-080b | Shareable drop page per hotel and night + in-browser story image (Web Share) | CLOUD | M | C-080a | DONE |
 | C-080c | Creator kit in /admin: top drops, captions, story images for TikTok/Instagram | CLOUD | S | C-080b | DONE |
 | C-080d | TikTok landing: hero drop above the fold, usual-price anchor, live proof, /tiktok | CLOUD | M | C-080a | DONE |
+| C-080d2 | Radar hero: the biggest drop with real history (≥ 3 earlier checks) | CLOUD | S | C-080d | DONE |
 | C-080e1 | Preissturz-Alarm sign-up: city or all, double opt-in, manage, privacy | CLOUD | M | C-080d, C-031a | DONE |
 | C-080e2 | Preissturz-Alarm send: daily email with new drops (dry run until launch) | CLOUD | M | C-080e1 | DONE |
 | C-080f | Weekend drops (2 nights, same site) on the radar | CLOUD | M | C-080a | TODO |
@@ -1008,6 +1009,11 @@ Owner: CLOUD · Size: M · Depends on: C-080a · Status: DONE · PR: see `[C-080
 The radar's job is turning a TikTok viewer into a user, not producing posts (Zaid, 15 Oct). Someone who taps the bio link must see the drop from the video, believe it and find a reason to stay, on a phone, in the first screen.
 
 **C-080d notes (DONE):** `/tiktok` and `/instagram` (and `/en/…`) redirect (307, `next.config.ts`) to `/preissturz?ref=…`: a one-line greeting replaces the intro, everything else is the normal radar. The biggest drop is now a hero card right under the title (`DropHero`; only on the unfiltered default sort; it leaves the grid): photo with the drop, both prices, saved, the **usual price** ("Sonst um 1.029 €": average of the earlier checks, only with ≥ 3 of them and above today's price, core `usualCents`) and "Preisverlauf ansehen". At 390 × 844 the whole hero including its button is in the first screen. Below it a proof line from SQL `radar_stats` ("5.722 Nächte in 82 Hotels auf 4 Buchungsseiten geprüft") plus "Sortiert nur nach dem Preissturz" and "Kostenlos, ohne Anmeldung". Cards, drop pages and creator-kit captions show the usual price too. Radar views are counted anonymously as `drops_view` with `ref` (`tiktok`, `instagram`, `none`): `event_stats` in the weekly summary shows what TikTok brings. SQL: new `radar_drops` = `price_drops` + `prior_avg_cents` (migration `20261015080856`; a new name because changing `price_drops`' return type needs a DROP, which the Supabase connector holds for a human confirmation). `price_drops` is unused now; remove it in a later migration when someone can confirm the DROP. `radar_stats` and the `log_event` change: migration `20261015080651`.
+
+### C-080d2 · Hero with real history
+
+Owner: CLOUD · Size: S · Depends on: C-080d · Status: DONE · PR: see `[C-080d2]`
+**Notes (DONE):** On day 2 of the night grid the radar's biggest drop was "−70 % at The Shanghai EDITION", measured against a single earlier price. The hero (core `heroDrop`) is now the biggest drop with at least 3 earlier checks (`DROPS.usualMinDays`), so it also shows the usual price; without one, simply the biggest. Its label is "Preissturz des Tages" (it isn't always the biggest). The grid still lists every drop, biggest first.
 
 ### C-080e · Preissturz-Alarm
 
