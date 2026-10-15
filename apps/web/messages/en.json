@@ -876,7 +876,7 @@
     "homeTitle": "Sudden drops since yesterday",
     "homeAll": "All price drops",
     "cityTitle": "Sudden drops {where}",
-    "heroEyebrow": "Biggest drop since yesterday",
+    "heroEyebrow": "Drop of the day",
     "heroCta": "See the price history",
     "usual": "Usually around {price}",
     "proof": "{nights, number} nights in {hotels} hotels checked on {sites} booking sites",

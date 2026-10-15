@@ -5,6 +5,7 @@ import {
   DROP_SORTS,
   DROP_WHENS,
   dropStats,
+  heroDrop,
   filterDrops,
   sortDrops,
   localizedPath,
@@ -97,9 +98,10 @@ export function DropsView({
   );
   const filtered = filters.city !== null || filters.when !== null;
   const seen = seenAt ? updatedAtParts(seenAt, now, locale) : null;
-  // The biggest drop gets the hero spot on the unfiltered default view and leaves the grid.
-  const hero = !filtered && filters.sort === 'pct' ? (shown[0] ?? null) : null;
-  const grid = hero ? shown.slice(1) : shown;
+  // The biggest drop with real history gets the hero spot on the unfiltered default view and
+  // leaves the grid (C-080d2).
+  const hero = !filtered && filters.sort === 'pct' ? heroDrop(shown) : null;
+  const grid = hero ? shown.filter((g) => g !== hero) : shown;
 
   return (
     <div className="mx-auto w-full max-w-[1080px] px-5 pt-8 pb-16 md:px-7 lg:pt-14 lg:pb-[88px]">

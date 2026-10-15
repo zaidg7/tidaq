@@ -264,6 +264,7 @@ export {
   filterDrops,
   findDrop,
   groupDrops,
+  heroDrop,
   priceDropRowSchema,
   sortDrops,
   usualCents,
