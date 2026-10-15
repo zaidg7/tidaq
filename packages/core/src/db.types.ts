@@ -201,6 +201,39 @@ export type Database = {
         }
         Relationships: []
       }
+      hotel_provider_pages: {
+        Row: {
+          hotel_id: number
+          page_ref: string
+          provider_id: number
+        }
+        Insert: {
+          hotel_id: number
+          page_ref: string
+          provider_id: number
+        }
+        Update: {
+          hotel_id?: number
+          page_ref?: string
+          provider_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hotel_provider_pages_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hotel_provider_pages_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hotels: {
         Row: {
           active: boolean
