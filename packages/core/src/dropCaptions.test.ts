@@ -17,6 +17,7 @@ const row = (over: Partial<PriceDropRow>): PriceDropRow => ({
   drop_pct: 0.3084,
   prior_low_cents: 98_900,
   prior_days: 9,
+  prior_avg_cents: 95_200,
   provider_slug: 'booking-com',
   provider_name: 'Booking.com',
   provider_direct: false,
@@ -53,7 +54,7 @@ describe('dropCaption', () => {
     expect(text).toContain(
       'Nacht vom Di, 27. Okt.: 684 € statt 989 € am Vortag (−31 %) bei Booking.com.',
     );
-    expect(text).toContain('Niedrigster Preis seit 10 Tagen.');
+    expect(text).toContain('Sonst um 952 €. Niedrigster Preis seit 10 Tagen.');
     expect(text).toContain('Stand: 15. Okt., 08:12.');
     expect(text).toContain('prüf sie vor dem Buchen');
     expect(text).toContain(CAPTION.url);

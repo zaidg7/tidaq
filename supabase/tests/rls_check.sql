@@ -41,6 +41,9 @@ select
     as anon_cannot_read_night_pairs,
   -- C-034: public provider facts are aggregates only; single checkout tests stay private.
   has_function_privilege('anon', 'public.provider_facts()', 'execute') as anon_can_read_provider_facts,
+  -- C-080: drops and the radar's proof numbers are public facts.
+  has_function_privilege('anon', 'public.radar_drops(date)', 'execute') as anon_can_read_drops,
+  has_function_privilege('anon', 'public.radar_stats(date)', 'execute') as anon_can_read_radar_stats,
   -- C-030a/C-031: everything with addresses or alerts is service role only.
   not has_function_privilege('anon', 'public.alert_inputs(date)', 'execute')
     as anon_cannot_read_alert_inputs,

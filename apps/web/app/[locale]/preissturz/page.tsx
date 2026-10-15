@@ -1,10 +1,18 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { alternatesFor, localizedPath, type Locale } from '@tidaq/core';
-import { applyDropFilters, DropsView } from '@/components/drops/DropsView';
+import { headers } from 'next/headers';
+import { after } from 'next/server';
+import {
+  applyDropFilters,
+  DROP_SOURCES,
+  DropsView,
+  type DropSource,
+} from '@/components/drops/DropsView';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
-import { getDrops } from '@/lib/data/drops';
+import { getDrops, getRadarStats } from '@/lib/data/drops';
+import { logView } from '@/lib/data/events';
 import { openGraphFor } from '@/lib/og';
 import { routes } from '@/lib/routes';
 import { berlinToday } from '@/lib/today';
@@ -14,7 +22,7 @@ export const dynamic = 'force-dynamic';
 
 type Props = {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ stadt?: string; wann?: string; sort?: string }>;
+  searchParams: Promise<{ stadt?: string; wann?: string; sort?: string; ref?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -33,7 +41,11 @@ export default async function DropsPage({ params, searchParams }: Props) {
   setRequestLocale(locale);
   const q = await searchParams;
   const today = berlinToday();
-  const load = await getDrops(today);
+  const [load, checked] = await Promise.all([getDrops(today), getRadarStats(today)]);
+  const source = DROP_SOURCES.find((x): x is DropSource => x === q.ref) ?? null;
+  // Anonymous count (C-029/C-080d): how many radar views came through which bio link.
+  const userAgent = (await headers()).get('user-agent');
+  after(() => logView({ name: 'drops_view', props: { ref: source ?? 'none' } }, userAgent));
   if (load.kind === 'unavailable') {
     const t = await getTranslations({ locale, namespace: 'drops' });
     return (
@@ -52,6 +64,8 @@ export default async function DropsPage({ params, searchParams }: Props) {
       filters={filters}
       seenAt={load.seenAt}
       now={new Date()}
+      checked={checked}
+      source={source}
     />
   );
 }

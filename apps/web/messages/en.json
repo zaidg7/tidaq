@@ -818,13 +818,12 @@
     "metaDescription": "Where the price of a night at a five-star hotel fell the most since yesterday, to a new low. New every day, with both prices.",
     "eyebrow": "Price drops · live",
     "title": "Sudden price drops at luxury hotels",
-    "intro": "Every day we check the price of every night at our five-star hotels. Here's where the cheapest price fell the most since the day before, to a new low.",
+    "intro": "Five-star hotels whose price for a night dropped sharply since yesterday, to a new low. Real prices, new every day.",
     "asOf": "As of {when}",
     "today": "today, {time}",
     "yesterday": "yesterday, {time}",
     "statNights": "{n, plural, one {# night} other {# nights}} cheaper",
     "statHotels": "at {n, plural, one {# hotel} other {# hotels}}",
-    "statBiggest": "biggest drop {pct}",
     "filterCity": "Filter by city",
     "filterWhen": "Filter by travel date",
     "sortLabel": "Sort",
@@ -869,7 +868,17 @@
     "homeEyebrow": "Live",
     "homeTitle": "Sudden drops since yesterday",
     "homeAll": "All price drops",
-    "cityTitle": "Sudden drops {where}"
+    "cityTitle": "Sudden drops {where}",
+    "heroEyebrow": "Biggest drop since yesterday",
+    "heroCta": "See the price history",
+    "usual": "Usually around {price}",
+    "proof": "{nights, number} nights in {hotels} hotels checked on {sites} booking sites",
+    "welcome": {
+      "title": "Hi! Nice to see you from {source}.",
+      "fair": "Sorted by the drop only",
+      "free": "Free, no sign-up",
+      "label": "Why Tidaq"
+    }
   },
   "drop": {
     "metaTitle": "{hotel}: {pct} for {date} | Tidaq",

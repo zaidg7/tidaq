@@ -86,7 +86,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-080a | Preissturz-Radar: daily sudden price drops, /preissturz, home and city teasers | CLOUD | M | C-013g, C-024 | DONE |
 | C-080b | Shareable drop page per hotel and night + in-browser story image (Web Share) | CLOUD | M | C-080a | DONE |
 | C-080c | Creator kit in /admin: top drops, captions, story images for TikTok/Instagram | CLOUD | S | C-080b | DONE |
-| C-080d | Weekend drops (2 nights, same site) and city drop alerts by email | CLOUD | M | C-080a, C-031a | TODO |
+| C-080d | TikTok landing: hero drop above the fold, usual-price anchor, live proof, /tiktok | CLOUD | M | C-080a | DONE |
+| C-080e | Preissturz-Alarm: email sign-up for drops in a city (or all), daily send | CLOUD | M | C-080d, C-031a | TODO |
+| C-080f | Weekend drops (2 nights, same site) on the radar | CLOUD | M | C-080a | TODO |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
@@ -999,10 +1001,22 @@ Owner: CLOUD · Size: S · Depends on: C-080b · Status: DONE · PR: see `[C-080
 
 **C-080c notes (DONE):** `/admin/preisstuerze` (linked from the admin overview as "Preisstürze für Social Media"; preview `/dev/admin/drops`): today's top 10 drops (one per hotel) with thumbnail, prices, a ready German caption (core `dropCaption`: both prices, site, night, new low, "Stand", the check-before-booking line, `tidaq.com/preissturz`, city hashtag first) and buttons "Story-Bild" (same 1080×1920 image as the drop page), "Text kopieren", "Seite öffnen". "Top 5 des Tages": a cover slide (`drawCover`: ranked list) plus the five story images in one share (phone share sheet takes all files at once; desktop downloads them) and the list caption (core `topCaption`). Shared helper `components/drops/shareFiles.ts`. Captions have no urgency words (tested).
 
-### C-080d · Weekend drops and city drop alerts
+### C-080d · TikTok landing
 
-Owner: CLOUD · Size: M · Depends on: C-080a, C-031a · Status: TODO
-Weekend drops: Fri–Sun stays whose 2-night total on one site fell the same way (sum of both nights from the same site and check day). City drop alerts: "Schick mir Preisstürze in Paris" sign-up on the radar and city pages (double opt-in via `watchers`, like the newsletter), one email per day at most, only when a new drop appears. Mind the Workers 50 subrequests per cron run.
+Owner: CLOUD · Size: M · Depends on: C-080a · Status: DONE · PR: see `[C-080d]`
+The radar's job is turning a TikTok viewer into a user, not producing posts (Zaid, 15 Oct). Someone who taps the bio link must see the drop from the video, believe it and find a reason to stay, on a phone, in the first screen.
+
+**C-080d notes (DONE):** `/tiktok` and `/instagram` (and `/en/…`) redirect (307, `next.config.ts`) to `/preissturz?ref=…`: a one-line greeting replaces the intro, everything else is the normal radar. The biggest drop is now a hero card right under the title (`DropHero`; only on the unfiltered default sort; it leaves the grid): photo with the drop, both prices, saved, the **usual price** ("Sonst um 1.029 €": average of the earlier checks, only with ≥ 3 of them and above today's price, core `usualCents`) and "Preisverlauf ansehen". At 390 × 844 the whole hero including its button is in the first screen. Below it a proof line from SQL `radar_stats` ("5.722 Nächte in 82 Hotels auf 4 Buchungsseiten geprüft") plus "Sortiert nur nach dem Preissturz" and "Kostenlos, ohne Anmeldung". Cards, drop pages and creator-kit captions show the usual price too. Radar views are counted anonymously as `drops_view` with `ref` (`tiktok`, `instagram`, `none`): `event_stats` in the weekly summary shows what TikTok brings. SQL: new `radar_drops` = `price_drops` + `prior_avg_cents` (migration `20261015080856`; a new name because changing `price_drops`' return type needs a DROP, which the Supabase connector holds for a human confirmation). `price_drops` is unused now; remove it in a later migration when someone can confirm the DROP. `radar_stats` and the `log_event` change: migration `20261015080651`.
+
+### C-080e · Preissturz-Alarm
+
+Owner: CLOUD · Size: M · Depends on: C-080d, C-031a · Status: TODO
+The conversion step for TikTok visitors: "Schick mir Preisstürze in Paris" (or all cities) on the radar (under the hero), drop pages and city pages. Double opt-in through `watchers` like the newsletter (one address, manage page, one-click unsubscribe). The collector sends at most one email per day per subscriber, only with drops not sent before (the hotel and night), biggest first, with photo-less list rows (hotel, night, both prices, usual price, link to the drop page). Dry run until launch like the alerts. Mind the Workers 50 subrequests per cron run (batch API). Privacy §6 gets one sentence.
+
+### C-080f · Weekend drops
+
+Owner: CLOUD · Size: M · Depends on: C-080a · Status: TODO
+Fri–Sun stays whose 2-night total on one site fell the same way (sum of both nights from the same site and check day), as their own entries on the radar and drop pages (`/preissturz/[hotel]/[checkIn]--[checkOut]`).
 
 ## Checklists
 

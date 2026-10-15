@@ -19,6 +19,8 @@ export const DROPS = {
   weekDays: 7,
   /** "Nächste 30 Tage". */
   monthDays: 30,
+  /** "Sonst um X €" only when the average rests on at least this many earlier checks. */
+  usualMinDays: 3,
 } as const;
 
 const day = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
@@ -39,6 +41,8 @@ export const priceDropRowSchema = z.object({
   drop_pct: z.coerce.number().positive().max(1),
   prior_low_cents: cents,
   prior_days: z.number().int().nonnegative(),
+  /** Average of those earlier checks (C-080d, SQL `radar_drops`). */
+  prior_avg_cents: cents,
   provider_slug: z.string(),
   provider_name: z.string(),
   provider_direct: z.boolean(),
@@ -59,6 +63,8 @@ export interface PriceDrop {
   savedCents: number;
   /** Days this night was checked before; "lowest in N days" when ≥ 2. */
   priorDays: number;
+  /** Average cheapest price over those earlier checks. */
+  priorAvgCents: number;
   provider: { slug: string; name: string; direct: boolean };
   /** Reviewed sites with a price for this night. */
   offers: number;
@@ -83,6 +89,7 @@ function toDrop(r: PriceDropRow): PriceDrop {
     drop: r.drop_pct,
     savedCents: r.prev_cents - r.now_cents,
     priorDays: r.prior_days,
+    priorAvgCents: r.prior_avg_cents,
     provider: { slug: r.provider_slug, name: r.provider_name, direct: r.provider_direct },
     offers: r.offers,
   };
@@ -180,6 +187,14 @@ export function dropStats(groups: readonly HotelDrops[]) {
 }
 
 /** The 1-night stay a drop belongs to (check-in = the night). */
+/**
+ * The usual price of that night (C-080d): the average of the earlier checks, shown as the anchor
+ * ("sonst um 5.200 €") only when enough checks back it up and it's above today's price.
+ */
+export function usualCents(d: PriceDrop): number | null {
+  return d.priorDays >= DROPS.usualMinDays && d.priorAvgCents > d.nowCents ? d.priorAvgCents : null;
+}
+
 /** A drop as text with the typographic minus: `−28 %` (DE), `−28%` (EN). */
 export function formatDrop(drop: number, locale: Locale): string {
   return formatPercent(-drop, locale, { signed: true }).replace('-', '−');

@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { addDays, type DailyPrice, type Locale } from '@tidaq/core';
 import { DropOver, DropPage } from '@/components/drops/DropPage';
 import { DropsTeaser, dropsHref } from '@/components/drops/DropsTeaser';
-import { applyDropFilters, DropsView } from '@/components/drops/DropsView';
+import { applyDropFilters, DROP_SOURCES, DropsView } from '@/components/drops/DropsView';
 import { ADLON, sampleDrops as sample } from '@/lib/dropsSample';
 import { berlinToday } from '@/lib/today';
 
@@ -29,7 +29,8 @@ function history(prevCents: number, nowCents: number, today: string): DailyPrice
 
 /**
  * `/dev/drops`: the radar with sample data. `?empty`: empty state; `?teaser`: the section;
- * `?share` or `?share=<slug>`: a drop page (C-080b); `?over`: a drop that's gone.
+ * `?share` or `?share=<slug>`: a drop page (C-080b); `?over`: a drop that's gone; `?ref=tiktok`:
+ * the welcome for social bio links (C-080d).
  */
 export default async function DevDropsPage({
   params,
@@ -44,6 +45,7 @@ export default async function DevDropsPage({
     stadt?: string;
     wann?: string;
     sort?: string;
+    ref?: string;
   }>;
 }) {
   if (process.env.APP_ENV === 'production') notFound();
@@ -98,6 +100,8 @@ export default async function DevDropsPage({
       filters={filters}
       seenAt={all[0]?.top.seenAt ?? null}
       now={new Date()}
+      checked={all.length ? { day: today, nights: 5722, hotels: 82, cities: 27, sites: 4 } : null}
+      source={DROP_SOURCES.find((x) => x === q.ref) ?? null}
     />
   );
 }

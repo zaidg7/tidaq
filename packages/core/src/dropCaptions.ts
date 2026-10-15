@@ -1,4 +1,4 @@
-import { formatDrop, type HotelDrops, type PriceDrop } from './drops';
+import { formatDrop, usualCents, type HotelDrops, type PriceDrop } from './drops';
 import { formatPrice, formatWeekdayDayMonth, updatedAtParts } from './format';
 
 /**
@@ -37,10 +37,11 @@ export function dropCaption(g: HotelDrops, d: PriceDrop): string {
     d.priorDays >= 2
       ? `Niedrigster Preis seit ${d.priorDays + 1} Tagen.`
       : 'Niedrigster Preis, seit wir messen.';
+  const usual = usualCents(d);
   return [
     `Preissturz im ${g.hotel.name}, ${g.city.name.de} 📉`,
     `Nacht vom ${formatWeekdayDayMonth(d.night, 'de')}: ${formatPrice(d.nowCents, 'de')} statt ${formatPrice(d.prevCents, 'de')} am Vortag (${formatDrop(d.drop, 'de')}) ${site(d)}.`,
-    low,
+    usual !== null ? `Sonst um ${formatPrice(usual, 'de')}. ${low}` : low,
     `Stand: ${seenText(d.seenAt)}. Preise ändern sich oft, prüf sie vor dem Buchen.`,
     `Alle Preisstürze mit Preisverlauf: ${CAPTION.url}`,
     '',

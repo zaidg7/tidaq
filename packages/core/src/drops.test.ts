@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  usualCents,
   dropPath,
   dropStats,
   dropStay,
@@ -29,6 +30,7 @@ const row = (over: Partial<PriceDropRow>): PriceDropRow => ({
   drop_pct: 0.198,
   prior_low_cents: 50_500,
   prior_days: 1,
+  prior_avg_cents: 50_500,
   provider_slug: 'booking-com',
   provider_name: 'Booking.com',
   provider_direct: false,
@@ -173,5 +175,20 @@ describe('dropPath and findDrop (C-080b)', () => {
     expect(findDrop(g, other.hotel.slug, other.more[0].night)?.drop).toBe(other.more[0]);
     expect(findDrop(g, top.hotel.slug, '2030-01-01')).toBeNull();
     expect(findDrop(g, 'gibt-es-nicht', top.top.night)).toBeNull();
+  });
+});
+
+describe('usualCents (C-080d)', () => {
+  const [g] = groupDrops([row({ prior_days: 3, prior_avg_cents: 52_000 })]);
+
+  it('is the average of the earlier checks once there are enough of them', () => {
+    expect(g && usualCents(g.top)).toBe(52_000);
+  });
+
+  it("is null with too few checks or an average not above today's price", () => {
+    const [few] = groupDrops([row({ prior_days: 2, prior_avg_cents: 52_000 })]);
+    const [below] = groupDrops([row({ prior_days: 5, prior_avg_cents: 40_000 })]);
+    expect(few && usualCents(few.top)).toBeNull();
+    expect(below && usualCents(below.top)).toBeNull();
   });
 });

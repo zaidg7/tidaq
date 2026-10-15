@@ -49,6 +49,7 @@ function row(
     drop_pct: 1 - now / prev,
     prior_low_cents: prev,
     prior_days: priorDays,
+    prior_avg_cents: Math.round(prev * 1.04),
     provider_slug: provider[0],
     provider_name: provider[1],
     provider_direct: provider[2] ?? false,

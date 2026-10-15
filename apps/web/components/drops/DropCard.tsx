@@ -7,6 +7,7 @@ import {
   formatWeekdayDayMonth,
   localizedPath,
   type Locale,
+  usualCents,
   type PriceDrop,
 } from '@tidaq/core';
 import { Card } from '@/components/ui/Card';
@@ -33,6 +34,7 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
   const d = g.top;
   const pct = dropPercent(d.drop, locale);
   const more = g.more.slice(0, max);
+  const usual = usualCents(d);
   return (
     <Card interactive padded={false} className="flex h-full flex-col overflow-hidden">
       <div className="relative">
@@ -78,6 +80,7 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
             : t('saved', { amount: formatPrice(d.savedCents, locale), provider: d.provider.name })}
         </p>
         <p className="text-meta mt-0.5 text-muted-ink">
+          {usual !== null && <>{t('usual', { price: formatPrice(usual, locale) })} · </>}
           {d.priorDays >= 2 ? t('newLow', { days: d.priorDays + 1 }) : t('firstLow')}
         </p>
         {more.length > 0 && (

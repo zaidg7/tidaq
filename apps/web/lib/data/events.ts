@@ -10,7 +10,9 @@ export type ViewEvent =
       props: { hotel: string; nights: number; adults: number; daysAhead: number };
     }
   | { name: 'hotel_view'; props: { hotel: string } }
-  | { name: 'city_view'; props: { city: string } };
+  | { name: 'city_view'; props: { city: string } }
+  /** The Preissturz-Radar; `ref` = the social bio link it came through, or `none` (C-080d). */
+  | { name: 'drops_view'; props: { ref: string } };
 
 /**
  * Counts a page view (C-029): what was viewed, never who (no IP, no user agent, no id). Call it
