@@ -59,19 +59,25 @@ test.describe('hotel page (C-023a, sample data on /dev/hotel)', () => {
     await expect(page.getByText(/^2 Nächte · 14\.–16\. Okt\.$/)).toBeVisible();
   });
 
-  test('cheapest weekend and midweek stay link to their stay pages (C-023b)', async ({ page }) => {
+  test('cheapest 5 nights and week link to their stay pages (C-023b, C-125)', async ({ page }) => {
     await page.goto('/dev/hotel/calendar');
     const best = page.getByRole('region', { name: 'Günstigste Termine' });
     await expect(best.getByRole('listitem')).toHaveCount(2);
-    const weekend = best.getByRole('listitem').filter({ hasText: 'Wochenende · Fr–So' });
-    await expect(weekend.getByRole('link', { name: '13.–15. Nov. 2026' })).toHaveAttribute(
-      'href',
-      '/hotel/hotel-adlon-kempinski-berlin/2026-11-13--2026-11-15?adults=2',
-    );
-    await expect(weekend).toContainText('2 Nächte für 2 Erwachsene bei Booking.com');
-    await expect(weekend).toContainText('681 € pro Nacht');
-    const midweek = best.getByRole('listitem').filter({ hasText: 'Unter der Woche · Di–Do' });
-    await expect(midweek.getByRole('link', { name: '10.–12. Nov. 2026' })).toBeVisible();
+    for (const [label, n] of [
+      ['5 Nächte', 5],
+      ['Eine Woche', 7],
+    ] as const) {
+      const card = best.getByRole('listitem').filter({ hasText: label });
+      const href = await card.getByRole('link').getAttribute('href');
+      const m =
+        /^\/hotel\/hotel-adlon-kempinski-berlin\/(\d{4}-\d{2}-\d{2})--(\d{4}-\d{2}-\d{2})\?adults=2$/.exec(
+          href ?? '',
+        );
+      expect(m, href ?? '').not.toBeNull();
+      expect((Date.parse(m?.[2] ?? '') - Date.parse(m?.[1] ?? '')) / 86_400_000).toBe(n);
+      await expect(card).toContainText(`${n} Nächte für 2 Erwachsene bei`);
+      await expect(card).toContainText(/\d\s€ pro Nacht/);
+    }
   });
 
   test('hotels where single nights mislead show no total', async ({ page }) => {

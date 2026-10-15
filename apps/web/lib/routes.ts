@@ -8,8 +8,8 @@ export const routes = {
   hotels: '/hotels',
   cities: '/staedte',
   deals: '/deals',
-  drops: '/preissturz',
-  dropsWeek: '/preissturz/woche',
+  drops: '/price-drops',
+  dropsWeek: '/price-drops/woche',
   // The Kassen-Check page comes with C-119; until then the provider scores on the method page.
   checkoutCheck: '/methodik#anbieter',
   method: '/methodik',

@@ -71,9 +71,10 @@ All tokens live in `apps/web/app/globals.css` as CSS variables and Tailwind them
 | `--accent` | `#4B33C9` | primary buttons, links, focus ring, selected states |
 | `--accent-hover` | `#3D28A8` | hover/pressed accent |
 | `--accent-soft` | `#EEEAFE` | selected chip fill, icon tiles |
-| `--good` | `#0E6B47` | price down, "günstig", drop badges (white text on it passes AA) |
+| `--good` | `#0E6B47` | "günstig" verdict, price down in charts (white text on it passes AA) |
 | `--good-soft` | `#E1F2E9` | good chips |
-| `--good-bright` | `#3DDC97` | live dot and accents on dark or photo only |
+| `--good-bright` | `#3DDC97` | accents on dark or photo only |
+| `--sale-1` … `--sale-4` | `#C4302B` `#B3201C` `#C01C17` `#E3120B` | Price Drops (D-46): red, stronger the bigger the drop. Badge under 20 % white with `--sale-1` text, 20–39 % `--sale-2-soft` (`#FDE4E2`) with `--sale-2` text, 40–59 % solid `--sale-3`, 60 %+ solid `--sale-4` with a red glow; the same step colours the drop as text ("−31 %", "1.525 € weniger") |
 | `--high` | `#B42318` | price up, "teuer" text (D-22) |
 | `--high-soft` | `#FDEBE7` | high chips |
 | `--high-fill` | `#E8A87C` | "teuer" zone in meters and heat cells (fill only, never text) |
@@ -117,7 +118,7 @@ No ALL CAPS letter-spaced labels (that was an AI-template tell); labels are sent
 - **Page gutters:** 16 (≤ 480), 24 (≤ 768), 40 (≥ 1024). Max content width 1240; text measure max 640.
 - **Section rhythm:** 72 mobile / 120 desktop between sections; 20 / 36 between a section title and its content.
 - **Grid:** 4 columns mobile, 8 tablet, 12 desktop, gutter 12 / 20 / 28.
-- **Radius:** 6 (credit tags), 12 (inputs, small thumbs), 16 (buttons), 22 (cards, photos), 28 (panels, sheets, search bar), 999 (chips, badges, live dot).
+- **Radius:** 6 (credit tags), 12 (inputs, small thumbs), 16 (buttons), 22 (cards, photos), 28 (panels, sheets, search bar), 999 (chips, badges).
 - **Elevation:** `--shadow-1` `0 1px 2px rgba(21,19,28,.06)` (resting cards); `--shadow-2` `0 1px 2px rgba(21,19,28,.06), 0 12px 32px rgba(21,19,28,.10)` (hover, popovers); `--shadow-3` `0 1px 2px rgba(21,19,28,.06), 0 24px 56px rgba(21,19,28,.16)` (search bar, sheets, dialogs). No colored glows.
 - **Touch targets:** ≥ 44 × 44. **Focus:** 2 px `--accent` ring, 2 px offset, on every interactive element (`:focus-visible`).
 - **Borders:** 1 px `--line`; cards on `--bg` get border + `--shadow-1`, cards on white get border only.
@@ -199,7 +200,6 @@ Tokens in CSS: `--ease-out: cubic-bezier(.2,.8,.2,1)`, `--ease-in: cubic-bezier(
 | big drop number | counts from 0 to −54 % over 700 ms on first view only (not on back navigation) |
 | skeletons | shimmer sweep 1.4 s, `--surface-2` → white 60 % → `--surface-2` |
 | toasts | slide up 12 px + fade, auto-hide after 4 s, pause on hover |
-| live dot | soft pulse (opacity .6 → 1, 2 s) |
 
 `prefers-reduced-motion: reduce`: no movement, no scale, no count-up, no draw-in; only opacity fades ≤ 150 ms. Never animate layout properties that cause jank (only transform/opacity).
 
@@ -297,7 +297,7 @@ Order inside each page = top to bottom on a phone. "→" means a link or tap tar
 
 Hero fact: *Is your hotel cheap right now?* + today's Price Drops.
 
-1. **Hero** (phone 620 px tall, desktop 760): full-bleed photo (rooftop loungers at sunset), `--scrim-top` + `--scrim-bottom`. Transparent navbar on top (white wordmark and links). Content bottom-left: live pill "Live · heute 07:08 aktualisiert" (green dot pulsing; time = last collection run; hidden if older than 36 h), `display` headline **"Ist dein Hotel gerade günstig?"** (white, weight 650), lead "Wir prüfen jeden Morgen 83 Fünf-Sterne-Hotels. Du siehst sofort, ob sich Buchen gerade lohnt." (desktop) / "Wir prüfen jeden Morgen 83 Fünf-Sterne-Hotels." (phone). Desktop: the search bar (§9.1) overlaps the hero's bottom edge by 46 px. Phone: the "Wohin?" pill sits inside the hero, 24 px from the bottom (§9.2).
+1. **Hero** (phone 620 px tall, desktop 760): full-bleed photo (rooftop loungers at sunset), `--scrim-top` + `--scrim-bottom`. Transparent navbar on top (white wordmark and links). Content bottom-left: `display` headline **"Ist dein Hotel gerade günstig?"** (white, weight 650), lead "Wir prüfen jeden Morgen 83 Fünf-Sterne-Hotels. Du siehst sofort, ob sich Buchen gerade lohnt." (desktop) / "Wir prüfen jeden Morgen 83 Fünf-Sterne-Hotels." (phone). Desktop: the search bar (§9.1) overlaps the hero's bottom edge by 46 px. Phone: the "Wohin?" pill sits inside the hero, 24 px from the bottom (§9.2).
 2. **Trust row:** one line, centered, `small` `--muted`: "Booking.com, Expedia, Trip.com und Agoda im Vergleich · kostenlos". No icons.
 3. **Price Drops heute:** `h2` + lead "Über Nacht bis zu 70 % billiger." (the % is today's biggest drop; if none ≥ 20 %: "Über Nacht deutlich billiger.") and → "Alle 24" (count). Grid: 2 columns on phones, 4 on desktop, 4 cards (§11 DropCard). Empty: the section is replaced by a quiet card "Heute keine großen Price Drops. Morgen früh schauen wir wieder." + → "Price Alert aktivieren".
 4. **Beliebte Ziele:** `h2` + → "Alle 27". Phone: horizontal snap row of 240 × 300 photo tiles; desktop: bento grid (1 large 2×2 + 4 small, row height 260). Each tile: city photo, `--scrim-bottom`, city name (24/34 px, 650) and "3 Hotels · 2 Price Drops heute" (omit the drops part when 0). Cities ordered by today's drops, then by popularity. → city page.
@@ -315,10 +315,10 @@ Motion: §6 hero sequence; drop cards and city tiles fade up with stagger; alert
 Hero fact: the biggest drop of the day.
 
 1. Navbar solid (white).
-2. **Header:** for bio-link visitors a welcome pill "Hi! Schön, dass du von TikTok kommst." (Instagram accordingly), then `h1` "Price Drops heute", one line "Stand 07:08 · 31 Nächte in 24 Hotels günstiger" with the live dot.
+2. **Header:** for bio-link visitors a welcome pill "Hi! Schön, dass du von TikTok kommst." (Instagram accordingly), then `h1` "Price Drops heute", the intro and a quiet muted line "Stand: heute, 07:08". No live dots or "Live" pills anywhere (Zaid, C-125: they look generated and add nothing).
 3. **Aus unseren Videos** (bio-link visitors only): horizontal row of compact cards (photo, hotel, "Im Video vom 12. Okt", pill "Läuft noch" green / "Vorbei" neutral).
 4. **Drop of the day** (default sort, no filter): large card, photo 16:9 (phone 4:5) with the % badge in `hero-number`-like 40 px on the photo, hotel, city · date, `price-xl` + "statt 2.500 €", button "Ansehen". Whole card is the link.
-5. **Filter bar** (sticky under the navbar when scrolling, white with `--shadow-1`): horizontally scrollable chips: **Alle Städte ▾** (opens a sheet/popover with city list + photo chips), **Wann ▾** (Nächste 7 Tage / 30 Tage / Später), **Wochenende** (toggle), **Sortieren ▾** (Größter Drop / Meiste Ersparnis / Bald). Selected chips fill `--ink` with white text. Changing a filter updates the URL (shareable) and the grid without a full reload; results fade/cross-fade (200 ms).
+5. **Filter row** (D-48, C-125): **one "Filter" button** (ink when filters are set, with their count), the chosen filters as removable tags ("Dubai ✕", "7 Nächte ✕"), and the hotel count on the right. The button opens a Sheet (bottom sheet on phones, panel from 768 px): **Stadt** (select), **Reisemonat** (chips, only months with trips), **Dauer** (segmented: Alle · 5 Nächte · 7 Nächte), **Sortieren** (segmented: Größter Drop · Ersparnis · Bald); footer "Zurücksetzen" + primary "13 Hotels anzeigen" with a live count ("Keine Treffer" disabled at 0). Applying updates the URL (`?stadt=&monat=&dauer=&sort=`, shareable). No rows of pills on the page.
 6. **Grid** of DropCards: 2 columns phone, 3 tablet, 4 desktop. Load 24, then "Mehr anzeigen" (no infinite scroll, footer must stay reachable).
 7. **Price Alert** section (same as home, light variant on `--surface-accent`).
 8. **"So erkennen wir einen Price Drop"**: collapsed accordion (one line visible), 5 bullets inside.
@@ -451,9 +451,9 @@ Each lives in `apps/web/components/ui` (primitives) or its feature folder and is
 | **Button** [Button] | Variants: `primary` (accent fill, white, radius 16, 52 px; 60 px `lg`; 44 px `sm`), `secondary` (white, 1 px `--line-strong`, ink text), `ghost` (no border, ink text, hover `--surface-2`), `on-photo` (white 92 % + blur 12 px, ink), `dark` (ink fill, white). States: hover (accent → `--accent-hover`), pressed (scale .98), focus ring, disabled (40 % opacity, no pointer), loading (spinner + "Lädt…", width locked). Optional trailing slot for a price ("1.139 € →"). No gradients. |
 | **IconButton** | 44 px circle, variants as Button; always `aria-label`. |
 | **Chip / FilterChip** [Chip] | 36 px pill; default white + border; selected `--ink` fill white text; with ▾ for menus; scrollable chip rows fade at the edges (mask). |
-| **Badge** [Badge] | Drop badge (green fill, white, 700, `−54 %`), status chips (good/normal/high soft fills with a dot), "Stadtbild"/credit tag (6 px radius, dark 50 %). |
+| **Badge** [Badge] | Drop badge (red, stronger with the drop: D-46 and the `--sale` tokens; 700, `−54 %`), status chips (good/normal/high soft fills with a dot), "Stadtbild"/credit tag (6 px radius, dark 50 %). |
 | **Photo** (new) | Wraps every hotel/city image: `slug` + `variant` (card/hero/thumb), picks the right width/format, blur-up LQIP, focal point, optional credit tag or "Stadtbild" tag, fallback to the city photo; rounded per context; `alt` required. |
-| **DropCard** [DropCard] | Photo 4:5 (radius 22/18), drop badge top-left, "Wochenende" white badge top-right, then title (`h3`, 1 line, ellipsis), meta "Los Angeles · Fr, 6. Nov", price line "**1.139 €** statt 2.500 €". Whole card one link. Hover per §6. Compact variant for 2-column phones (title 15 px). |
+| **DropCard** [DropCard] | Photo 4:5 (radius 22/18), drop badge top-left, trip length ("5 Nächte") white badge top-right, then title (`h3`, 1 line, ellipsis), meta "Los Angeles · Fr, 6. Nov", price line "**1.139 €** statt 2.500 €". Whole card one link. Hover per §6. Compact variant for 2-column phones (title 15 px). |
 | **CityTile** (new) | Photo tile with scrim, name, counts; sizes `l` (bento hero), `m`, `chip` (40 px round photo + name, for search panels). |
 | **VerdictCard** [VerdictBlock] | Hotel line (thumb, name, dates), state chip, price-xl + context, meter, sentence, CTA + Partnerlink. Variants: `full` (stay page), `teaser` (home). |
 | **Meter** [RangeBar] | §8. |

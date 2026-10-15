@@ -21,7 +21,7 @@ const STACK = [
  * sign-up as one white line (fields stacked on phones), and on the right what an alert looks like,
  * made from real drops (time = when we saw them). The same band on every page that offers the
  * alert; `city` preselects the city (city pages, a filtered radar). Without previews the form
- * stands alone. It carries the `#preissturz-alarm` anchor the navbar's Price Alert links to.
+ * stands alone. It carries the `#price-alert` anchor the navbar's Price Alert links to.
  */
 export async function AlertBand({
   locale,
@@ -108,8 +108,7 @@ export async function AlertBand({
     >
       <div className="mx-auto flex max-w-[1240px] flex-col gap-6 px-[18px] pt-[52px] pb-12 md:flex-row md:flex-wrap md:items-center md:gap-x-24 md:gap-y-14 md:px-10 md:py-[110px]">
         <div className="md:max-w-[500px] md:flex-[1_1_420px]">
-          <p className="mb-3.5 inline-flex h-7 items-center gap-2 rounded-full bg-white/8 px-3 text-[13px] font-semibold md:mb-[18px] md:h-8 md:text-[14px]">
-            <span aria-hidden="true" className="live-dot size-[7px] rounded-full bg-good-bright" />
+          <p className="mb-3.5 inline-flex h-7 items-center rounded-full bg-white/8 px-3 text-[13px] font-semibold md:mb-[18px] md:h-8 md:text-[14px]">
             {t('alertPill')}
           </p>
           <h2

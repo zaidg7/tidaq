@@ -1,10 +1,16 @@
 import { dropTier, formatDrop, type Locale } from '@tidaq/core';
 import { cn } from '@/lib/cn';
 
+/** Text colour of a drop ("−31 %", "1.525 € weniger"): the badge's red step (D-46). */
+export function dropTextClass(drop: number): string {
+  return `drop-text-${dropTier(drop)}`;
+}
+
 /**
- * The drop badge on a photo (PREMIUM.md §11): "−70 %", louder the bigger the drop (core
- * `dropTier`): 60 % and more bright mint, 40 % to 59 % deep green, smaller drops white with green
- * text. The visible text is the number; `label` is the full sentence for screen readers.
+ * The drop badge on a photo (PREMIUM.md §11): "−70 %", the stronger red the bigger the drop (core
+ * `dropTier`, D-46): 60 % and more bright red with a glow, 40 % to 59 % solid red, 20 % to 39 %
+ * light red, smaller drops white with red text. The visible text is the number; `label` is the
+ * full sentence for screen readers.
  */
 export function DropBadge({
   drop,

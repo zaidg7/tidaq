@@ -8,7 +8,9 @@ import {
   dropDates,
   dropKey,
   dropTier,
-  dropWhen,
+  distinctTrips,
+  dropMonth,
+  dropMonths,
   filterDrops,
   findDrop,
   parseDropKey,
@@ -101,33 +103,66 @@ describe('groupDrops', () => {
 
   it('is empty without rows', () => {
     expect(groupDrops([])).toEqual([]);
-    expect(dropStats([])).toEqual({ nights: 0, hotels: 0, cities: 0, biggest: 0 });
+    expect(dropStats([])).toEqual({ trips: 0, hotels: 0, cities: 0, biggest: 0 });
+    expect(dropMonths([])).toEqual([]);
   });
 });
 
-describe('dropWhen and filterDrops', () => {
-  it('buckets nights into this week, the next 30 days and later', () => {
-    expect(dropWhen('2026-10-16', TODAY)).toBe('week');
-    expect(dropWhen('2026-10-22', TODAY)).toBe('week');
-    expect(dropWhen('2026-10-23', TODAY)).toBe('month');
-    expect(dropWhen('2026-11-14', TODAY)).toBe('month');
-    expect(dropWhen('2026-11-15', TODAY)).toBe('later');
+describe('dropMonth, dropMonths and filterDrops (C-125)', () => {
+  it('names the start month and lists every month on the radar, earliest first', () => {
+    expect(dropMonth('2026-12-31')).toBe('2026-12');
+    expect(dropMonths(groupDrops(rows))).toEqual(['2026-10', '2026-12']);
   });
 
-  it('filters by city and time; a matching other night becomes the top entry', () => {
+  it('filters by city and start month; a matching other trip becomes the top entry', () => {
     const g = groupDrops(rows);
-    expect(filterDrops(g, { city: 'paris', today: TODAY }).map((x) => x.hotel.name)).toEqual([
+    expect(filterDrops(g, { city: 'paris' }).map((x) => x.hotel.name)).toEqual([
       'Shangri-La Paris',
     ]);
-    expect(filterDrops(g, { when: 'later', today: TODAY }).map((x) => x.hotel.name)).toEqual([
+    expect(filterDrops(g, { month: '2026-12' }).map((x) => x.hotel.name)).toEqual([
       'Shangri-La Paris',
     ]);
-    const month = filterDrops(g, { when: 'month', today: TODAY });
-    expect(month.map((x) => x.hotel.name)).toEqual(['Hotel Eden']);
-    const week = filterDrops(g, { when: 'week', today: TODAY });
-    expect(week[0]?.top.night).toBe('2026-10-16');
-    expect(week[0]?.more).toHaveLength(2);
-    expect(filterDrops(g, { city: 'rom', when: 'week', today: TODAY })).toEqual([]);
+    const oct = filterDrops(g, { month: '2026-10' });
+    expect(oct.map((x) => x.hotel.name)).toEqual(['Emirates Palace', 'Hotel Eden']);
+    expect(oct[0]?.more).toHaveLength(2);
+    expect(filterDrops(g, { city: 'rom', month: '2026-12' })).toEqual([]);
+    expect(filterDrops(g, { month: '2027-01' })).toEqual([]);
+  });
+
+  it('filters by trip length', () => {
+    const g = groupDrops([
+      row({ night: '2026-11-03', check_out: '2026-11-10', drop_pct: 0.3 }),
+      row({ night: '2026-11-03', check_out: '2026-11-08', drop_pct: 0.2 }),
+      row({ hotel_id: 2, hotel_name: 'B', night: '2026-11-05', check_out: '2026-11-10' }),
+    ]);
+    expect(g[0]?.top.nights).toBe(7);
+    const five = filterDrops(g, { nights: 5 });
+    expect(five.map((x) => [x.hotel.id, x.top.nights, x.more.length])).toEqual([
+      [1, 5, 0],
+      [2, 5, 0],
+    ]);
+    expect(filterDrops(g, { nights: 7 }).map((x) => x.hotel.id)).toEqual([1]);
+    expect(filterDrops(g, { nights: 7, month: '2026-12' })).toEqual([]);
+  });
+});
+
+describe('distinctTrips (C-125)', () => {
+  it('offers dates that do not overlap the top trip or each other, biggest drop first', () => {
+    const [g] = groupDrops([
+      row({ night: '2026-11-03', check_out: '2026-11-08', drop_pct: 0.4 }),
+      row({ night: '2026-11-04', check_out: '2026-11-09', drop_pct: 0.3 }),
+      row({ night: '2026-11-08', check_out: '2026-11-15', drop_pct: 0.2 }),
+      row({ night: '2026-11-09', check_out: '2026-11-14', drop_pct: 0.25 }),
+      row({ night: '2026-12-01', check_out: '2026-12-06', drop_pct: 0.16 }),
+    ]);
+    if (!g) throw new Error('no group');
+    expect(g.top.night).toBe('2026-11-03');
+    expect(distinctTrips(g.top, g.more, 3).map((d) => d.night)).toEqual([
+      '2026-11-09',
+      '2026-12-01',
+    ]);
+    expect(distinctTrips(g.top, g.more, 1).map((d) => d.night)).toEqual(['2026-11-09']);
+    expect(distinctTrips(g.top, [], 3)).toEqual([]);
   });
 });
 
@@ -149,16 +184,16 @@ describe('sortDrops and dropStats', () => {
     expect(sortDrops(g, 'soon').map((x) => x.hotel.name)).toEqual(['A', 'B']);
   });
 
-  it('counts nights, hotels, cities and the biggest drop', () => {
+  it('counts trips, hotels, cities and the biggest drop', () => {
     expect(dropStats(groupDrops(rows))).toEqual({
-      nights: 5,
+      trips: 5,
       hotels: 3,
       cities: 3,
       biggest: 0.2777,
     });
   });
 
-  it('a single night checks out the next day; a weekend counts as two nights', () => {
+  it('a single night checks out the next day; a trip knows its length', () => {
     const [single] = groupDrops([row({ night: '2026-12-31' })]);
     expect(single?.top).toMatchObject({ checkOut: '2027-01-01', nights: 1 });
     const g = groupDrops([
@@ -166,26 +201,37 @@ describe('sortDrops and dropStats', () => {
       row({ night: '2026-10-23', drop_pct: 0.2 }),
     ]);
     expect(g[0]?.top).toMatchObject({ night: '2026-10-23', checkOut: '2026-10-25', nights: 2 });
-    expect(dropStats(g).nights).toBe(3);
+    expect(dropStats(g).trips).toBe(2);
+    const [trip] = groupDrops([row({ night: '2026-11-03', check_out: '2026-11-10' })]);
+    expect(trip?.top).toMatchObject({ checkOut: '2026-11-10', nights: 7 });
   });
 });
 
 describe('dropPath, dropKey and findDrop (C-080b/f)', () => {
   const night = { night: '2026-10-18', checkOut: '2026-10-19' };
   const weekend = { night: '2026-10-23', checkOut: '2026-10-25' };
+  const trip = { night: '2026-11-03', checkOut: '2026-11-10' };
 
   it('builds the share path for a night and a weekend', () => {
-    expect(dropPath('hotel-adlon', night)).toBe('/preissturz/hotel-adlon/2026-10-18');
-    expect(dropPath('hotel-adlon', weekend)).toBe('/preissturz/hotel-adlon/2026-10-23--2026-10-25');
+    expect(dropPath('hotel-adlon', night)).toBe('/price-drops/hotel-adlon/2026-10-18');
+    expect(dropPath('hotel-adlon', weekend)).toBe(
+      '/price-drops/hotel-adlon/2026-10-23--2026-10-25',
+    );
   });
 
   it('reads keys back and rejects anything else', () => {
     expect(parseDropKey(dropKey(night))).toEqual(night);
     expect(parseDropKey(dropKey(weekend))).toEqual(weekend);
+    expect(parseDropKey(dropKey(trip))).toEqual(trip);
+    expect(parseDropKey('2026-11-01--2026-11-15')).toEqual({
+      night: '2026-11-01',
+      checkOut: '2026-11-15',
+    });
     for (const bad of [
       '2026-02-31',
       '2026-10-23--2026-10-23',
-      '2026-10-23--2026-10-27',
+      '2026-10-23--2026-10-22',
+      '2026-11-01--2026-11-16',
       'x',
       '2026-10-23--',
     ]) {
@@ -196,6 +242,7 @@ describe('dropPath, dropKey and findDrop (C-080b/f)', () => {
   it('formats the dates', () => {
     expect(dropDates(night, 'de')).toBe('So, 18. Okt.');
     expect(dropDates(weekend, 'de')).toBe('Fr, 23. Okt. – So, 25. Okt.');
+    expect(dropDates(trip, 'de')).toBe('Di, 3. Nov. – Di, 10. Nov.');
   });
 
   it("finds a hotel's top drop or one of its other nights", () => {
@@ -250,7 +297,7 @@ describe('heroDrop (C-080d2)', () => {
 });
 
 describe('weekSummary (C-080h)', () => {
-  it('counts drops, hotels, weekends, average, biggest and ranks cities', () => {
+  it('counts drops, hotels, average, biggest and ranks cities', () => {
     const s = weekSummary([
       row({ hotel_id: 1, city_slug: 'paris', city_name_de: 'Paris', drop_pct: 0.2 }),
       row({
@@ -263,7 +310,7 @@ describe('weekSummary (C-080h)', () => {
       }),
       row({ hotel_id: 2, city_slug: 'rom', city_name_de: 'Rom', drop_pct: 0.5 }),
     ]);
-    expect(s).toMatchObject({ drops: 3, hotels: 2, weekends: 1, biggest: 0.5 });
+    expect(s).toMatchObject({ drops: 3, hotels: 2, biggest: 0.5 });
     expect(s.average).toBeCloseTo(1 / 3);
     expect(s.cities.map((c) => [c.slug, c.drops, c.biggest])).toEqual([
       ['paris', 2, 0.3],
@@ -287,7 +334,8 @@ describe('dropTier', () => {
     expect(dropTier(0.7)).toBe('huge');
     expect(dropTier(0.53)).toBe('big');
     expect(dropTier(0.49)).toBe('big');
-    expect(dropTier(0.33)).toBe('small');
+    expect(dropTier(0.33)).toBe('medium');
+    expect(dropTier(0.21)).toBe('medium');
     expect(dropTier(0.15)).toBe('small');
   });
   it('puts the bounds where the rounded label says', () => {
@@ -296,6 +344,8 @@ describe('dropTier', () => {
     expect(dropTier(0.594)).toBe('big');
     expect(dropTier(0.4)).toBe('big');
     expect(dropTier(0.396)).toBe('big');
-    expect(dropTier(0.394)).toBe('small');
+    expect(dropTier(0.394)).toBe('medium');
+    expect(dropTier(0.196)).toBe('medium');
+    expect(dropTier(0.194)).toBe('small');
   });
 });

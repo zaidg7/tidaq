@@ -67,9 +67,9 @@ export default async function ManagePage({ params, searchParams }: Props) {
         ? t('removed')
         : q['newsletter-aus'] !== undefined
           ? t('newsletterOffDone')
-          : q['preissturz-aus'] !== undefined
+          : q['drops-aus'] !== undefined
             ? t('dropsOffDone')
-            : q['preissturz-hotel-aus'] !== undefined
+            : q['drops-hotel-aus'] !== undefined
               ? t('dropsHotelOffDone')
               : q.fehler !== undefined
                 ? t('error')

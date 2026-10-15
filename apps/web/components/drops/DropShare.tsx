@@ -10,7 +10,7 @@ import { shareOrDownload } from './shareFiles';
 import { canvasFile, drawStory, type StoryText } from './storyImage';
 
 type Props = {
-  /** Page path without origin, e.g. `/preissturz/adlon/2026-10-18`. */
+  /** Page path without origin, e.g. `/price-drops/adlon/2026-10-18`. */
   path: string;
   /** Hotel photo (self-hosted) for the story image. */
   photo: string | null;

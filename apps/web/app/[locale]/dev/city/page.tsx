@@ -12,16 +12,16 @@ export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 const photo = (slug: string) => hotelPhoto(slug)?.[960] ?? null;
 
-/** Sample Berlin (C-024): a weekend price, a hotel without one, a hotel without a photo. */
+/** Sample Berlin (C-024, C-126): a week's price, a hotel without one, a hotel without a photo. */
 const HOTELS: CityHotel[] = [
   {
     slug: 'hotel-adlon-kempinski-berlin',
     name: 'Hotel Adlon Kempinski',
     image: photo('hotel-adlon-kempinski-berlin'),
-    weekend: {
-      checkIn: '2026-11-13',
-      checkOut: '2026-11-15',
-      totalCents: 136_100,
+    week: {
+      checkIn: '2026-11-09',
+      checkOut: '2026-11-16',
+      totalCents: 448_700,
       provider: 'Booking.com',
     },
   },
@@ -29,9 +29,9 @@ const HOTELS: CityHotel[] = [
     slug: 'the-ritz-carlton-berlin',
     name: 'The Ritz-Carlton Berlin',
     image: photo('the-ritz-carlton-berlin'),
-    weekend: null,
+    week: null,
   },
-  { slug: 'waldorf-astoria-berlin', name: 'Waldorf Astoria Berlin', image: null, weekend: null },
+  { slug: 'waldorf-astoria-berlin', name: 'Waldorf Astoria Berlin', image: null, week: null },
 ];
 
 /** `?dates`: the same hotels with totals for 4–6 Dec (C-110): Ritz first, Waldorf without one. */

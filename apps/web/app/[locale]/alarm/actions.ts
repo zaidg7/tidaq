@@ -52,9 +52,7 @@ export async function dropAlertOffAction(form: FormData) {
   const locale = localeOf(form);
   const token = str(form, 'token');
   const ok = await dropAlertOff(token).catch(() => false);
-  redirect(
-    `${localizedPath(WATCH_PATHS.manage(token), locale)}?${ok ? 'preissturz-aus' : 'fehler'}=1`,
-  );
+  redirect(`${localizedPath(WATCH_PATHS.manage(token), locale)}?${ok ? 'drops-aus' : 'fehler'}=1`);
 }
 
 /** Stops the Preissturz-Alarm for one hotel (C-080k1); the rest stays. */
@@ -63,6 +61,6 @@ export async function dropHotelAlertOffAction(form: FormData) {
   const token = str(form, 'token');
   const ok = await dropHotelAlertOff(token, str(form, 'hotel')).catch(() => false);
   redirect(
-    `${localizedPath(WATCH_PATHS.manage(token), locale)}?${ok ? 'preissturz-hotel-aus' : 'fehler'}=1`,
+    `${localizedPath(WATCH_PATHS.manage(token), locale)}?${ok ? 'drops-hotel-aus' : 'fehler'}=1`,
   );
 }

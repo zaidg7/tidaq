@@ -5,7 +5,12 @@ import { addDays, weekSummary, type DailyPrice, type Locale } from '@tidaq/core'
 import { AlertBand, cityOf } from '@/components/drops/AlertBand';
 import { DropOver, DropPage } from '@/components/drops/DropPage';
 import { DropsTeaser, dropsHref } from '@/components/drops/DropsTeaser';
-import { applyDropFilters, DROP_SOURCES, DropsView } from '@/components/drops/DropsView';
+import {
+  applyDropFilters,
+  DROP_SOURCES,
+  DropsView,
+  type DropQuery,
+} from '@/components/drops/DropsView';
 import { FromVideos, videoItems } from '@/components/drops/FromVideos';
 import { WeekView } from '@/components/drops/WeekView';
 import { ADLON, sampleDrops as sample, samplePosted, sampleRows } from '@/lib/dropsSample';
@@ -40,17 +45,16 @@ export default async function DevDropsPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{
-    empty?: string;
-    teaser?: string;
-    share?: string;
-    over?: string;
-    week?: string;
-    stadt?: string;
-    wann?: string;
-    sort?: string;
-    ref?: string;
-  }>;
+  searchParams: Promise<
+    {
+      empty?: string;
+      teaser?: string;
+      share?: string;
+      over?: string;
+      week?: string;
+      ref?: string;
+    } & DropQuery
+  >;
 }) {
   if (process.env.APP_ENV === 'production') notFound();
   const { locale } = await params;
@@ -72,7 +76,7 @@ export default async function DevDropsPage({
           name: ADLON[2],
           city: { slug: ADLON[3], name: { de: ADLON[4], en: ADLON[5] } },
         }}
-        stay={{ night: addDays(today, 3), checkOut: addDays(today, 4) }}
+        stay={{ night: addDays(today, 3), checkOut: addDays(today, 8) }}
         locale={locale}
         today={today}
       />
@@ -108,7 +112,7 @@ export default async function DevDropsPage({
       </div>
     );
   }
-  const { filters, shown } = applyDropFilters(all, q, today);
+  const { filters, shown } = applyDropFilters(all, q);
   const source = DROP_SOURCES.find((x) => x === q.ref) ?? null;
   return (
     <DropsView
@@ -117,6 +121,7 @@ export default async function DevDropsPage({
       filters={filters}
       seenAt={all[0]?.top.seenAt ?? null}
       now={new Date()}
+      today={today}
       checked={all.length ? { day: today, nights: 5722, hotels: 82, cities: 27, sites: 4 } : null}
       source={source}
       videos={source && <FromVideos items={videoItems(samplePosted(), all)} />}

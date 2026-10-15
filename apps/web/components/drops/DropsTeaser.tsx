@@ -28,14 +28,7 @@ export async function DropsTeaser({
     <section aria-labelledby={id}>
       <div className="flex items-end justify-between gap-4">
         <div>
-          <p className="text-eyebrow flex items-center gap-2 text-accent">
-            <span aria-hidden="true" className="relative flex size-2">
-              <span className="absolute inline-flex size-full rounded-full bg-good opacity-60 motion-safe:animate-ping" />
-              <span className="relative inline-flex size-2 rounded-full bg-good" />
-            </span>
-            {t('homeEyebrow')}
-          </p>
-          <h2 id={id} className="text-h2 mt-3 max-w-[22ch]">
+          <h2 id={id} className="text-h2 max-w-[22ch]">
             {title}
           </h2>
         </div>

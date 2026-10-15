@@ -1,7 +1,9 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('city page (C-024, sample data on /dev/city)', () => {
-  test('hotel cards with the cheapest weekend, linking to hotel and stay', async ({ page }) => {
+  test('hotel cards with the cheapest week, linking to hotel and stay (C-126)', async ({
+    page,
+  }) => {
     await page.goto('/dev/city');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Fünf-Sterne-Hotels in Berlin',
@@ -15,15 +17,16 @@ test.describe('city page (C-024, sample data on /dev/city)', () => {
       'href',
       '/hotel/hotel-adlon-kempinski-berlin',
     );
-    await expect(adlon.getByRole('link', { name: '13.–15. Nov. 2026' })).toHaveAttribute(
+    await expect(adlon.getByRole('link', { name: '9.–16. Nov. 2026' })).toHaveAttribute(
       'href',
-      '/hotel/hotel-adlon-kempinski-berlin/2026-11-13--2026-11-15?adults=2',
+      '/hotel/hotel-adlon-kempinski-berlin/2026-11-09--2026-11-16?adults=2',
     );
-    await expect(adlon).toContainText('2 Nächte, 2 Erwachsene, bei Booking.com');
-    await expect(adlon).toContainText(/1\.361\s€/);
+    await expect(adlon).toContainText('Günstigste Woche');
+    await expect(adlon).toContainText('7 Nächte, 2 Erwachsene, bei Booking.com');
+    await expect(adlon).toContainText(/4\.487\s€/);
 
     await expect(cards.filter({ hasText: 'Waldorf Astoria Berlin' })).toContainText(
-      'Noch kein Wochenendpreis',
+      'Noch kein Preis für eine ganze Woche',
     );
     await expect(page.getByRole('link', { name: 'Alle Hotels' }).first()).toHaveAttribute(
       'href',
@@ -31,17 +34,17 @@ test.describe('city page (C-024, sample data on /dev/city)', () => {
     );
   });
 
-  test('the weekend link sits above the card link', async ({ page }) => {
+  test('the week link sits above the card link', async ({ page }) => {
     await page.goto('/dev/city');
-    await page.getByRole('link', { name: '13.–15. Nov. 2026' }).click();
-    await expect(page).toHaveURL(/\/hotel\/hotel-adlon-kempinski-berlin\/2026-11-13--2026-11-15/);
+    await page.getByRole('link', { name: '9.–16. Nov. 2026' }).click();
+    await expect(page).toHaveURL(/\/hotel\/hotel-adlon-kempinski-berlin\/2026-11-09--2026-11-16/);
   });
 
   test('English copy and phone width', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/en/dev/city');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Five-star hotels in Berlin');
-    await expect(page.getByText('Cheapest weekend').first()).toBeVisible();
+    await expect(page.getByText('Cheapest week').first()).toBeVisible();
     const width = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(width).toBeLessThanOrEqual(390);
   });

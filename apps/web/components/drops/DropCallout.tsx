@@ -1,6 +1,7 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { ArrowRight } from 'lucide-react';
 import {
+  distinctTrips,
   dropDates,
   dropKey,
   dropPath,
@@ -12,7 +13,8 @@ import {
   type PriceDrop,
 } from '@tidaq/core';
 import { Icon } from '@/components/ui/Icon';
-import { DropBadge } from './DropBadge';
+import { cn } from '@/lib/cn';
+import { DropBadge, dropTextClass } from './DropBadge';
 import { dropPercent } from './DropCard';
 
 /** Other dropped nights shown as chips on the hotel page. */
@@ -32,7 +34,7 @@ export function DropCallout({ group: g, drop }: { group: HotelDrops; drop?: Pric
   const d = drop ?? g.top;
   const href = (x: PriceDrop) => localizedPath(dropPath(g.hotel.slug, x), locale);
   const site = d.provider.direct ? tp('atDirect') : tp('atSite', { provider: d.provider.name });
-  const others = drop ? [] : [g.top, ...g.more].filter((x) => x !== d).slice(0, MORE);
+  const others = drop ? [] : distinctTrips(g.top, g.more, MORE);
   return (
     <aside
       aria-labelledby="drop-callout"
@@ -78,9 +80,9 @@ export function DropCallout({ group: g, drop }: { group: HotelDrops; drop?: Pric
                     href={href(x)}
                     className="inline-flex h-9 items-center gap-2 rounded-full border border-line bg-surface px-3 text-[14px] font-medium hover:border-ink/40"
                   >
-                    {x.nights > 1 && `${td('weekendBadge')} `}
                     {formatWeekdayDayMonth(x.night, locale)}
-                    <span className="font-bold text-good tabular-nums">
+                    {x.nights > 1 && ` · ${td('stayBadge', { n: x.nights })}`}
+                    <span className={cn('font-bold tabular-nums', dropTextClass(x.drop))}>
                       {dropPercent(x.drop, locale)}
                     </span>
                   </a>

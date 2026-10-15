@@ -19,7 +19,7 @@ import type { HotelDropsWithPhoto } from '@/lib/data/drops';
 import { cardPhoto } from '@/lib/photos';
 import { routes } from '@/lib/routes';
 import { cn } from '@/lib/cn';
-import { DropBadge } from './DropBadge';
+import { DropBadge, dropTextClass } from './DropBadge';
 import { dropPercent } from './DropCard';
 import { dropsHref } from './DropsTeaser';
 
@@ -27,7 +27,7 @@ import { dropsHref } from './DropsTeaser';
 export const WEEK_TOP = 10;
 
 /**
- * `/preissturz/woche` (C-080h): the week's drops at a glance. Headline numbers, the top 10 (each
+ * `/price-drops/woche` (C-080h): the week's drops at a glance. Headline numbers, the top 10 (each
  * hotel's biggest drop of the week, with the day we saw it and a link to the stay's price
  * history, since the price may have moved since), the cities where prices fell most, and the
  * Preissturz-Alarm. A page that is full even on a quiet day, and the weekly social format.
@@ -51,12 +51,13 @@ export function WeekView({
   const top = groups.slice(0, WEEK_TOP);
   const pct = (x: number) => dropPercent(x, locale);
 
-  const stat = (value: string, label: string, good = false) => (
+  /** `drop`: a drop share, printed in its red step (D-46). */
+  const stat = (value: string, label: string, drop?: number) => (
     <div>
       <dd
         className={cn(
           'text-[26px] leading-none font-bold tracking-[-0.03em] tabular-nums md:text-[36px]',
-          good && 'text-good',
+          drop !== undefined && dropTextClass(drop),
         )}
       >
         {value}
@@ -90,7 +91,6 @@ export function WeekView({
               {t('statDrops', { n: s.drops })} {t('statHotels', { n: s.hotels })}{' '}
               {t('statAverage', { pct: pct(s.average) })}{' '}
               {t('statBiggest', { pct: pct(s.biggest) })}
-              {s.weekends > 0 && <> {t('statWeekends', { n: s.weekends })}</>}
             </p>
             <dl
               aria-hidden="true"
@@ -98,8 +98,8 @@ export function WeekView({
             >
               {stat(String(s.drops), t('statDropsShort', { n: s.drops }))}
               {stat(String(s.hotels), t('statHotelsShort', { n: s.hotels }))}
-              {stat(pct(s.average), t('statAverageShort'), true)}
-              {stat(pct(s.biggest), t('statBiggestShort'), true)}
+              {stat(pct(s.average), t('statAverageShort'), s.average)}
+              {stat(pct(s.biggest), t('statBiggestShort'), s.biggest)}
             </dl>
 
             <section aria-labelledby="week-top" className="mt-12 md:mt-16">

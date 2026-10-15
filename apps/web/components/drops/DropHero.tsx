@@ -11,8 +11,9 @@ import {
 import { Icon } from '@/components/ui/Icon';
 import { Photo } from '@/components/ui/Photo';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
+import { cn } from '@/lib/cn';
 import { cardPhoto } from '@/lib/photos';
-import { DropBadge } from './DropBadge';
+import { DropBadge, dropTextClass } from './DropBadge';
 import { dropPercent } from './DropCard';
 
 /**
@@ -51,14 +52,13 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
           className="absolute top-4 left-4 z-10 md:top-5 md:left-5 md:h-12 md:px-5 md:text-[26px]"
         />
         {d.nights > 1 && (
-          <span className="absolute top-4 right-4 z-10 inline-flex h-8 items-center rounded-full bg-white/92 px-3 text-[13px] font-semibold text-ink md:top-5 md:right-5">
-            {t('weekendBadge')}
+          <span className="absolute top-4 right-4 z-10 inline-flex h-8 items-center photo-chip rounded-full px-3 text-[13px] font-semibold text-ink md:top-5 md:right-5">
+            {t('stayBadge', { n: d.nights })}
           </span>
         )}
       </Photo>
       <div className="px-1 md:px-0">
-        <p className="inline-flex items-center gap-2 text-[14px] font-semibold text-good md:text-[15px]">
-          <span aria-hidden="true" className="live-dot size-2 rounded-full bg-good" />
+        <p className={cn('text-[14px] font-semibold md:text-[15px]', dropTextClass(d.drop))}>
           {t('heroEyebrow')}
         </p>
         <h2
@@ -80,7 +80,7 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
             {t('was', { price: formatPrice(d.prevCents, locale) })}
           </span>
         </p>
-        <p className="mt-2.5 text-[16px] font-semibold text-good">
+        <p className={cn('mt-2.5 text-[16px] font-semibold', dropTextClass(d.drop))}>
           {d.provider.direct
             ? t('savedDirect', { amount: formatPrice(d.savedCents, locale) })
             : t('saved', { amount: formatPrice(d.savedCents, locale), provider: d.provider.name })}

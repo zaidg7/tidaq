@@ -1,5 +1,6 @@
 import { useLocale, useTranslations } from 'next-intl';
 import {
+  distinctTrips,
   dropKey,
   dropPath,
   formatDrop,
@@ -13,8 +14,9 @@ import {
 } from '@tidaq/core';
 import { Photo } from '@/components/ui/Photo';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
+import { cn } from '@/lib/cn';
 import { cardPhoto } from '@/lib/photos';
-import { DropBadge } from './DropBadge';
+import { DropBadge, dropTextClass } from './DropBadge';
 
 /** "−28 %" with the typographic minus. */
 export const dropPercent = formatDrop;
@@ -25,7 +27,7 @@ const nightHref = (slug: string, d: PriceDrop, locale: Locale) =>
 
 /**
  * One hotel on the Preissturz-Radar (C-080a, mockup B language): the photo is the card, with the
- * drop badge (coloured by size) and "Wochenende"; below it the hotel (→ the drop's own page,
+ * drop badge (stronger red for bigger drops) and the trip length ("5 Nächte"); below it the hotel (→ the drop's own page,
  * C-080b), city and night, today's price against the day before, the saving at which site, and
  * whether it's the lowest price we've seen. Its other dropped nights follow as small links.
  * Both prices are real checks (CLAUDE.md rule 8); the old one is labelled, not just struck out.
@@ -36,7 +38,8 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
   const locale = useLocale() as Locale;
   const d = g.top;
   const pct = dropPercent(d.drop, locale);
-  const more = g.more.slice(0, max);
+  // Different dates, not the same holiday a day later (C-125).
+  const more = distinctTrips(d, g.more, max);
   const usual = usualCents(d);
   const pic = cardPhoto(g.hotel.slug, g.city.slug);
   return (
@@ -55,8 +58,8 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
           className="absolute top-3.5 left-3.5 z-10"
         />
         {d.nights > 1 && (
-          <span className="absolute top-3.5 right-3.5 z-10 inline-flex h-8 items-center rounded-full bg-white/92 px-3 text-[13px] font-semibold text-ink">
-            {t('weekendBadge')}
+          <span className="absolute top-3.5 right-3.5 z-10 inline-flex h-8 items-center photo-chip rounded-full px-3 text-[13px] font-semibold text-ink">
+            {t('stayBadge', { n: d.nights })}
           </span>
         )}
       </Photo>
@@ -70,7 +73,8 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
           </a>
         </h3>
         <p className="mt-0.5 text-[15px] text-muted">
-          {g.city.name[locale]} · {t('night', { date: dropDates(d, locale), n: d.nights })}
+          {/* The badge on the photo names the length; the drop page has the full stay. */}
+          {g.city.name[locale]} · {dropDates(d, locale)}
         </p>
         <p className="mt-2.5 flex flex-wrap items-baseline gap-x-2">
           <strong className="text-[22px] font-bold tracking-[-0.02em] tabular-nums">
@@ -80,7 +84,7 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
             {t('was', { price: formatPrice(d.prevCents, locale) })}
           </span>
         </p>
-        <p className="mt-1 text-[14px] font-semibold text-good">
+        <p className={cn('mt-1 text-[14px] font-semibold', dropTextClass(d.drop))}>
           {d.provider.direct
             ? t('savedDirect', { amount: formatPrice(d.savedCents, locale) })
             : t('saved', { amount: formatPrice(d.savedCents, locale), provider: d.provider.name })}
@@ -100,9 +104,9 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
                   href={nightHref(g.hotel.slug, m, locale)}
                   className="inline-flex h-8 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-[13px] font-medium transition-colors hover:border-ink/40"
                 >
-                  {m.nights > 1 ? `${t('weekendBadge')} ` : ''}
                   {formatWeekdayDayMonth(m.night, locale)}
-                  <span className="font-bold text-good tabular-nums">
+                  {m.nights > 1 && ` · ${t('stayBadge', { n: m.nights })}`}
+                  <span className={cn('font-bold tabular-nums', dropTextClass(m.drop))}>
                     {dropPercent(m.drop, locale)}
                   </span>
                 </a>

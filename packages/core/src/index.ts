@@ -3,6 +3,7 @@ export {
   formatDateRange,
   formatDayMonth,
   formatDayMonthYear,
+  formatMonth,
   formatWeekdayDayMonth,
   updatedAtParts,
   formatPercent,
@@ -39,6 +40,7 @@ export {
 export { parseEuroCents } from './money';
 export {
   BEST_STAY_KINDS,
+  WEEKEND_STAY,
   cheapestInMonth,
   cheapestStays,
   PRICE_LEVELS,
@@ -266,7 +268,8 @@ export { scrubErrorText } from './errorText';
 export { clientIp, createRateLimiter } from './rateLimit';
 export {
   DROP_SORTS,
-  DROP_WHENS,
+  dropMonth,
+  dropMonths,
   DROPS,
   dropPath,
   dropStats,
@@ -276,7 +279,7 @@ export {
   type DropTier,
   dropDates,
   dropKey,
-  dropWhen,
+  distinctTrips,
   filterDrops,
   findDrop,
   groupDrops,
@@ -288,7 +291,6 @@ export {
   weekSummary,
   type WeekSummary,
   type DropSort,
-  type DropWhen,
   type HotelDrops,
   type PriceDrop,
   type PriceDropRow,

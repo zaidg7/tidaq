@@ -412,7 +412,7 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
                               </span>
                             </span>
                             {option.hotel.drop !== undefined && (
-                              <span className="shrink-0 rounded-badge bg-good-soft px-2 py-0.5 text-[12.5px] font-bold text-good">
+                              <span className="shrink-0 rounded-badge bg-sale-soft px-2 py-0.5 text-[12.5px] font-bold text-sale">
                                 {option.cheap
                                   ? labels.dropPct.replace('{pct}', String(pct(option.hotel.drop)))
                                   : labels.dropBadge}

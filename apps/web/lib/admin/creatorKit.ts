@@ -38,7 +38,7 @@ export async function creatorKit(
       return {
         key: `${g.hotel.slug}-${dropKey(d)}`,
         hotel: g.hotel.name,
-        place: `${g.city.name.de} · ${d.nights > 1 ? 'Wochenende ' : ''}${dropDates(d, 'de')}`,
+        place: `${g.city.name.de} · ${dropDates(d, 'de')}${d.nights > 1 ? ` · ${d.nights} Nächte` : ''}`,
         pct: f.pct,
         prices: `${formatPrice(d.nowCents, 'de')} statt ${formatPrice(d.prevCents, 'de')}`,
         photo: g.image?.src ?? null,
@@ -60,7 +60,7 @@ export async function creatorKit(
   const firstDrop = list[0]?.top;
   if (!first || !firstDrop) return { items, top: null };
   const cover: CoverText = {
-    eyebrow: period === 'week' ? 'Preisstürze der Woche' : 'Preisstürze seit gestern',
+    eyebrow: period === 'week' ? 'Price Drops der Woche' : 'Price Drops seit gestern',
     title: `Top ${Math.min(5, items.length)} in Luxushotels`,
     rows: items.slice(0, 5).map((i) => ({ pct: i.pct, hotel: i.hotel, place: i.place })),
     asOf: first.story.asOf,

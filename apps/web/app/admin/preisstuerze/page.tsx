@@ -34,15 +34,15 @@ export default async function DropsKitPage({ searchParams }: Props) {
       {(q.ok === 'posted' || q.fail === 'posted') && (
         <p role="status" className="text-[15px] font-semibold">
           {q.ok === 'posted'
-            ? 'Gespeichert. Gepostete Preisstürze stehen eine Woche lang unter „Aus unseren Videos“ auf tidaq.com/tiktok und /instagram.'
-            : 'Das hat nicht geklappt. Der Preissturz ist vielleicht nicht mehr auf dem Radar. Lad die Seite neu.'}
+            ? 'Gespeichert. Gepostete Price Drops stehen eine Woche lang unter „Aus unseren Videos“ auf tidaq.com/tiktok und /instagram.'
+            : 'Das hat nicht geklappt. Der Price Drop ist vielleicht nicht mehr auf dem Radar. Lad die Seite neu.'}
         </p>
       )}
       {kit === null ? (
-        <Card>Die Preisstürze lassen sich gerade nicht laden. Lad die Seite gleich neu.</Card>
+        <Card>Die Price Drops lassen sich gerade nicht laden. Lad die Seite gleich neu.</Card>
       ) : kit.items.length === 0 ? (
         <Card>
-          Heute gibt es noch keinen Preissturz. Die Preise werden über den Tag abgefragt, schau
+          Heute gibt es noch keinen Price Drop. Die Preise werden über den Tag abgefragt, schau
           später noch mal rein.
         </Card>
       ) : (

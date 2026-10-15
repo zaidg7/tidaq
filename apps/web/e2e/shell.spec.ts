@@ -13,7 +13,7 @@ test.describe('desktop shell', () => {
     await expect(nav.getByRole('link', { name: 'Städte' })).toHaveAttribute('href', '/staedte');
     await expect(
       page.getByRole('banner').getByRole('link', { name: 'Price Alert' }),
-    ).toHaveAttribute('href', '/preissturz#preissturz-alarm');
+    ).toHaveAttribute('href', '/price-drops#price-alert');
     const footer = page.getByRole('contentinfo');
     // Until the Kassen-Check page exists (C-119), the link goes to the provider scores.
     await expect(footer.getByRole('link', { name: 'Kassen-Check' })).toHaveAttribute(

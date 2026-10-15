@@ -21,8 +21,8 @@ import { routes } from '@/lib/routes';
 
 /**
  * City page (C-024, mockup B language): the city's photo full-bleed with "Fünf-Sterne-Hotels in
- * Paris" on it, then its hotels as photo cards, each with its cheapest upcoming weekend on one
- * site. The card opens the hotel page (calendar of every night); the weekend opens its stay page.
+ * Paris" on it, then its hotels as photo cards, each with its cheapest upcoming week on one site
+ * (C-126). The card opens the hotel page (calendar of every night); the week opens its stay page.
  * `children` follow the hotels (the city's Price Drops, the alert band). With `dates` from the
  * search (C-110) every card shows that stay's total and the cheapest come first; hotels without
  * a total for those dates follow, A–Z.
@@ -143,7 +143,7 @@ function HotelCard({
   dates: StayParams | null;
 }) {
   const t = useTranslations('city');
-  const w = hotel.weekend;
+  const w = hotel.week;
   const s = hotel.stay;
   const price = (c: number) => formatPrice(c, locale);
   return (
@@ -180,9 +180,9 @@ function HotelCard({
           )
         ) : w ? (
           <>
-            <p className="text-[13px] text-muted">{t('weekend')}</p>
+            <p className="text-[13px] text-muted">{t('week')}</p>
             <div className="mt-0.5 flex items-baseline justify-between gap-3">
-              {/* Above the card link: the weekend opens its own stay page. */}
+              {/* Above the card link: the week opens its own stay page. */}
               <a
                 href={localizedPath(
                   stayPath(hotel.slug, w.checkIn, w.checkOut, NIGHT_GRID.adults),
@@ -197,11 +197,11 @@ function HotelCard({
               </strong>
             </div>
             <p className="mt-0.5 text-[14px] text-muted">
-              {t('weekendFacts', { provider: w.provider })}
+              {t('weekFacts', { provider: w.provider })}
             </p>
           </>
         ) : (
-          <p className="text-[14px] text-muted">{t('noWeekend')}</p>
+          <p className="text-[14px] text-muted">{t('noWeek')}</p>
         )}
       </div>
     </HotelPhotoCard>

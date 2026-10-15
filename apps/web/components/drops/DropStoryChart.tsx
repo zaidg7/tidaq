@@ -14,8 +14,8 @@ type Labels = {
 
 /**
  * The drop page's story chart (mockup B "So hat sich der Preis bewegt"): the night's price from
- * the first check to today, the earlier days as a calm ink line, the drop as one green step down
- * to a green dot, a soft violet area underneath. Two labels say everything: where it started and
+ * the first check to today, the earlier days as a calm ink line, the drop as one red step down
+ * to a red dot (D-46), a soft violet area underneath. Two labels say everything: where it started and
  * where it is today. The line is drawn in a stretched SVG (non-scaling stroke), labels and the
  * dot are HTML on top, so text keeps its size at every width. It reveals left to right once.
  */
@@ -75,7 +75,7 @@ export function DropStoryChart({
           <path
             d={`M${X(prev.x)} ${Y(prev.y)} L${X(last.x)} ${Y(last.y)}`}
             fill="none"
-            stroke="var(--good)"
+            stroke="var(--sale-3)"
             strokeWidth="3"
             strokeLinecap="round"
             vectorEffect="non-scaling-stroke"
@@ -83,7 +83,7 @@ export function DropStoryChart({
         </svg>
         <span
           aria-hidden="true"
-          className="story-dot absolute size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-good shadow-1"
+          className="story-dot absolute size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-saleshadow-1"
           style={{ left: `${last.x * 100}%`, top: `${last.y * 100}%` }}
         />
         <span
@@ -97,7 +97,7 @@ export function DropStoryChart({
         <span
           aria-hidden="true"
           className={cn(
-            'absolute right-0 text-[14px] font-bold whitespace-nowrap text-good',
+            'absolute right-0 text-[14px] font-bold whitespace-nowrap text-sale',
             prev.y <= last.y ? 'pt-3' : '-translate-y-full pb-3',
           )}
           style={{ top: `${last.y * 100}%` }}
