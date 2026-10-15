@@ -1026,5 +1026,29 @@
   },
   "photo": {
     "cityTag": "Stadtbild"
+  },
+  "searchBar": {
+    "label": "Preise suchen",
+    "where": "Hotel oder Stadt",
+    "wherePlaceholder": "Wohin geht's?",
+    "dates": "Reisedaten",
+    "datesPlaceholder": "Daten wählen",
+    "guests": "Gäste",
+    "submit": "Preis prüfen",
+    "listLabel": "Ziele",
+    "popular": "Beliebte Städte",
+    "cheap": "Gerade günstig",
+    "cities": "Städte",
+    "hotels": "Hotels",
+    "cityHotelsOne": "Stadt · 1 Hotel",
+    "cityHotelsOther": "Stadt · {n} Hotels",
+    "dropBadge": "Price Drop",
+    "dropPct": "−{pct} %",
+    "resultsNone": "Nichts gefunden",
+    "resultsOne": "1 Treffer",
+    "resultsOther": "{n} Treffer",
+    "noMatch": "Nichts gefunden. Versuch eine Stadt wie Berlin oder Wien.",
+    "missing": "Wähl ein Hotel oder eine Stadt.",
+    "clear": "Eingabe löschen"
   }
 }

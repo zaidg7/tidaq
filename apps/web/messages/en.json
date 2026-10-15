@@ -1024,5 +1024,29 @@
   },
   "photo": {
     "cityTag": "City photo"
+  },
+  "searchBar": {
+    "label": "Search prices",
+    "where": "Hotel or city",
+    "wherePlaceholder": "Where to?",
+    "dates": "Dates",
+    "datesPlaceholder": "Add dates",
+    "guests": "Guests",
+    "submit": "Check price",
+    "listLabel": "Destinations",
+    "popular": "Popular cities",
+    "cheap": "Cheap right now",
+    "cities": "Cities",
+    "hotels": "Hotels",
+    "cityHotelsOne": "City · 1 hotel",
+    "cityHotelsOther": "City · {n} hotels",
+    "dropBadge": "Price Drop",
+    "dropPct": "−{pct}%",
+    "resultsNone": "Nothing found",
+    "resultsOne": "1 result",
+    "resultsOther": "{n} results",
+    "noMatch": "Nothing found. Try a city like Berlin or Vienna.",
+    "missing": "Pick a hotel or a city.",
+    "clear": "Clear"
   }
 }

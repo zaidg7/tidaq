@@ -14,7 +14,9 @@ test.describe('homepage', () => {
     await expect(live.getByText('Günstigster')).toBeVisible();
   });
 
-  test('search explains what is missing and focuses the field', async ({ page }) => {
+  test('search explains what is missing and focuses the field (phone card)', async ({ page }) => {
+    // Phones keep the search card until the full-screen search (C-109).
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     const form = page.getByRole('form', { name: 'Preise suchen' });
     await form.getByRole('button', { name: 'Preise ansehen' }).click();
@@ -36,7 +38,9 @@ test.describe('homepage', () => {
     await expect(page.getByRole('form', { name: 'Preise suchen' })).toBeInViewport();
   });
 
-  test('a fixed field clears its error', async ({ page }) => {
+  test('a fixed field clears its error (phone card)', async ({ page }) => {
+    // Phones keep the search card until the full-screen search (C-109).
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     const form = page.getByRole('form', { name: 'Preise suchen' });
     await form.getByRole('button', { name: 'Preise ansehen' }).click();

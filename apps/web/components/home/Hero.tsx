@@ -1,9 +1,12 @@
 import { getTranslations } from 'next-intl/server';
 import { localizedPath, type Locale } from '@tidaq/core';
+import { SearchBar } from '@/components/search/SearchBar';
 import { getCatalog } from '@/lib/data/catalog';
+import { getDrops } from '@/lib/data/drops';
 import { routes } from '@/lib/routes';
 import { berlinToday } from '@/lib/today';
-import { searchCardProps, searchHotels } from '@/lib/searchCardProps';
+import { searchBarProps, searchCardProps, searchHotels } from '@/lib/searchCardProps';
+import { searchIndex } from '@/lib/searchIndex';
 import { SearchCard } from './SearchCard';
 
 /** The soft falling hairline under the accent word (CRAFT.md §4.1): the price going down. */
@@ -34,8 +37,15 @@ function Hairline() {
  */
 export async function Hero({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'home' });
-  const [catalog, searchProps] = await Promise.all([getCatalog(), searchCardProps(locale)]);
+  const today = berlinToday();
+  const [catalog, searchProps, barProps, drops] = await Promise.all([
+    getCatalog(),
+    searchCardProps(locale),
+    searchBarProps(locale),
+    getDrops(today),
+  ]);
   const searchList = await searchHotels(catalog?.hotels ?? [], locale);
+  const index = searchIndex(catalog?.hotels ?? [], drops.kind === 'ok' ? drops.drops : [], locale);
   const hotels = catalog?.hotels.length ?? 0;
   const cities = catalog?.cityCount ?? 0;
 
@@ -69,8 +79,24 @@ export async function Hero({ locale }: { locale: Locale }) {
               })
             : t('leadNoData')}
         </p>
-        <div className="mt-8 w-full max-w-[560px] text-left">
-          <SearchCard hotels={searchList} today={berlinToday()} locale={locale} {...searchProps} />
+        {/* Phones keep the card until the full-screen search (C-109); from 768 px the bar. */}
+        <div id="suche" className="mt-8 w-full scroll-mt-24 text-left md:max-w-[880px]">
+          <div className="mx-auto max-w-[560px] md:hidden">
+            <SearchCard
+              hotels={searchList}
+              today={today}
+              locale={locale}
+              formId="suche-karte"
+              {...searchProps}
+            />
+          </div>
+          <SearchBar
+            index={index}
+            today={today}
+            locale={locale}
+            className="hidden md:block"
+            {...barProps}
+          />
         </div>
       </div>
     </section>

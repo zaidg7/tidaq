@@ -645,3 +645,33 @@
     transition: none;
   }
 }
+
+/* Search bar (C-107, PREMIUM.md §9.1). The destination panel drops in (fade + 8 px, 200 ms);
+   a failed submit shakes the field (6 px, twice); dividers next to a hovered or active segment
+   disappear so the lifted segment reads as one shape. All off under reduced motion. */
+.search-panel:not([hidden]) {
+  animation: panel-in var(--t-base) var(--ease-out) both;
+}
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+.shake {
+  animation: shake 360ms var(--ease-out);
+}
+@keyframes shake {
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+.seg:is(:hover, :focus-within) + .seg-divider,
+.seg-divider:has(+ .seg:is(:hover, :focus-within)) {
+  opacity: 0;
+}

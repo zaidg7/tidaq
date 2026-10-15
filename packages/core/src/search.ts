@@ -78,3 +78,59 @@ export function matchHotels<H extends SearchableHotel>(query: string, hotels: re
     .sort((a, b) => a.score - b.score || byCityName(a.hotel, b.hotel))
     .map((s) => s.hotel);
 }
+
+/** Cities whose name the query starts ("ber" → Berlin, "new y" → New York), by name. */
+export function matchCities<C extends { name: string }>(query: string, cities: readonly C[]): C[] {
+  return cities
+    .filter((c) => matchesCity(query, c.name))
+    .sort((a, b) => a.name.localeCompare(b.name, 'de'));
+}
+
+/** `text` folded char by char like `foldText` (without trimming), with each char's source index. */
+function foldWithMap(text: string): { folded: string; at: number[] } {
+  let folded = '';
+  const at: number[] = [];
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i] ?? '';
+    let f = ch
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .replace(/ß/g, 'ss')
+      .toLowerCase();
+    f = /^[\p{Letter}\p{Number}]+$/u.test(f) ? f : ' ';
+    for (const c of f) {
+      folded += c;
+      at.push(i);
+    }
+  }
+  return { folded, at };
+}
+
+/**
+ * Where the query shows up in `text`, to highlight it: `[start, end)` in `text`, or null.
+ * Accent-insensitive like the search ("zur" marks "Zür" in "Zürich", "zuer" too). A match at
+ * a word start wins over one inside a word; without a match for the whole query, each of its
+ * words is tried ("berlin adlon" marks "Adlon" in a hotel name).
+ */
+export function highlightRange(text: string, query: string): [number, number] | null {
+  const raw = foldText(query);
+  if (!raw) return null;
+  const { folded, at } = foldWithMap(text);
+  const tries = [...new Set([raw, ...words(raw)].flatMap((q) => [q, transliterated(q)]))];
+  for (const q of tries) {
+    let found = -1;
+    for (let pos = folded.indexOf(q); pos !== -1; pos = folded.indexOf(q, pos + 1)) {
+      if (pos === 0 || folded[pos - 1] === ' ') {
+        found = pos;
+        break;
+      }
+      if (found === -1) found = pos;
+    }
+    if (found !== -1) {
+      const start = at[found] ?? 0;
+      const end = (at[found + q.length - 1] ?? start) + 1;
+      return [start, end];
+    }
+  }
+  return null;
+}
