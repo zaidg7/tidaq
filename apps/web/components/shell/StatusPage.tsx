@@ -23,7 +23,7 @@ export function StatusPage({ eyebrow, title, text, children }: Props) {
         <div aria-hidden="true" className="hero-scrim absolute inset-0" />
         <div className="absolute inset-x-0 bottom-12 md:bottom-20">
           <div className="mx-auto max-w-[1240px] px-[18px] text-white md:px-10">
-            <p className="hero-rise mb-4 inline-flex h-8 items-center rounded-full border border-white/28 bg-white/16 px-3 text-[13px] font-medium backdrop-blur-sm md:text-[14px]">
+            <p className="hero-rise mb-3 text-[14px] font-semibold text-white/85 md:text-[15px]">
               {eyebrow}
             </p>
             <h1 className="hero-rise max-w-[760px] text-[40px] leading-[1.04] font-[650] tracking-[-0.04em] md:text-[64px] md:leading-[1.02]">

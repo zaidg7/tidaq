@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { CalendarRange, Check, TrendingDown, X } from 'lucide-react';
+import { CalendarRange, Check, TrendingDown } from 'lucide-react';
 import {
   DROP_SORTS,
   DROPS,
@@ -116,24 +116,14 @@ export function DropsView({
   );
   const months = dropMonths(all);
   const filtered = filters.city !== null || filters.month !== null || filters.nights !== null;
-  // The chosen filters as removable tags next to the Filter button.
-  type Tag = { key: string; label: string; clear: Partial<DropFilters> };
-  const tags: Tag[] = [];
+  // The chosen filters, named in one line next to the Filter button.
+  const tags: string[] = [];
   if (filters.city) {
-    const name = cities.find(([slug]) => slug === filters.city)?.[1] ?? filters.city;
-    tags.push({ key: 'city', label: name, clear: { city: null } });
+    tags.push(cities.find(([slug]) => slug === filters.city)?.[1] ?? filters.city);
   }
-  if (filters.month) {
-    const label = formatMonth(filters.month, locale, today);
-    tags.push({ key: 'month', label, clear: { month: null } });
-  }
-  if (filters.nights) {
-    const label = t('nightsChip', { n: filters.nights });
-    tags.push({ key: 'nights', label, clear: { nights: null } });
-  }
-  if (filters.sort !== 'pct') {
-    tags.push({ key: 'sort', label: t(`sort.${filters.sort}`), clear: { sort: 'pct' } });
-  }
+  if (filters.month) tags.push(formatMonth(filters.month, locale, today));
+  if (filters.nights) tags.push(t('nightsChip', { n: filters.nights }));
+  if (filters.sort !== 'pct') tags.push(t(`sort.${filters.sort}`));
   const seen = seenAt ? updatedAtParts(seenAt, now, locale) : null;
   // The biggest drop with real history gets the hero spot on the unfiltered default view and
   // leaves the grid (C-080d2).
@@ -153,7 +143,7 @@ export function DropsView({
       <div className="mx-auto w-full max-w-[1240px] px-[18px] pt-6 md:px-10 md:pt-12">
         <header className="max-w-[760px]">
           {source && (
-            <p className="mb-4 inline-flex rounded-full bg-accent-soft px-4 py-2 text-[14px] font-semibold text-accent">
+            <p className="mb-3 text-[15px] font-semibold text-accent">
               {t('welcome.title', { source: SOURCE_NAME[source] })}
             </p>
           )}
@@ -247,7 +237,7 @@ export function DropsView({
 
         {stats.hotels > 0 && (
           // One decision at a time (Zaid, C-125): a single Filter button holds city, month,
-          // length and sort; what's chosen shows as small tags you can remove with one tap.
+          // length and sort; what's chosen is named in one line with "Zurücksetzen".
           <div
             role="group"
             aria-label={t('filterGroup')}
@@ -292,17 +282,18 @@ export function DropsView({
                 showNone: t('filterShowNone'),
               }}
             />
-            {tags.map((tag) => (
-              <a
-                key={tag.key}
-                href={href(tag.clear)}
-                aria-label={t('filterRemove', { name: tag.label })}
-                className="inline-flex h-11 items-center gap-1.5 rounded-full bg-surface-2 pr-3 pl-4 text-[14px] font-semibold text-ink transition-colors hover:bg-line"
-              >
-                {tag.label}
-                <Icon icon={X} size={16} className="text-muted" />
-              </a>
-            ))}
+            {tags.length > 0 && (
+              // What's chosen, as one line of text with one way back (C-137: no pills).
+              <p className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1 pl-2 text-[15px]">
+                <span className="font-semibold text-ink">{tags.join(' · ')}</span>
+                <a
+                  href={href({ city: null, month: null, nights: null, sort: 'pct' })}
+                  className="inline-flex min-h-11 items-center font-semibold text-accent underline-offset-4 hover:underline"
+                >
+                  {t('filterReset')}
+                </a>
+              </p>
+            )}
             <p className="ml-auto text-[14px] text-muted" aria-live="polite">
               {t('resultCount', { n: shown.length })}
             </p>

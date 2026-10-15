@@ -14,7 +14,6 @@ import {
   type ProviderFacts,
 } from '@tidaq/core';
 import { Card } from '@/components/ui/Card';
-import { ChipLink } from '@/components/ui/Chip';
 import { TrustScore } from '@/components/ui/TrustScore';
 import { PageHead } from '@/components/shell/PageHead';
 import { routes } from '@/lib/routes';
@@ -81,12 +80,15 @@ export function ProviderView({
         {others.length > 0 && (
           <>
             <h2 className="text-meta mt-8 font-semibold text-muted-ink">{t('others')}</h2>
-            <ul className="mt-3 flex flex-wrap gap-2">
+            <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1">
               {others.map((p) => (
                 <li key={p.slug}>
-                  <ChipLink selected={false} href={localizedPath(providerPath(p.slug), locale)}>
+                  <a
+                    href={localizedPath(providerPath(p.slug), locale)}
+                    className="inline-flex min-h-11 items-center text-[15px] font-semibold text-accent underline-offset-4 hover:underline"
+                  >
                     {nameOf(p)}
-                  </ChipLink>
+                  </a>
                 </li>
               ))}
             </ul>

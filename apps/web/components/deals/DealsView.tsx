@@ -4,7 +4,6 @@ import { DEALS, localizedPath, type Locale } from '@tidaq/core';
 import { buttonClasses } from '@/components/ui/Button';
 import { PageHead } from '@/components/shell/PageHead';
 import { Card } from '@/components/ui/Card';
-import { ChipLink } from '@/components/ui/Chip';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
 import type { Deal } from '@/lib/data/deals';
@@ -55,19 +54,26 @@ export function DealsView({ deals, city }: { deals: Deal[]; city: string | null 
         <>
           {cities.length > 1 && (
             <nav aria-label={t('filterLabel')} className="mt-8">
-              <ul className="flex flex-wrap gap-2">
-                <li>
-                  <ChipLink href={base} selected={!city}>
-                    {t('allCities')}
-                  </ChipLink>
-                </li>
-                {cities.map(([slug, name]) => (
-                  <li key={slug}>
-                    <ChipLink href={`${base}?stadt=${slug}`} selected={city === slug}>
-                      {name}
-                    </ChipLink>
-                  </li>
-                ))}
+              {/* Text tabs, the chosen one underlined (C-137: no pills). */}
+              <ul className="flex gap-6 overflow-x-auto border-b border-line [scrollbar-width:none] md:gap-8">
+                {[['', t('allCities')] as const, ...cities].map(([slug, name]) => {
+                  const on = slug ? city === slug : !city;
+                  return (
+                    <li key={slug || 'all'} className="shrink-0">
+                      <a
+                        href={slug ? `${base}?stadt=${slug}` : base}
+                        aria-current={on ? 'page' : undefined}
+                        className={cn(
+                          'relative flex h-12 items-center text-[15px] font-semibold whitespace-nowrap',
+                          'after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:rounded-full',
+                          on ? 'text-ink after:bg-ink' : 'text-muted hover:text-ink',
+                        )}
+                      >
+                        {name}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </nav>
           )}

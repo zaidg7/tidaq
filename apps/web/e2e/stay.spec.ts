@@ -6,10 +6,10 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
   test('tracked: verdict, chart, low/avg/high, advice and other dates', async ({ page }) => {
     await page.goto('/dev/stay/tracked');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Hotel Adlon Kempinski');
-    // The stay as chips under the name.
+    // The stay as one line of text under the name (C-137).
     await expect(page.getByText('4.–6. Dez. 2026', { exact: true })).toBeVisible();
     await expect(
-      page.locator('main header li', { hasText: '2 Nächte · 2 Erwachsene' }),
+      page.locator('main header p', { hasText: '2 Nächte · 2 Erwachsene' }).last(),
     ).toBeVisible();
     await expect(
       page.getByRole('link', { name: 'Preise jeder Nacht in diesem Hotel' }),
@@ -280,7 +280,9 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
   test('English copy', async ({ page }) => {
     await page.goto('/en/dev/stay/tracked');
     await expect(page.getByText('4–6 Dec 2026', { exact: true })).toBeVisible();
-    await expect(page.locator('main header li', { hasText: '2 nights · 2 adults' })).toBeVisible();
+    await expect(
+      page.locator('main header p', { hasText: '2 nights · 2 adults' }).last(),
+    ).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Our take' })).toBeVisible();
   });
 });

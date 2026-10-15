@@ -97,26 +97,32 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
           // Above the card link: each night opens its own drop page.
           <div className="relative z-[1] pt-3.5">
             <p className="text-[13px] text-muted">{t('more')}</p>
-            <p className="mt-1.5 flex flex-wrap gap-1.5">
+            {/* Rows, not pills (C-137): date and length left, the drop right. */}
+            {/* Divs, not a list: the card already sits in the drops list. */}
+            <div className="mt-1 divide-y divide-line border-y border-line">
               {more.map((m: PriceDrop) => (
                 <a
                   key={dropKey(m)}
                   href={nightHref(g.hotel.slug, m, locale)}
-                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-[13px] font-medium transition-colors hover:border-ink/40"
+                  className="flex min-h-10 items-center justify-between gap-3 text-[14px] font-medium text-ink hover:text-accent"
                 >
-                  {formatWeekdayDayMonth(m.night, locale)}
-                  {m.nights > 1 && ` · ${t('stayBadge', { n: m.nights })}`}
+                  <span>
+                    {formatWeekdayDayMonth(m.night, locale)}
+                    {m.nights > 1 && (
+                      <span className="text-muted"> · {t('stayBadge', { n: m.nights })}</span>
+                    )}
+                  </span>
                   <span className={cn('font-bold tabular-nums', dropTextClass(m.drop))}>
                     {dropPercent(m.drop, locale)}
                   </span>
                 </a>
               ))}
-              {g.more.length > more.length && (
-                <span className="inline-flex h-8 items-center px-1 text-[13px] text-muted">
-                  {t('moreCount', { n: g.more.length - more.length })}
-                </span>
-              )}
-            </p>
+            </div>
+            {g.more.length > more.length && (
+              <p className="pt-1.5 text-[13px] text-muted">
+                {t('moreCount', { n: g.more.length - more.length })}
+              </p>
+            )}
           </div>
         )}
       </div>

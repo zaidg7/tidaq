@@ -213,20 +213,16 @@ export async function DropPage({
             <h1 className="mt-1 text-[30px] leading-[1.12] font-semibold tracking-[-0.03em] md:text-[44px] md:leading-[1.06]">
               {g.hotel.name}
             </h1>
-            <ul className="mt-3.5 flex flex-wrap gap-2">
-              {[
-                d.nights > 1 ? formatDateRange(d.night, d.checkOut, locale) : f.date,
-                t('chipNights', { n: d.nights }),
-                t('chipAdults'),
-              ].map((c) => (
-                <li
-                  key={c}
-                  className="inline-flex h-8 items-center rounded-full border border-line bg-surface px-3 text-[14px] font-medium"
-                >
-                  {c}
-                </li>
-              ))}
-            </ul>
+            {/* The trip as one line of text, not pills (C-137). */}
+            <p className="mt-2.5 flex flex-wrap gap-x-2 text-[16px] text-muted-ink md:text-[17px]">
+              <span className="font-semibold text-ink">
+                {d.nights > 1 ? formatDateRange(d.night, d.checkOut, locale) : f.date}
+              </span>
+              <span aria-hidden="true">·</span>
+              <span>{t('chipNights', { n: d.nights })}</span>
+              <span aria-hidden="true">·</span>
+              <span>{t('chipAdults')}</span>
+            </p>
           </header>
 
           <div className="mt-[22px] self-start [grid-area:card] md:sticky md:top-24 md:mt-0">

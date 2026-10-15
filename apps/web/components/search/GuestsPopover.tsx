@@ -16,6 +16,8 @@ export type GuestsLabels = {
 
 type Props = {
   id: string;
+  /** Centre of the panel from the bar's left edge (its segment's centre), px; null: the middle. */
+  anchorX: number | null;
   adults: number;
   onChange: (adults: number) => void;
   onClose: () => void;
@@ -26,7 +28,7 @@ export const MIN_ADULTS = 1;
 export const MAX_ADULTS = 4;
 
 /** "Gäste" popover (PREMIUM.md §9.1): adults 1–4 with a stepper; children come later. */
-export function GuestsPopover({ id, adults, onChange, onClose, labels }: Props) {
+export function GuestsPopover({ id, anchorX, adults, onChange, onClose, labels }: Props) {
   const side = usePanelSide<HTMLDivElement>(true);
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key !== 'Escape') return;
@@ -42,7 +44,8 @@ export function GuestsPopover({ id, adults, onChange, onClose, labels }: Props) 
       aria-label={labels.title}
       onKeyDown={onKeyDown}
       data-side={side.up ? 'up' : 'down'}
-      className="search-panel absolute top-[calc(100%+12px)] data-[side=up]:top-auto data-[side=up]:bottom-[calc(100%+12px)] right-0 z-30 w-[340px] rounded-panel border border-line bg-surface p-6 shadow-3"
+      style={{ left: anchorX ?? '50%' }}
+      className="search-panel absolute top-[calc(100%+12px)] data-[side=up]:top-auto data-[side=up]:bottom-[calc(100%+12px)] z-30 w-[340px] -translate-x-1/2 rounded-panel border border-line bg-surface p-5 shadow-3"
     >
       <GuestsStepper adults={adults} onChange={onChange} labels={labels} autoFocus />
     </div>

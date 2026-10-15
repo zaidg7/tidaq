@@ -141,19 +141,17 @@ test.describe('Price Drop-Radar (C-080a, sample data on /dev/drops)', () => {
     await expect(page).toHaveURL(/\/price-drops\?stadt=berlin$/);
   });
 
-  test('chosen filters show as tags that remove themselves; links stay shareable', async ({
+  test('chosen filters are named in one line with one reset; links stay shareable', async ({
     page,
   }) => {
     await page.goto('/dev/drops?dauer=7&sort=eur');
     const main = page.getByRole('main');
     await expect(main.getByRole('button', { name: /^Filter\s*2$/ })).toBeVisible();
-    await expect(main.getByRole('link', { name: 'Filter „7 Nächte“ entfernen' })).toHaveAttribute(
+    // C-137: no removable pills, one line of text and "Zurücksetzen".
+    await expect(main.getByText('7 Nächte · Ersparnis', { exact: true })).toBeVisible();
+    await expect(main.getByRole('link', { name: 'Zurücksetzen' })).toHaveAttribute(
       'href',
-      '/price-drops?sort=eur',
-    );
-    await expect(main.getByRole('link', { name: 'Filter „Ersparnis“ entfernen' })).toHaveAttribute(
-      'href',
-      '/price-drops?dauer=7',
+      '/price-drops',
     );
     // Only the 7-night trips, most money saved first.
     const cards = main.getByRole('list', { name: 'Price Drops' }).getByRole('listitem');
@@ -167,10 +165,10 @@ test.describe('Price Drop-Radar (C-080a, sample data on /dev/drops)', () => {
     await page.goto('/dev/drops');
     await main.getByRole('button', { name: 'Filter' }).click();
     const sheet = page.getByRole('dialog', { name: 'Filter' });
-    const months = sheet.getByRole('group', { name: 'Reisemonat' }).getByRole('button');
-    await expect(months.first()).toHaveText('Jeder Monat');
-    await months.nth(1).click();
-    await expect(months.nth(1)).toHaveAttribute('aria-pressed', 'true');
+    const months = sheet.getByRole('combobox', { name: 'Reisemonat' });
+    await expect(months.locator('option').first()).toHaveText('Jeder Monat');
+    const second = await months.locator('option').nth(1).getAttribute('value');
+    await months.selectOption(second ?? '');
     await sheet.getByRole('button', { name: /anzeigen$/ }).click();
     await expect(page).toHaveURL(/\/price-drops\?monat=\d{4}-\d{2}$/);
     const month = new URL(page.url()).searchParams.get('monat') ?? '';
