@@ -13,6 +13,7 @@ export function CityTile({
   city,
   href,
   big = false,
+  eyebrow,
   sizes,
   className,
   style,
@@ -20,6 +21,8 @@ export function CityTile({
   city: CityCard;
   href: string;
   big?: boolean;
+  /** A small line above the name (the country on /staedte). */
+  eyebrow?: string;
   sizes: string;
   className?: string;
   style?: CSSProperties;
@@ -55,6 +58,11 @@ export function CityTile({
             : 'bottom-4 left-[18px] md:bottom-[18px] md:left-5',
         )}
       >
+        {eyebrow && (
+          <span className="mb-1 text-[12px] font-semibold tracking-[0.08em] text-white/80 uppercase">
+            {eyebrow}
+          </span>
+        )}
         <span
           className={cn(
             'leading-[1.1] font-[650]',

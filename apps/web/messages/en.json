@@ -1224,6 +1224,9 @@
     "metaDescription": "{cities} cities, {hotels} five-star hotels. Every morning we check the prices and show you where it is cheap right now.",
     "title": "All cities",
     "lead": "{cities} cities, {hotels} five-star hotels. Checked every morning.",
-    "unavailable": "We can't load the cities right now. Please try again in a moment."
+    "unavailable": "We can't load the cities right now. Please try again in a moment.",
+    "eyebrow": "Cities",
+    "heroTitle": "{cities} cities. One look at the prices.",
+    "regionFacts": "{cities, plural, one {# city} other {# cities}} · {hotels} hotels"
   }
 }

@@ -1226,6 +1226,9 @@
     "metaDescription": "{cities} Städte, {hotels} Fünf-Sterne-Hotels. Jeden Morgen prüfen wir die Preise und zeigen dir, wo es gerade günstig ist.",
     "title": "Alle Städte",
     "lead": "{cities} Städte, {hotels} Fünf-Sterne-Hotels. Jeden Morgen neu geprüft.",
-    "unavailable": "Die Städte können wir gerade nicht laden. Versuch es gleich noch einmal."
+    "unavailable": "Die Städte können wir gerade nicht laden. Versuch es gleich noch einmal.",
+    "eyebrow": "Städte",
+    "heroTitle": "{cities} Städte. Ein Blick auf die Preise.",
+    "regionFacts": "{cities, plural, one {# Stadt} other {# Städte}} · {hotels} Hotels"
   }
 }
