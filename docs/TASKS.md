@@ -83,6 +83,10 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-028a                                                          | SEO: canonical, hreflang, sitemap, site JSON-LD                              | CLOUD | S             | C-022                             | DONE           |
 | C-028b                                                          | Share images: hotel photos and a default OG image                            | CLOUD | S             | C-028a                            | DONE           |
 | C-028c                                                          | Dynamic OG images with today's price (own Worker)                            | CLOUD | S             | C-028b, B-017                     | BLOCKED        |
+| C-080a | Preissturz-Radar: daily sudden price drops, /preissturz, home and city teasers | CLOUD | M | C-013g, C-024 | DONE |
+| C-080b | Shareable drop page per hotel and night + in-browser story image (Web Share) | CLOUD | M | C-080a | TODO |
+| C-080c | Creator kit in /admin: top drops, captions, story images for TikTok/Instagram | CLOUD | S | C-080b | TODO |
+| C-080d | Weekend drops (2 nights, same site) and city drop alerts by email | CLOUD | M | C-080a, C-031a | TODO |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
@@ -974,6 +978,27 @@ Collector: every Monday in the daily cron (after the alerts), load confirmed sub
 
 
 ---
+
+### C-080 · Sudden price drops (Preissturz-Radar)
+
+The social-media lever: "Das Adlon kostet heute Nacht 31 % weniger als gestern." Every number is a real check with date, site and both prices (CLAUDE.md rule 8); no countdowns, no "nur heute" (rule 9).
+
+**C-080a notes (DONE):** SQL `price_drops(p_today)` (migration `20261015002000`, granted to anon): for every upcoming night, the newest check (today or yesterday, Berlin) against the check the day before; a drop counts at ≥ 15 % and ≥ 50 € less **and** below every price seen for that night in the 14 days before (new low). Falls of more than 60 % need a second reviewed site within 10 % (`confirmed`), otherwise they are hidden as likely data errors. Core `drops.ts`: `groupDrops` (one card per hotel, biggest drop on top, other nights below), `filterDrops` (city, "Wann": 7 / 30 days / later), `sortDrops` (pct, €, soonest night), `dropStats`. Web: `/preissturz` (force-dynamic; filters are URL params `stadt`, `wann`, `sort`, so every view is a shareable link), top 3 on the homepage right under the hero, a city section on `/stadt/[city]`, nav item "Preisstürze" (replaces "Deals" in the main nav; Deals stay in the footer and are linked from the radar). Sample data on `/dev/drops` (`?empty`, `?teaser`). The drop badge uses the fixed token `--color-drop` (white text AA in both themes). Drops only appear once a night has been checked on two consecutive days, so the radar fills during the first days of the night grid.
+
+### C-080b · Shareable drop page + story image
+
+Owner: CLOUD · Size: M · Depends on: C-080a · Status: TODO
+`/preissturz/[hotel]/[night]`: one drop with photo, both prices, the night's price history (chart), the site and "Zum Angebot" (labelled affiliate link where one exists). Open Graph title and description carry the drop ("Hotel Adlon: −26 % für Sa, 18. Okt."); the static photo is the OG image until C-028c. "Als Story teilen": draws a 1080×1920 image in the browser (canvas: photo, hotel, night, −26 %, old/new price, "tidaq.com/preissturz"), shares it with the Web Share API (`navigator.share({ files })`) and falls back to a download. "Link kopieren" with a toast. No server CPU, so it works on the Workers free plan. Old drops (night in the past or price back up) stay reachable with an honest "Dieser Preissturz ist vorbei" state and a link to the radar.
+
+### C-080c · Creator kit in /admin
+
+Owner: CLOUD · Size: S · Depends on: C-080b · Status: TODO
+`/admin/preisstuerze`: today's top 10 drops with one-click story image download, a ready German caption per drop (facts only: hotel, city, night, both prices, site, "Stand: heute 08:12") and hashtags, plus a "Top 5 des Tages" carousel set (5 story images + caption). Lets Zaid post daily in 5 minutes.
+
+### C-080d · Weekend drops and city drop alerts
+
+Owner: CLOUD · Size: M · Depends on: C-080a, C-031a · Status: TODO
+Weekend drops: Fri–Sun stays whose 2-night total on one site fell the same way (sum of both nights from the same site and check day). City drop alerts: "Schick mir Preisstürze in Paris" sign-up on the radar and city pages (double opt-in via `watchers`, like the newsletter), one email per day at most, only when a new drop appears. Mind the Workers 50 subrequests per cron run.
 
 ## Checklists
 

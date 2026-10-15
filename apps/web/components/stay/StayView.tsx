@@ -22,7 +22,7 @@ import {
   type StayStatsResult,
 } from '@tidaq/core';
 import { PriceChart } from '@/components/chart/PriceChart';
-import { Button, buttonClasses } from '@/components/ui/Button';
+import { buttonClasses } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
 import { PriceText } from '@/components/ui/PriceText';
