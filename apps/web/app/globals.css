@@ -550,6 +550,7 @@
 }
 .price-lvl-4 {
   background: #f7d9c4;
+<<<<<<< HEAD
 }
 
 /* Sheet (PREMIUM.md §11): bottom sheet on phones, centred panel from 768 px. */
@@ -628,4 +629,6 @@
   .accordion[open]::details-content {
     block-size: auto;
   }
+=======
+>>>>>>> origin/main
 }
