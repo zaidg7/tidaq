@@ -169,21 +169,21 @@ const postedForm = z.object({
  * real drops get saved, with their current facts.
  */
 export async function markPostedAction(form: FormData) {
-  const f = postedForm.parse({
-    slug: form.get('slug'),
-    key: form.get('key'),
-    platform: form.get('platform'),
-    period: form.get('period'),
-    on: form.get('on'),
-  });
+  const week = form.get('period') === 'week';
   await guarded(
     'posted',
     async () => {
+      const f = postedForm.parse({
+        slug: form.get('slug'),
+        key: form.get('key'),
+        platform: form.get('platform'),
+        period: form.get('period'),
+        on: form.get('on'),
+      });
       const today = berlinToday();
       const stay = parseDropKey(f.key);
-      const week = f.period === 'week' ? await getWeek(today) : null;
-      const day = week ? null : await getDrops(today);
-      const groups = week?.kind === 'ok' ? week.groups : day?.kind === 'ok' ? day.drops : null;
+      const load = f.period === 'week' ? await getWeek(today) : await getDrops(today);
+      const groups = load.kind !== 'ok' ? null : 'groups' in load ? load.groups : load.drops;
       if (!stay || !groups) throw new Error('drops unavailable');
       const hit = findDrop(groups, f.slug, stay);
       if (!hit) throw new Error('drop not found');
@@ -191,6 +191,6 @@ export async function markPostedAction(form: FormData) {
       else await unmarkPosted(hit.group.hotel.id, hit.drop, f.platform);
       return 'posted';
     },
-    f.period === 'week' ? '/admin/preisstuerze?zeitraum=woche' : '/admin/preisstuerze',
+    week ? '/admin/preisstuerze?zeitraum=woche' : '/admin/preisstuerze',
   );
 }
