@@ -1,17 +1,14 @@
 name: CI
 
-# Actions minutes are limited on the private repo (2,000 a month; used up on 14 Oct, B-011), so
-# runs are only spent where they test code: draft PRs (a draft only claims a task) and docs-only
-# changes skip CI, and a push to main doesn't repeat the suite its PR just passed (C-002c): main
-# only deploys staging. PRs are squash-merged with the branch up to date, so the merged code is
-# the code CI tested.
+# Budget (Zaid, 15 Oct): $5 of Actions until 1 Nov, repo stays private. So GitHub runs only once
+# per merge to main, to deploy staging. Every check (lint, typecheck, unit, build, all e2e) runs
+# in the session before a merge instead; finished tasks are merged in batches. The full suite
+# can still be started by hand (Actions → CI → Run workflow) when it is worth the minutes.
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore: ['docs/**', '**/*.md']
   push:
     branches: [main]
     paths-ignore: ['docs/**', '**/*.md']
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -23,7 +20,7 @@ permissions:
 jobs:
   ci:
     name: CI
-    if: github.event_name == 'pull_request' && !github.event.pull_request.draft
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
