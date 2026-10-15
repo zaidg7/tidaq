@@ -39,7 +39,7 @@ export function PhotoHero({
       >
         <div aria-hidden="true" className="hero-scrim absolute inset-0" />
         <div className="absolute inset-x-0 bottom-9 md:bottom-16">
-          <div className="mx-auto max-w-[1240px] px-[18px] text-white md:px-10">
+          <div className="photo-text mx-auto max-w-[1240px] px-[18px] text-white md:px-10">
             {eyebrow && (
               <p className="hero-rise mb-3 text-[14px] font-medium text-white/85 md:mb-4 md:text-[15px]">
                 {eyebrow}

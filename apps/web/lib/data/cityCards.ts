@@ -8,6 +8,8 @@ import { getDrops } from './drops';
 export interface CityCard {
   slug: string;
   name: string;
+  /** ISO country code ('' when unknown), for regions on /staedte. */
+  country: string;
   hotels: number;
   /** Hotels in the city with a Price Drop today. */
   drops: number;
@@ -63,6 +65,7 @@ export async function getCityCards(
     const card = byCity.get(h.city.slug) ?? {
       slug: h.city.slug,
       name: h.city.name[locale],
+      country: h.city.country ?? '',
       hotels: 0,
       drops: 0,
       photo: city ? cityPhotoAsHotelPhoto(city) : null,
