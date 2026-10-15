@@ -34,6 +34,7 @@ export function MobileMenu({ items, locale, labels, localeNames, alertHref }: Pr
       <IconButton
         label={labels.open}
         aria-haspopup="dialog"
+        variant="nav"
         className="lg:hidden"
         onClick={() => dialog.current?.showModal()}
       >

@@ -18,6 +18,7 @@ export const dynamic = 'force-dynamic';
 const STATIC = [
   routes.home,
   routes.hotels,
+  routes.cities,
   routes.drops,
   routes.dropsWeek,
   routes.deals,

@@ -7,6 +7,7 @@ import {
   dropStats,
   dropDates,
   dropKey,
+  dropTier,
   dropWhen,
   filterDrops,
   findDrop,
@@ -278,5 +279,23 @@ describe('weekSummary (C-080h)', () => {
       biggest: 0,
       cities: [],
     });
+  });
+});
+
+describe('dropTier', () => {
+  it('gets louder with the size of the drop', () => {
+    expect(dropTier(0.7)).toBe('huge');
+    expect(dropTier(0.53)).toBe('big');
+    expect(dropTier(0.49)).toBe('big');
+    expect(dropTier(0.33)).toBe('small');
+    expect(dropTier(0.15)).toBe('small');
+  });
+  it('puts the bounds where the rounded label says', () => {
+    expect(dropTier(0.6)).toBe('huge');
+    expect(dropTier(0.596)).toBe('huge');
+    expect(dropTier(0.594)).toBe('big');
+    expect(dropTier(0.4)).toBe('big');
+    expect(dropTier(0.396)).toBe('big');
+    expect(dropTier(0.394)).toBe('small');
   });
 });

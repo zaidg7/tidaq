@@ -14,7 +14,8 @@ function isCurrent(pathname: string, href: string) {
 }
 
 /**
- * Desktop navbar links (CRAFT.md §3 Navbar). The current page is `--fg` with a 4 px accent dot.
+ * Desktop navbar links (mockup B): 16 px, medium; the current page is semibold with a 4 px dot.
+ * Colours come from the navbar (white on a photo, ink elsewhere).
  * Client only for `usePathname`; labels and hrefs come from the server, so no i18n runtime ships.
  */
 export function NavLinks({
@@ -38,11 +39,9 @@ export function NavLinks({
                 href={localizedPath(item.href, locale)}
                 aria-current={current ? 'page' : undefined}
                 className={cn(
-                  'relative inline-flex h-11 items-center rounded-full px-3.5 text-[14.5px] font-semibold',
-                  'transition-colors duration-[180ms] ease-soft hover:text-fg',
-                  current
-                    ? 'text-fg after:absolute after:bottom-1 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-accent after:content-[""]'
-                    : 'text-muted-ink',
+                  'nav-link relative inline-flex h-11 items-center rounded-full px-4 text-[16px] font-medium',
+                  current &&
+                    'font-semibold after:absolute after:bottom-1 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-current after:content-[""]',
                 )}
               >
                 {item.label}

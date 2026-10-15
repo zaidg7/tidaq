@@ -7,14 +7,16 @@ test.describe('desktop shell', () => {
   test('shows the navbar links, Price Alert and footer columns (C-106)', async ({ page }) => {
     await page.goto('/dev/ui');
     const nav = page.getByRole('navigation', { name: 'Hauptnavigation' });
-    for (const name of ['Price Drops', 'Hotels', 'Kassen-Check', 'So messen wir']) {
+    for (const name of ['Price Drops', 'Hotels', 'Städte']) {
       await expect(nav.getByRole('link', { name })).toBeVisible();
     }
+    await expect(nav.getByRole('link', { name: 'Städte' })).toHaveAttribute('href', '/staedte');
     await expect(
       page.getByRole('banner').getByRole('link', { name: 'Price Alert' }),
     ).toHaveAttribute('href', '/preissturz#preissturz-alarm');
+    const footer = page.getByRole('contentinfo');
     // Until the Kassen-Check page exists (C-119), the link goes to the provider scores.
-    await expect(nav.getByRole('link', { name: 'Kassen-Check' })).toHaveAttribute(
+    await expect(footer.getByRole('link', { name: 'Kassen-Check' })).toHaveAttribute(
       'href',
       '/methodik#anbieter',
     );
@@ -22,8 +24,7 @@ test.describe('desktop shell', () => {
       'href',
       '/',
     );
-    const footer = page.getByRole('contentinfo');
-    for (const name of ['Impressum', 'Datenschutz', 'Affiliate-Hinweis']) {
+    for (const name of ['Impressum', 'Datenschutz', 'Partnerlinks', 'Städte']) {
       await expect(footer.getByRole('link', { name })).toBeVisible();
     }
   });

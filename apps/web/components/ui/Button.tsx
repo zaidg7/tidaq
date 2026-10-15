@@ -123,7 +123,8 @@ type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   /** Accessible name (required: the button has no visible text). */
   label: string;
   children: ReactNode;
-  variant?: 'ghost' | 'subtle' | 'onPhoto';
+  /** `nav`: takes the navbar's colours (white on a photo, ink elsewhere). */
+  variant?: 'ghost' | 'subtle' | 'onPhoto' | 'nav';
   /** React 19: a plain prop, passed through to the <button>. */
   ref?: Ref<HTMLButtonElement>;
 };
@@ -142,13 +143,15 @@ export function IconButton({
       type={type}
       aria-label={label}
       className={cn(
-        'inline-grid size-11 shrink-0 place-items-center rounded-full text-ink',
-        'transition-[background-color,transform] duration-[var(--t-fast)] ease-out active:scale-95',
+        'inline-grid size-11 shrink-0 place-items-center rounded-full',
+        'transition-[background-color,color,transform] duration-[var(--t-fast)] ease-out active:scale-95',
         variant === 'ghost'
-          ? 'border border-line-strong bg-surface hover:bg-surface-2'
+          ? 'border border-line-strong bg-surface text-ink hover:bg-surface-2'
           : variant === 'onPhoto'
-            ? 'bg-white/90 shadow-1 backdrop-blur-md hover:bg-white'
-            : 'hover:bg-surface-2',
+            ? 'bg-white/90 text-ink shadow-1 backdrop-blur-md hover:bg-white'
+            : variant === 'nav'
+              ? 'nav-btn'
+              : 'text-ink hover:bg-surface-2',
         className,
       )}
       {...rest}

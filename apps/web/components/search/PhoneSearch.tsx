@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useId, useImperativeHandle, useMemo, useRef, useState, type Ref } from 'react';
-import { ArrowLeft, CircleAlert, Search, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CircleAlert, Search, X } from 'lucide-react';
 import { type Locale, type RangeDraft } from '@tidaq/core';
 import { RangeCalendar, PriceLegend, type CellPrice } from '@/components/calendar/RangeCalendar';
 import { Button, IconButton } from '@/components/ui/Button';
@@ -176,15 +176,21 @@ export function PhoneSearch({
           onClick={open}
           aria-haspopup="dialog"
           className={cn(
-            'flex h-14 w-full items-center gap-3 rounded-full border border-line bg-surface pr-2 pl-5 text-left shadow-2',
-            'transition-transform duration-[var(--t-fast)] ease-out active:scale-[0.98]',
+            'flex h-[60px] w-full items-center gap-3 rounded-full bg-surface pr-2 pl-5 text-left text-ink',
+            'shadow-[0_16px_40px_rgba(14,12,18,0.3)] transition-transform duration-[var(--t-fast)] ease-out active:scale-[0.98]',
             className,
           )}
         >
-          <Icon icon={Search} size={18} className="shrink-0 text-ink" />
+          <Icon icon={Search} size={20} className="shrink-0" />
           <span className="flex min-w-0 flex-1 flex-col leading-tight">
-            <span className="text-[15px] font-semibold text-ink">{t.pillTitle}</span>
-            <span className="truncate text-[12.5px] text-muted-ink">{t.pillText}</span>
+            <span className="text-[16px] font-semibold">{t.pillTitle}</span>
+            <span className="mt-0.5 truncate text-[13px] text-muted">{t.pillText}</span>
+          </span>
+          <span
+            aria-hidden="true"
+            className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-white"
+          >
+            <Icon icon={ArrowRight} size={18} />
           </span>
         </button>
       )}

@@ -17,6 +17,8 @@ type Props = {
   className?: string;
   /** Small tag in the bottom corner: the photo credit or "Stadtbild". */
   tag?: ReactNode;
+  /** Which bottom corner the tag sits in (cards: left, headers: right). */
+  tagSide?: 'left' | 'right';
   /** Overlays on top of the photo (badges, buttons, scrims). */
   children?: ReactNode;
 };
@@ -26,7 +28,16 @@ type Props = {
  * blurred preview first, then the real image fades in (400 ms), cropped around its focal point.
  * Without JavaScript the image just shows: it starts hidden only when scripts run (globals.css).
  */
-export function Photo({ photo, alt, sizes, priority, className, tag, children }: Props) {
+export function Photo({
+  photo,
+  alt,
+  sizes,
+  priority,
+  className,
+  tag,
+  tagSide = 'left',
+  children,
+}: Props) {
   const [loaded, setLoaded] = useState(false);
   const base = photo ? (photo[960] ?? photo[160]) : null;
 
@@ -63,7 +74,12 @@ export function Photo({ photo, alt, sizes, priority, className, tag, children }:
       )}
       {children}
       {tag && (
-        <span className="absolute right-2.5 bottom-2.5 z-10 inline-flex h-5 max-w-[calc(100%-20px)] items-center truncate rounded-tag bg-[rgba(21,19,28,0.55)] px-2 text-[11px] font-medium text-white">
+        <span
+          className={cn(
+            'absolute bottom-3 z-10 inline-flex h-5 max-w-[calc(100%-24px)] items-center truncate rounded-tag bg-[rgba(21,19,28,0.5)] px-2 text-[11px] text-white',
+            tagSide === 'left' ? 'left-3.5' : 'right-3.5',
+          )}
+        >
           {tag}
         </span>
       )}

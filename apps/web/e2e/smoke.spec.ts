@@ -14,14 +14,14 @@ const cases = [
   {
     path: '/',
     lang: 'de',
-    heading: 'Ist dein Hotelpreis gerade tief oder hoch?',
+    heading: 'Ist dein Hotel gerade günstig?',
     switchTo: 'English',
     target: '/en',
   },
   {
     path: '/en',
     lang: 'en',
-    heading: 'Is your hotel price low or high right now?',
+    heading: 'Is your hotel cheap right now?',
     switchTo: 'Deutsch',
     target: '/',
   },

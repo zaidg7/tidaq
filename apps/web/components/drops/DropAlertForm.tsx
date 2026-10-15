@@ -23,6 +23,9 @@ export type DropAlertFormLabels = {
   submit: string;
   results: Record<Exclude<DropAlertFormState['status'], 'idle'>, string>;
   preview: string;
+  /** The `bar` layout's short texts: "E-Mail", "du@beispiel.de", "Aktivieren", and the phone
+   *  button "Price Alert aktivieren". */
+  bar?: { email: string; placeholder: string; submit: string; submitPhone: string };
 };
 
 /**
@@ -35,6 +38,7 @@ export function DropAlertForm({
   defaultCity,
   hotel = null,
   labels,
+  variant = 'card',
 }: {
   locale: string;
   /** Every city we track, by name. */
@@ -44,6 +48,9 @@ export function DropAlertForm({
   /** Offer "only this hotel" first and preselect it (drop pages, hotel pages; C-080k1). */
   hotel?: { slug: string; name: string } | null;
   labels: DropAlertFormLabels;
+  /** `bar`: one white line (E-Mail | Stadt | Aktivieren) on a dark section (homepage, mockup B);
+   *  on phones the fields stack inside the white card. */
+  variant?: 'card' | 'bar';
 }) {
   const id = useId();
   const [state, action, pending] = useActionState(dropAlertAction, { status: 'idle' });
@@ -52,11 +59,25 @@ export function DropAlertForm({
 
   if (ok) {
     return (
-      <div role="status" className="rounded-cell bg-surface px-4 py-3 text-[14.5px]">
+      <div
+        role="status"
+        className={
+          variant === 'bar'
+            ? 'rounded-[22px] border border-white/14 bg-white/10 px-5 py-4 text-[15px] text-white'
+            : 'rounded-cell bg-surface px-4 py-3 text-[14.5px]'
+        }
+      >
         <p className="font-semibold">{labels.results[state.status]}</p>
         {state.previewUrl && (
           <p className="mt-2 text-[13px]">
-            <a href={state.previewUrl} className="font-semibold text-accent underline">
+            <a
+              href={state.previewUrl}
+              className={
+                variant === 'bar'
+                  ? 'font-semibold underline'
+                  : 'font-semibold text-accent underline'
+              }
+            >
               {labels.preview}
             </a>
           </p>
@@ -65,14 +86,107 @@ export function DropAlertForm({
     );
   }
 
+  const honeypot = (
+    // Hidden from people and screen readers; bots fill it.
+    <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+      <label htmlFor={`${id}-website`}>Website</label>
+      <input id={`${id}-website`} name="website" tabIndex={-1} autoComplete="off" />
+    </div>
+  );
+
+  if (variant === 'bar' && labels.bar) {
+    const b = labels.bar;
+    return (
+      <form key={JSON.stringify(values)} action={action} className="relative">
+        <input type="hidden" name="locale" value={locale} />
+        {honeypot}
+        <div className="flex flex-col rounded-[22px] bg-surface p-2 text-ink sm:flex-row sm:items-stretch">
+          <div className="flex flex-col justify-center px-3.5 py-2 sm:flex-[1_1_200px] sm:py-1.5">
+            <label htmlFor={`${id}-email`} className="text-[12px] font-semibold">
+              {b.email}
+            </label>
+            <input
+              id={`${id}-email`}
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              inputMode="email"
+              placeholder={b.placeholder}
+              defaultValue={values?.email}
+              aria-describedby={state.status !== 'idle' ? `${id}-error` : undefined}
+              className="w-full min-w-0 bg-transparent text-[17px] text-ink placeholder:text-faint focus:outline-none"
+            />
+          </div>
+          <div className="relative flex flex-col justify-center border-t border-line px-3.5 py-2 sm:flex-[0_1_170px] sm:border-t-0 sm:border-l sm:py-1.5">
+            <label htmlFor={`${id}-city`} className="text-[12px] font-semibold">
+              {hotel ? labels.scope : labels.city}
+            </label>
+            <select
+              id={`${id}-city`}
+              name="city"
+              defaultValue={
+                values?.city ?? (hotel ? `${HOTEL_PREFIX}${hotel.slug}` : (defaultCity ?? ''))
+              }
+              className="w-full min-w-0 appearance-none bg-transparent pr-6 text-[17px] text-ink focus:outline-none"
+            >
+              {hotel && labels.onlyHotel && (
+                <option value={`${HOTEL_PREFIX}${hotel.slug}`}>{labels.onlyHotel}</option>
+              )}
+              <option value="">{labels.allCities}</option>
+              {cities.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            <Icon
+              icon={ChevronDown}
+              size={16}
+              className="pointer-events-none absolute right-3 bottom-3.5 text-muted"
+            />
+          </div>
+          <Button type="submit" loading={pending} className="mt-2 min-h-14 sm:mt-0 sm:px-6">
+            <span className="sm:hidden">{b.submitPhone}</span>
+            <span className="hidden sm:inline">{b.submit}</span>
+          </Button>
+        </div>
+        <label className="mt-3.5 flex items-start gap-2.5 text-[13.5px] leading-snug text-night-ink/70">
+          <input
+            type="checkbox"
+            name="consent"
+            required
+            defaultChecked={values?.consent}
+            className="mt-0.5 size-4 shrink-0 accent-[var(--good-bright)]"
+          />
+          <span>
+            {labels.consent}{' '}
+            <a
+              href={labels.privacyHref}
+              className="font-semibold text-white underline-offset-2 hover:underline"
+            >
+              {labels.privacy}
+            </a>
+          </span>
+        </label>
+        {state.status !== 'idle' && (
+          <p
+            id={`${id}-error`}
+            role="alert"
+            className="mt-3 text-[14px] font-semibold text-[#ffb4a8]"
+          >
+            {labels.results[state.status]}
+          </p>
+        )}
+        <Turnstile locale={locale} />
+      </form>
+    );
+  }
+
   return (
     <form key={JSON.stringify(values)} action={action} className="flex flex-col gap-3">
       <input type="hidden" name="locale" value={locale} />
-      {/* Honeypot: hidden from people and screen readers; bots fill it. */}
-      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
-        <label htmlFor={`${id}-website`}>Website</label>
-        <input id={`${id}-website`} name="website" tabIndex={-1} autoComplete="off" />
-      </div>
+      {honeypot}
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="group relative flex min-h-[60px] items-center rounded-card border border-line bg-field px-3.5 py-2.5 transition-[border-color,background-color,box-shadow] duration-[180ms] ease-soft focus-within:border-accent focus-within:bg-surface focus-within:shadow-halo hover:border-line-strong">
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">

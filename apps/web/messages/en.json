@@ -29,7 +29,56 @@
     "gap": "{provider} is {amount} cheaper today than the next site.",
     "firstDays": "The first 7 days · best price in €",
     "same": "{price} each",
-    "sampleEyebrow": "Example"
+    "sampleEyebrow": "Example",
+    "heroTitle": "Is your hotel cheap right now?",
+    "heroLead": "Every morning we check {hotels} five-star hotels. You see at a glance whether now is a good time to book.",
+    "heroLeadShort": "Every morning we check {hotels} five-star hotels.",
+    "heroLeadNoData": "Every morning we check the prices of five-star hotels. You see at a glance whether now is a good time to book.",
+    "liveToday": "Live · updated today at {time}",
+    "liveYesterday": "Last updated yesterday at {time}",
+    "proofHotels": "{n} five-star hotels",
+    "proofCities": "{n} cities",
+    "proofSites": "{n} booking sites compared",
+    "proofFree": "Free, no account",
+    "proofPhone": "Booking.com, Trip.com, Agoda and Vio.com compared · free",
+    "dropsTitle": "Price Drops today",
+    "dropsLead": "Up to {pct} cheaper overnight. Total for 2 adults, today instead of yesterday.",
+    "dropsLeadShort": "Up to {pct} cheaper overnight.",
+    "dropsAll": "See all {n}",
+    "dropsAllShort": "All {n}",
+    "dropsEmptyTitle": "No Price Drop yet today",
+    "dropsEmptyText": "No price has fallen sharply since yesterday. We keep checking and show every drop of 15 % or more here.",
+    "dropsEmptyCta": "Turn on Price Alert",
+    "citiesTitle": "Popular destinations",
+    "citiesAll": "All {n} cities",
+    "citiesAllShort": "All {n}",
+    "cityHotels": "{n, plural, one {# hotel} other {# hotels}}",
+    "cityDropsToday": "{n, plural, one {# Price Drop} other {# Price Drops}} today",
+    "cityDrops": "{n, plural, one {# Price Drop} other {# Price Drops}}",
+    "resultEyebrow": "This is what you get",
+    "resultTitle": "Green means: book now.",
+    "resultLead": "We compare today's price with the last few weeks. One look and you know.",
+    "resultLeadShort": "One look and you know.",
+    "resultSample": "Example",
+    "resultSampleNote": "Example with made-up prices. We show real verdicts as soon as a stay has 7 days of prices.",
+    "resultMeta": "{dates} · {nights, plural, one {# night} other {# nights}}",
+    "resultUsual": "usually about <b>{price}</b>",
+    "resultCheapest": "Cheapest site: <b>{site}</b>",
+    "resultCta": "See price history",
+    "resultSampleHotel": "Grand Hotel by the Lake",
+    "resultSamplePlace": "Example city",
+    "alertPill": "Price Alert",
+    "alertTitle": "Never miss a Price Drop.",
+    "alertLead": "We email you as soon as a hotel in your city suddenly gets cheaper. At most one email a day.",
+    "alertLeadShort": "At most one email a day. Unsubscribe in one click.",
+    "alertFoot": "Free. Unsubscribe in one click.",
+    "alertPreviews": "This is what a Price Alert looks like",
+    "alertFrom": "tidaq · Price Alert",
+    "alertLine": "{hotel}: {pct}",
+    "alertSub": "{now} instead of {prev} · {date}",
+    "alertWhenYesterday": "yesterday",
+    "resultChipGood": "Cheap right now",
+    "resultChipLow": "Close to the low"
   },
   "localeSwitch": {
     "label": "Language",
@@ -101,7 +150,9 @@
     "pillWhen": "Dates",
     "pillWho": "Guests",
     "searchDialog": "Search",
-    "searchClose": "Close search"
+    "searchClose": "Close search",
+    "cities": "Cities",
+    "searchShort": "Search"
   },
   "footer": {
     "tagline": "Prices for five-star hotels. Checked every morning.",
@@ -118,10 +169,15 @@
       "imprint": "Imprint",
       "privacy": "Privacy",
       "drops": "Price Drops",
-      "dropsWeek": "Weekly recap"
+      "dropsWeek": "Weekly recap",
+      "cities": "Cities",
+      "affiliateShort": "Partner links",
+      "dropsLong": "Price drops"
     },
     "copyright": "© {year} Tidaq",
-    "source": "No cookies · Partner links are labelled."
+    "source": "No cookies · Partner links are labelled.",
+    "about": "Tidaq",
+    "note": "Total prices for 2 adults incl. taxes. Prices often change several times a day. Partner links are labelled."
   },
   "notFound": {
     "meta": "Page not found",
@@ -922,7 +978,8 @@
     "alertCta": "Set up a price drop alert: we'll let you know",
     "stay": "{n, plural, one {# night} other {# nights}}, 2 adults",
     "weekendBadge": "Weekend",
-    "weekLink": "Weekly recap: the biggest drops of the week"
+    "weekLink": "Weekly recap: the biggest drops of the week",
+    "instead": "instead of {price}"
   },
   "drop": {
     "metaTitle": "{hotel}: {pct} for {date} | Tidaq",
@@ -984,7 +1041,11 @@
     },
     "scope": "Alert for",
     "onlyHotel": "Only {hotel}",
-    "textHotel": "We email you as soon as {hotel} gets much cheaper overnight, for any date. Or pick a whole city. At most one email a day. Free, unsubscribe in one click."
+    "textHotel": "We email you as soon as {hotel} gets much cheaper overnight, for any date. Or pick a whole city. At most one email a day. Free, unsubscribe in one click.",
+    "emailShort": "Email",
+    "emailPlaceholder": "you@example.com",
+    "submitShort": "Activate",
+    "submitPhone": "Turn on Price Alert"
   },
   "dropAlertMail": {
     "eyebrow": "Price drop alert",
@@ -1090,7 +1151,7 @@
     "flexNone": "No weekend prices for this month yet.",
     "flexHint": "Pick a hotel to see its cheapest weekends here.",
     "pillTitle": "Where to?",
-    "pillText": "Hotel or city · Dates · Guests",
+    "pillText": "Hotel or city · Travel dates",
     "dialog": "Search",
     "stepWhere": "Where to?",
     "stepWhen": "When?",
@@ -1103,5 +1164,12 @@
   },
   "loading": {
     "page": "Loading the page"
+  },
+  "cities": {
+    "metaTitle": "All cities with five-star hotels | Tidaq",
+    "metaDescription": "{cities} cities, {hotels} five-star hotels. Every morning we check the prices and show you where it is cheap right now.",
+    "title": "All cities",
+    "lead": "{cities} cities, {hotels} five-star hotels. Checked every morning.",
+    "unavailable": "We can't load the cities right now. Please try again in a moment."
   }
 }

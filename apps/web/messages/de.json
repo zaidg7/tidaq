@@ -29,7 +29,56 @@
     "gap": "{provider} ist heute {amount} günstiger als der nächste Anbieter.",
     "firstDays": "Die ersten 7 Tage · bester Preis in €",
     "same": "je {price}",
-    "sampleEyebrow": "Beispiel"
+    "sampleEyebrow": "Beispiel",
+    "heroTitle": "Ist dein Hotel gerade günstig?",
+    "heroLead": "Wir prüfen jeden Morgen {hotels} Fünf-Sterne-Hotels. Du siehst sofort, ob sich Buchen gerade lohnt.",
+    "heroLeadShort": "Wir prüfen jeden Morgen {hotels} Fünf-Sterne-Hotels.",
+    "heroLeadNoData": "Wir prüfen jeden Morgen die Preise von Fünf-Sterne-Hotels. Du siehst sofort, ob sich Buchen gerade lohnt.",
+    "liveToday": "Live · heute {time} aktualisiert",
+    "liveYesterday": "Zuletzt aktualisiert gestern {time}",
+    "proofHotels": "{n} Fünf-Sterne-Hotels",
+    "proofCities": "{n} Städte",
+    "proofSites": "{n} Buchungsseiten im Vergleich",
+    "proofFree": "Kostenlos, ohne Konto",
+    "proofPhone": "Booking.com, Trip.com, Agoda und Vio.com im Vergleich · kostenlos",
+    "dropsTitle": "Price Drops heute",
+    "dropsLead": "Über Nacht bis zu {pct} billiger. Gesamtpreis für 2 Erwachsene, heute statt gestern.",
+    "dropsLeadShort": "Über Nacht bis zu {pct} billiger.",
+    "dropsAll": "Alle {n} ansehen",
+    "dropsAllShort": "Alle {n}",
+    "dropsEmptyTitle": "Heute noch kein Price Drop",
+    "dropsEmptyText": "Kein Preis ist seit gestern stark gefallen. Wir prüfen weiter und zeigen dir hier jeden Sturz ab 15 %.",
+    "dropsEmptyCta": "Price Alert aktivieren",
+    "citiesTitle": "Beliebte Ziele",
+    "citiesAll": "Alle {n} Städte",
+    "citiesAllShort": "Alle {n}",
+    "cityHotels": "{n, plural, one {# Hotel} other {# Hotels}}",
+    "cityDropsToday": "{n, plural, one {# Price Drop} other {# Price Drops}} heute",
+    "cityDrops": "{n, plural, one {# Price Drop} other {# Price Drops}}",
+    "resultEyebrow": "So sieht das Ergebnis aus",
+    "resultTitle": "Grün heißt: jetzt buchen.",
+    "resultLead": "Wir vergleichen den Preis von heute mit den letzten Wochen. Ein Blick, und du weißt Bescheid.",
+    "resultLeadShort": "Ein Blick, und du weißt Bescheid.",
+    "resultSample": "Beispiel",
+    "resultSampleNote": "Beispiel mit erfundenen Preisen. Echte Urteile zeigen wir, sobald ein Aufenthalt 7 Tage Preise hat.",
+    "resultMeta": "{dates} · {nights, plural, one {# Nacht} other {# Nächte}}",
+    "resultUsual": "sonst um <b>{price}</b>",
+    "resultCheapest": "Günstigste Seite: <b>{site}</b>",
+    "resultCta": "Preisverlauf ansehen",
+    "resultSampleHotel": "Grandhotel am See",
+    "resultSamplePlace": "Beispielstadt",
+    "alertPill": "Price Alert",
+    "alertTitle": "Verpass keinen Price Drop.",
+    "alertLead": "Wir schreiben dir, sobald ein Hotel in deiner Stadt plötzlich billiger wird. Max. eine E-Mail am Tag.",
+    "alertLeadShort": "Max. eine E-Mail am Tag. Abmelden mit einem Klick.",
+    "alertFoot": "Kostenlos. Abmelden mit einem Klick.",
+    "alertPreviews": "So sieht ein Price Alert aus",
+    "alertFrom": "tidaq · Price Alert",
+    "alertLine": "{hotel}: {pct}",
+    "alertSub": "{now} statt {prev} · {date}",
+    "alertWhenYesterday": "gestern",
+    "resultChipGood": "Gerade günstig",
+    "resultChipLow": "Fast am Tiefpunkt"
   },
   "localeSwitch": {
     "label": "Sprache",
@@ -101,7 +150,9 @@
     "pillWhen": "Daten",
     "pillWho": "Gäste",
     "searchDialog": "Suche",
-    "searchClose": "Suche schließen"
+    "searchClose": "Suche schließen",
+    "cities": "Städte",
+    "searchShort": "Suchen"
   },
   "footer": {
     "tagline": "Preise für Fünf-Sterne-Hotels. Jeden Morgen neu geprüft.",
@@ -118,10 +169,15 @@
       "imprint": "Impressum",
       "privacy": "Datenschutz",
       "drops": "Price Drops",
-      "dropsWeek": "Wochenrückblick"
+      "dropsWeek": "Wochenrückblick",
+      "cities": "Städte",
+      "affiliateShort": "Partnerlinks",
+      "dropsLong": "Preisstürze"
     },
     "copyright": "© {year} Tidaq",
-    "source": "Ohne Cookies · Partnerlinks sind gekennzeichnet."
+    "source": "Ohne Cookies · Partnerlinks sind gekennzeichnet.",
+    "about": "Tidaq",
+    "note": "Gesamtpreise für 2 Erwachsene inkl. Steuern. Preise ändern sich oft mehrmals am Tag. Partnerlinks sind gekennzeichnet."
   },
   "notFound": {
     "meta": "Seite nicht gefunden",
@@ -924,7 +980,8 @@
     "alertCta": "Preissturz-Alarm einrichten: Wir sagen dir Bescheid",
     "stay": "{n, plural, one {# Nacht} other {# Nächte}}, 2 Erwachsene",
     "weekendBadge": "Wochenende",
-    "weekLink": "Wochenrückblick: die größten Preisstürze der Woche"
+    "weekLink": "Wochenrückblick: die größten Preisstürze der Woche",
+    "instead": "statt {price}"
   },
   "drop": {
     "metaTitle": "{hotel}: {pct} für {date} | Tidaq",
@@ -986,7 +1043,11 @@
     },
     "scope": "Alarm für",
     "onlyHotel": "Nur {hotel}",
-    "textHotel": "Wir schreiben dir, sobald {hotel} über Nacht deutlich günstiger wird, egal für welches Datum. Oder wähl eine ganze Stadt. Höchstens eine E-Mail am Tag. Kostenlos, abmelden mit einem Klick."
+    "textHotel": "Wir schreiben dir, sobald {hotel} über Nacht deutlich günstiger wird, egal für welches Datum. Oder wähl eine ganze Stadt. Höchstens eine E-Mail am Tag. Kostenlos, abmelden mit einem Klick.",
+    "emailShort": "E-Mail",
+    "emailPlaceholder": "du@beispiel.de",
+    "submitShort": "Aktivieren",
+    "submitPhone": "Price Alert aktivieren"
   },
   "dropAlertMail": {
     "eyebrow": "Preissturz-Alarm",
@@ -1092,7 +1153,7 @@
     "flexNone": "Für diesen Monat haben wir noch keine Wochenendpreise.",
     "flexHint": "Wähl ein Hotel, dann siehst du hier seine günstigsten Wochenenden.",
     "pillTitle": "Wohin?",
-    "pillText": "Hotel oder Stadt · Daten · Gäste",
+    "pillText": "Hotel oder Stadt · Reisedaten",
     "dialog": "Suche",
     "stepWhere": "Wohin?",
     "stepWhen": "Wann?",
@@ -1105,5 +1166,12 @@
   },
   "loading": {
     "page": "Seite wird geladen"
+  },
+  "cities": {
+    "metaTitle": "Alle Städte mit Fünf-Sterne-Hotels | Tidaq",
+    "metaDescription": "{cities} Städte, {hotels} Fünf-Sterne-Hotels. Jeden Morgen prüfen wir die Preise und zeigen dir, wo es gerade günstig ist.",
+    "title": "Alle Städte",
+    "lead": "{cities} Städte, {hotels} Fünf-Sterne-Hotels. Jeden Morgen neu geprüft.",
+    "unavailable": "Die Städte können wir gerade nicht laden. Versuch es gleich noch einmal."
   }
 }
