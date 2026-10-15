@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
-import { createWorker, CRON_DROPS } from './index';
+import { createWorker, CRON_COLLECT } from './index';
 import { runDropChecks } from './dropChecks';
 import { testEnv } from './test/env';
 import { memoryStore } from './test/memoryStore';
@@ -55,7 +55,7 @@ describe('runDropChecks (C-139)', () => {
     const x = fakeXotelo();
     const summary = await runDropChecks({ store: mem.store, env, now: NOW, fetchFn: x.fetchFn });
 
-    expect(summary).toEqual({ checked: 3, live: 1, gone: 2, retry: 0 });
+    expect(summary).toEqual({ checked: 3, live: 1, gone: 2, retry: 0, requests: 6 });
     expect(x.calls[0]?.searchParams.get('chk_in')).toBe('2026-11-01');
     expect(x.calls[0]?.searchParams.get('chk_out')).toBe('2026-11-06');
     expect(x.calls.every((u) => u.searchParams.get('adults') === '2')).toBe(true);
@@ -82,6 +82,7 @@ describe('runDropChecks (C-139)', () => {
       live: 0,
       gone: 0,
       retry: 0,
+      requests: 1,
     });
     mem.dropCheckJobs.push(job('booking-com', 158_000));
     const paid = testEnv({ PRICE_SOURCE: 'dataforseo' });
@@ -89,16 +90,33 @@ describe('runDropChecks (C-139)', () => {
     expect(x.calls).toHaveLength(0);
   });
 
-  it('runs on its own cron', async () => {
-    const mem = memoryStore(hotels, { aliases: ALIASES });
-    mem.dropCheckJobs.push(job('booking-com', 158_000));
-    const x = fakeXotelo();
-    const worker = createWorker({ store: mem.store, fetchFn: x.fetchFn, now: () => NOW });
-    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
-    await worker.scheduled({ cron: CRON_DROPS } as ScheduledController, env);
-    log.mockRestore();
-    expect(mem.dropChecks).toHaveLength(1);
-    // No run row, no night-grid work: the collect cron keeps its requests.
-    expect(mem.runs).toHaveLength(0);
+  it('runs in the collect run first; the night grid takes the requests left', async () => {
+    const run = async (drops: number) => {
+      const mem = memoryStore(hotels, { aliases: ALIASES });
+      for (let i = 0; i < drops; i++) mem.dropCheckJobs.push(job('booking-com', 158_000));
+      const limits: number[] = [];
+      const nightJobs = mem.store.nightJobs.bind(mem.store);
+      mem.store.nightJobs = (today, window, limit) => {
+        limits.push(limit);
+        return nightJobs(today, window, limit);
+      };
+      const x = fakeXotelo();
+      const worker = createWorker({ store: mem.store, fetchFn: x.fetchFn, now: () => NOW });
+      const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+      await worker.scheduled(
+        { cron: CRON_COLLECT } as ScheduledController,
+        testEnv({ PRICE_SOURCE: 'xotelo', NIGHT_BATCH: '40' }),
+      );
+      log.mockRestore();
+      return { mem, limits, calls: x.calls.length };
+    };
+    // One drop: jobs + aliases + 1 price call + upsert = 4 requests off the 40 nights.
+    const one = await run(1);
+    expect(one.mem.dropChecks).toHaveLength(1);
+    expect(one.limits).toEqual([36]);
+    expect(one.calls).toBe(1 + 36);
+    // Nothing to check still cost the jobs query.
+    const none = await run(0);
+    expect(none.limits).toEqual([39]);
   });
 });

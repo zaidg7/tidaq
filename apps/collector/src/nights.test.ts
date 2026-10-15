@@ -164,6 +164,7 @@ describe('collect cron and the night grid', () => {
     await worker.scheduled(controller(CRON_COLLECT), collectEnv);
     log.mockRestore();
     expect(mem.runs.map((r) => r.kind)).toEqual(['request', 'collect', 'nights']);
-    expect(mem.nights.size).toBe(4);
+    // NIGHT_BATCH minus the drop-check query that ran first (C-142).
+    expect(mem.nights.size).toBe(3);
   });
 });

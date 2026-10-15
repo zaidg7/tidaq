@@ -90,6 +90,11 @@ export async function runNights(opts: {
   env: Env;
   now: Date;
   fetchFn?: FetchFn;
+  /**
+   * Requests other work in the same invocation already used (C-142: the drop checks). The batch
+   * shrinks by as many, so the run stays within the free plan's 50 requests.
+   */
+  reserve?: number;
 }): Promise<NightRunSummary> {
   const { store, env, now } = opts;
   if (priceSource(env) !== 'xotelo') return nothing();
@@ -98,9 +103,11 @@ export async function runNights(opts: {
     batch: env.NIGHT_BATCH ?? undefined,
   });
   if (settings.window === 0) return nothing();
+  const batch = settings.batch - (opts.reserve ?? 0);
+  if (batch < 1) return nothing();
 
   const today = toIsoDate(now.getTime());
-  const jobs = await store.nightJobs(today, settings.window, settings.batch);
+  const jobs = await store.nightJobs(today, settings.window, batch);
   if (jobs.length === 0) return nothing();
 
   const runId = await store.startRun('nights', env.APP_ENV, now.toISOString());
