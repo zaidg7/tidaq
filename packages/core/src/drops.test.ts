@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
+  dropPath,
   dropStats,
   dropStay,
   dropWhen,
   filterDrops,
+  findDrop,
   groupDrops,
   priceDropRowSchema,
   sortDrops,
@@ -151,5 +153,25 @@ describe('sortDrops and dropStats', () => {
 
   it('maps a night to its one-night stay', () => {
     expect(dropStay('2026-12-31')).toEqual({ checkIn: '2026-12-31', checkOut: '2027-01-01' });
+  });
+});
+
+describe('dropPath and findDrop (C-080b)', () => {
+  it('builds the share path', () => {
+    expect(dropPath('hotel-adlon', '2026-10-18')).toBe('/preissturz/hotel-adlon/2026-10-18');
+  });
+
+  it("finds a hotel's top drop or one of its other nights", () => {
+    const g = groupDrops(rows);
+    const top = g[0];
+    expect(top).toBeDefined();
+    if (!top) return;
+    expect(findDrop(g, top.hotel.slug, top.top.night)?.drop).toBe(top.top);
+    const other = g.find((x) => x.more.length > 0);
+    expect(other).toBeDefined();
+    if (!other?.more[0]) return;
+    expect(findDrop(g, other.hotel.slug, other.more[0].night)?.drop).toBe(other.more[0]);
+    expect(findDrop(g, top.hotel.slug, '2030-01-01')).toBeNull();
+    expect(findDrop(g, 'gibt-es-nicht', top.top.night)).toBeNull();
   });
 });

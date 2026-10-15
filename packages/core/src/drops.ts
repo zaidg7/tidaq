@@ -179,6 +179,22 @@ export function dropStats(groups: readonly HotelDrops[]) {
 }
 
 /** The 1-night stay a drop belongs to (check-in = the night). */
+/** The shareable page of one drop, without locale prefix: `/preissturz/adlon/2026-10-18` (C-080b). */
+export function dropPath(slug: string, night: string): string {
+  return `/preissturz/${slug}/${night}`;
+}
+
+/** One hotel's drop for one night, if it is on today's radar (C-080b). */
+export function findDrop<T extends HotelDrops>(
+  groups: readonly T[],
+  slug: string,
+  night: string,
+): { group: T; drop: PriceDrop } | null {
+  const group = groups.find((g) => g.hotel.slug === slug);
+  const drop = group && [group.top, ...group.more].find((d) => d.night === night);
+  return group && drop ? { group, drop } : null;
+}
+
 export function dropStay(night: string): { checkIn: string; checkOut: string } {
   return { checkIn: night, checkOut: addDays(night, 1) };
 }

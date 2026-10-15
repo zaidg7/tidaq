@@ -256,10 +256,12 @@ export {
   DROP_SORTS,
   DROP_WHENS,
   DROPS,
+  dropPath,
   dropStats,
   dropStay,
   dropWhen,
   filterDrops,
+  findDrop,
   groupDrops,
   priceDropRowSchema,
   sortDrops,
@@ -269,4 +271,5 @@ export {
   type PriceDrop,
   type PriceDropRow,
 } from './drops';
+export { wrapLines } from './wrapLines';
 export { NEWSLETTER, newsletterMail, type NewsletterDeal } from './newsletter';

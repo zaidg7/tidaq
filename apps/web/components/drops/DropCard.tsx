@@ -1,12 +1,11 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { TrendingDown } from 'lucide-react';
 import {
-  dropStay,
+  dropPath,
   formatPercent,
   formatPrice,
   formatWeekdayDayMonth,
   localizedPath,
-  stayPath,
   type Locale,
   type PriceDrop,
 } from '@tidaq/core';
@@ -20,14 +19,13 @@ export function dropPercent(drop: number, locale: Locale): string {
   return formatPercent(-drop, locale, { signed: true }).replace('-', '−');
 }
 
-const nightHref = (slug: string, night: string, locale: Locale) => {
-  const s = dropStay(night);
-  return localizedPath(stayPath(slug, s.checkIn, s.checkOut, 2), locale);
-};
+/** Each night opens its own drop page (C-080b), which links on to the stay. */
+const nightHref = (slug: string, night: string, locale: Locale) =>
+  localizedPath(dropPath(slug, night), locale);
 
 /**
- * One hotel on the Preissturz-Radar (C-080a): photo with the drop, hotel (→ the night's stay page
- * with its price history), city and night, today's price against the day before, the site, and
+ * One hotel on the Preissturz-Radar (C-080a): photo with the drop, hotel (→ the drop's own page,
+ * C-080b), city and night, today's price against the day before, the site, and
  * whether it's the lowest price we've seen for that night. Its other dropped nights link below.
  * Both prices are real checks (CLAUDE.md rule 8); the old one is labelled, not just struck out.
  */
