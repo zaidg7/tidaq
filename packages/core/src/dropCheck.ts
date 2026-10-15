@@ -7,8 +7,11 @@
 export const DROP_CHECK = {
   /** A drop is checked again once its last check is this old. */
   staleMinutes: 30,
-  /** Drops per check run (one price call each; the Workers free plan allows 50 requests). */
-  batch: 20,
+  /**
+   * Drops per collect run (C-142: they share the 2-minute run with the night grid, which gets the
+   * rest of the 50 requests). 12 × 30 runs an hour covers ~180 drops every 30 minutes.
+   */
+  batch: 12,
   /** Still "live" while the site's price is at most this much above the drop price. */
   tolerance: 0.05,
 } as const;

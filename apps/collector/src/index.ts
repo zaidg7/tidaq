@@ -1,5 +1,5 @@
-import { runDropChecks } from './dropChecks';
-import { runToken, safeEqual } from '@tidaq/core';
+import { runDropChecks, type DropCheckSummary } from './dropChecks';
+import { DROP_CHECK, runToken, safeEqual } from '@tidaq/core';
 import { runAlerts } from './alerts';
 import { runDropAlerts } from './dropAlerts';
 import { runNewsletter } from './newsletter';
@@ -25,15 +25,14 @@ export const CRON_EVENING = '0 17 * * *';
 /**
  * Collect runs every 2 minutes, all day (D-39, C-013b, C-022c1, C-070a). Each first queues stays a
  * visitor just requested, then fetches at most COLLECT_BATCH stay results; when no stay result is
- * waiting it prices the next NIGHT_BATCH nights of the night grid instead (both together would
+ * waiting it checks stale Price Drops live (C-142) and prices the night grid with the requests
+ * left, up to NIGHT_BATCH nights (stay results and nights together would
  * break the free plan's 50 requests per run). ~4,200 nights a day take ~4 hours after 00:00 UTC,
  * the ~400 morning stays ~30 minutes after 05:00. Idle, a run costs three queries.
  */
 export const CRON_COLLECT = '*/2 * * * *';
 /** Daily check after the morning collect window: prune raw JSON, email problems (C-013c). */
 export const CRON_DAILY = '55 7 * * *';
-/** Live check of Price Drops (C-139): its own invocation, so it never takes night-grid requests. */
-export const CRON_DROPS = '*/5 * * * *';
 
 /** Seams for tests: the real worker uses Supabase and global fetch. */
 export interface Deps {
@@ -95,11 +94,24 @@ export function createWorker(deps: Deps = {}) {
       log('request run failed', { error: String(err) });
     }
     const collect = await runCollect({ store, env, now: now(), fetchFn: deps.fetchFn });
-    const nights =
-      collect.open === 0
-        ? await runNights({ store, env, now: now(), fetchFn: deps.fetchFn })
-        : null;
-    return { requests, collect, nights };
+    if (collect.open > 0) return { requests, collect, drops: null, nights: null };
+    // Live check of Price Drops first (C-139, C-142), the night grid takes the requests left.
+    // NIGHT_BATCH is sized to fill the run, so every request the checks use comes off the nights;
+    // after a failed check run its requests are unknown, so the most it could have used.
+    let drops: DropCheckSummary | null = null;
+    try {
+      drops = await runDropChecks({ store, env, now: now(), fetchFn: deps.fetchFn });
+    } catch (err) {
+      log('drop checks failed', { error: String(err) });
+    }
+    const nights = await runNights({
+      store,
+      env,
+      now: now(),
+      fetchFn: deps.fetchFn,
+      reserve: drops ? drops.requests : DROP_CHECK.batch + 3,
+    });
+    return { requests, collect, drops, nights };
   };
 
   return {
@@ -196,20 +208,11 @@ export function createWorker(deps: Deps = {}) {
         }
         return;
       }
-      if (controller.cron === CRON_DROPS) {
-        const summary = await runDropChecks({
-          store: storeFor(env, deps),
-          env,
-          now: now(),
-          fetchFn: deps.fetchFn,
-        });
-        if (summary.checked > 0) log('drop checks done', { ...summary });
-        return;
-      }
       if (controller.cron === CRON_COLLECT) {
         const summary = await collectCycle(storeFor(env, deps), env);
         if (summary.requests?.runId) log('request run done', { ...summary.requests });
         if (summary.collect.runId !== null) log('collect run done', { ...summary.collect });
+        if (summary.drops?.checked) log('drop checks done', { ...summary.drops });
         if (summary.nights?.runId) log('nights run done', { ...summary.nights });
         return;
       }
