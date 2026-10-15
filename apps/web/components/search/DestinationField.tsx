@@ -227,20 +227,20 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
   let i = -1;
   const row = (option: Option, children: ReactNode, className?: string) => {
     i += 1;
-    const index = i;
+    const pos = i;
     const key = option.kind === 'city' ? `c:${option.city.slug}` : `h:${option.hotel.slug}`;
     return (
       <li
         key={key}
-        id={optionId(index)}
+        id={optionId(pos)}
         role="option"
-        aria-selected={index === active}
+        aria-selected={pos === active}
         onMouseDown={(e) => e.preventDefault()}
         onClick={() => pick(option)}
-        onMouseMove={() => setActive(index)}
+        onMouseMove={() => setActive(pos)}
         className={cn(
           'flex cursor-pointer items-center gap-3 rounded-card px-2.5 py-2 transition-colors duration-[var(--t-fast)]',
-          index === active && 'bg-surface-2',
+          pos === active && 'bg-surface-2',
           className,
         )}
       >
