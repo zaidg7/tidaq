@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import {
   cityIn,
@@ -16,9 +17,17 @@ import { routes } from '@/lib/routes';
 /**
  * City page (C-024): the city's five-star hotels as cards, each with its photo and cheapest
  * upcoming weekend on one site. The card opens the hotel page (calendar of every night); the
- * weekend opens its stay page.
+ * weekend opens its stay page. `children` follow the list (the city's price drops, C-080a).
  */
-export function CityView({ city, hotels }: { city: City; hotels: CityHotel[] }) {
+export function CityView({
+  city,
+  hotels,
+  children,
+}: {
+  city: City;
+  hotels: CityHotel[];
+  children?: ReactNode;
+}) {
   const t = useTranslations('city');
   const locale = useLocale() as Locale;
   const where = cityIn(city.slug, city.name[locale], locale);
@@ -50,6 +59,7 @@ export function CityView({ city, hotels }: { city: City; hotels: CityHotel[] }) 
           ))}
         </ul>
       )}
+      {children && <div className="mt-14 lg:mt-[88px]">{children}</div>}
     </div>
   );
 }

@@ -98,6 +98,8 @@
   --color-bad-soft: var(--bad-soft);
   --color-warn-soft: var(--warn-soft);
   --color-neutral-soft: var(--neutral-soft);
+  /* The drop badge on photos (C-080a): white text, AA in both themes, so it doesn't flip. */
+  --color-drop: #0f6b4a;
   --color-disabled-ink: var(--disabled-ink);
   --color-ink-surface: var(--ink-surface);
   --color-ink-muted: var(--ink-muted);

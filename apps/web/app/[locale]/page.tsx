@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { alternatesFor, jsonLdString, siteJsonLd, type Locale } from '@tidaq/core';
 import { CheckoutTeaser } from '@/components/home/CheckoutTeaser';
 import { Deals } from '@/components/home/Deals';
+import { Drops } from '@/components/home/Drops';
 import { FinalCta } from '@/components/home/FinalCta';
 import { Hero } from '@/components/home/Hero';
 import { HowItWorks } from '@/components/home/HowItWorks';
@@ -30,6 +31,7 @@ export default async function Home({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: jsonLdString(siteJsonLd(t('description'), locale)) }}
       />
       <Hero locale={locale} />
+      <Drops locale={locale} />
       <LiveExample locale={locale} />
       <HowItWorks locale={locale} />
       <CheckoutTeaser locale={locale} />

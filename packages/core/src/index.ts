@@ -252,4 +252,21 @@ export {
 } from './alerts';
 export { scrubErrorText } from './errorText';
 export { clientIp, createRateLimiter } from './rateLimit';
+export {
+  DROP_SORTS,
+  DROP_WHENS,
+  DROPS,
+  dropStats,
+  dropStay,
+  dropWhen,
+  filterDrops,
+  groupDrops,
+  priceDropRowSchema,
+  sortDrops,
+  type DropSort,
+  type DropWhen,
+  type HotelDrops,
+  type PriceDrop,
+  type PriceDropRow,
+} from './drops';
 export { NEWSLETTER, newsletterMail, type NewsletterDeal } from './newsletter';

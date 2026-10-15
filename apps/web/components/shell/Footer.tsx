@@ -8,7 +8,7 @@ type FooterLink = Exclude<RouteKey, 'home' | 'search'>;
 type Column = { title: 'explore' | 'transparency' | 'legal'; links: FooterLink[] };
 
 const COLUMNS: Column[] = [
-  { title: 'explore', links: ['hotels', 'deals'] },
+  { title: 'explore', links: ['drops', 'hotels', 'deals'] },
   { title: 'transparency', links: ['method', 'checkoutCheck', 'ranking', 'affiliate'] },
   { title: 'legal', links: ['imprint', 'privacy'] },
 ];

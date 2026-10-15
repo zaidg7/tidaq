@@ -94,7 +94,8 @@
     "cta": "See prices",
     "menuOpen": "Open menu",
     "menuClose": "Close menu",
-    "menuTitle": "Menu"
+    "menuTitle": "Menu",
+    "drops": "Price drops"
   },
   "footer": {
     "tagline": "Price history for luxury hotels, so you know whether a price is good right now.",
@@ -109,7 +110,8 @@
       "ranking": "How we sort",
       "affiliate": "Affiliate disclosure",
       "imprint": "Imprint",
-      "privacy": "Privacy"
+      "privacy": "Privacy",
+      "drops": "Price drops"
     },
     "copyright": "© {year} Tidaq",
     "source": "Prices every morning from the booking sites. No cookies."
@@ -810,5 +812,63 @@
     "manageButton": "Manage sign-up",
     "footerWhy": "You're getting this email because the deals by email were requested for this address on tidaq.com.",
     "footerManage": "Unsubscribe or change alerts: {url}"
+  },
+  "drops": {
+    "metaTitle": "Sudden price drops at luxury hotels, live | Tidaq",
+    "metaDescription": "Where the price of a night at a five-star hotel fell the most since yesterday, to a new low. New every day, with both prices.",
+    "eyebrow": "Price drops · live",
+    "title": "Sudden price drops at luxury hotels",
+    "intro": "Every day we check the price of every night at our five-star hotels. Here's where the cheapest price fell the most since the day before, to a new low.",
+    "asOf": "As of {when}",
+    "today": "today, {time}",
+    "yesterday": "yesterday, {time}",
+    "statNights": "{n, plural, one {# night} other {# nights}} cheaper",
+    "statHotels": "at {n, plural, one {# hotel} other {# hotels}}",
+    "statBiggest": "biggest drop {pct}",
+    "filterCity": "Filter by city",
+    "filterWhen": "Filter by travel date",
+    "sortLabel": "Sort",
+    "allCities": "All cities",
+    "when": {
+      "all": "Any time",
+      "week": "Next 7 days",
+      "month": "Next 30 days",
+      "later": "Later"
+    },
+    "sort": {
+      "pct": "Biggest drop",
+      "eur": "Most saved",
+      "soon": "Soonest"
+    },
+    "listLabel": "Price drops",
+    "dropLabel": "Price down {pct}",
+    "night": "{date} · 1 night, 2 adults",
+    "was": "Day before {price}",
+    "saved": "{amount} less at {provider}",
+    "savedDirect": "{amount} less on the hotel's own site",
+    "newLow": "Lowest price in {days} days",
+    "firstLow": "Lowest price since we started",
+    "more": "Also cheaper:",
+    "moreCount": "+{n} more",
+    "emptyTitle": "No sudden drops right now",
+    "emptyText": "We check prices all day. As soon as a night's price falls by at least 15 % to a new low, it shows up here.",
+    "emptyFiltered": "No drops match these filters right now.",
+    "emptyReset": "Reset filters",
+    "emptyCta": "See all hotels",
+    "unavailable": "The price drops can't be loaded right now. Please try again in a moment.",
+    "retry": "Reload",
+    "howTitle": "How we spot a sudden drop",
+    "how": {
+      "compare": "We compare a night's cheapest price on reviewed booking sites with our check the day before.",
+      "threshold": "It must have fallen by at least 15 % and 50 € and be below every price we saw for that night in the 14 days before.",
+      "confirm": "Very large drops only show when a second site confirms the price.",
+      "check": "Prices often change several times a day. Check the price on the booking site before you book."
+    },
+    "howLink": "More on our method",
+    "dealsLink": "Prefer stays below their 30-day average? See the deals",
+    "homeEyebrow": "Live",
+    "homeTitle": "Sudden drops since yesterday",
+    "homeAll": "All price drops",
+    "cityTitle": "Sudden drops {where}"
   }
 }
