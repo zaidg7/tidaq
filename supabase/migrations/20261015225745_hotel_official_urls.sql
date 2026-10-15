@@ -1,0 +1,57 @@
+-- C-140: the hotel's own website for the 48 hotels that had none, so "Hotel direkt" offers (and
+-- drops found there) get a button like every other site (Zaid, 15 Oct: Capella Bangkok's drop had
+-- no way to the offer). Found by web search (search results only, the hotels' own or brand
+-- domains, never booking sites). Only fills empty values.
+update public.hotels h
+   set official_url = v.url
+  from (values
+  ('emirates-palace-mandarin-oriental-abu-dhabi', 'https://mandarinoriental.com/abu-dhabi/emirates-palace'),
+  ('four-seasons-hotel-abu-dhabi-at-al-maryah-island', 'https://www.fourseasons.com/abudhabi/'),
+  ('rosewood-abu-dhabi', 'https://www.rosewoodhotels.com/en/abu-dhabi'),
+  ('the-abu-dhabi-edition', 'https://www.marriott.com/en-us/hotels/auheb-the-abu-dhabi-edition/overview/'),
+  ('the-st-regis-saadiyat-island-resort-abu-dhabi', 'https://www.marriott.com/en-us/hotels/auhxr-the-st-regis-saadiyat-island-resort-abu-dhabi/overview/'),
+  ('capella-bangkok', 'https://capellahotels.com/en/capella-bangkok'),
+  ('four-seasons-hotel-bangkok-at-chao-phraya-river', 'https://www.fourseasons.com/bangkok/'),
+  ('the-siam-bangkok', 'https://www.thesiamhotel.com/'),
+  ('bvlgari-resort-dubai', 'https://www.bulgarihotels.com/en_US/dubai'),
+  ('four-seasons-resort-dubai-at-jumeirah-beach', 'https://www.fourseasons.com/dubaijb/'),
+  ('mandarin-oriental-jumeira-dubai', 'https://www.mandarinoriental.com/en/dubai/jumeira-beach'),
+  ('the-florentin-frankfurt', 'https://www.althoffcollection.com/en/the-florentin'),
+  ('mandarin-oriental-hong-kong', 'https://www.mandarinoriental.com/en/hong-kong/victoria-harbour'),
+  ('rosewood-hong-kong', 'https://www.rosewoodhotels.com/en/hong-kong'),
+  ('upper-house-hong-kong', 'https://www.upperhouse.com/en/hongkong/'),
+  ('four-seasons-hotel-istanbul-at-sultanahmet', 'https://www.fourseasons.com/istanbul/'),
+  ('mandarin-oriental-bosphorus-istanbul', 'https://www.mandarinoriental.com/en/istanbul/bosphorus'),
+  ('the-peninsula-istanbul', 'https://www.peninsula.com/en/istanbul/5-star-luxury-hotel-bosphorus'),
+  ('bairro-alto-hotel-lissabon', 'https://bairroaltohotel.com/en/hotel'),
+  ('four-seasons-hotel-ritz-lisbon', 'https://www.fourseasons.com/lisbon/'),
+  ('the-ivens-lissabon', 'https://www.marriott.com/en-us/hotels/listi-the-ivens-autograph-collection/overview/'),
+  ('hotel-bel-air-los-angeles', 'https://www.dorchestercollection.com/los-angeles/hotel-bel-air'),
+  ('the-beverly-hills-hotel-los-angeles', 'https://www.dorchestercollection.com/los-angeles/the-beverly-hills-hotel'),
+  ('the-peninsula-beverly-hills-los-angeles', 'https://www.peninsula.com/en/beverly-hills/5-star-luxury-hotel-beverly-hills'),
+  ('four-seasons-hotel-madrid', 'https://www.fourseasons.com/madrid/'),
+  ('mandarin-oriental-ritz-madrid', 'https://www.mandarinoriental.com/en/madrid/hotel-ritz'),
+  ('santo-mauro-madrid', 'https://www.marriott.com/en-us/hotels/madlc-santo-mauro-a-luxury-collection-hotel-madrid/overview/'),
+  ('cheval-blanc-randheli-malediven', 'https://www.chevalblanc.com/en/maison/randheli/'),
+  ('the-ritz-carlton-maldives-fari-islands', 'https://www.ritzcarlton.com/en/hotels/mlera-the-ritz-carlton-maldives-fari-islands/overview/'),
+  ('waldorf-astoria-maldives-ithaafushi', 'https://www.hilton.com/en/hotels/mleonwa-waldorf-astoria-maldives-ithaafushi/'),
+  ('1-hotel-south-beach-miami', 'https://www.1hotels.com/south-beach'),
+  ('faena-miami-beach', 'https://www.faena.com/miami-beach'),
+  ('the-setai-miami-beach', 'https://www.thesetaihotel.com/'),
+  ('four-seasons-hotel-new-york', 'https://www.fourseasons.com/newyork/'),
+  ('lowell-hotel-new-york', 'https://www.lowellhotel.com/'),
+  ('the-ritz-carlton-new-york-central-park', 'https://www.ritzcarlton.com/en/hotels/nyccp-the-ritz-carlton-new-york-central-park/overview/'),
+  ('bvlgari-hotel-shanghai', 'https://www.bulgarihotels.com/en_US/shanghai'),
+  ('the-peninsula-shanghai', 'https://www.peninsula.com/en/shanghai/5-star-luxury-hotel-bund'),
+  ('the-shanghai-edition', 'https://www.marriott.com/en-us/hotels/shaeb-the-shanghai-edition/overview/'),
+  ('marina-bay-sands-singapur', 'https://www.marinabaysands.com/'),
+  ('raffles-sentosa-singapore', 'https://www.raffles.com/sentosa/'),
+  ('raffles-singapore', 'https://www.raffles.com/singapore/'),
+  ('crown-sydney', 'https://www.crownhotels.com.au/sydney/crown-towers'),
+  ('park-hyatt-sydney', 'https://www.hyatt.com/park-hyatt/en-US/sydph-park-hyatt-sydney'),
+  ('pullman-quay-grand-sydney-harbour', 'https://pullman.accor.com/en/hotels/sydney/8779.html'),
+  ('aman-tokyo', 'https://www.aman.com/hotels/aman-tokyo'),
+  ('four-seasons-hotel-tokyo-at-otemachi', 'https://www.fourseasons.com/otemachi/'),
+  ('park-hyatt-tokyo', 'https://www.hyatt.com/park-hyatt/en-US/tyoph-park-hyatt-tokyo')
+  ) as v (slug, url)
+ where h.slug = v.slug and h.official_url is null;

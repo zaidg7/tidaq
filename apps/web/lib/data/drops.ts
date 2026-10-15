@@ -9,6 +9,7 @@ import {
   groupDrops,
   POSTED,
   postedDropRowSchema,
+  safeHttpsUrl,
   postedDrops,
   type PostedDrop,
   priceDropRowSchema,
@@ -136,17 +137,30 @@ export const getDropPage = cache(
         : { kind: 'missing' };
     }
     let series: DailyPrice[] = [];
-    // The site's link (C-080g): only sites we can search; the hotel's own site needs its URL.
+    // The site's link (C-080g): sites we can search, and the hotel's own site when we know its
+    // address (all hotels since C-140), so every drop has one button straight to its offer.
     const offerSlug = found.drop.provider.slug;
-    const offerLoad = hasOutboundSearch(offerSlug)
+    const offerLoad = found.drop.provider.direct
       ? rest(
-          `providers?select=affiliate_template&slug=eq.${encodeURIComponent(offerSlug)}`,
-          z.object({ affiliate_template: z.string().nullable() }),
-        ).catch((error: unknown) => {
-          reportError('drop offer unavailable', error);
-          return null;
-        })
-      : Promise.resolve(null);
+          `hotels?select=official_url&slug=eq.${encodeURIComponent(slug)}`,
+          z.object({ official_url: z.string().nullable() }),
+        )
+          .then((rows) =>
+            safeHttpsUrl(rows[0]?.official_url) ? [{ affiliate_template: null }] : [],
+          )
+          .catch((error: unknown) => {
+            reportError('drop offer unavailable', error);
+            return null;
+          })
+      : hasOutboundSearch(offerSlug)
+        ? rest(
+            `providers?select=affiliate_template&slug=eq.${encodeURIComponent(offerSlug)}`,
+            z.object({ affiliate_template: z.string().nullable() }),
+          ).catch((error: unknown) => {
+            reportError('drop offer unavailable', error);
+            return null;
+          })
+        : Promise.resolve(null);
     // The licence asks for the author's name next to the photo (C-011c).
     const creditLoad = found.group.image?.city
       ? Promise.resolve(null)

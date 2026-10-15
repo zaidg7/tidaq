@@ -193,6 +193,10 @@ export function ProviderTable({
                   <Icon icon={ArrowUpRight} size={16} className="max-sm:hidden" />
                 </a>
               )}
+              {/* No link for this row: keep the button column, so prices stay in one line. */}
+              {hasLinks && !(bookable && o.link) && (
+                <span aria-hidden="true" className="hidden sm:block" />
+              )}
             </li>
           ))}
         </ul>
