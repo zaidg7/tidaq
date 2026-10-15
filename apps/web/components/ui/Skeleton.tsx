@@ -1,16 +1,11 @@
 import { cn } from '@/lib/cn';
 
 /**
- * Loading placeholder (CRAFT.md §3 Skeleton): `--neutral-soft` blocks in the final geometry,
- * a calm 1.4 s pulse, static under reduced motion. Decorative: the page announces loading.
+ * Loading placeholder (PREMIUM.md §6, §10.17): `--surface-2` blocks in the final geometry with a
+ * soft shimmer sweep (1.4 s), static under reduced motion. Decorative: the page announces loading.
  */
 export function Skeleton({ className }: { className?: string }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={cn('skeleton block rounded-[8px] bg-neutral-soft', className)}
-    />
-  );
+  return <span aria-hidden="true" className={cn('skeleton block rounded-input', className)} />;
 }
 
 /** The verdict block while its data loads: same geometry as `VerdictBlock`. */
