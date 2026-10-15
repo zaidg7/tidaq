@@ -18,14 +18,14 @@ test.describe('/dev/ui', () => {
     expect(errors).toEqual([]);
   });
 
-  test('uses Plus Jakarta Sans and the Soft Modern background', async ({ page }) => {
+  test('uses Instrument Sans and the Clean Premium background', async ({ page }) => {
     await page.goto('/dev/ui');
     const style = await page.evaluate(() => {
       const s = getComputedStyle(document.body);
       return { font: s.fontFamily, bg: getComputedStyle(document.documentElement).backgroundColor };
     });
-    expect(style.font).toMatch(/Jakarta/i);
-    expect(style.bg).toBe('rgb(245, 243, 252)');
+    expect(style.font).toMatch(/Instrument/i);
+    expect(style.bg).toBe('rgb(250, 249, 247)');
   });
 
   test('shows a visible focus ring on keyboard focus', async ({ page }) => {
@@ -38,7 +38,7 @@ test.describe('/dev/ui', () => {
       const s = getComputedStyle(el);
       return `${s.outlineStyle} ${s.outlineWidth} ${s.outlineColor}`;
     });
-    expect(outline).toBe('solid 2px rgb(106, 73, 224)');
+    expect(outline).toBe('solid 2px rgb(75, 51, 201)');
   });
 
   test('links field errors to the input for screen readers', async ({ page }) => {
