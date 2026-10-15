@@ -81,8 +81,8 @@ test.describe('Preissturz-Alarm (C-080e1)', () => {
 
   test('English', async ({ page }) => {
     await page.goto('/en/dev/drops');
-    const section = page.getByRole('region', { name: 'Price drop alert' });
+    const section = page.getByRole('region', { name: 'Never miss a Price Drop.' });
     await expect(section.getByLabel('City')).toHaveValue('');
-    await expect(section.getByRole('button', { name: 'Set up alert' })).toBeVisible();
+    await expect(section.getByRole('button', { name: 'Activate' })).toBeVisible();
   });
 });

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CalendarRange } from 'lucide-react';
 import {
   dropDates,
   formatDayMonth,
@@ -11,11 +11,15 @@ import {
   type Locale,
   type WeekSummary,
 } from '@tidaq/core';
-import { Card } from '@/components/ui/Card';
+import { PageHead } from '@/components/shell/PageHead';
 import { Icon } from '@/components/ui/Icon';
+import { Photo } from '@/components/ui/Photo';
+import { cityPhoto, cityPhotoAsHotelPhoto } from '@/lib/cityPhotos';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
-import { hotelPhoto } from '@/lib/hotelPhotos';
+import { cardPhoto } from '@/lib/photos';
 import { routes } from '@/lib/routes';
+import { cn } from '@/lib/cn';
+import { DropBadge } from './DropBadge';
 import { dropPercent } from './DropCard';
 import { dropsHref } from './DropsTeaser';
 
@@ -47,144 +51,190 @@ export function WeekView({
   const top = groups.slice(0, WEEK_TOP);
   const pct = (x: number) => dropPercent(x, locale);
 
-  return (
-    <div className="mx-auto w-full max-w-[1080px] px-5 pt-8 pb-16 md:px-7 lg:pt-14 lg:pb-[88px]">
-      <header className="max-w-[44em]">
-        <p className="text-eyebrow text-accent">{t('eyebrow')}</p>
-        <h1 className="text-h2 mt-2">{t('title')}</h1>
-        <p className="text-meta mt-2 text-muted-ink">
-          {t('range', { from: formatDayMonth(from, locale), to: formatDayMonth(to, locale) })}
-        </p>
-      </header>
-
-      {s.drops === 0 ? (
-        <Card variant="float" radius="search" className="mt-8 max-w-[44em]">
-          <p className="text-[15px]">{t('empty')}</p>
-        </Card>
-      ) : (
-        <>
-          <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[15px] font-semibold">
-            <li className="text-[22px] leading-tight font-extrabold">
-              {t('statDrops', { n: s.drops })}
-            </li>
-            <li className="self-end text-muted-ink">{t('statHotels', { n: s.hotels })}</li>
-            <li className="self-end text-good-ink">{t('statAverage', { pct: pct(s.average) })}</li>
-            <li className="self-end text-good-ink">{t('statBiggest', { pct: pct(s.biggest) })}</li>
-            {s.weekends > 0 && (
-              <li className="self-end text-muted-ink">{t('statWeekends', { n: s.weekends })}</li>
-            )}
-          </ul>
-
-          <section aria-labelledby="week-top" className="mt-10">
-            <h2 id="week-top" className="text-h3">
-              {t('topTitle', { n: top.length })}
-            </h2>
-            <p className="text-meta mt-1 max-w-[44em] text-muted-ink">{t('topText')}</p>
-            <ol className="mt-5 grid gap-3">
-              {top.map((g, i) => {
-                const d = g.top;
-                const thumb = hotelPhoto(g.hotel.slug)?.[160] ?? null;
-                return (
-                  <li key={g.hotel.id}>
-                    <Card
-                      interactive
-                      padded={false}
-                      className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-2 p-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:p-4"
-                    >
-                      <div className="relative">
-                        {thumb ? (
-                          // eslint-disable-next-line @next/next/no-img-element -- licensed photo, self-hosted (C-011c), already sized
-                          <img
-                            src={thumb.src}
-                            alt=""
-                            width={96}
-                            height={72}
-                            loading="lazy"
-                            className="bg-placeholder h-[72px] w-24 rounded-cell object-cover"
-                          />
-                        ) : (
-                          <div
-                            aria-hidden="true"
-                            className="bg-placeholder h-[72px] w-24 rounded-cell"
-                          />
-                        )}
-                        <span
-                          aria-hidden="true"
-                          className="absolute -top-2 -left-2 grid size-7 place-items-center rounded-full bg-fg text-[13px] font-extrabold text-surface"
-                        >
-                          {i + 1}
-                        </span>
-                      </div>
-                      <div className="min-w-0">
-                        <a
-                          href={localizedPath(
-                            stayPath(g.hotel.slug, d.night, d.checkOut, 2),
-                            locale,
-                          )}
-                          className="text-[16px] leading-snug font-bold after:absolute after:inset-0"
-                        >
-                          <span className="sr-only">{i + 1}. </span>
-                          {g.hotel.name}
-                        </a>
-                        <p className="text-meta text-muted-ink">
-                          {g.city.name[locale]} ·{' '}
-                          {td('night', { date: dropDates(d, locale), n: d.nights })}
-                        </p>
-                        <p className="text-meta mt-0.5 tabular-nums">
-                          <span className="font-semibold">{formatPrice(d.nowCents, locale)}</span>{' '}
-                          <span className="text-muted-ink">
-                            {td('was', { price: formatPrice(d.prevCents, locale) })} ·{' '}
-                            {t('seen', { date: formatWeekdayDayMonth(d.seenDay, locale) })}
-                          </span>
-                        </p>
-                      </div>
-                      <span className="col-start-2 justify-self-start rounded-full bg-drop px-3 py-1.5 text-[17px] leading-none font-extrabold text-white tabular-nums sm:col-start-3 sm:justify-self-end">
-                        <span aria-hidden="true">{pct(d.drop)}</span>
-                        <span className="sr-only">{td('dropLabel', { pct: pct(d.drop) })}</span>
-                      </span>
-                    </Card>
-                  </li>
-                );
-              })}
-            </ol>
-          </section>
-
-          {s.cities.length > 1 && (
-            <section aria-labelledby="week-cities" className="mt-14">
-              <h2 id="week-cities" className="text-h3">
-                {t('citiesTitle')}
-              </h2>
-              <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {s.cities.slice(0, 6).map((c) => (
-                  <li key={c.slug}>
-                    <a
-                      href={dropsHref(locale, c.slug)}
-                      className="flex min-h-11 items-center justify-between gap-3 rounded-cell border border-line bg-surface px-4 py-3 hover:border-line-strong"
-                    >
-                      <span className="font-bold">{c.name[locale]}</span>
-                      <span className="text-meta text-muted-ink">
-                        {t('cityDrops', { n: c.drops, pct: pct(c.biggest) })}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-        </>
-      )}
-
-      <p className="mt-10">
-        <a
-          href={localizedPath(routes.drops, locale)}
-          className="inline-flex min-h-11 items-center gap-2 font-semibold text-accent underline-offset-4 hover:underline"
-        >
-          {t('today')}
-          <Icon icon={ArrowRight} size={18} />
-        </a>
-      </p>
-
-      {alert && <div className="mt-10">{alert}</div>}
+  const stat = (value: string, label: string, good = false) => (
+    <div>
+      <dd
+        className={cn(
+          'text-[26px] leading-none font-bold tracking-[-0.03em] tabular-nums md:text-[36px]',
+          good && 'text-good',
+        )}
+      >
+        {value}
+      </dd>
+      <dt className="mt-1.5 text-[13px] text-muted md:text-[15px]">{label}</dt>
     </div>
+  );
+
+  return (
+    <>
+      <div className="mx-auto w-full max-w-[1240px] px-[18px] pt-6 md:px-10 md:pt-12">
+        <PageHead
+          pill={
+            <>
+              <Icon icon={CalendarRange} size={16} className="text-accent" />
+              {t('eyebrow')} ·{' '}
+              {t('range', { from: formatDayMonth(from, locale), to: formatDayMonth(to, locale) })}
+            </>
+          }
+          title={t('title')}
+        />
+
+        {s.drops === 0 ? (
+          <div className="mt-8 max-w-[44em] rounded-panel border border-line bg-surface p-6 md:p-8">
+            <p className="text-[16px]">{t('empty')}</p>
+          </div>
+        ) : (
+          <>
+            {/* The numbers as one sentence for readers; the big figures below are decoration. */}
+            <p className="sr-only">
+              {t('statDrops', { n: s.drops })} {t('statHotels', { n: s.hotels })}{' '}
+              {t('statAverage', { pct: pct(s.average) })}{' '}
+              {t('statBiggest', { pct: pct(s.biggest) })}
+              {s.weekends > 0 && <> {t('statWeekends', { n: s.weekends })}</>}
+            </p>
+            <dl
+              aria-hidden="true"
+              className="mt-7 grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-4 md:mt-10 md:flex md:gap-14"
+            >
+              {stat(String(s.drops), t('statDropsShort', { n: s.drops }))}
+              {stat(String(s.hotels), t('statHotelsShort', { n: s.hotels }))}
+              {stat(pct(s.average), t('statAverageShort'), true)}
+              {stat(pct(s.biggest), t('statBiggestShort'), true)}
+            </dl>
+
+            <section aria-labelledby="week-top" className="mt-12 md:mt-16">
+              <h2
+                id="week-top"
+                className="text-[28px] leading-[1.1] font-[650] tracking-[-0.03em] md:text-[40px]"
+              >
+                {t('topTitle', { n: top.length })}
+              </h2>
+              <p className="mt-1.5 max-w-[46em] text-[15px] text-muted md:mt-2.5 md:text-[17px]">
+                {t('topText')}
+              </p>
+              <ol className="mt-6 grid gap-3 md:mt-8 md:grid-cols-2 md:gap-x-6 md:gap-y-4">
+                {top.map((g, i) => {
+                  const d = g.top;
+                  const pic = cardPhoto(g.hotel.slug, g.city.slug);
+                  return (
+                    <li key={g.hotel.id}>
+                      <article className="tile-zoom group relative flex items-center gap-3.5 rounded-card border border-[#ece9f1] bg-surface p-3 transition-[border-color,box-shadow] duration-[var(--t-base)] hover:border-line-strong hover:shadow-2 md:gap-4 md:p-3.5">
+                        <div className="relative shrink-0">
+                          <Photo
+                            photo={pic?.photo ?? null}
+                            alt=""
+                            sizes="120px"
+                            className="h-[84px] w-[104px] rounded-[14px] md:h-[96px] md:w-[124px]"
+                          />
+                          <span
+                            aria-hidden="true"
+                            className="absolute -top-2 -left-2 grid size-8 place-items-center rounded-full border-2 border-surface bg-ink text-[13px] font-bold text-white"
+                          >
+                            {i + 1}
+                          </span>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <a
+                            href={localizedPath(
+                              stayPath(g.hotel.slug, d.night, d.checkOut, 2),
+                              locale,
+                            )}
+                            className="line-clamp-2 text-[16px] leading-snug font-semibold after:absolute after:inset-0 group-hover:text-accent"
+                          >
+                            <span className="sr-only">{i + 1}. </span>
+                            {g.hotel.name}
+                          </a>
+                          <p className="mt-0.5 truncate text-[13.5px] text-muted">
+                            {g.city.name[locale]} ·{' '}
+                            {td('night', { date: dropDates(d, locale), n: d.nights })}
+                          </p>
+                          <p className="mt-1 text-[13.5px] tabular-nums">
+                            <strong className="text-[16px] font-bold">
+                              {formatPrice(d.nowCents, locale)}
+                            </strong>{' '}
+                            <span className="text-muted">
+                              {td('was', { price: formatPrice(d.prevCents, locale) })} ·{' '}
+                              {t('seen', { date: formatWeekdayDayMonth(d.seenDay, locale) })}
+                            </span>
+                          </p>
+                        </div>
+                        <DropBadge
+                          drop={d.drop}
+                          locale={locale}
+                          label={td('dropLabel', { pct: pct(d.drop) })}
+                          size="sm"
+                          className="drop-badge-outline shrink-0 self-start"
+                        />
+                      </article>
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+
+            {s.cities.length > 1 && (
+              <section aria-labelledby="week-cities" className="mt-14 md:mt-20">
+                <h2
+                  id="week-cities"
+                  className="text-[28px] leading-[1.1] font-[650] tracking-[-0.03em] md:text-[40px]"
+                >
+                  {t('citiesTitle')}
+                </h2>
+                <ul className="mt-6 grid grid-cols-2 gap-3 md:mt-8 md:grid-cols-3 md:gap-5">
+                  {s.cities.slice(0, 6).map((c) => {
+                    const photo = cityPhoto(c.slug);
+                    return (
+                      <li key={c.slug} className="h-[180px] md:h-[220px]">
+                        <a
+                          href={dropsHref(locale, c.slug)}
+                          className="tile-zoom relative block size-full overflow-hidden rounded-card bg-[#2a2620] text-white"
+                        >
+                          <Photo
+                            photo={photo ? cityPhotoAsHotelPhoto(photo) : null}
+                            alt=""
+                            sizes="(min-width: 768px) 33vw, 50vw"
+                            className="size-full"
+                          >
+                            <span
+                              aria-hidden="true"
+                              className="absolute inset-0 bg-[linear-gradient(180deg,rgba(14,12,18,0)_35%,rgba(14,12,18,0.75)_100%)]"
+                            />
+                          </Photo>
+                          <span className="absolute bottom-4 left-4 right-4 flex flex-col md:bottom-5 md:left-5">
+                            <span className="text-[20px] leading-tight font-[650] tracking-[-0.02em] md:text-[24px]">
+                              {c.name[locale]}
+                            </span>
+                            <span className="mt-0.5 text-[13px] text-white/88 md:text-[14px]">
+                              {t('cityDrops', { n: c.drops, pct: pct(c.biggest) })}
+                            </span>
+                          </span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            )}
+          </>
+        )}
+
+        <p className="mt-12 md:mt-16">
+          <a
+            href={localizedPath(routes.drops, locale)}
+            className="group flex items-center justify-between gap-4 rounded-panel bg-surface-accent px-5 py-5 text-[17px] font-semibold md:px-8 md:py-7 md:text-[20px]"
+          >
+            {t('today')}
+            <span
+              aria-hidden="true"
+              className="grid size-11 shrink-0 place-items-center rounded-full bg-surface text-accent transition-transform group-hover:translate-x-0.5"
+            >
+              <Icon icon={ArrowRight} size={18} />
+            </span>
+          </a>
+        </p>
+      </div>
+
+      {alert && <div className="mt-14 md:mt-24">{alert}</div>}
+    </>
   );
 }

@@ -93,27 +93,26 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
           // Above the card link: each night opens its own drop page.
           <div className="relative z-[1] pt-3.5">
             <p className="text-[13px] text-muted">{t('more')}</p>
-            <ul className="mt-1.5 flex flex-wrap gap-1.5">
+            <p className="mt-1.5 flex flex-wrap gap-1.5">
               {more.map((m: PriceDrop) => (
-                <li key={dropKey(m)}>
-                  <a
-                    href={nightHref(g.hotel.slug, m, locale)}
-                    className="inline-flex h-8 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-[13px] font-medium transition-colors hover:border-ink/40"
-                  >
-                    {m.nights > 1 ? `${t('weekendBadge')} ` : ''}
-                    {formatWeekdayDayMonth(m.night, locale)}
-                    <span className="font-bold text-good tabular-nums">
-                      {dropPercent(m.drop, locale)}
-                    </span>
-                  </a>
-                </li>
+                <a
+                  key={dropKey(m)}
+                  href={nightHref(g.hotel.slug, m, locale)}
+                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-[13px] font-medium transition-colors hover:border-ink/40"
+                >
+                  {m.nights > 1 ? `${t('weekendBadge')} ` : ''}
+                  {formatWeekdayDayMonth(m.night, locale)}
+                  <span className="font-bold text-good tabular-nums">
+                    {dropPercent(m.drop, locale)}
+                  </span>
+                </a>
               ))}
               {g.more.length > more.length && (
-                <li className="inline-flex h-8 items-center px-1 text-[13px] text-muted">
+                <span className="inline-flex h-8 items-center px-1 text-[13px] text-muted">
                   {t('moreCount', { n: g.more.length - more.length })}
-                </li>
+                </span>
               )}
-            </ul>
+            </p>
           </div>
         )}
       </div>

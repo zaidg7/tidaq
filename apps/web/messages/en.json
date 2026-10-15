@@ -184,7 +184,8 @@
     "eyebrow": "Error 404",
     "title": "This page doesn't exist",
     "text": "The address may have changed, or the page isn't live yet. You'll find all hotels on the home page.",
-    "home": "Go to the home page"
+    "home": "Go to the home page",
+    "drops": "See Price Drops"
   },
   "error": {
     "eyebrow": "Error",
@@ -730,7 +731,8 @@
           ]
         }
       ]
-    }
+    },
+    "toc": "On this page"
   },
   "city": {
     "metaTitle": "Five-star hotels {where}: prices for every night | Tidaq",
@@ -767,7 +769,9 @@
       "asiaPacific": "Asia and Pacific",
       "americas": "Americas"
     },
-    "unavailable": "The hotel list is unavailable right now. Please try again in a moment."
+    "unavailable": "The hotel list is unavailable right now. Please try again in a moment.",
+    "citiesLink": "All cities as photos",
+    "cityCount": "{n, plural, one {# hotel} other {# hotels}}"
   },
   "watchMail": {
     "eyebrow": "Price alert",
@@ -1131,7 +1135,11 @@
     "cityDrops": "{n, plural, one {# drop} other {# drops}}, biggest {pct}",
     "today": "See today's price drops",
     "empty": "There hasn't been a price drop in the last 7 days yet. We check every day, come back soon.",
-    "unavailable": "The weekly recap can't be loaded right now. Please try again in a moment."
+    "unavailable": "The weekly recap can't be loaded right now. Please try again in a moment.",
+    "statDropsShort": "{n, plural, one {Price Drop} other {Price Drops}}",
+    "statHotelsShort": "{n, plural, one {hotel} other {hotels}}",
+    "statAverageShort": "on average",
+    "statBiggestShort": "biggest drop"
   },
   "dropCallout": {
     "hotelTitle": "Price drop at this hotel",

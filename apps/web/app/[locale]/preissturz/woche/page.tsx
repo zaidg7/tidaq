@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { alternatesFor, localizedPath, type Locale } from '@tidaq/core';
-import { DropAlertSection } from '@/components/drops/DropAlertSection';
+import { AlertBand } from '@/components/drops/AlertBand';
 import { WeekView } from '@/components/drops/WeekView';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
@@ -47,7 +47,7 @@ export default async function DropsWeekPage({ params }: Props) {
       summary={load.summary}
       from={load.from}
       to={load.to}
-      alert={<DropAlertSection locale={locale} defaultCity={null} />}
+      alert={<AlertBand locale={locale} previews={load.groups} />}
     />
   );
 }

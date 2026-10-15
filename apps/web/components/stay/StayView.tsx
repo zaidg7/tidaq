@@ -22,6 +22,7 @@ import {
   type StayStatsResult,
 } from '@tidaq/core';
 import { ChartRanges } from '@/components/chart/ChartRanges';
+import { PhotoSheet } from '@/components/shell/PhotoSheet';
 import { PriceChart } from '@/components/chart/PriceChart';
 import { buttonClasses } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -29,6 +30,7 @@ import { Icon } from '@/components/ui/Icon';
 import { PriceText } from '@/components/ui/PriceText';
 import { StateChip } from '@/components/ui/StateChip';
 import type { OtherStay, StayHotel } from '@/lib/data/stay';
+import { cardPhoto } from '@/lib/photos';
 import { routes } from '@/lib/routes';
 import { CollectingState } from './CollectingState';
 import { ProviderTable } from './ProviderTable';
@@ -107,161 +109,161 @@ export function StayView({
   drop = null,
 }: Props) {
   const t = useTranslations('stay');
+  const tp = useTranslations('photo');
   const locale = useLocale() as Locale;
   const dates = formatDateRange(params.checkIn, params.checkOut, locale);
   const credit = hotel.image?.credit.replace(/^(Foto|Photo):\s*/i, '') ?? '';
 
-  return (
-    <div className="mx-auto w-full max-w-[1080px] px-5 pt-6 pb-16 md:px-7 lg:pt-10 lg:pb-[88px]">
-      <header className="flex flex-wrap items-center gap-x-3 gap-y-3 sm:gap-x-4">
-        {hotel.image ? (
-          // eslint-disable-next-line @next/next/no-img-element -- licensed photo, self-hosted 160 px thumbnail (C-011c)
-          <img
-            src={hotel.image.src}
-            alt=""
-            width={64}
-            height={64}
-            decoding="async"
-            className="bg-placeholder size-14 shrink-0 rounded-cell object-cover lg:size-16"
-          />
-        ) : (
-          <span
-            aria-hidden="true"
-            className="bg-placeholder size-14 shrink-0 rounded-cell lg:size-16"
-          />
-        )}
-        <div className="min-w-0 flex-1">
-          <p className="text-eyebrow text-accent">
-            <a
-              href={localizedPath(cityPath(hotel.city.slug), locale)}
-              className="underline-offset-2 hover:underline"
-            >
-              {hotel.city.name[locale]}
-            </a>
-          </p>
-          <h1 className="text-title mt-1">{hotel.name}</h1>
-          <p className="text-meta mt-1 text-muted-ink">
-            {dates} · {t('stayFacts', { nights: params.nights, adults: params.adults })}
-          </p>
-          <a
-            href={localizedPath(hotelPath(hotel.slug), locale)}
-            className="text-meta mt-1.5 inline-block font-semibold text-accent underline-offset-2 hover:underline"
-          >
-            {t('allNights')}
-          </a>
-        </div>
-        {edit}
-      </header>
-
-      {drop && <div className="mt-6">{drop}</div>}
-
-      {status === 'tracked' ? (
-        <>
-          <TrackedPanel
-            series={series}
-            params={params}
-            today={today}
-            providerByDay={providerByDay}
-            updatedAt={updatedAt}
-            now={now}
-          />
-          <HistoryNote
-            history={history}
-            realVsNights={realVsNights}
-            nightsUnreliable={nightsUnreliable}
-          />
-        </>
-      ) : status === 'no_data' ? (
-        <Card variant="float" radius="search" className="mt-6 lg:mt-8 lg:p-8">
-          <Notice title={t('noDataTitle')} text={t('noDataText')} />
-        </Card>
+  const pic = cardPhoto(hotel.slug, hotel.city.slug);
+  const tag = pic?.city
+    ? tp('cityTag')
+    : hotel.image &&
+      (hotel.image.sourceUrl ? (
+        <a
+          href={hotel.image.sourceUrl}
+          className="underline-offset-2 hover:underline"
+          rel="noopener"
+        >
+          {t('photoCredit', { credit })}
+        </a>
       ) : (
-        <Card variant="float" radius="search" className="mt-6 lg:mt-8 lg:p-8">
-          {status === 'untracked' && nightsUnreliable && (
-            <Notice icon={CalendarClock} title={t('realOnlyTitle')} text={t('realOnlyText')} />
-          )}
-          {status === 'untracked' && !nightsUnreliable && (
-            <Notice
-              icon={CalendarClock}
-              title={
-                params.adults === NIGHT_GRID.adults
-                  ? t('untrackedTitle')
-                  : t('untrackedGuestsTitle', { adults: params.adults })
-              }
-              text={
-                params.adults === NIGHT_GRID.adults
-                  ? t('untrackedText', { days: NIGHT_GRID.windowDays })
-                  : t('untrackedGuestsText', { adults: NIGHT_GRID.adults })
-              }
+        t('photoCredit', { credit })
+      ));
+
+  return (
+    <PhotoSheet photo={pic?.photo ?? null} alt={hotel.name} tag={tag}>
+      <div className="mx-auto w-full max-w-[1240px] px-[18px] pt-[26px] pb-16 md:px-10 md:pt-10 md:pb-24">
+        <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="min-w-0">
+            <p className="text-[14px] text-muted md:text-[15px]">
+              <a
+                href={localizedPath(cityPath(hotel.city.slug), locale)}
+                className="underline-offset-2 hover:text-ink hover:underline"
+              >
+                {hotel.city.name[locale]}
+              </a>{' '}
+              ·{' '}
+              <a
+                href={localizedPath(hotelPath(hotel.slug), locale)}
+                className="underline-offset-2 hover:text-ink hover:underline"
+              >
+                {t('allNights')}
+              </a>
+            </p>
+            <h1 className="mt-1 text-[30px] leading-[1.12] font-semibold tracking-[-0.03em] md:text-[44px] md:leading-[1.06]">
+              {hotel.name}
+            </h1>
+            <ul className="mt-3.5 flex flex-wrap gap-2">
+              {[dates, t('stayFacts', { nights: params.nights, adults: params.adults })].map(
+                (c) => (
+                  <li
+                    key={c}
+                    className="inline-flex h-8 items-center rounded-full border border-line bg-surface px-3 text-[14px] font-medium"
+                  >
+                    {c}
+                  </li>
+                ),
+              )}
+            </ul>
+          </div>
+          <div className="shrink-0">{edit}</div>
+        </header>
+
+        {drop && <div className="mt-6">{drop}</div>}
+
+        {status === 'tracked' ? (
+          <>
+            <TrackedPanel
+              series={series}
+              params={params}
+              today={today}
+              providerByDay={providerByDay}
+              updatedAt={updatedAt}
+              now={now}
             />
-          )}
-          {status === 'past' && (
-            <Notice icon={CalendarX2} title={t('pastTitle')} text={t('pastText')} />
-          )}
-          {status === 'inactive' && (
-            <Notice icon={CalendarOff} title={t('inactiveTitle')} text={t('inactiveText')}>
-              <a
-                href={localizedPath(routes.home, locale)}
-                className={buttonClasses({ variant: 'ghost' })}
-              >
-                {t('home')}
-              </a>
-            </Notice>
-          )}
-        </Card>
-      )}
-
-      {status === 'tracked' && (
-        <div className="mt-12 grid grid-cols-[minmax(0,1fr)] items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-8">
-          <ProviderTable
-            offers={offers.list}
-            unreviewed={offers.unreviewed}
-            day={offers.day}
-            today={today}
-            hotelSlug={hotel.slug}
-            stay={{ checkIn: params.checkIn, checkOut: params.checkOut, adults: params.adults }}
-          />
-          <WatchCard hotel={hotel} params={params} locale={locale} />
-        </div>
-      )}
-
-      {others.length > 0 && (
-        <section aria-labelledby="others-title" className="mt-12">
-          <h2 id="others-title" className="text-h3">
-            {t('othersTitle')}
-          </h2>
-          <ul className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {others.map((o) => (
-              <li key={`${o.checkIn}-${o.checkOut}-${o.adults}`}>
-                <OtherStayCard hotelSlug={hotel.slug} stay={o} locale={locale} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <section aria-labelledby="method-title" className="mt-12 max-w-[40em]">
-        <h2 id="method-title" className="text-[15px] font-bold">
-          {t('methodTitle')}
-        </h2>
-        <p className="text-meta mt-1.5 text-muted-ink">{t('methodText')}</p>
-        {hotel.image && (
-          <p className="mt-3 text-[12px] text-muted-ink">
-            {hotel.image.sourceUrl ? (
-              <a
-                href={hotel.image.sourceUrl}
-                className="underline-offset-2 hover:underline"
-                rel="noopener"
-              >
-                {t('photoCredit', { credit })}
-              </a>
-            ) : (
-              t('photoCredit', { credit })
+            <HistoryNote
+              history={history}
+              realVsNights={realVsNights}
+              nightsUnreliable={nightsUnreliable}
+            />
+          </>
+        ) : status === 'no_data' ? (
+          <Card variant="float" radius="search" className="mt-6 lg:mt-8 lg:p-8">
+            <Notice title={t('noDataTitle')} text={t('noDataText')} />
+          </Card>
+        ) : (
+          <Card variant="float" radius="search" className="mt-6 lg:mt-8 lg:p-8">
+            {status === 'untracked' && nightsUnreliable && (
+              <Notice icon={CalendarClock} title={t('realOnlyTitle')} text={t('realOnlyText')} />
             )}
-          </p>
+            {status === 'untracked' && !nightsUnreliable && (
+              <Notice
+                icon={CalendarClock}
+                title={
+                  params.adults === NIGHT_GRID.adults
+                    ? t('untrackedTitle')
+                    : t('untrackedGuestsTitle', { adults: params.adults })
+                }
+                text={
+                  params.adults === NIGHT_GRID.adults
+                    ? t('untrackedText', { days: NIGHT_GRID.windowDays })
+                    : t('untrackedGuestsText', { adults: NIGHT_GRID.adults })
+                }
+              />
+            )}
+            {status === 'past' && (
+              <Notice icon={CalendarX2} title={t('pastTitle')} text={t('pastText')} />
+            )}
+            {status === 'inactive' && (
+              <Notice icon={CalendarOff} title={t('inactiveTitle')} text={t('inactiveText')}>
+                <a
+                  href={localizedPath(routes.home, locale)}
+                  className={buttonClasses({ variant: 'ghost' })}
+                >
+                  {t('home')}
+                </a>
+              </Notice>
+            )}
+          </Card>
         )}
-      </section>
-    </div>
+
+        {status === 'tracked' && (
+          <div className="mt-12 grid grid-cols-[minmax(0,1fr)] items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-8">
+            <ProviderTable
+              offers={offers.list}
+              unreviewed={offers.unreviewed}
+              day={offers.day}
+              today={today}
+              hotelSlug={hotel.slug}
+              stay={{ checkIn: params.checkIn, checkOut: params.checkOut, adults: params.adults }}
+            />
+            <WatchCard hotel={hotel} params={params} locale={locale} />
+          </div>
+        )}
+
+        {others.length > 0 && (
+          <section aria-labelledby="others-title" className="mt-12">
+            <h2 id="others-title" className="text-h3">
+              {t('othersTitle')}
+            </h2>
+            <ul className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {others.map((o) => (
+                <li key={`${o.checkIn}-${o.checkOut}-${o.adults}`}>
+                  <OtherStayCard hotelSlug={hotel.slug} stay={o} locale={locale} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section aria-labelledby="method-title" className="mt-12 max-w-[40em]">
+          <h2 id="method-title" className="text-[15px] font-bold">
+            {t('methodTitle')}
+          </h2>
+          <p className="text-meta mt-1.5 text-muted-ink">{t('methodText')}</p>
+        </section>
+      </div>
+    </PhotoSheet>
   );
 }
 

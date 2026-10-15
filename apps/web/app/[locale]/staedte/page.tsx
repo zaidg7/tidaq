@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { alternatesFor, cityPath, localizedPath, type Locale } from '@tidaq/core';
 import { CityTile } from '@/components/city/CityTile';
+import { PageHead } from '@/components/shell/PageHead';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
 import { getCityCards } from '@/lib/data/cityCards';
@@ -48,15 +49,12 @@ export default async function CitiesRoute({ params }: Props) {
   }
   const hotels = cards.reduce((n, c) => n + c.hotels, 0);
   return (
-    <div className="mx-auto w-full max-w-[1240px] px-3.5 pt-8 pb-20 md:px-10 md:pt-14 md:pb-32">
-      <header className="px-1 md:px-0">
-        <h1 className="text-[34px] leading-[1.05] font-[650] tracking-[-0.035em] md:text-[56px]">
-          {t('title')}
-        </h1>
-        <p className="mt-2 text-[16px] text-muted md:mt-3 md:text-[19px]">
-          {t('lead', { cities: cards.length, hotels })}
-        </p>
-      </header>
+    <div className="mx-auto w-full max-w-[1240px] px-3.5 pt-6 pb-20 md:px-10 md:pt-12 md:pb-32">
+      <PageHead
+        className="px-1 md:px-0"
+        title={t('title')}
+        lead={t('lead', { cities: cards.length, hotels })}
+      />
       <ul className="mt-7 grid grid-cols-2 gap-3 md:mt-12 md:grid-cols-3 md:gap-5 lg:grid-cols-4">
         {cards.map((c, i) => (
           <li key={c.slug} className="h-[220px] md:h-[300px]">

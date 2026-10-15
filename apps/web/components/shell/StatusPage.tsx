@@ -1,15 +1,41 @@
 import type { ReactNode } from 'react';
+import { Photo } from '@/components/ui/Photo';
+import { cityPhoto, cityPhotoAsHotelPhoto } from '@/lib/cityPhotos';
 
 type Props = { eyebrow: string; title: string; text: string; children: ReactNode };
 
-/** Shared layout of the 404 and error pages: centred, calm, one clear way out. */
+/**
+ * Shared layout of the 404, error and "prices unavailable" pages (mockup B hero language): the
+ * homepage's rooftop photo full-bleed under the white navbar, and bottom-left a pill, the title,
+ * one sentence and the way out. Calm, branded, never a dead end.
+ */
 export function StatusPage({ eyebrow, title, text, children }: Props) {
+  const photo = cityPhoto('home-hero');
   return (
-    <div className="mx-auto flex w-full max-w-[1080px] flex-1 flex-col items-center justify-center px-5 py-20 text-center md:px-7 lg:py-28">
-      <p className="text-eyebrow text-accent">{eyebrow}</p>
-      <h1 className="text-h2 mt-3 max-w-[22ch]">{title}</h1>
-      <p className="text-lead mt-4 max-w-[30em] text-muted-ink">{text}</p>
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">{children}</div>
-    </div>
+    <section data-photo-hero className="relative -mt-16 flex-1 lg:-mt-[76px]">
+      <Photo
+        photo={photo ? { ...cityPhotoAsHotelPhoto(photo), focus: '50% 70%' } : null}
+        alt=""
+        sizes="100vw"
+        priority
+        className="h-[max(560px,78dvh)] bg-[#2a2620] md:h-[max(620px,80dvh)]"
+      >
+        <div aria-hidden="true" className="hero-scrim absolute inset-0" />
+        <div className="absolute inset-x-0 bottom-12 md:bottom-20">
+          <div className="mx-auto max-w-[1240px] px-[18px] text-white md:px-10">
+            <p className="hero-rise mb-4 inline-flex h-8 items-center rounded-full border border-white/28 bg-white/16 px-3 text-[13px] font-medium backdrop-blur-sm md:text-[14px]">
+              {eyebrow}
+            </p>
+            <h1 className="hero-rise max-w-[760px] text-[40px] leading-[1.04] font-[650] tracking-[-0.04em] md:text-[64px] md:leading-[1.02]">
+              {title}
+            </h1>
+            <p className="hero-rise-2 mt-3 max-w-[560px] text-[17px] leading-[1.45] text-white/92 md:mt-4 md:text-[20px]">
+              {text}
+            </p>
+            <div className="hero-rise-3 mt-7 flex flex-wrap items-center gap-3">{children}</div>
+          </div>
+        </div>
+      </Photo>
+    </section>
   );
 }

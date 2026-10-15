@@ -12,7 +12,8 @@ import { alertCities, dropAlertLabels } from './DropAlertSection';
 const STACK = [
   { box: 'bg-white/10 border-white/14', indent: '' },
   { box: 'bg-white/7 border-white/10', indent: 'mx-2.5 md:mx-0 md:ml-7' },
-  { box: 'bg-white/4 border-white/8 opacity-75', indent: 'max-md:hidden md:ml-14' },
+  // No opacity on the text: the oldest only gets a quieter box, its text stays AA.
+  { box: 'bg-white/4 border-white/8', indent: 'max-md:hidden md:ml-14' },
 ] as const;
 
 /**
@@ -26,6 +27,7 @@ export async function AlertBand({
   locale,
   previews = [],
   city = null,
+  cities: given,
   title,
   lead,
 }: {
@@ -34,11 +36,16 @@ export async function AlertBand({
   previews?: HotelDropsWithPhoto[];
   /** Preselected city; always offered, even when the catalog can't be read. */
   city?: { slug: string; name: string } | null;
+  /** Pass when the page already has the list (dev pages); otherwise read from the catalog. */
+  cities?: { slug: string; name: string }[];
   title?: string;
   lead?: string;
 }) {
   const t = await getTranslations({ locale, namespace: 'home' });
-  const [labels, listed] = await Promise.all([dropAlertLabels(locale), alertCities(locale)]);
+  const [labels, listed] = await Promise.all([
+    dropAlertLabels(locale),
+    given ? Promise.resolve(given) : alertCities(locale),
+  ]);
   const cities =
     city && !listed.some((c) => c.slug === city.slug)
       ? [...listed, city].sort((a, b) => a.name.localeCompare(b.name, locale))

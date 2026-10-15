@@ -30,7 +30,9 @@ export function Card({
         'relative bg-surface [overflow-wrap:anywhere]',
         padded && 'p-5 lg:p-6',
         radius === 'search' ? 'rounded-search' : 'rounded-card',
-        variant === 'float' ? 'border border-line shadow-2' : 'border border-line',
+        variant === 'float'
+          ? 'border border-[#ece9f1] shadow-[0_16px_40px_rgba(21,19,28,0.06)]'
+          : 'border border-line',
         interactive &&
           cn(
             'transition-[transform,box-shadow,border-color] duration-[var(--t-base)] ease-out',

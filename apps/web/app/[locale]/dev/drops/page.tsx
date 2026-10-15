@@ -121,7 +121,14 @@ export default async function DevDropsPage({
       source={source}
       videos={source && <FromVideos items={videoItems(samplePosted(), all)} />}
       alert={
-        <AlertBand locale={locale} previews={shown} city={cityOf(all, filters.city, locale)} />
+        <AlertBand
+          locale={locale}
+          previews={shown}
+          city={cityOf(all, filters.city, locale)}
+          cities={[...new Map(all.map((g) => [g.city.slug, g.city.name[locale]]))]
+            .map(([slug, name]) => ({ slug, name }))
+            .sort((a, b) => a.name.localeCompare(b.name, locale))}
+        />
       }
     />
   );

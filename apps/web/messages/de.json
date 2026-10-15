@@ -184,7 +184,8 @@
     "eyebrow": "Fehler 404",
     "title": "Diese Seite gibt es nicht",
     "text": "Vielleicht hat sich die Adresse geändert, oder die Seite kommt erst noch. Auf der Startseite findest du alle Hotels.",
-    "home": "Zur Startseite"
+    "home": "Zur Startseite",
+    "drops": "Price Drops ansehen"
   },
   "error": {
     "eyebrow": "Fehler",
@@ -732,7 +733,8 @@
           ]
         }
       ]
-    }
+    },
+    "toc": "Auf dieser Seite"
   },
   "city": {
     "metaTitle": "Fünf-Sterne-Hotels {where}: Preise jeder Nacht | Tidaq",
@@ -769,7 +771,9 @@
       "asiaPacific": "Asien und Pazifik",
       "americas": "Amerika"
     },
-    "unavailable": "Die Hotelliste ist gerade nicht erreichbar. Versuch es gleich noch einmal."
+    "unavailable": "Die Hotelliste ist gerade nicht erreichbar. Versuch es gleich noch einmal.",
+    "citiesLink": "Alle Städte als Bilder",
+    "cityCount": "{n, plural, one {# Hotel} other {# Hotels}}"
   },
   "watchMail": {
     "eyebrow": "Preisalarm",
@@ -1133,7 +1137,11 @@
     "cityDrops": "{n, plural, one {# Preissturz} other {# Preisstürze}}, größter {pct}",
     "today": "Preisstürze von heute ansehen",
     "empty": "In den letzten 7 Tagen gab es noch keinen Preissturz. Wir prüfen jeden Tag, schau bald wieder rein.",
-    "unavailable": "Der Wochenrückblick lässt sich gerade nicht laden. Versuch es gleich noch einmal."
+    "unavailable": "Der Wochenrückblick lässt sich gerade nicht laden. Versuch es gleich noch einmal.",
+    "statDropsShort": "{n, plural, one {Price Drop} other {Price Drops}}",
+    "statHotelsShort": "{n, plural, one {Hotel} other {Hotels}}",
+    "statAverageShort": "im Schnitt",
+    "statBiggestShort": "größter Sturz"
   },
   "dropCallout": {
     "hotelTitle": "Preissturz bei diesem Hotel",
