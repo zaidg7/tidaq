@@ -680,7 +680,13 @@
     "empty": "We're not watching any hotels here right now. Have a look at the list of all hotels.",
     "weekend": "Cheapest weekend",
     "weekendFacts": "2 nights, 2 adults, on {provider}",
-    "noWeekend": "No weekend price yet. The calendar shows every night."
+    "noWeekend": "No weekend price yet. The calendar shows every night.",
+    "datesLine": "{dates} · {nights, plural, one {# night} other {# nights}} · {adults, plural, one {# adult} other {# adults}}",
+    "withoutDates": "View without dates",
+    "datesSorted": "Cheapest first. Total on one booking site, prices for 2 adults.",
+    "stayLink": "See price history",
+    "stayFacts": "{nights, plural, one {# night} other {# nights}} at {provider}",
+    "noStay": "No price for these dates yet. The calendar shows every night."
   },
   "hotels": {
     "metaTitle": "All hotels: luxury hotels with price history | Tidaq",
@@ -1090,5 +1096,8 @@
     "skip": "Skip",
     "clearAll": "Clear all",
     "submitPhone": "See prices"
+  },
+  "loading": {
+    "page": "Loading the page"
   }
 }

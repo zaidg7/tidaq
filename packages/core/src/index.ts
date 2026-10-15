@@ -29,6 +29,7 @@ export {
 } from './xotelo';
 export {
   ADULTS,
+  cityStayPath,
   parseStayParams,
   hotelPath,
   stayPath,

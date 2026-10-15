@@ -1,7 +1,7 @@
 import 'server-only';
 import { hotelPhoto } from '@/lib/hotelPhotos';
 import { cityImage, type ImageRef } from '@/lib/photos';
-import { addDays, z } from '@tidaq/core';
+import { addDays, NIGHT_GRID, shiftDays, stayFromNights, z, type NightPrice } from '@tidaq/core';
 import { hasSupabase, rest, rpc } from './supabase';
 import { reportError } from '@/lib/errors';
 
@@ -28,6 +28,14 @@ const weekendRow = z.object({
 });
 
 const providerRow = z.object({ id: z.number(), name: z.string(), is_direct: z.boolean() });
+const dayRow = z.object({ day: z.string() });
+const nightRow = z.object({
+  hotel_id: z.number(),
+  night: z.string(),
+  day: z.string(),
+  best_cents: z.number().int().nullable(),
+  per_provider: z.record(z.string(), z.number()),
+});
 const reliabilityRow = z.object({ hotel_id: z.number(), reliable: z.boolean() });
 
 const directoryRow = z.object({
@@ -57,13 +65,31 @@ export interface CityHotel {
    * no prices yet, or single nights mislead at this hotel (C-070d).
    */
   weekend: { checkIn: string; checkOut: string; totalCents: number; provider: string } | null;
+  /**
+   * With dates (C-110): the stay's total on one reviewed site, from today's night prices; null
+   * when a night has no price yet, it's beyond the grid, or single nights mislead here.
+   */
+  stay?: { totalCents: number; provider: string } | null;
+}
+
+/** Dates on the city page: the hotels get their total for these, cheapest first. */
+export interface CityDates {
+  checkIn: string;
+  checkOut: string;
 }
 
 export type CityLoad =
   { kind: 'ok'; city: City; hotels: CityHotel[] } | { kind: 'missing' } | { kind: 'unavailable' };
 
-/** City page (C-024): the city and its active hotels, A–Z, each with its cheapest weekend. */
-export async function getCityPage(slug: string, today: string): Promise<CityLoad> {
+/**
+ * City page (C-024): the city and its active hotels, A–Z, each with its cheapest weekend. With
+ * `dates` (C-110) each hotel also gets that stay's total, and the list is sorted by it.
+ */
+export async function getCityPage(
+  slug: string,
+  today: string,
+  dates?: CityDates,
+): Promise<CityLoad> {
   if (!hasSupabase()) return { kind: 'unavailable' };
   try {
     const [city] = await rest(
@@ -97,6 +123,7 @@ export async function getCityPage(slug: string, today: string): Promise<CityLoad
       : [];
     const providerById = new Map(providers.map((p) => [p.id, p]));
     const weekendByHotel = new Map(weekends.map((w) => [w.hotel_id, w]));
+    const stays = dates ? await cityStays(hotels, dates) : null;
 
     return {
       kind: 'ok',
@@ -113,6 +140,9 @@ export async function getCityPage(slug: string, today: string): Promise<CityLoad
           slug: h.slug,
           name: h.name,
           image: photo && h.image_credit ? photo[960] : cityImage(city.slug),
+          ...(stays && {
+            stay: reliability && !unreliable.has(h.id) ? (stays.get(h.id) ?? null) : null,
+          }),
           weekend:
             w?.check_in && w.total_cents && p && reliability && !unreliable.has(h.id)
               ? {
@@ -129,6 +159,55 @@ export async function getCityPage(slug: string, today: string): Promise<CityLoad
     reportError('city unavailable', error, { slug });
     return { kind: 'unavailable' };
   }
+}
+
+/**
+ * Each hotel's total for check-in → check-out from the night grid (C-070a), on one reviewed site
+ * like the stay page's nights: each night's newest price from the latest two collection days.
+ */
+async function cityStays(
+  hotels: readonly { id: number; name: string }[],
+  { checkIn, checkOut }: CityDates,
+): Promise<Map<number, { totalCents: number; provider: string }>> {
+  const out = new Map<number, { totalCents: number; provider: string }>();
+  if (!hotels.length) return out;
+  const ids = hotels.map((h) => h.id).join(',');
+  const [latest] = await rest(
+    `night_daily?select=day&hotel_id=in.(${ids})&adults=eq.${NIGHT_GRID.adults}&order=day.desc&limit=1`,
+    dayRow,
+  );
+  if (!latest) return out;
+  const rows = await rest(
+    `night_daily?select=hotel_id,night,day,best_cents,per_provider&hotel_id=in.(${ids})` +
+      `&adults=eq.${NIGHT_GRID.adults}&day=gte.${shiftDays(latest.day, -1)}` +
+      `&night=gte.${checkIn}&night=lt.${checkOut}&order=hotel_id.asc,night.asc,day.desc`,
+    nightRow,
+  );
+  const nights = new Map<number, NightPrice[]>();
+  rows.forEach((r, i) => {
+    const prev = rows[i - 1];
+    if (prev && prev.hotel_id === r.hotel_id && prev.night === r.night) return; // older day
+    const list = nights.get(r.hotel_id) ?? [];
+    list.push({ night: r.night, bestCents: r.best_cents, perProvider: r.per_provider });
+    nights.set(r.hotel_id, list);
+  });
+  const providerIds = [
+    ...new Set(rows.flatMap((r) => Object.keys(r.per_provider)).filter((k) => /^\d+$/.test(k))),
+  ];
+  // RLS returns reviewed providers only: exactly the ones that count for totals.
+  const providers = providerIds.length
+    ? await rest(`providers?select=id,name,is_direct&id=in.(${providerIds.join(',')})`, providerRow)
+    : [];
+  const reviewed = new Set(providers.map((p) => p.id));
+  const byId = new Map(providers.map((p) => [p.id, p]));
+  for (const h of hotels) {
+    const stay = stayFromNights(nights.get(h.id) ?? [], checkIn, checkOut, reviewed);
+    const p = stay.kind === 'ok' ? byId.get(stay.providerId) : undefined;
+    if (stay.kind === 'ok' && p) {
+      out.set(h.id, { totalCents: stay.totalCents, provider: p.is_direct ? h.name : p.name });
+    }
+  }
+  return out;
 }
 
 export interface DirectoryCity extends City {

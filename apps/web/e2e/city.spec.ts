@@ -84,4 +84,22 @@ test.describe('all hotels (C-024, sample data on /dev/hotels)', () => {
       '/en/stadt/wien',
     );
   });
+
+  test('with dates from the search: cheapest total first (C-110)', async ({ page }) => {
+    await page.goto('/dev/city?dates');
+    await expect(page.getByText('4.–6. Dez. 2026 · 2 Nächte · 2 Erwachsene')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Ohne Daten ansehen' })).toHaveAttribute(
+      'href',
+      '/stadt/berlin',
+    );
+    const cards = page.getByRole('main').getByRole('listitem');
+    await expect(cards.nth(0)).toContainText('The Ritz-Carlton Berlin');
+    await expect(cards.nth(0)).toContainText('2 Nächte bei Expedia');
+    await expect(cards.nth(0).getByRole('link', { name: 'Preisverlauf ansehen' })).toHaveAttribute(
+      'href',
+      '/hotel/the-ritz-carlton-berlin/2026-12-04--2026-12-06?adults=2',
+    );
+    await expect(cards.nth(1)).toContainText('Hotel Adlon Kempinski');
+    await expect(cards.nth(2)).toContainText('Für diese Daten noch kein Preis');
+  });
 });

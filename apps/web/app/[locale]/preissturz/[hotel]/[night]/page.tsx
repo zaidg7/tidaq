@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -11,6 +12,7 @@ import {
   parseDropKey,
   type Locale,
 } from '@tidaq/core';
+import { PageSkeleton } from '@/components/shell/PageSkeleton';
 import { DropOver, DropPage, dropFacts } from '@/components/drops/DropPage';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
@@ -59,7 +61,20 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   return { title: t('overTitle'), alternates, robots: { index: false, follow: true } };
 }
 
+/**
+ * Validates the URL first (a 404 must be decided before anything is sent), then streams the
+ * skeleton while the data loads (PREMIUM.md §10.17).
+ */
 export default async function DropRoute(props: Props) {
+  await resolve(props);
+  return (
+    <Suspense fallback={<PageSkeleton kind="drop" />}>
+      <DropRouteBody {...props} />
+    </Suspense>
+  );
+}
+
+async function DropRouteBody(props: Props) {
   const { locale, slug, stay, key } = await resolve(props);
   setRequestLocale(locale);
   const today = berlinToday();

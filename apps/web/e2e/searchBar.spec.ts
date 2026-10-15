@@ -179,4 +179,22 @@ test.describe('dates and guests (C-108)', () => {
     await expect(page.getByRole('dialog', { name: 'Gäste' })).toBeVisible();
     await expect(bar(page).getByRole('button', { name: /^Reisedaten · 2 Nächte/ })).toBeVisible();
   });
+
+  test('a city with dates goes to the city page sorted for those dates (C-110)', async ({
+    page,
+  }) => {
+    await page.goto('/dev/search');
+    await where(page).fill('wien');
+    await page.keyboard.press('Enter'); // the city is the first option
+    await bar(page)
+      .getByRole('button', { name: /^Reisedaten/ })
+      .click();
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Escape');
+    await bar(page).getByRole('button', { name: 'Preis prüfen' }).click();
+    await expect(page).toHaveURL(/\/stadt\/wien\?daten=[\d-]+--[\d-]+&adults=2$/);
+  });
 });

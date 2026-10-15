@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { hotelPath, localizedPath, stayPath, type Locale } from '@tidaq/core';
+import { cityStayPath, hotelPath, localizedPath, stayPath, type Locale } from '@tidaq/core';
 import type { Destination, HotelNights, SearchIndex } from './types';
 
 export type SearchErrors = {
@@ -52,7 +52,7 @@ function loadNights(slug: string): Promise<HotelNights> {
 /**
  * The search's state and its submit rules (PREMIUM.md §9.3), shared by the desktop bar and the
  * phone flow: destination, dates, adults, the picked hotel's nightly prices, validation and
- * where "Preis prüfen" goes (stay page, hotel page or city page).
+ * where "Preis prüfen" goes (stay page, hotel page, or the city page, with dates sorted by them).
  */
 export function useSearch({
   index,
@@ -88,7 +88,7 @@ export function useSearch({
 
   const problem = (): SearchProblem | null => {
     if (!dest) return { field: 'where', text: errors.missing };
-    if (dest.kind === 'city' || (!checkIn && !checkOut)) return null;
+    if (!checkIn && !checkOut) return null;
     if (!checkIn || !checkOut) return { field: 'dates', text: errors.datesMissing };
     if (checkIn < today) return { field: 'dates', text: errors.past };
     if (checkOut <= checkIn) return { field: 'dates', text: errors.order };
@@ -103,10 +103,14 @@ export function useSearch({
     if (p || !dest) return p;
     if (dest.kind === 'city') {
       const city = index.cities.find((c) => c.slug === dest.slug);
-      if (city) {
-        setGoing(true);
-        window.location.assign(city.href);
-      }
+      if (!city) return null;
+      setGoing(true);
+      // With dates the city page sorts its hotels by the total for them (C-110).
+      window.location.assign(
+        checkIn && checkOut
+          ? localizedPath(cityStayPath(city.slug, checkIn, checkOut, adults), locale)
+          : city.href,
+      );
       return null;
     }
     setGoing(true);

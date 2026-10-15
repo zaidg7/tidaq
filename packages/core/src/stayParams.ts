@@ -66,3 +66,16 @@ export function stayPath(slug: string, checkIn: string, checkOut: string, adults
 export function hotelPath(slug: string): string {
   return `/hotel/${slug}`;
 }
+
+/**
+ * A city page with dates (C-110): `/stadt/wien?daten=2026-11-06--2026-11-08&adults=2`. The page
+ * then sorts its hotels by the total for those dates. `daten` parses like a stay range.
+ */
+export function cityStayPath(
+  citySlug: string,
+  checkIn: string,
+  checkOut: string,
+  adults: number,
+): string {
+  return `/stadt/${citySlug}?daten=${checkIn}--${checkOut}&adults=${adults}`;
+}

@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { alternatesFor, localizedPath, type Locale } from '@tidaq/core';
@@ -9,6 +10,7 @@ import {
   DropsView,
   type DropSource,
 } from '@/components/drops/DropsView';
+import { PageSkeleton } from '@/components/shell/PageSkeleton';
 import { DropAlertSection } from '@/components/drops/DropAlertSection';
 import { FromVideos, videoItems } from '@/components/drops/FromVideos';
 import { StatusPage } from '@/components/shell/StatusPage';
@@ -38,7 +40,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function DropsPage({ params, searchParams }: Props) {
+/** The skeleton streams while the radar loads (PREMIUM.md §10.17). */
+export default function DropsPage(props: Props) {
+  return (
+    <Suspense fallback={<PageSkeleton kind="list" />}>
+      <DropsPageBody {...props} />
+    </Suspense>
+  );
+}
+
+async function DropsPageBody({ params, searchParams }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const q = await searchParams;

@@ -682,7 +682,13 @@
     "empty": "Hier beobachten wir gerade keine Hotels. Schau in die Liste aller Hotels.",
     "weekend": "Günstigstes Wochenende",
     "weekendFacts": "2 Nächte, 2 Erwachsene, bei {provider}",
-    "noWeekend": "Noch kein Wochenendpreis. Im Kalender siehst du jede Nacht."
+    "noWeekend": "Noch kein Wochenendpreis. Im Kalender siehst du jede Nacht.",
+    "datesLine": "{dates} · {nights, plural, one {# Nacht} other {# Nächte}} · {adults, plural, one {# Erwachsener} other {# Erwachsene}}",
+    "withoutDates": "Ohne Daten ansehen",
+    "datesSorted": "Günstigste zuerst. Gesamtpreis auf einer Buchungsseite, Preise für 2 Erwachsene.",
+    "stayLink": "Preisverlauf ansehen",
+    "stayFacts": "{nights, plural, one {# Nacht} other {# Nächte}} bei {provider}",
+    "noStay": "Für diese Daten noch kein Preis. Im Kalender siehst du jede Nacht."
   },
   "hotels": {
     "metaTitle": "Alle Hotels: Luxushotels mit Preisverlauf | Tidaq",
@@ -1092,5 +1098,8 @@
     "skip": "Überspringen",
     "clearAll": "Alles löschen",
     "submitPhone": "Preise ansehen"
+  },
+  "loading": {
+    "page": "Seite wird geladen"
   }
 }
