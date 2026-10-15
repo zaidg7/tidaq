@@ -50,17 +50,17 @@ const MAX_NIGHTS = 30;
 const DAY_MS = 86_400_000;
 
 /** Nights per hotel, fetched once per page view. */
-const nightsCache = new Map<string, Promise<HotelNights['nights']>>();
+const nightsCache = new Map<string, Promise<HotelNights>>();
+const NO_NIGHTS: HotelNights = { nights: [], weekends: [] };
 
-function loadNights(slug: string): Promise<HotelNights['nights']> {
+function loadNights(slug: string): Promise<HotelNights> {
   let request = nightsCache.get(slug);
   if (!request) {
     request = fetch(`/api/hotel-nights?slug=${encodeURIComponent(slug)}`)
-      .then((r) => (r.ok ? (r.json() as Promise<HotelNights>) : { nights: [] }))
-      .then((body) => body.nights)
+      .then((r) => (r.ok ? (r.json() as Promise<HotelNights>) : NO_NIGHTS))
       .catch(() => {
         nightsCache.delete(slug);
-        return [];
+        return NO_NIGHTS;
       });
     nightsCache.set(slug, request);
   }
@@ -106,10 +106,7 @@ export function SearchBar({
   const [dest, setDest] = useState<Destination>(null);
   const [panel, setPanel] = useState(false);
   const [popover, setPopover] = useState<'dates' | 'guests' | null>(null);
-  const [hotelNights, setHotelNights] = useState<{
-    slug: string;
-    nights: HotelNights['nights'];
-  } | null>(null);
+  const [hotelNights, setHotelNights] = useState<{ slug: string; data: HotelNights } | null>(null);
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [adults, setAdults] = useState(2);
@@ -124,7 +121,7 @@ export function SearchBar({
   useEffect(() => {
     if (!hotelSlug) return;
     let live = true;
-    void loadNights(hotelSlug).then((n) => live && setHotelNights({ slug: hotelSlug, nights: n }));
+    void loadNights(hotelSlug).then((data) => live && setHotelNights({ slug: hotelSlug, data }));
     return () => {
       live = false;
     };
@@ -350,7 +347,7 @@ export function SearchBar({
             setPopover('guests');
             guestsRef.current?.focus();
           }}
-          nights={hotelSlug && hotelNights?.slug === hotelSlug ? hotelNights.nights : null}
+          hotel={hotelSlug && hotelNights?.slug === hotelSlug ? hotelNights.data : null}
           today={today}
           locale={locale}
           labels={labels.datePopover}

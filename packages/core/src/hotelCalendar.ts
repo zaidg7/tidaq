@@ -135,3 +135,42 @@ export function cheapestStays(
   }
   return result;
 }
+
+export interface WeekendStay {
+  checkIn: string;
+  checkOut: string;
+  totalCents: number;
+}
+
+/**
+ * Every upcoming Friday → Sunday stay with a total on one reviewed site (`stayFromNights`),
+ * check-in after `today`, by date. Feeds the search calendar's "Flexibel" tab (C-108).
+ */
+export function weekendStays(
+  nights: readonly NightPrice[],
+  today: string,
+  reviewed: ReadonlySet<number>,
+): WeekendStay[] {
+  const { checkInWeekday, nights: count } = BEST_STAY_KINDS.weekend;
+  const out: WeekendStay[] = [];
+  for (const { night } of nights) {
+    if (night <= today || weekdayMonFirst(night) !== checkInWeekday) continue;
+    const checkOut = shiftDays(night, count);
+    const stay = stayFromNights(nights, night, checkOut, reviewed);
+    if (stay.kind === 'ok') out.push({ checkIn: night, checkOut, totalCents: stay.totalCents });
+  }
+  return out;
+}
+
+/** The `n` cheapest of `stays` whose check-in falls in `month` (`YYYY-MM-01`), cheapest first. */
+export function cheapestInMonth<S extends { checkIn: string; totalCents: number }>(
+  stays: readonly S[],
+  month: string,
+  n = 3,
+): S[] {
+  const prefix = month.slice(0, 7);
+  return stays
+    .filter((s) => s.checkIn.startsWith(prefix))
+    .sort((a, b) => a.totalCents - b.totalCents || a.checkIn.localeCompare(b.checkIn))
+    .slice(0, n);
+}

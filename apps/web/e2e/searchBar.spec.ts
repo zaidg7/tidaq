@@ -161,4 +161,22 @@ test.describe('dates and guests (C-108)', () => {
     await page.mouse.click(20, 20);
     await expect(dates).toBeHidden();
   });
+
+  test('Flexibel: the cheapest weekends of a month as cards', async ({ page }) => {
+    await page.goto('/dev/search');
+    await where(page).fill('dolder');
+    await page.keyboard.press('Enter');
+    const dates = page.getByRole('dialog', { name: 'Reisedaten' });
+    await dates.getByRole('radio', { name: 'Flexibel' }).click();
+    await expect(dates.getByText('Ein Wochenende im')).toBeVisible();
+    // Next month always has its weekends in the sample grid (120 nights).
+    await dates.getByRole('button', { pressed: false }).first().click();
+    const cards = dates.getByRole('listitem');
+    await expect(cards).toHaveCount(3);
+    await expect(cards.first()).toContainText('Am günstigsten');
+    await expect(cards.first()).toContainText(/für 2 Nächte/);
+    await cards.first().getByRole('button').click();
+    await expect(page.getByRole('dialog', { name: 'Gäste' })).toBeVisible();
+    await expect(bar(page).getByRole('button', { name: /^Reisedaten · 2 Nächte/ })).toBeVisible();
+  });
 });

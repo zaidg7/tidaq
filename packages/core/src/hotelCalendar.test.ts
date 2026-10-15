@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { cheapestStays, priceLevels, stayFromNights, type NightPrice } from './hotelCalendar';
+import {
+  cheapestInMonth,
+  cheapestStays,
+  priceLevels,
+  stayFromNights,
+  weekendStays,
+  type NightPrice,
+} from './hotelCalendar';
 
 describe('priceLevels', () => {
   it('puts each price into its fifth, cheapest = 0, dearest = 4', () => {
@@ -131,5 +138,54 @@ describe('cheapestStays', () => {
       midweek: null,
     });
     expect(cheapestStays([], '2026-11-30', reviewed)).toEqual({ weekend: null, midweek: null });
+  });
+});
+
+describe('weekendStays', () => {
+  // Fri 6 Nov 2026 … ; site 1 prices every night, site 2 only some.
+  const night = (date: string, a?: number, b?: number): NightPrice => ({
+    night: date,
+    bestCents: Math.min(a ?? Infinity, b ?? Infinity),
+    perProvider: { ...(a && { '1': a }), ...(b && { '2': b }) },
+  });
+  const nights = [
+    night('2026-11-06', 40_000, 30_000),
+    night('2026-11-07', 42_000),
+    night('2026-11-13', 35_000, 33_000),
+    night('2026-11-14', 36_000, 34_000),
+    night('2026-11-20', 50_000),
+  ];
+
+  it('totals each Fri → Sun on one reviewed site, never mixing sites', () => {
+    expect(weekendStays(nights, '2026-11-01', new Set([1, 2]))).toEqual([
+      { checkIn: '2026-11-06', checkOut: '2026-11-08', totalCents: 82_000 },
+      { checkIn: '2026-11-13', checkOut: '2026-11-15', totalCents: 67_000 },
+    ]);
+  });
+
+  it('skips weekends up to today and unreviewed sites', () => {
+    expect(weekendStays(nights, '2026-11-06', new Set([1])).map((s) => s.checkIn)).toEqual([
+      '2026-11-13',
+    ]);
+    expect(weekendStays(nights, '2026-11-01', new Set([3]))).toEqual([]);
+  });
+});
+
+describe('cheapestInMonth', () => {
+  const stays = [
+    { checkIn: '2026-11-06', totalCents: 900 },
+    { checkIn: '2026-11-13', totalCents: 700 },
+    { checkIn: '2026-11-20', totalCents: 700 },
+    { checkIn: '2026-11-27', totalCents: 800 },
+    { checkIn: '2026-12-04', totalCents: 100 },
+  ];
+  it('keeps the month, cheapest first, earlier date on a tie', () => {
+    expect(cheapestInMonth(stays, '2026-11-01').map((s) => s.checkIn)).toEqual([
+      '2026-11-13',
+      '2026-11-20',
+      '2026-11-27',
+    ]);
+    expect(cheapestInMonth(stays, '2026-12-01', 1)).toEqual([stays[4]]);
+    expect(cheapestInMonth(stays, '2027-01-01')).toEqual([]);
   });
 });

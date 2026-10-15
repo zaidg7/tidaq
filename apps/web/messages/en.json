@@ -1070,6 +1070,14 @@
     "adults": "Adults",
     "adultsHint": "Prices are for the whole room",
     "fewer": "One adult fewer",
-    "more": "One adult more"
+    "more": "One adult more",
+    "tabs": "How do you plan?",
+    "tabExact": "Exact dates",
+    "tabFlex": "Flexible",
+    "flexTitle": "A weekend in",
+    "flexTotal": "for {n} nights",
+    "flexCheapest": "Cheapest",
+    "flexNone": "No weekend prices for this month yet.",
+    "flexHint": "Pick a hotel to see its cheapest weekends here."
   }
 }

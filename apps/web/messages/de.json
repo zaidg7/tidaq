@@ -1072,6 +1072,14 @@
     "adults": "Erwachsene",
     "adultsHint": "Preise gelten fürs ganze Zimmer",
     "fewer": "Ein Erwachsener weniger",
-    "more": "Ein Erwachsener mehr"
+    "more": "Ein Erwachsener mehr",
+    "tabs": "Wie planst du?",
+    "tabExact": "Genaue Daten",
+    "tabFlex": "Flexibel",
+    "flexTitle": "Ein Wochenende im",
+    "flexTotal": "für {n} Nächte",
+    "flexCheapest": "Am günstigsten",
+    "flexNone": "Für diesen Monat haben wir noch keine Wochenendpreise.",
+    "flexHint": "Wähl ein Hotel, dann siehst du hier seine günstigsten Wochenenden."
   }
 }
