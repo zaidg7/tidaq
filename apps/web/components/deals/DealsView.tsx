@@ -2,6 +2,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TrendingDown } from 'lucide-react';
 import { DEALS, localizedPath, type Locale } from '@tidaq/core';
 import { buttonClasses } from '@/components/ui/Button';
+import { PageHead } from '@/components/shell/PageHead';
 import { Card } from '@/components/ui/Card';
 import { ChipLink } from '@/components/ui/Chip';
 import { Icon } from '@/components/ui/Icon';
@@ -27,14 +28,12 @@ export function DealsView({ deals, city }: { deals: Deal[]; city: string | null 
   const base = localizedPath(routes.deals, locale);
 
   return (
-    <div className="mx-auto w-full max-w-[1080px] px-5 pt-8 pb-16 md:px-7 lg:pt-14 lg:pb-[88px]">
-      <header className="max-w-[40em]">
-        <p className="text-eyebrow text-accent">{t('eyebrow')}</p>
-        <h1 className="text-h2 mt-2">{t('pageTitle')}</h1>
-        <p className="text-lead mt-4 text-muted-ink">
-          {t('intro', { pct: minPct, days: DEALS.minDays })}
-        </p>
-      </header>
+    <div className="mx-auto w-full max-w-[1240px] px-[18px] pt-6 pb-16 md:px-10 md:pt-12 md:pb-24">
+      <PageHead
+        pill={t('eyebrow')}
+        title={t('pageTitle')}
+        lead={t('intro', { pct: minPct, days: DEALS.minDays })}
+      />
 
       {deals.length === 0 ? (
         <Card variant="float" radius="search" className="mt-10 max-w-[44em] lg:p-8">

@@ -1,3 +1,4 @@
+import { PageHead } from '@/components/shell/PageHead';
 import { useLocale, useTranslations } from 'next-intl';
 import { formatDateRange, formatPrice, localizedPath, stayPath, type Locale } from '@tidaq/core';
 import {
@@ -36,10 +37,12 @@ export function ManageView({
   );
 
   return (
-    <div className="mx-auto w-full max-w-[760px] px-5 pt-8 pb-16 md:px-7 lg:pt-14 lg:pb-[88px]">
-      <p className="text-eyebrow text-accent">{t('manageEyebrow')}</p>
-      <h1 className="text-h2 mt-2">{t('manageTitle')}</h1>
-      <p className="text-meta mt-2 text-muted-ink">{t('manageFor', { email: data.email })}</p>
+    <div className="mx-auto w-full max-w-[860px] px-[18px] pt-6 pb-16 md:px-10 md:pt-12 md:pb-24">
+      <PageHead
+        pill={t('manageEyebrow')}
+        title={t('manageTitle')}
+        lead={t('manageFor', { email: data.email })}
+      />
       {notice && (
         <p
           role="status"
