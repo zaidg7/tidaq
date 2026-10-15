@@ -1,35 +1,79 @@
-# C-011b: looks up licensed hotel photos on Wikidata/Wikimedia Commons from a GitHub runner
-# (Wikimedia rate-limits the Claude cloud sessions' IP). Prints photos.json to the log and the
-# job summary; a session copies it to scripts/catalog/photos.json and turns it into a migration.
+# Hotel photos from Wikimedia Commons, run on a GitHub runner (Wikimedia rate-limits the Claude
+# cloud sessions' IP). Manual only (C-002c).
+#
+# mode `candidates` (C-104): scripts/photos/candidates.ts collects up to 10 licensed candidates
+#   per hotel and renders one contact sheet per city; both are committed to `branch` so a session
+#   can pick by eye. Remove the sheets before the PR is merged (they are review material).
+# mode `fetch` (C-104): scripts/photos/fetch.ts downloads the picked photos
+#   (scripts/photos/picks.json) in the delivery widths and commits them to `branch`.
+# mode `catalog` (C-011b): the old Wikidata-image lookup, printed to the log.
 name: Catalog photos
 
-# Manual only (C-002c): a PR touching photos.ts no longer starts it by itself.
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: candidates, fetch or catalog
+        required: true
+        default: candidates
+        type: choice
+        options: [candidates, fetch, catalog]
+      branch:
+        description: Branch to read from and commit to (never main)
+        required: true
+        type: string
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: catalog-photos-${{ inputs.branch }}
+  cancel-in-progress: true
 
 jobs:
   photos:
+    if: inputs.branch != 'main'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - uses: pnpm/action-setup@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          cache: pnpm
 
-      - name: Find photos
+      - name: Install
+        if: inputs.mode != 'catalog'
+        run: pnpm install --frozen-lockfile
+
+      - name: Find candidates
+        if: inputs.mode == 'candidates'
+        run: node scripts/photos/candidates.ts scripts/photos/hotels.json scripts/photos
+
+      - name: Fetch picks
+        if: inputs.mode == 'fetch'
+        run: node scripts/photos/fetch.ts
+
+      - name: Old catalog lookup
+        if: inputs.mode == 'catalog'
         run: |
           node scripts/catalog/photos.ts > photos.json
-          echo "----- photos.json -----"
           cat photos.json
-          {
-            echo '### Catalog photos'
-            echo
-            echo '```json'
-            cat photos.json
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit
+        if: inputs.mode != 'catalog'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/photos apps/web/public/hotels apps/web/lib
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+          else
+            git commit -m "chore(photos): ${{ inputs.mode }} from Wikimedia Commons"
+            git push origin HEAD:${{ inputs.branch }}
+          fi
