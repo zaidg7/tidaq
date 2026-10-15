@@ -89,33 +89,34 @@
     "hotels": "Hotels",
     "deals": "Deals",
     "checkoutCheck": "Checkout check",
-    "method": "How it works",
-    "search": "Search hotels",
-    "cta": "See prices",
+    "method": "How we measure",
+    "search": "Search a hotel or city",
+    "cta": "Price Alert",
     "menuOpen": "Open menu",
     "menuClose": "Close menu",
     "menuTitle": "Menu",
-    "drops": "Price drops"
+    "drops": "Price Drops",
+    "menuAlert": "Set up a Price Alert"
   },
   "footer": {
-    "tagline": "Price history for luxury hotels, so you know whether a price is good right now.",
+    "tagline": "Prices for five-star hotels. Checked every morning.",
     "explore": "Explore",
     "transparency": "Transparency",
     "legal": "Legal",
     "links": {
       "hotels": "All hotels",
       "deals": "Deals",
-      "method": "How it works",
+      "method": "How we measure",
       "checkoutCheck": "Checkout check",
       "ranking": "How we sort",
       "affiliate": "Affiliate disclosure",
       "imprint": "Imprint",
       "privacy": "Privacy",
-      "drops": "Price drops",
+      "drops": "Price Drops",
       "dropsWeek": "Weekly recap"
     },
     "copyright": "© {year} Tidaq",
-    "source": "Prices every morning from the booking sites. No cookies."
+    "source": "No cookies · Partner links are labelled."
   },
   "notFound": {
     "meta": "Page not found",

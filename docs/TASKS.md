@@ -116,8 +116,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-103 | Primitives: Button, Chip, Badge, Field, Toast, Skeleton, Segmented, Accordion, Sheet | CLOUD | M | C-102 | DONE ([#100](https://github.com/zaidg7/tidaq/pull/100)) |
 | C-104 | Photos A: Commons sweep for every hotel, picks, focal points, AVIF/WebP + blur-up | CLOUD | M | C-102 | TODO |
 | C-105 | Photos B: city photos, fallback with "Stadtbild", every hotel shows a photo | CLOUD | S | C-104 | TODO |
-| C-106 | Shell: navbar, docked search pill, mobile menu, footer, symbol + icons, /kassen-check links | CLOUD | M | C-103, B-020 | TODO |
-| C-107 | Search 1: desktop search bar + destination panel | CLOUD | M | C-103, C-105 | TODO |
+| C-106 | Shell: navbar, docked search pill, mobile menu, footer, symbol + icons, /kassen-check links | CLOUD | M | C-103, B-020 | DONE |
+| C-107 | Search 1: desktop search bar + destination panel + docked navbar search pill | CLOUD | M | C-103, C-105 | TODO |
 | C-108 | Search 2: calendar engine with price tints, date + guests popovers | CLOUD | M | C-107 | TODO |
 | C-109 | Search 3: phone full-screen search flow | CLOUD | M | C-108 | TODO |
 | C-110 | Search 4: submit routing, loading states, loading.tsx skeletons | CLOUD | S | C-109 | TODO |
@@ -125,7 +125,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-112 | Charts 2: meter, story chart, site bars, calendar cells | CLOUD | M | C-111 | TODO |
 | C-113 | Drop page redesign (TikTok landing) | CLOUD | M | C-105, C-112 | TODO |
 | C-114 | Price Drops page + /price-drops routes + Deals as a view | CLOUD | M | C-113 | TODO |
-| C-115 | Home redesign | CLOUD | M | C-110, C-114 | TODO |
+| C-115 | Home redesign (+ navbar transparent over the photo hero, photo strip in the phone menu) | CLOUD | M | C-110, C-114 | TODO |
 | C-116 | Stay page redesign (a/b) | CLOUD | L | C-110, C-112 | TODO |
 | C-117 | Hotel page: gallery, lightbox, cheapest dates, calendar | CLOUD | M | C-112, C-104 | TODO |
 | C-118 | City page + all hotels | CLOUD | M | C-105 | TODO |
@@ -962,6 +962,8 @@ Canvas boards "B · Clean Premium" updated with Zaid's feedback: "Price Drops" w
 **C-102 notes (DONE, [#99](https://github.com/zaidg7/tidaq/pull/99)):** Instrument Sans (`lib/fonts.ts`), PREMIUM.md tokens in `globals.css`. Soft Modern token names are aliases of the new ones (`fg`→`ink`, `bad`→`high`, `shadow-float`→`shadow-2`, …) so unrebuilt pages work; new code uses the new names; C-123 removes the aliases. `font-extrabold` = 700. Calendar tints stay soft until C-112. Visual baselines re-rendered.
 
 **C-103 notes (DONE, [#100](https://github.com/zaidg7/tidaq/pull/100)):** Button variants `secondary` (alias `ghost`), `subtle`, `onPhoto`, `dark`; sizes 44/52/60; `trailing` slot. `Chip` ink when selected; `Badge` tones `drop`, `onPhoto`; `TextField` label above; ink `Toast`; shimmer `Skeleton`. New `Segmented`, `Accordion`, `Sheet` (`components/ui`). The old `menu-sheet`/`date-sheet` dialogs move onto `Sheet` in C-106/C-108.
+
+**C-106 notes (DONE):** Symbol = t-Monogramm (option 1, the B-020 default; swap only `TidaqSymbol` in `components/ui/Logo.tsx` + `app/icon.svg` and re-run the icon PNGs if Zaid picks another). Favicon, apple icon, 192/512/maskable PNGs and `app/manifest.ts`. Navbar: Price Drops · Hotels · Kassen-Check · So messen wir, DE/EN, search, Price Alert (secondary, desktop only) → `/preissturz#preissturz-alarm`. Full-screen phone menu (native `<dialog>`, `.menu-sheet`). Footer on `--bg`, 2-column links on phones. "Kassen-Check" links to `/methodik#anbieter` until C-119 builds the page (fixes the 404). **Moved on:** the docked search pill goes into C-107 (needs the search panel); the transparent-over-photo navbar and the 3-photo strip in the menu go into C-115 (no photo hero exists yet).
 
 ### C-102 … C-123
 

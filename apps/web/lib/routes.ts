@@ -9,7 +9,8 @@ export const routes = {
   deals: '/deals',
   drops: '/preissturz',
   dropsWeek: '/preissturz/woche',
-  checkoutCheck: '/kassen-check',
+  // The Kassen-Check page comes with C-119; until then the provider scores on the method page.
+  checkoutCheck: '/methodik#anbieter',
   method: '/methodik',
   ranking: '/ranking',
   imprint: '/impressum',
@@ -20,8 +21,8 @@ export const routes = {
 export type RouteKey = keyof typeof routes;
 
 /**
- * Navbar order (CRAFT.md §3 Navbar): Preisstürze · Hotels · Kassen-Check · So funktioniert's.
- * The radar (C-080a) took the place of Deals, which stays in the footer and on the radar page.
+ * Navbar order (PREMIUM.md §12): Price Drops · Hotels · Kassen-Check · So messen wir.
+ * Deals stays in the footer and on the radar page.
  */
 export const navRoutes = [
   'drops',
