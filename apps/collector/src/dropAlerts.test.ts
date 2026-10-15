@@ -60,12 +60,15 @@ const subscriber = (
   city: string | null,
   locale: 'de' | 'en' = 'de',
   sentOn: string | null = null,
+  follow: { cityAlarm?: boolean; hotels?: number[] } = {},
 ) => ({
   id: `3333333${i}-3333-4333-8333-333333333333`,
   email: `gast${i}@example.com`,
   locale,
   manageToken: `4444444${i}-4444-4444-8444-444444444444`,
+  cityAlarm: follow.cityAlarm ?? true,
   city,
+  hotels: follow.hotels ?? [],
   sentOn,
 });
 
@@ -128,6 +131,32 @@ describe('runDropAlerts (C-080e2)', () => {
     });
     expect(again).toMatchObject({ recipients: 1, matched: 0, sent: 0 });
     expect(mail.calls).toHaveLength(1);
+  });
+
+  it('followed hotels (C-080k): alone, or next to a city alarm', async () => {
+    const mem = memoryStore([]);
+    mem.drops.push(drop(1, 'paris', 0.3), drop(2, 'zuerich', 0.2), drop(3, 'paris', 0.25));
+    mem.dropRecipients.push(
+      // Only Hotel 2, no city alarm.
+      subscriber(1, null, 'de', null, { cityAlarm: false, hotels: [2] }),
+      // Paris plus Hotel 2 in Zürich.
+      subscriber(2, 'paris', 'de', null, { hotels: [2] }),
+      // Follows a hotel without a drop today: no email.
+      subscriber(3, null, 'de', null, { cityAlarm: false, hotels: [9] }),
+    );
+    const mail = fakeBatch();
+    const s = await runDropAlerts({ store: mem.store, env: live, now: NOW, fetchFn: mail.fetchFn });
+    expect(s).toMatchObject({ recipients: 3, matched: 2, sent: 2 });
+    const [only, both] = mail.calls[0]?.body ?? [];
+    expect(only?.subject.replace(/[\u00a0\u202f]/g, ' ')).toBe('Preissturz: −20 % im Hotel 2');
+    expect(only?.text).toContain('Neue Preisstürze in deinen Hotels');
+    expect(only?.text).not.toContain('Hotel 1');
+    // The radar button isn't filtered to a city without a city alarm.
+    expect(only?.text).not.toContain('?stadt=');
+    expect(both?.text).toContain('Neue Preisstürze in Paris und deinen Hotels');
+    expect(both?.text).toContain('https://tidaq.com/preissturz/hotel-2/2026-11-20');
+    expect(both?.text).toContain('https://tidaq.com/preissturz?stadt=paris');
+    expect(mem.dropRecipients.map((r) => r.sentOn)).toEqual([TODAY, TODAY, null]);
   });
 
   it('dry run outside production: counts only, nothing marked', async () => {

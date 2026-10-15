@@ -1032,6 +1032,18 @@ export type Database = {
       }
       radar_drops: { Args: { p_today: string }; Returns: Json }
       radar_weekend_drops: { Args: { p_today: string }; Returns: Json }
+      drop_alert_recipients: {
+        Args: { p_today: string }
+        Returns: {
+          id: string
+          email: string
+          locale: string
+          manage_token: string
+          drop_alerts: boolean
+          drop_city: string | null
+          hotel_ids: number[]
+        }[]
+      }
       posted_drops_recent: { Args: { p_today: string; p_days?: number }; Returns: Json }
       newsletter_request: {
         Args: { p_consent_text: string; p_email: string; p_locale: string }

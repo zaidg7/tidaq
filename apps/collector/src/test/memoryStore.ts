@@ -335,7 +335,9 @@ export function memoryStore(
           email: r.email,
           locale: r.locale,
           manageToken: r.manageToken,
+          cityAlarm: r.cityAlarm,
           city: r.city,
+          hotels: r.hotels,
         }));
     },
     async todayDrops(today) {

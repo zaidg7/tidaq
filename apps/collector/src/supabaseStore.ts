@@ -48,7 +48,9 @@ const dropRecipientRows = z.array(
     email: z.string().email(),
     locale: z.enum(['de', 'en']),
     manage_token: z.string().uuid(),
+    drop_alerts: z.boolean(),
     drop_city: z.string().nullable(),
+    hotel_ids: z.array(z.number().int()),
   }),
 );
 
@@ -518,15 +520,9 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
     },
 
     async dropAlertRecipients(today) {
+      // City alarms and followed hotels (C-080k), not mailed yet today (SQL `drop_alert_recipients`).
       const rows = check(
-        await db
-          .from('watchers')
-          .select('id, email, locale, manage_token, drop_city')
-          .eq('drop_alerts', true)
-          .not('confirmed_at', 'is', null)
-          .is('unsubscribed_at', null)
-          .or(`drop_sent_on.is.null,drop_sent_on.lt.${today}`)
-          .limit(5000),
+        await db.rpc('drop_alert_recipients', { p_today: today }),
         'load drop alert recipients',
       );
       return dropRecipientRows.parse(rows).map((r) => ({
@@ -534,7 +530,9 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
         email: r.email,
         locale: r.locale,
         manageToken: r.manage_token,
+        cityAlarm: r.drop_alerts,
         city: r.drop_city,
+        hotels: r.hotel_ids,
       }));
     },
 

@@ -291,6 +291,6 @@ export {
   type PostedDropRow,
 } from './postedDrops';
 export { wrapLines } from './wrapLines';
-export { DROP_ALERTS, dropAlertMail, dropsFor } from './dropAlerts';
+export { DROP_ALERTS, dropAlertMail, dropsFor, type DropScope } from './dropAlerts';
 export { CAPTION, cityTag, dropCaption, dropHashtags, topCaption } from './dropCaptions';
 export { NEWSLETTER, newsletterMail, type NewsletterDeal } from './newsletter';

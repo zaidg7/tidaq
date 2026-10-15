@@ -25,7 +25,7 @@ export interface DropAlertRunSummary {
   /** Hotels with a drop seen in the last 24 hours. */
   hotels: number;
   recipients: number;
-  /** Recipients with at least one drop in their city. */
+  /** Recipients with at least one drop in their city or followed hotels. */
   matched: number;
   sent: number;
   failed: number;
@@ -74,7 +74,7 @@ export async function runDropAlerts(opts: {
   if (recipients.length === 0) return { ...summary, skipped: 'no_recipients' };
 
   const jobs = recipients
-    .map((r) => ({ r, drops: dropsFor(groups, r.city, since) }))
+    .map((r) => ({ r, drops: dropsFor(groups, r, since) }))
     .filter((j) => j.drops.length > 0);
   summary.matched = jobs.length;
   if (!live) {
@@ -82,18 +82,20 @@ export async function runDropAlerts(opts: {
     return summary;
   }
 
+  // The city's name from a drop there (a followed hotel elsewhere can be first in the list).
   const cityName = (slug: string | null, locale: 'de' | 'en', drops: HotelDrops[]) =>
-    slug ? (drops[0]?.city.name[locale] ?? null) : null;
+    slug ? (drops.find((g) => g.city.slug === slug)?.city.name[locale] ?? null) : null;
   const emails = jobs.map(({ r, drops }) => {
     const { subject, content } = dropAlertMail({
       locale: r.locale,
       groups: drops,
-      cityName: cityName(r.city, r.locale, drops),
+      cityName: r.cityAlarm ? cityName(r.city, r.locale, drops) : null,
+      ...(r.hotels.length > 0 && { hotels: r.cityAlarm ? ('also' as const) : ('only' as const) }),
       dropUrl: (slug, stay) => SITE_ORIGIN + localizedPath(dropPath(slug, stay), r.locale),
       radarUrl:
         SITE_ORIGIN +
         localizedPath('/preissturz', r.locale) +
-        (r.city ? `?stadt=${encodeURIComponent(r.city)}` : ''),
+        (r.cityAlarm && r.city ? `?stadt=${encodeURIComponent(r.city)}` : ''),
       manageUrl: SITE_ORIGIN + localizedPath(`/alarm/verwalten/${r.manageToken}`, r.locale),
     });
     const { html, text } = renderMail(content);
