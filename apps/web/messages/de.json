@@ -925,7 +925,12 @@
     "shareTextWeekend": "{hotel} in {city}: {now} statt {was} fürs Wochenende {date} ({pct}).",
     "historyTitleWeekend": "Preisverlauf dieses Wochenendes",
     "historyTextWeekend": "Günstigster Gesamtpreis für beide Nächte auf einer geprüften Buchungsseite, 2 Erwachsene, jeden Tag abgefragt.",
-    "overTextWeekend": "Der Preis fürs Wochenende {date} im {hotel} steht nicht mehr auf dem Radar. Er ist wieder gestiegen, oder das Wochenende hat schon begonnen."
+    "overTextWeekend": "Der Preis fürs Wochenende {date} im {hotel} steht nicht mehr auf dem Radar. Er ist wieder gestiegen, oder das Wochenende hat schon begonnen.",
+    "ctaOffer": "Zum Angebot bei {provider}",
+    "ctaOfferDirect": "Zur Hotelseite",
+    "newTab": "{label} (neuer Tab)",
+    "partnerNote": "Partnerlink: Bucht jemand darüber, bekommen wir eine kleine Provision. Dein Preis ändert sich nicht.",
+    "partnerMore": "Mehr dazu"
   },
   "dropAlert": {
     "title": "Preissturz-Alarm",

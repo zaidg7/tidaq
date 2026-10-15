@@ -91,6 +91,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-080e1 | Preissturz-Alarm sign-up: city or all, double opt-in, manage, privacy | CLOUD | M | C-080d, C-031a | DONE |
 | C-080e2 | Preissturz-Alarm send: daily email with new drops (dry run until launch) | CLOUD | M | C-080e1 | DONE |
 | C-080f | Weekend drops (2 nights, same site) on the radar | CLOUD | M | C-080a | DONE |
+| C-080g | Drop page: "Zum Angebot bei …" straight to the site with the price | CLOUD | S | C-080b, C-026 | DONE |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
@@ -1031,6 +1032,11 @@ Owner: CLOUD · Size: M · Depends on: C-080a · Status: DONE · PR: see `[C-080
 Fri–Sun stays whose 2-night total on one site fell the same way (sum of both nights from the same site and check day), as their own entries on the radar and drop pages (`/preissturz/[hotel]/[checkIn]--[checkOut]`).
 
 **C-080f notes (DONE):** SQL `radar_weekend_drops(p_today)` (migration `20261015085240`, anon-readable): Friday-to-Sunday totals per booking site (only sites that priced both nights on the same check day), then the same rules as `radar_drops`; same columns plus `check_out`. Core: `PriceDrop.checkOut` and `nights` (single nights default to the next day), `dropKey`/`parseDropKey` (`2026-10-23--2026-10-25`), `dropPath(slug, stay)`, `findDrop(groups, slug, stay)`, `dropDates` ("Fr, 23. Okt. – So, 25. Okt."); `dropStats.nights` counts a weekend as 2. The web reads both functions (`getDrops`, 2 parallel calls), and so does the collector for the Preissturz-Alarm. Weekend drops are their own entries: a "Wochenende" badge on the photo, both dates and "2 Nächte" in the meta line, the drop page at `/preissturz/[hotel]/[checkIn]--[checkOut]` with "Preisverlauf dieses Wochenendes" (2-night history from `stay_history_from_nights`) and the 2-night stay page; captions, alert emails, story images and the creator kit say "Wochenende". "So erkennen wir einen Preissturz" explains weekends. Sample: Fairmont Hamburg weekend in `lib/dropsSample.ts`.
+
+### C-080g · Straight to the offer
+
+Owner: CLOUD · Size: S · Depends on: C-080b, C-026 · Status: DONE · PR: see `[C-080g]`
+**Notes (DONE):** A TikTok visitor who wants the deal shouldn't need two more pages. The drop page's main button is now "Zum Angebot bei Booking.com" (`/go/…` with the drop's dates and 2 adults, new tab, `rel="sponsored nofollow noopener"`); "Alle Anbieter und Preisverlauf" stays as the second button. When the site's link carries our affiliate parameters (`providers.affiliate_template`, same check as the stay page), a note under the buttons says so and links to the Affiliate-Hinweis. No button for the hotel's own site (the drop rows don't carry its URL) or sites without a search link: then the stay page stays the main button.
 
 ## Checklists
 

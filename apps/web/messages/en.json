@@ -923,7 +923,12 @@
     "shareTextWeekend": "{hotel} in {city}: {now} instead of {was} for the weekend {date} ({pct}).",
     "historyTitleWeekend": "Price history of this weekend",
     "historyTextWeekend": "Cheapest total for both nights on one reviewed booking site, 2 adults, checked every day.",
-    "overTextWeekend": "The price for the weekend {date} at {hotel} is no longer on the radar. It went back up, or the weekend has already started."
+    "overTextWeekend": "The price for the weekend {date} at {hotel} is no longer on the radar. It went back up, or the weekend has already started.",
+    "ctaOffer": "Go to {provider}",
+    "ctaOfferDirect": "Go to the hotel's site",
+    "newTab": "{label} (new tab)",
+    "partnerNote": "Partner link: if someone books through it, we get a small commission. Your price doesn't change.",
+    "partnerMore": "Learn more"
   },
   "dropAlert": {
     "title": "Price drop alert",

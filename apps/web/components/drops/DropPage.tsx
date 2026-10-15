@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { TrendingDown } from 'lucide-react';
+import { ArrowUpRight, TrendingDown } from 'lucide-react';
 import {
   addDays,
   dropDates,
@@ -7,6 +7,7 @@ import {
   dropPath,
   formatPrice,
   formatWeekdayDayMonth,
+  goPath,
   localizedPath,
   stayPath,
   updatedAtParts,
@@ -89,6 +90,7 @@ export async function DropPage({
   drop: d,
   series,
   others,
+  offer = null,
   locale,
   today,
   now,
@@ -97,6 +99,8 @@ export async function DropPage({
   drop: PriceDrop;
   series: DailyPrice[];
   others: HotelDropsWithPhoto[];
+  /** The drop's site, when we can link to it (C-080g). */
+  offer?: { partner: boolean } | null;
   locale: Locale;
   today: string;
   now: Date;
@@ -161,12 +165,52 @@ export async function DropPage({
           <p className="text-meta mt-1 text-muted-ink">{f.low}</p>
           <p className="text-meta mt-1 text-muted-ink">{t('seen', { when, site: f.site })}</p>
 
-          <a
-            href={stayHref(g.hotel.slug, d, locale)}
-            className={cn(buttonClasses({ size: 'lg', block: true }), 'mt-7 sm:w-auto')}
-          >
-            {t('ctaStay')}
-          </a>
+          <div className="mt-7 flex flex-wrap gap-3">
+            {offer && (
+              // The site that had this price (C-080g): straight there, in a new tab.
+              <a
+                href={goPath(
+                  d.provider.slug,
+                  g.hotel.slug,
+                  { checkIn: d.night, checkOut: d.checkOut, adults: 2 },
+                  locale,
+                )}
+                target="_blank"
+                rel="sponsored nofollow noopener"
+                aria-label={t('newTab', {
+                  label: d.provider.direct
+                    ? t('ctaOfferDirect')
+                    : t('ctaOffer', { provider: d.provider.name }),
+                })}
+                className={cn(buttonClasses({ size: 'lg', block: true }), 'gap-2 sm:w-auto')}
+              >
+                {d.provider.direct
+                  ? t('ctaOfferDirect')
+                  : t('ctaOffer', { provider: d.provider.name })}
+                <Icon icon={ArrowUpRight} size={18} />
+              </a>
+            )}
+            <a
+              href={stayHref(g.hotel.slug, d, locale)}
+              className={cn(
+                buttonClasses({ size: 'lg', block: true, variant: offer ? 'ghost' : 'primary' }),
+                'sm:w-auto',
+              )}
+            >
+              {t('ctaStay')}
+            </a>
+          </div>
+          {offer?.partner && (
+            <p className="text-meta mt-2 text-muted-ink">
+              {t('partnerNote')}{' '}
+              <a
+                href={localizedPath(routes.affiliate, locale)}
+                className="font-semibold text-accent underline-offset-2 hover:underline"
+              >
+                {t('partnerMore')}
+              </a>
+            </p>
+          )}
           <div className="mt-4">
             <DropShare
               path={localizedPath(dropPath(g.hotel.slug, d), locale)}

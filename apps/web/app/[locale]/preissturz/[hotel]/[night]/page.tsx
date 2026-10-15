@@ -67,6 +67,7 @@ export default async function DropRoute(props: Props) {
         drop={load.drop}
         series={load.series}
         others={load.others}
+        offer={load.offer}
         locale={locale}
         today={today}
         now={new Date()}

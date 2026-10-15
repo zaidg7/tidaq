@@ -72,7 +72,7 @@ const providerRow = z.object({
 });
 
 /** True when the template really changes links (a broken one is ignored by `withAffiliate`). */
-const isAffiliate = (template: string | null) =>
+export const isAffiliate = (template: string | null) =>
   withAffiliate('https://example.com/', template) !== 'https://example.com/';
 
 const calendarRow = z.object({
