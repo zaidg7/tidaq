@@ -541,3 +541,19 @@
 .price-lvl-4 {
   background: #f7d9c4;
 }
+
+/* Photo blur-up (PREMIUM.md §7.3): the real image fades in over its blurred preview. Hidden
+   before load only when scripts run, so it never stays invisible without JavaScript. */
+.photo-img {
+  transition: opacity 400ms var(--ease-out);
+}
+@media (scripting: enabled) {
+  .photo-img:not([data-loaded]) {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-img {
+    transition: none;
+  }
+}
