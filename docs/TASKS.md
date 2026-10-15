@@ -115,7 +115,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-102 | Foundations: tokens, Instrument Sans, type, spacing, motion, focus | CLOUD | M | C-100 | DONE ([#99](https://github.com/zaidg7/tidaq/pull/99)) |
 | C-103 | Primitives: Button, Chip, Badge, Field, Toast, Skeleton, Segmented, Accordion, Sheet | CLOUD | M | C-102 | DONE ([#100](https://github.com/zaidg7/tidaq/pull/100)) |
 | C-104 | Photos A: Commons sweep for every hotel, picks, focal points, AVIF/WebP + blur-up | CLOUD | M | C-102 | DONE ([#101](https://github.com/zaidg7/tidaq/pull/101)) |
-| C-105 | Photos B: city photos, fallback with "Stadtbild", every hotel shows a photo | CLOUD | S | C-104 | DONE |
+| C-105 | Photos B: city photos, fallback with "Stadtbild", every hotel shows a photo | CLOUD | S | C-104 | DONE ([#102](https://github.com/zaidg7/tidaq/pull/102)) |
 | C-106 | Shell: navbar, docked search pill, mobile menu, footer, symbol + icons, /kassen-check links | CLOUD | M | C-103, B-020 | TODO |
 | C-107 | Search 1: desktop search bar + destination panel | CLOUD | M | C-103, C-105 | TODO |
 | C-108 | Search 2: calendar engine with price tints, date + guests popovers | CLOUD | M | C-107 | TODO |
