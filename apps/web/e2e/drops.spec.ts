@@ -12,7 +12,7 @@ test.describe('Preissturz-Radar (C-080a, sample data on /dev/drops)', () => {
     await page.goto('/dev/drops');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Preisstürze in Luxushotels');
     const main = page.getByRole('main');
-    await expect(main).toContainText('8 Nächte günstiger in 4 Hotels');
+    await expect(main).toContainText('10 Nächte günstiger in 5 Hotels');
     await expect(main).toContainText('5.722 Nächte in 82 Hotels auf 4 Buchungsseiten geprüft');
 
     const hero = main.getByRole('article', { name: 'Baur au Lac' });
@@ -29,10 +29,10 @@ test.describe('Preissturz-Radar (C-080a, sample data on /dev/drops)', () => {
 
     // The hero leaves the grid.
     const cards = main.getByRole('list', { name: 'Preisstürze' }).getByRole('listitem');
-    await expect(cards).toHaveCount(3);
+    await expect(cards).toHaveCount(4);
     await expect(cards.first()).toContainText('137 € weniger direkt beim Hotel');
-    await expect(cards.nth(1)).toContainText('Niedrigster Preis, seit wir messen');
-    await expect(cards.nth(1)).not.toContainText('Sonst um');
+    await expect(cards.nth(2)).toContainText('Niedrigster Preis, seit wir messen');
+    await expect(cards.nth(2)).not.toContainText('Sonst um');
   });
 
   test('a card lists its other nights', async ({ page }) => {
@@ -45,6 +45,39 @@ test.describe('Preissturz-Radar (C-080a, sample data on /dev/drops)', () => {
     // Four more nights: three as links, then "+1 weitere".
     await expect(cards.first().getByRole('link')).toHaveCount(4);
     await expect(cards.first()).toContainText('+1 weitere');
+  });
+
+  test('a weekend drop: badge, both dates, two nights, its own page and stay', async ({ page }) => {
+    await page.goto('/dev/drops');
+    const card = page
+      .getByRole('main')
+      .getByRole('list', { name: 'Preisstürze' })
+      .getByRole('listitem')
+      .filter({ hasText: 'Fairmont Hotel Vier Jahreszeiten' });
+    await expect(card).toContainText('Wochenende');
+    await expect(card).toContainText(
+      /Hamburg · Fr, \d+\. \p{L}+\.? – So, \d+\. \p{L}+\.? · 2 Nächte, 2 Erwachsene/u,
+    );
+    await expect(card).toContainText('980 €');
+    await expect(card).toContainText('Vortag 1.240 €');
+    const link = card.getByRole('link', { name: 'Fairmont Hotel Vier Jahreszeiten' });
+    await expect(link).toHaveAttribute(
+      'href',
+      /^\/preissturz\/fairmont-hotel-vier-jahreszeiten-hamburg\/\d{4}-\d{2}-\d{2}--\d{4}-\d{2}-\d{2}$/,
+    );
+
+    await page.goto('/dev/drops?share=fairmont-hotel-vier-jahreszeiten-hamburg');
+    const main = page.getByRole('main');
+    await expect(
+      main.getByRole('heading', { name: 'Preisverlauf dieses Wochenendes' }),
+    ).toBeVisible();
+    const stay = await main
+      .getByRole('link', { name: 'Alle Anbieter und Preisverlauf' })
+      .getAttribute('href');
+    const m = /\/(\d{4}-\d{2}-\d{2})--(\d{4}-\d{2}-\d{2})\?adults=2$/.exec(stay ?? '');
+    expect(m).not.toBeNull();
+    const nights = (Date.parse(m?.[2] ?? '') - Date.parse(m?.[1] ?? '')) / 86_400_000;
+    expect(nights).toBe(2);
   });
 
   test('a social bio link lands on the radar with a short welcome', async ({ page }) => {
@@ -65,6 +98,7 @@ test.describe('Preissturz-Radar (C-080a, sample data on /dev/drops)', () => {
       'Alle Städte',
       'Barcelona',
       'Berlin',
+      'Hamburg',
       'London',
       'Zürich',
     ]);

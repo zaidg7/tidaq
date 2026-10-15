@@ -1,5 +1,5 @@
-import { formatDrop, usualCents, type HotelDrops } from './drops';
-import { formatPrice, formatWeekdayDayMonth, type Locale } from './format';
+import { dropDates, formatDrop, usualCents, type HotelDrops } from './drops';
+import { formatPrice, type Locale } from './format';
 import type { MailContent } from './mailTemplate';
 
 /** Preissturz-Alarm emails (C-080e2). */
@@ -46,10 +46,11 @@ const TEXT = {
     all: 'in allen Städten',
     in: (city: string) => `in ${city}`,
     intro:
-      'Diese Nächte sind seit gestern deutlich billiger geworden, auf den niedrigsten Preis, den wir für sie gesehen haben. 1 Nacht, 2 Erwachsene, günstigste geprüfte Seite.',
+      'Diese Aufenthalte sind seit gestern deutlich billiger geworden, auf den niedrigsten Preis, den wir für sie gesehen haben. 2 Erwachsene, günstigste geprüfte Seite, Gesamtpreis.',
     meta: (city: string, night: string, now: string, was: string, pct: string) =>
       `${city} · ${night} · ${now} statt ${was} am Vortag (${pct})`,
     usual: (u: string) => `, sonst um ${u}`,
+    weekend: ' (Wochenende, 2 Nächte)',
     more: (n: number) => ` · ${n === 1 ? '1 weitere Nacht' : `${n} weitere Nächte`} günstiger`,
     button: 'Alle Preisstürze ansehen',
     hint: 'Preise ändern sich oft mehrmals am Tag. Prüf den Preis auf der Buchungsseite, bevor du buchst.',
@@ -66,10 +67,11 @@ const TEXT = {
     all: 'in all cities',
     in: (city: string) => `in ${city}`,
     intro:
-      "These nights got much cheaper since yesterday, to the lowest price we've seen for them. 1 night, 2 adults, cheapest reviewed site.",
+      "These stays got much cheaper since yesterday, to the lowest price we've seen for them. 2 adults, cheapest reviewed site, total price.",
     meta: (city: string, night: string, now: string, was: string, pct: string) =>
       `${city} · ${night} · ${now} instead of ${was} the day before (${pct})`,
     usual: (u: string) => `, usually around ${u}`,
+    weekend: ' (weekend, 2 nights)',
     more: (n: number) => ` · ${n === 1 ? '1 more night' : `${n} more nights`} cheaper`,
     button: 'See all price drops',
     hint: 'Prices often change several times a day. Check the price on the booking site before you book.',
@@ -85,7 +87,7 @@ export function dropAlertMail(d: {
   groups: readonly HotelDrops[];
   /** The subscriber's city name, or null for all cities. */
   cityName: string | null;
-  dropUrl: (hotelSlug: string, night: string) => string;
+  dropUrl: (hotelSlug: string, stay: { night: string; checkOut: string }) => string;
   radarUrl: string;
   manageUrl: string;
 }): { subject: string; content: MailContent } {
@@ -106,14 +108,14 @@ export function dropAlertMail(d: {
           meta:
             t.meta(
               g.city.name[d.locale],
-              formatWeekdayDayMonth(g.top.night, d.locale),
+              dropDates(g.top, d.locale) + (g.top.nights > 1 ? t.weekend : ''),
               formatPrice(g.top.nowCents, d.locale),
               formatPrice(g.top.prevCents, d.locale),
               formatDrop(g.top.drop, d.locale),
             ) +
             (usual !== null ? t.usual(formatPrice(usual, d.locale)) : '') +
             (g.more.length > 0 ? t.more(g.more.length) : ''),
-          url: d.dropUrl(g.hotel.slug, g.top.night),
+          url: d.dropUrl(g.hotel.slug, g.top),
         };
       }),
       button: { label: t.button, url: d.radarUrl },

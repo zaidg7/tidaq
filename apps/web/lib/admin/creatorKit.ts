@@ -1,5 +1,5 @@
 import 'server-only';
-import { dropCaption, dropPath, formatPrice, formatWeekdayDayMonth, topCaption } from '@tidaq/core';
+import { dropCaption, dropDates, dropKey, dropPath, formatPrice, topCaption } from '@tidaq/core';
 import type { KitItem } from '@/components/admin/CreatorKit';
 import { dropFacts } from '@/components/drops/DropPage';
 import type { CoverText } from '@/components/drops/storyImage';
@@ -20,17 +20,17 @@ export async function creatorKit(drops: HotelDropsWithPhoto[], now: Date) {
       const d = g.top;
       const f = await dropFacts(g, d, 'de', now);
       return {
-        key: `${g.hotel.slug}-${d.night}`,
+        key: `${g.hotel.slug}-${dropKey(d)}`,
         hotel: g.hotel.name,
-        place: `${g.city.name.de} · ${formatWeekdayDayMonth(d.night, 'de')}`,
+        place: `${g.city.name.de} · ${d.nights > 1 ? 'Wochenende ' : ''}${dropDates(d, 'de')}`,
         pct: f.pct,
         prices: `${formatPrice(d.nowCents, 'de')} statt ${formatPrice(d.prevCents, 'de')}`,
         photo: g.image?.src ?? null,
         thumb: hotelPhoto(g.hotel.slug)?.[160].src ?? null,
         story: f.story,
         caption: dropCaption(g, d),
-        path: dropPath(g.hotel.slug, d.night),
-        fileName: `tidaq-${g.hotel.slug}-${d.night}`,
+        path: dropPath(g.hotel.slug, d),
+        fileName: `tidaq-${g.hotel.slug}-${dropKey(d)}`,
       };
     }),
   );

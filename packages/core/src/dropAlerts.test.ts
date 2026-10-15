@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { DROP_ALERTS, dropAlertMail, dropsFor } from './dropAlerts';
-import { groupDrops, type PriceDropRow } from './drops';
+import { dropKey, groupDrops, type PriceDropRow } from './drops';
 import { renderMail } from './mailTemplate';
 
 const TODAY = '2026-10-15';
@@ -89,7 +89,7 @@ describe('dropAlertMail', () => {
       locale,
       groups: g,
       cityName,
-      dropUrl: (s, n) => `https://tidaq.com/preissturz/${s}/${n}`,
+      dropUrl: (s, d) => `https://tidaq.com/preissturz/${s}/${dropKey(d)}`,
       radarUrl: 'https://tidaq.com/preissturz',
       manageUrl: 'https://tidaq.com/alarm/verwalten/abc',
     });
@@ -127,6 +127,16 @@ describe('dropAlertMail', () => {
     const { html, text } = renderMail(mail('de', null).content);
     expect(html).toContain('Baur au Lac');
     expect(text).not.toMatch(/nur heute|schnell|jetzt buchen|letzte Chance/i);
+  });
+
+  it('a weekend says so, with its dates and link', () => {
+    const [w] = groupDrops([row({ night: '2026-10-23', check_out: '2026-10-25' })]);
+    if (!w) throw new Error('no group');
+    const item = mail('de', null, [w]).content.items?.[0];
+    expect(plain(item?.meta ?? '')).toContain('Fr, 23. Okt. – So, 25. Okt. (Wochenende, 2 Nächte)');
+    expect(item?.url).toBe(
+      'https://tidaq.com/preissturz/baur-au-lac-zuerich/2026-10-23--2026-10-25',
+    );
   });
 
   it('refuses an empty list', () => {

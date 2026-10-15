@@ -23,7 +23,7 @@ test.describe('creator kit (C-080c, sample data on /dev/admin/drops)', () => {
       'Preisstürze für Social Media',
     );
     const items = page.getByRole('main').getByRole('listitem');
-    await expect(items).toHaveCount(4);
+    await expect(items).toHaveCount(5);
     const first = items.first();
     await expect(first.getByRole('heading')).toHaveText('1. Baur au Lac');
     const caption = plain(await first.getByLabel('Text für Baur au Lac').inputValue());
@@ -47,18 +47,18 @@ test.describe('creator kit (C-080c, sample data on /dev/admin/drops)', () => {
     await page.goto('/dev/admin/drops');
     const caption = plain(await page.getByLabel('Text für die Top 5').inputValue());
     expect(caption.split('\n')[0]).toMatch(
-      /^Die 4 größten Preisstürze in Luxushotels seit gestern/,
+      /^Die 5 größten Preisstürze in Luxushotels seit gestern/,
     );
     expect(caption).toContain('1. Baur au Lac, Zürich: 684 € statt 989 € (−31 %)');
 
     const files: Download[] = [];
     page.on('download', (d) => files.push(d));
-    await page.getByRole('button', { name: '5 Bilder teilen' }).click();
-    await expect(page.getByRole('status')).toHaveText('5 Bilder gespeichert');
+    await page.getByRole('button', { name: '6 Bilder teilen' }).click();
+    await expect(page.getByRole('status')).toHaveText('6 Bilder gespeichert');
     expect(files.map((f) => f.suggestedFilename())[0]).toMatch(
       /^tidaq-top5-\d{4}-\d{2}-\d{2}-0\.png$/,
     );
-    expect(files).toHaveLength(5);
+    expect(files).toHaveLength(6);
     expect(await pngSize(files[0] as Download)).toEqual([1080, 1920]);
   });
 

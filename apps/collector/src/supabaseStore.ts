@@ -539,8 +539,16 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
     },
 
     async todayDrops(today) {
-      const rows = check(await db.rpc('radar_drops', { p_today: today }), 'load drops');
-      return z.array(priceDropRowSchema).parse(rows);
+      // Single nights and weekends (C-080f).
+      const [nights, weekends] = await Promise.all([
+        db.rpc('radar_drops', { p_today: today }),
+        db.rpc('radar_weekend_drops', { p_today: today }),
+      ]);
+      const rows = z.array(priceDropRowSchema);
+      return [
+        ...rows.parse(check(nights, 'load drops')),
+        ...rows.parse(check(weekends, 'load weekend drops')),
+      ];
     },
 
     async markDropAlertsSent(ids, today) {

@@ -3,6 +3,7 @@ import { cache } from 'react';
 import {
   addDays,
   findDrop,
+  parseDropKey,
   groupDrops,
   priceDropRowSchema,
   z,
@@ -29,7 +30,12 @@ export type DropsLoad =
 export const getDrops = cache(async (today: string): Promise<DropsLoad> => {
   if (!hasSupabase()) return { kind: 'unavailable' };
   try {
-    const rows = await rpc('radar_drops', { p_today: today }, z.array(priceDropRowSchema));
+    // Single nights and Friday-to-Sunday weekends (C-080f).
+    const [nights, weekends] = await Promise.all([
+      rpc('radar_drops', { p_today: today }, z.array(priceDropRowSchema)),
+      rpc('radar_weekend_drops', { p_today: today }, z.array(priceDropRowSchema)),
+    ]);
+    const rows = [...nights, ...weekends];
     const seenAt = rows.reduce<string | null>(
       (max, r) => (max === null || r.seen_at > max ? r.seen_at : max),
       null,
@@ -72,7 +78,7 @@ export const getRadarStats = cache(async (today: string): Promise<RadarStats | n
   }
 });
 
-/** One day of `stay_history_from_nights` for a single night (C-080b). */
+/** One day of `stay_history_from_nights` for the drop's stay (C-080b). */
 const nightDay = z.object({ day: z.string(), best_cents: z.number().int().positive() });
 
 /** Days of history on a drop page's chart. */
@@ -99,10 +105,13 @@ export type DropPageLoad =
  * drop is gone the page says so and points to the current price.
  */
 export const getDropPage = cache(
-  async (slug: string, night: string, today: string): Promise<DropPageLoad> => {
+  // `key` is a `dropKey` (a string, so `cache` dedupes metadata and page): night or weekend.
+  async (slug: string, key: string, today: string): Promise<DropPageLoad> => {
+    const stay = parseDropKey(key);
+    if (!stay) return { kind: 'missing' };
     const load = await getDrops(today);
     if (load.kind === 'unavailable') return { kind: 'unavailable' };
-    const found = findDrop(load.drops, slug, night);
+    const found = findDrop(load.drops, slug, stay);
     if (!found) {
       const hotel = (await getCatalog())?.hotels.find((h) => h.slug === slug);
       return hotel
@@ -115,8 +124,8 @@ export const getDropPage = cache(
         'stay_history_from_nights',
         {
           p_hotel_id: found.group.hotel.id,
-          p_check_in: night,
-          p_check_out: addDays(night, 1),
+          p_check_in: stay.night,
+          p_check_out: stay.checkOut,
           p_from_day: addDays(today, -(DROP_HISTORY_DAYS - 1)),
         },
         z.array(nightDay),

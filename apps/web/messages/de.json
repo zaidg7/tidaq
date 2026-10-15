@@ -850,7 +850,7 @@
     },
     "listLabel": "Preisstürze",
     "dropLabel": "Preis um {pct} gefallen",
-    "night": "{date} · 1 Nacht, 2 Erwachsene",
+    "night": "{date} · {n, plural, one {# Nacht} other {# Nächte}}, 2 Erwachsene",
     "was": "Vortag {price}",
     "saved": "{amount} weniger bei {provider}",
     "savedDirect": "{amount} weniger direkt beim Hotel",
@@ -869,6 +869,7 @@
     "how": {
       "compare": "Wir vergleichen den günstigsten Preis einer Nacht auf geprüften Buchungsseiten mit unserer Abfrage vom Vortag.",
       "threshold": "Er muss um mindestens 15 % und 50 € gefallen sein und unter jedem Preis liegen, den wir für diese Nacht in den 14 Tagen davor gesehen haben.",
+      "weekend": "Wochenenden (Freitag bis Sonntag) prüfen wir als Ganzes: beide Nächte auf derselben Buchungsseite, so wie du sie buchen würdest.",
       "confirm": "Sehr große Stürze zeigen wir nur, wenn eine zweite Seite den Preis bestätigt.",
       "check": "Preise ändern sich oft mehrmals am Tag. Prüf den Preis auf der Buchungsseite, bevor du buchst."
     },
@@ -888,7 +889,9 @@
       "free": "Kostenlos, ohne Anmeldung",
       "label": "Darum Tidaq"
     },
-    "alertCta": "Preissturz-Alarm einrichten: Wir sagen dir Bescheid"
+    "alertCta": "Preissturz-Alarm einrichten: Wir sagen dir Bescheid",
+    "stay": "{n, plural, one {# Nacht} other {# Nächte}}, 2 Erwachsene",
+    "weekendBadge": "Wochenende"
   },
   "drop": {
     "metaTitle": "{hotel}: {pct} für {date} | Tidaq",
@@ -908,7 +911,7 @@
     "close": "Schließen",
     "shareText": "{hotel} in {city}: {now} statt {was} für die Nacht vom {date} ({pct}).",
     "storyUrl": "tidaq.com/preissturz",
-    "storyAsOf": "Stand {date}, {time} · 1 Nacht, 2 Erwachsene",
+    "storyAsOf": "Stand {date}, {time} · {stay}",
     "historyTitle": "Preisverlauf dieser Nacht",
     "historyText": "Günstigster Preis auf geprüften Buchungsseiten für 1 Nacht und 2 Erwachsene, jeden Tag abgefragt.",
     "moreTitle": "Auch günstiger im {hotel}",
@@ -917,7 +920,12 @@
     "overTitle": "Dieser Preissturz ist vorbei",
     "overText": "Der Preis für die Nacht vom {date} im {hotel} steht nicht mehr auf dem Radar. Er ist wieder gestiegen, oder die Nacht hat schon begonnen.",
     "overStay": "Aktuellen Preis ansehen",
-    "overAll": "Alle Preisstürze ansehen"
+    "overAll": "Alle Preisstürze ansehen",
+    "metaDescriptionWeekend": "Das Wochenende {date} im {hotel} ({city}) kostet {site} {now} statt {was} am Vortag, für beide Nächte. {low}.",
+    "shareTextWeekend": "{hotel} in {city}: {now} statt {was} fürs Wochenende {date} ({pct}).",
+    "historyTitleWeekend": "Preisverlauf dieses Wochenendes",
+    "historyTextWeekend": "Günstigster Gesamtpreis für beide Nächte auf einer geprüften Buchungsseite, 2 Erwachsene, jeden Tag abgefragt.",
+    "overTextWeekend": "Der Preis fürs Wochenende {date} im {hotel} steht nicht mehr auf dem Radar. Er ist wieder gestiegen, oder das Wochenende hat schon begonnen."
   },
   "dropAlert": {
     "title": "Preissturz-Alarm",

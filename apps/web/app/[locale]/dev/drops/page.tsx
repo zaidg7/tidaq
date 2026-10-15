@@ -63,7 +63,7 @@ export default async function DevDropsPage({
           name: ADLON[2],
           city: { slug: ADLON[3], name: { de: ADLON[4], en: ADLON[5] } },
         }}
-        night={addDays(today, 3)}
+        stay={{ night: addDays(today, 3), checkOut: addDays(today, 4) }}
         locale={locale}
         today={today}
       />

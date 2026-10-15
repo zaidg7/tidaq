@@ -2,8 +2,9 @@ import { getTranslations } from 'next-intl/server';
 import { TrendingDown } from 'lucide-react';
 import {
   addDays,
+  dropDates,
+  dropKey,
   dropPath,
-  dropStay,
   formatPrice,
   formatWeekdayDayMonth,
   localizedPath,
@@ -33,7 +34,8 @@ export async function dropFacts(g: HotelDropsWithPhoto, d: PriceDrop, locale: Lo
   const t = await getTranslations({ locale, namespace: 'drop' });
   const td = await getTranslations({ locale, namespace: 'drops' });
   const pct = dropPercent(d.drop, locale);
-  const date = formatWeekdayDayMonth(d.night, locale);
+  const date = dropDates(d, locale);
+  const weekend = d.nights > 1;
   const nowP = formatPrice(d.nowCents, locale);
   const was = formatPrice(d.prevCents, locale);
   const site = d.provider.direct ? t('atDirect') : t('atSite', { provider: d.provider.name });
@@ -55,31 +57,31 @@ export async function dropFacts(g: HotelDropsWithPhoto, d: PriceDrop, locale: Lo
     saved,
     // One short line on the image: the new low only.
     low: newLow,
-    asOf: t('storyAsOf', { date: seen.date, time: seen.time }),
+    asOf: t('storyAsOf', { date: seen.date, time: seen.time, stay: td('stay', { n: d.nights }) }),
     url: t('storyUrl'),
   };
   return {
     pct,
     date,
+    weekend,
     site,
     low,
     seen,
     saved,
     story,
     title: t('metaTitle', vars),
-    description: t('metaDescription', { ...vars, site, low }),
-    shareText: t('shareText', vars),
+    description: t(weekend ? 'metaDescriptionWeekend' : 'metaDescription', { ...vars, site, low }),
+    shareText: t(weekend ? 'shareTextWeekend' : 'shareText', vars),
   };
 }
 
-const nightStay = (slug: string, night: string, locale: Locale) => {
-  const s = dropStay(night);
-  return localizedPath(stayPath(slug, s.checkIn, s.checkOut, 2), locale);
-};
+/** The stay page of a drop's night or weekend (2 adults, like the night grid). */
+const stayHref = (slug: string, s: { night: string; checkOut: string }, locale: Locale) =>
+  localizedPath(stayPath(slug, s.night, s.checkOut, 2), locale);
 
 /**
- * `/preissturz/[hotel]/[night]` (C-080b): one drop as a page worth sharing. Photo with the drop,
- * both prices, the site and the new-low line, the night's price history, "Als Story teilen" and
+ * `/preissturz/[hotel]/[night]` (C-080b; a night or a weekend, C-080f): one drop as a page worth
+ * sharing. Photo with the drop, both prices, the site and the new-low line, the stay's price history, "Als Story teilen" and
  * "Link teilen", then the hotel's other cheaper nights and today's other drops.
  */
 export async function DropPage({
@@ -109,8 +111,8 @@ export async function DropPage({
         ? td('yesterday', { time: f.seen.time })
         : `${f.seen.date}, ${f.seen.time}`;
   const nights = [g.top, ...g.more]
-    .filter((n) => n.night !== d.night)
-    .sort((a, b) => a.night.localeCompare(b.night));
+    .filter((n) => dropKey(n) !== dropKey(d))
+    .sort((a, b) => a.night.localeCompare(b.night) || a.nights - b.nights);
 
   return (
     <div className="mx-auto w-full max-w-[1080px] px-5 pt-8 pb-16 md:px-7 lg:pt-14 lg:pb-[88px]">
@@ -146,7 +148,7 @@ export async function DropPage({
           </p>
           <h1 className="text-h2 mt-2">{g.hotel.name}</h1>
           <p className="text-meta mt-2 text-muted-ink">
-            {g.city.name[locale]} · {td('night', { date: f.date })}
+            {g.city.name[locale]} · {td('night', { date: f.date, n: d.nights })}
           </p>
           <p className="sr-only">{td('dropLabel', { pct: f.pct })}</p>
           <div className="mt-6 flex flex-wrap items-baseline gap-x-4 gap-y-1">
@@ -160,19 +162,19 @@ export async function DropPage({
           <p className="text-meta mt-1 text-muted-ink">{t('seen', { when, site: f.site })}</p>
 
           <a
-            href={nightStay(g.hotel.slug, d.night, locale)}
+            href={stayHref(g.hotel.slug, d, locale)}
             className={cn(buttonClasses({ size: 'lg', block: true }), 'mt-7 sm:w-auto')}
           >
             {t('ctaStay')}
           </a>
           <div className="mt-4">
             <DropShare
-              path={localizedPath(dropPath(g.hotel.slug, d.night), locale)}
+              path={localizedPath(dropPath(g.hotel.slug, d), locale)}
               photo={g.image?.src ?? null}
               story={f.story}
               title={f.title}
               text={f.shareText}
-              fileName={`tidaq-${g.hotel.slug}-${d.night}`}
+              fileName={`tidaq-${g.hotel.slug}-${dropKey(d)}`}
               labels={{
                 shareStory: t('shareStory'),
                 storyWorking: t('storyWorking'),
@@ -191,9 +193,11 @@ export async function DropPage({
       {series.length >= 2 && (
         <section aria-labelledby="drop-history" className="mt-14 lg:mt-[88px]">
           <h2 id="drop-history" className="text-h3">
-            {t('historyTitle')}
+            {t(f.weekend ? 'historyTitleWeekend' : 'historyTitle')}
           </h2>
-          <p className="text-meta mt-1 max-w-[44em] text-muted-ink">{t('historyText')}</p>
+          <p className="text-meta mt-1 max-w-[44em] text-muted-ink">
+            {t(f.weekend ? 'historyTextWeekend' : 'historyText')}
+          </p>
           <PriceChart
             series={series}
             from={addDays(today, -(DROP_HISTORY_DAYS - 1))}
@@ -210,12 +214,14 @@ export async function DropPage({
           </h2>
           <ul className="mt-4 flex flex-wrap gap-2">
             {nights.map((n) => (
-              <li key={n.night}>
+              <li key={dropKey(n)}>
                 <a
-                  href={localizedPath(dropPath(g.hotel.slug, n.night), locale)}
+                  href={localizedPath(dropPath(g.hotel.slug, n), locale)}
                   className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-surface px-4 text-[15px] font-semibold hover:border-line-strong"
                 >
-                  {formatWeekdayDayMonth(n.night, locale)}
+                  {n.nights > 1
+                    ? `${td('weekendBadge')} ${formatWeekdayDayMonth(n.night, locale)}`
+                    : formatWeekdayDayMonth(n.night, locale)}
                   <span className="text-good-ink tabular-nums">{dropPercent(n.drop, locale)}</span>
                 </a>
               </li>
@@ -246,36 +252,36 @@ export async function DropPage({
   );
 }
 
-/** A shared link whose drop is gone (price back up, or the night started): say so, show the way on. */
+/**
+ * A shared link whose drop is gone (price back up, or the stay started): say so, show the way on.
+ */
 export async function DropOver({
   hotel,
-  night,
+  stay,
   locale,
   today,
 }: {
   hotel: { slug: string; name: string; city?: { slug: string; name: { de: string; en: string } } };
-  night: string;
+  /** The night or weekend of the link. */
+  stay: { night: string; checkOut: string };
   locale: Locale;
   today: string;
 }) {
   const t = await getTranslations({ locale, namespace: 'drop' });
-  const upcoming = night > today;
+  const upcoming = stay.night > today;
   return (
     <>
       <StatusPage
         eyebrow={t('overEyebrow')}
         title={t('overTitle')}
-        text={t('overText', {
-          date: formatWeekdayDayMonth(night, locale),
+        text={t(dropKey(stay) === stay.night ? 'overText' : 'overTextWeekend', {
+          date: dropDates(stay, locale),
           hotel: hotel.name,
         })}
       >
         <div className="flex flex-wrap justify-center gap-3">
           {upcoming && (
-            <a
-              href={nightStay(hotel.slug, night, locale)}
-              className={buttonClasses({ size: 'lg' })}
-            >
+            <a href={stayHref(hotel.slug, stay, locale)} className={buttonClasses({ size: 'lg' })}>
               {t('overStay')}
             </a>
           )}

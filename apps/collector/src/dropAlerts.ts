@@ -89,7 +89,7 @@ export async function runDropAlerts(opts: {
       locale: r.locale,
       groups: drops,
       cityName: cityName(r.city, r.locale, drops),
-      dropUrl: (slug, night) => SITE_ORIGIN + localizedPath(dropPath(slug, night), r.locale),
+      dropUrl: (slug, stay) => SITE_ORIGIN + localizedPath(dropPath(slug, stay), r.locale),
       radarUrl:
         SITE_ORIGIN +
         localizedPath('/preissturz', r.locale) +

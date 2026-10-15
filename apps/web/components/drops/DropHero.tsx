@@ -3,7 +3,7 @@ import { ArrowRight, TrendingDown } from 'lucide-react';
 import {
   dropPath,
   formatPrice,
-  formatWeekdayDayMonth,
+  dropDates,
   localizedPath,
   usualCents,
   type Locale,
@@ -13,7 +13,7 @@ import { Icon } from '@/components/ui/Icon';
 import { Price } from '@/components/ui/Price';
 import { cn } from '@/lib/cn';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
-import { dropPercent } from './DropCard';
+import { dropPercent, WeekendBadge } from './DropCard';
 
 /**
  * The biggest drop, big, right under the radar's title (C-080d): what someone who arrives from a
@@ -26,7 +26,7 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
   const d = g.top;
   const pct = dropPercent(d.drop, locale);
   const usual = usualCents(d);
-  const href = localizedPath(dropPath(g.hotel.slug, d.night), locale);
+  const href = localizedPath(dropPath(g.hotel.slug, d), locale);
   return (
     <article
       aria-labelledby="drop-hero"
@@ -53,6 +53,7 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
           <Icon icon={TrendingDown} size={24} />
           {pct}
         </span>
+        {d.nights > 1 && <WeekendBadge label={t('weekendBadge')} />}
       </div>
       <div className="flex flex-col p-5 md:p-7">
         <p className="text-eyebrow text-good-ink">{t('heroEyebrow')}</p>
@@ -62,7 +63,7 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
           </a>
         </h2>
         <p className="text-meta mt-1 text-muted-ink">
-          {g.city.name[locale]} · {t('night', { date: formatWeekdayDayMonth(d.night, locale) })}
+          {g.city.name[locale]} · {t('night', { date: dropDates(d, locale), n: d.nights })}
         </p>
         <p className="sr-only">{t('dropLabel', { pct })}</p>
         <div className="mt-5 flex flex-wrap items-baseline gap-x-4 gap-y-1">

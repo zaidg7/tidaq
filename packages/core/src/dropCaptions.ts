@@ -1,5 +1,5 @@
-import { formatDrop, usualCents, type HotelDrops, type PriceDrop } from './drops';
-import { formatPrice, formatWeekdayDayMonth, updatedAtParts } from './format';
+import { dropDates, formatDrop, usualCents, type HotelDrops, type PriceDrop } from './drops';
+import { formatPrice, updatedAtParts } from './format';
 
 /**
  * Ready-to-post German captions for the creator kit (C-080c, /admin/preisstuerze): one per drop
@@ -29,6 +29,10 @@ function seenText(seenAt: string): string {
   return `${p.date}, ${p.time}`;
 }
 
+/** "Nacht vom Di, 27. Okt." or "Wochenende Fr, 23. Okt. – So, 25. Okt." (C-080f). */
+const when = (d: PriceDrop) =>
+  d.nights > 1 ? `Wochenende ${dropDates(d, 'de')}` : `Nacht vom ${dropDates(d, 'de')}`;
+
 const site = (d: PriceDrop) => (d.provider.direct ? 'direkt beim Hotel' : `bei ${d.provider.name}`);
 
 /** Caption for one drop's story or post. */
@@ -40,7 +44,7 @@ export function dropCaption(g: HotelDrops, d: PriceDrop): string {
   const usual = usualCents(d);
   return [
     `Preissturz im ${g.hotel.name}, ${g.city.name.de} 📉`,
-    `Nacht vom ${formatWeekdayDayMonth(d.night, 'de')}: ${formatPrice(d.nowCents, 'de')} statt ${formatPrice(d.prevCents, 'de')} am Vortag (${formatDrop(d.drop, 'de')}) ${site(d)}.`,
+    `${when(d)}: ${formatPrice(d.nowCents, 'de')} statt ${formatPrice(d.prevCents, 'de')} am Vortag (${formatDrop(d.drop, 'de')}) ${site(d)}.`,
     usual !== null ? `Sonst um ${formatPrice(usual, 'de')}. ${low}` : low,
     `Stand: ${seenText(d.seenAt)}. Preise ändern sich oft, prüf sie vor dem Buchen.`,
     `Alle Preisstürze mit Preisverlauf: ${CAPTION.url}`,
@@ -57,7 +61,7 @@ export function topCaption(groups: readonly HotelDrops[]): string {
   const seen = top.reduce((max, g) => (g.top.seenAt > max ? g.top.seenAt : max), first.top.seenAt);
   const lines = top.map(
     (g, i) =>
-      `${i + 1}. ${g.hotel.name}, ${g.city.name.de}: ${formatPrice(g.top.nowCents, 'de')} statt ${formatPrice(g.top.prevCents, 'de')} (${formatDrop(g.top.drop, 'de')}), Nacht vom ${formatWeekdayDayMonth(g.top.night, 'de')}`,
+      `${i + 1}. ${g.hotel.name}, ${g.city.name.de}: ${formatPrice(g.top.nowCents, 'de')} statt ${formatPrice(g.top.prevCents, 'de')} (${formatDrop(g.top.drop, 'de')}), ${when(g.top)}`,
   );
   const cities = [...new Set(top.map((g) => cityTag(g.city.name.de)))];
   return [
