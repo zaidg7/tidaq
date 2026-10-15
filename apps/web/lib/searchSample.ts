@@ -44,3 +44,28 @@ export const SEARCH_SAMPLE: CatalogHotel[] = [
   h('burj-al-arab-dubai', 'Burj Al Arab Jumeirah', DUBAI),
   h('atlantis-the-royal-dubai', 'Atlantis The Royal', DUBAI),
 ];
+
+/**
+ * Sample nightly prices for `/dev/search` and the search without a database: 120 nights from
+ * today around a base price from the slug, weekends dearer, a few nights without a price.
+ */
+export function sampleNights(
+  slug: string,
+  today: string,
+): { night: string; cents: number | null }[] {
+  let seed = [...slug].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const rand = () => {
+    seed = (seed * 1_103_515_245 + 12_345) >>> 0;
+    return seed / 2 ** 32;
+  };
+  const base = 380 + Math.round(rand() * 600);
+  const start = Date.parse(`${today}T00:00:00Z`);
+  return Array.from({ length: 120 }, (_, i) => {
+    const date = new Date(start + i * 86_400_000);
+    const night = date.toISOString().slice(0, 10);
+    const weekend = date.getUTCDay() === 5 || date.getUTCDay() === 6;
+    if (rand() < 0.04) return { night, cents: null };
+    const euros = base * (weekend ? 1.22 : 1) * (0.82 + rand() * 0.36);
+    return { night, cents: Math.round(euros) * 100 };
+  });
+}

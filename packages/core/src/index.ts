@@ -38,14 +38,17 @@ export {
 export { parseEuroCents } from './money';
 export {
   BEST_STAY_KINDS,
+  cheapestInMonth,
   cheapestStays,
   PRICE_LEVELS,
   priceLevels,
   stayFromNights,
+  weekendStays,
   type BestStay,
   type BestStayKind,
   type NightPrice,
   type StayTotal,
+  type WeekendStay,
 } from './hotelCalendar';
 export {
   accuracyShare,

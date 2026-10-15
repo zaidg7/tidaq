@@ -707,8 +707,8 @@
     transform: translateX(6px);
   }
 }
-.seg:is(:hover, :focus-within) + .seg-divider,
-.seg-divider:has(+ .seg:is(:hover, :focus-within)) {
+.seg:is(:hover, :focus-within, [data-active]) + .seg-divider,
+.seg-divider:has(+ .seg:is(:hover, :focus-within, [data-active])) {
   opacity: 0;
 }
 
