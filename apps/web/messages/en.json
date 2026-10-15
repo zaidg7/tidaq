@@ -262,6 +262,7 @@
       "invalid": "Please enter a valid email address and tick the box.",
       "too_soon": "We just sent you an email. Check your inbox or try again in a minute.",
       "rate_limited": "Too many attempts in a short time. Please wait a few minutes.",
+      "bot": "The security check didn't work. Reload the page and try again.",
       "error": "That didn't work just now. Please try again in a moment."
     }
   },
@@ -338,6 +339,7 @@
       "too_many": "You already have 10 active alerts. Stop one from your latest email, then add a new one.",
       "too_soon": "There was a request for this address just now. Please try again in a minute.",
       "rate_limited": "Too many requests in a short time. Please try again in a few minutes.",
+      "bot": "The security check didn't work. Reload the page and try again.",
       "bad_price": "Enter the target price as a number, e.g. 1,100.",
       "error": "That didn't work just now. Please try again in a moment."
     },
@@ -458,7 +460,8 @@
           "title": "3. No cookies, no tracking",
           "text": [
             "We set no cookies for visitors and store nothing in your browser. We use no analytics or ad services that follow you across websites. Fonts and hotel photos come from our own server, without requests to third parties.",
-            "To see how many people use Tidaq and how fast the pages load, we use Cloudflare Web Analytics. It works without cookies and without storing anything in your browser, and it doesn't follow you across other websites. Cloudflare sees the page you open, its load time, your browser type and country, and shows us only totals. The legal basis is our legitimate interest in a working, fast website (Art. 6(1)(f) GDPR)."
+            "To see how many people use Tidaq and how fast the pages load, we use Cloudflare Web Analytics. It works without cookies and without storing anything in your browser, and it doesn't follow you across other websites. Cloudflare sees the page you open, its load time, your browser type and country, and shows us only totals. The legal basis is our legitimate interest in a working, fast website (Art. 6(1)(f) GDPR).",
+            "So nobody misuses our forms to send emails to strangers, Cloudflare Turnstile checks that a person fills in an alert or newsletter form when it's sent. Usually you won't notice; rarely a box to tick appears. For this check Cloudflare processes only the technical data it needs (for example browser features and your IP address), sets no cookies on our site and doesn't see what you type into the form. The legal basis is our legitimate interest in preventing misuse (Art. 6(1)(f) GDPR). Details: Cloudflare's Turnstile Privacy Addendum."
           ]
         },
         {
@@ -952,6 +955,7 @@
       "invalid": "Please enter a valid email address and tick the box.",
       "too_soon": "We just sent you an email. Check your inbox or try again in a minute.",
       "rate_limited": "Too many attempts in a short time. Please wait a few minutes.",
+      "bot": "The security check didn't work. Reload the page and try again.",
       "error": "That didn't work. Please try again in a moment."
     },
     "scope": "Alert for",

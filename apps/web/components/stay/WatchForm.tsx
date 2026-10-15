@@ -4,6 +4,7 @@ import { useActionState, useId } from 'react';
 import { watchAction, type WatchFormState } from '@/app/[locale]/alarm/watchAction';
 import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/Field';
+import { Turnstile } from '@/components/ui/Turnstile';
 
 export type WatchFormLabels = {
   email: string;
@@ -109,6 +110,7 @@ export function WatchForm({ hotel, checkIn, checkOut, adults, locale, labels }: 
           {labels.results[state.status]}
         </p>
       )}
+      <Turnstile locale={locale} />
       <Button type="submit" block loading={pending}>
         {labels.submit}
       </Button>

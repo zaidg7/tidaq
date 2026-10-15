@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/Field';
 import { Icon } from '@/components/ui/Icon';
 import { HOTEL_PREFIX } from './alertId';
+import { Turnstile } from '@/components/ui/Turnstile';
 
 export type DropAlertFormLabels = {
   email: string;
@@ -140,6 +141,7 @@ export function DropAlertForm({
           {labels.results[state.status]}
         </p>
       )}
+      <Turnstile locale={locale} />
       <Button type="submit" block loading={pending} className="sm:w-auto sm:self-start">
         {labels.submit}
       </Button>

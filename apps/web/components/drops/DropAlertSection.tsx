@@ -84,6 +84,7 @@ export async function DropAlertSection({
               invalid: t('results.invalid'),
               too_soon: t('results.too_soon'),
               rate_limited: t('results.rate_limited'),
+              bot: t('results.bot'),
               error: t('results.error'),
             },
           }}
