@@ -40,6 +40,48 @@ describe('outboundUrl', () => {
     expect(hasOutboundSearch('toString')).toBe(false);
   });
 
+  it("opens the hotel's own page with the dates where we know it (C-133)", () => {
+    const agoda = new URL(
+      outboundUrl(
+        provider('agoda'),
+        { ...hotel, page: 'hotel-adlon-kempinski/hotel/berlin-de.html' },
+        stay,
+        'de',
+      ) ?? '',
+    );
+    expect(agoda.origin + agoda.pathname).toBe(
+      'https://www.agoda.com/de-de/hotel-adlon-kempinski/hotel/berlin-de.html',
+    );
+    expect(Object.fromEntries(agoda.searchParams)).toMatchObject({
+      checkIn: '2026-12-04',
+      los: '2',
+      adults: '2',
+      rooms: '1',
+    });
+    const trip = new URL(
+      outboundUrl(provider('trip-com'), { ...hotel, page: '1587250' }, stay, 'en') ?? '',
+    );
+    expect(trip.origin + trip.pathname).toBe('https://uk.trip.com/hotels/detail/');
+    expect(Object.fromEntries(trip.searchParams)).toMatchObject({
+      hotelId: '1587250',
+      checkIn: '2026-12-04',
+      checkOut: '2026-12-06',
+      adult: '2',
+    });
+  });
+
+  it('falls back to the search for a malformed page or a provider without pages', () => {
+    for (const [slug, page] of [
+      ['agoda', '../evil.html'],
+      ['agoda', '1587250'],
+      ['trip-com', 'hotel-adlon-kempinski/hotel/berlin-de.html'],
+      ['booking-com', '1587250'],
+    ] as const) {
+      const url = outboundUrl(provider(slug), { ...hotel, page }, stay, 'de') ?? '';
+      expect(url, slug).toContain('Hotel+Adlon+Kempinski+Berlin');
+    }
+  });
+
   it('sends the hotel-direct provider to the official site, only over https', () => {
     expect(outboundUrl(provider('hotel-direct', true), hotel, stay, 'de')).toBe(
       'https://www.kempinski.com/adlon',

@@ -24,7 +24,13 @@ const target = z
       is_direct: z.boolean(),
       affiliate_template: z.string().nullable(),
     }),
-    hotel: z.object({ name: z.string(), city: z.string(), official_url: z.string().nullable() }),
+    hotel: z.object({
+      name: z.string(),
+      city: z.string(),
+      official_url: z.string().nullable(),
+      // The hotel's page on this provider (C-133); older database functions don't send it.
+      page: z.string().nullable().optional(),
+    }),
   })
   .nullable();
 
@@ -72,7 +78,8 @@ function unavailable(lang: string) {
 /**
  * Outbound redirect (C-026, PLAN §6): `/go/<provider>/<hotel>?in=…&out=…&adults=…&lang=…`.
  * The database checks the stay and logs one `outbound_click` (no IP, no user agent), then we
- * send the visitor to the provider's search for this hotel and these dates (302). Links to it
+ * send the visitor to the hotel's page on the provider with these dates (C-133), else to the
+ * provider's search for this hotel and these dates (302). Links to it
  * carry `rel="sponsored nofollow noopener"`.
  */
 export async function GET(
@@ -119,7 +126,12 @@ export async function GET(
           isDirect: found.provider.is_direct,
           affiliateTemplate: found.provider.affiliate_template,
         },
-        { name: found.hotel.name, city: found.hotel.city, officialUrl: found.hotel.official_url },
+        {
+          name: found.hotel.name,
+          city: found.hotel.city,
+          officialUrl: found.hotel.official_url,
+          page: found.hotel.page ?? null,
+        },
         { checkIn, checkOut, adults },
         locale,
       );

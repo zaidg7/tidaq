@@ -2,8 +2,9 @@ import { nights } from './dates';
 import type { Locale } from './format';
 
 /**
- * Outbound links (C-026). Our price source has no deep links, so a click opens the provider's own
- * search for this hotel and these dates, or the hotel's official website. We only build links;
+ * Outbound links (C-026). Our price source has no deep links, so a click opens the hotel's page on
+ * the provider with these dates (where we know it, C-133), the provider's own search for this
+ * hotel and these dates, or the hotel's official website. We only build links;
  * we never fetch these pages (hard rule 2). Every link goes through `/go/…` so clicks are counted
  * (no IP, no user agent) and affiliate parameters can be added later in one place.
  */
@@ -21,6 +22,12 @@ export interface OutboundHotel {
   city: string;
   /** The hotel's own website, for the hotel-direct "provider". */
   officialUrl: string | null;
+  /**
+   * The hotel's own page on this provider (C-133, `hotel_provider_pages`): Agoda's page path
+   * (`hotel-adlon-kempinski/hotel/berlin-de.html`) or Trip.com's hotel id. Searches by name don't
+   * fill in hotel and dates there; the hotel page does.
+   */
+  page?: string | null;
 }
 
 type SearchUrl = (q: string, stay: OutboundStay, locale: Locale) => string;
@@ -75,6 +82,35 @@ const SEARCH: Record<string, SearchUrl> = {
     })}`,
 };
 
+type PageUrl = (page: string, stay: OutboundStay, locale: Locale) => string | null;
+
+/** Provider slug → the hotel's own page with dates and guests filled in (C-133). */
+const PAGE: Record<string, PageUrl> = {
+  agoda: (page, s, l) =>
+    /^[a-z0-9_-]+\/hotel\/[a-z0-9-]+\.html$/.test(page)
+      ? `https://www.agoda.com/${l === 'de' ? 'de-de' : 'en-gb'}/${page}?${params({
+          checkIn: s.checkIn,
+          los: nights(s.checkIn, s.checkOut),
+          adults: s.adults,
+          rooms: 1,
+          children: 0,
+          currency: 'EUR',
+        })}`
+      : null,
+  'trip-com': (page, s, l) =>
+    /^\d+$/.test(page)
+      ? `https://${l === 'de' ? 'de' : 'uk'}.trip.com/hotels/detail/?${params({
+          hotelId: page,
+          checkIn: s.checkIn,
+          checkOut: s.checkOut,
+          adult: s.adults,
+          children: 0,
+          crn: 1,
+          curr: 'EUR',
+        })}`
+      : null,
+};
+
 /** Providers we can send visitors to (plus the hotel's own site when we know it). */
 export function hasOutboundSearch(providerSlug: string): boolean {
   return Object.hasOwn(SEARCH, providerSlug);
@@ -111,8 +147,10 @@ export function outboundUrl(
   let target: string | null;
   if (provider.isDirect) target = safeHttpsUrl(hotel.officialUrl);
   else {
+    // The hotel's own page where we know it (dates filled in), else the provider's search.
+    const page = hotel.page ? (PAGE[provider.slug]?.(hotel.page, stay, locale) ?? null) : null;
     const search = SEARCH[provider.slug];
-    target = search ? search(`${hotel.name} ${hotel.city}`, stay, locale) : null;
+    target = page ?? (search ? search(`${hotel.name} ${hotel.city}`, stay, locale) : null);
   }
   return target && withAffiliate(target, provider.affiliateTemplate);
 }
