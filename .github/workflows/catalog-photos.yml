@@ -75,5 +75,6 @@ jobs:
             echo "Nothing changed."
           else
             git commit -m "chore(photos): ${{ inputs.mode }} from Wikimedia Commons"
+            git pull --rebase origin ${{ inputs.branch }}
             git push origin HEAD:${{ inputs.branch }}
           fi
