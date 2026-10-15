@@ -52,8 +52,41 @@ test.describe('/dev/ui', () => {
     await page.goto('/dev/ui');
     const busy = page.locator('button[aria-busy="true"]');
     await expect(busy).toHaveCount(1);
-    await expect(busy).toHaveAccessibleName('Preis beobachten');
+    await expect(busy).toHaveAccessibleName('Price Alert aktivieren');
     expect(await busy.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe('none');
+  });
+
+  test('segmented control moves with the arrow keys (C-103)', async ({ page }) => {
+    await page.goto('/dev/ui');
+    const group = page.getByRole('radiogroup', { name: 'Zeitraum' });
+    await expect(group.getByRole('radio', { name: '30 T' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    await group.getByRole('radio', { name: '30 T' }).focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(group.getByRole('radio', { name: 'Alles' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    await expect(group.getByRole('radio', { name: 'Alles' })).toBeFocused();
+    await page.keyboard.press('Home');
+    await expect(group.getByRole('radio', { name: '14 T' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+  });
+
+  test('sheet opens as a modal, closes with Esc and returns focus (C-103)', async ({ page }) => {
+    await page.goto('/dev/ui');
+    const trigger = page.getByRole('button', { name: 'Sheet öffnen' });
+    await trigger.click();
+    const sheet = page.getByRole('dialog', { name: 'Reisedaten' });
+    await expect(sheet).toBeVisible();
+    await expect(sheet.getByRole('button', { name: 'Schließen' })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(sheet).toBeHidden();
+    await expect(trigger).toBeFocused();
   });
 
   test('names icon-only buttons', async ({ page }) => {
