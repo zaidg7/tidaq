@@ -141,7 +141,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-124 | Regenerate the visual baselines after the redesign (CI image; Actions budget resets 1 Nov, D-45) | CLOUD | S | C-118 | TODO |
 | C-125 | Trip drops (5/7 nights) instead of single nights, month + length filters, no live pills, hotel photos, desktop sweep (Zaid, 15 Oct) | CLOUD | M | C-118 | DONE |
 | C-126 | City page: cheapest week per hotel instead of the cheapest weekend (like the hotel page since C-125) | CLOUD | S | C-125 | DONE (in the C-125 PR, SQL `city_best_trips`) |
-| C-127 | Night window 120 → 270 days so June/July show up in the Price Drops month filter (D-42 change) | CLOUD | S | B-022 | BLOCKED (B-022) |
+| C-127 | Night window 120 → 270 days so June/July show up in the Price Drops month filter (D-42 change) | CLOUD | S | B-022 | DONE (NIGHT_WINDOW_DAYS 270, NIGHT_BATCH 40; first full July data the day after the production collector deploy) |
 | C-128 | Deals page: city pills → the one-button Filter pattern of Price Drops (D-48), once deals exist (14 days of history, ~28 Oct) | CLOUD | S | C-125 | TODO |
 | C-129 | Own photos for the last 17 hotels from LiteAPI images, if allowed (list in B-021) | CLOUD | S | B-021 | BLOCKED (B-021) |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |

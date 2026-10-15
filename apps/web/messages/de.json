@@ -689,7 +689,7 @@
         {
           "title": "Was wir jeden Tag abfragen",
           "list": [
-            "Für jedes Hotel den Preis jeder einzelnen Nacht in den nächsten 120 Tagen, für 2 Erwachsene, bei jeder Buchungsseite.",
+            "Für jedes Hotel den Preis jeder einzelnen Nacht in den nächsten 270 Tagen, für 2 Erwachsene, bei jeder Buchungsseite.",
             "Zusätzlich echte Aufenthalte mit festen Daten, zum Beispiel Freitag bis Sonntag. Daran prüfen wir, ob die einzelnen Nächte zusammen den echten Preis ergeben.",
             "Alle Preise in Euro, als Gesamtpreis so, wie die Buchungsseite ihn meldet."
           ]

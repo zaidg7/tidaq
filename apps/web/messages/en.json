@@ -687,7 +687,7 @@
         {
           "title": "What we check every day",
           "list": [
-            "For every hotel, the price of each single night in the next 120 days, for 2 adults, on every booking site.",
+            "For every hotel, the price of each single night in the next 270 days, for 2 adults, on every booking site.",
             "On top of that, real stays with fixed dates, for example Friday to Sunday. They show us whether the single nights add up to the real price.",
             "All prices in euros, as the total the booking site reports."
           ]

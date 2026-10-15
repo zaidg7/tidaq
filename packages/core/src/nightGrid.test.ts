@@ -13,8 +13,8 @@ describe('inNightGrid', () => {
     expect(inNightGrid({ checkIn: '2026-12-01', checkOut: '2026-12-04', adults: 2 }, today)).toBe(
       true,
     );
-    // Check-out exactly 120 days ahead: the last night is day 119, still collected.
-    expect(inNightGrid({ checkIn: '2027-02-09', checkOut: '2027-02-11', adults: 2 }, today)).toBe(
+    // Check-out exactly 270 days ahead (C-127): the last night is day 269, still collected.
+    expect(inNightGrid({ checkIn: '2027-07-09', checkOut: '2027-07-11', adults: 2 }, today)).toBe(
       true,
     );
     expect(inNightGrid({ checkIn: today, checkOut: '2026-10-15', adults: 2 }, today)).toBe(true);
@@ -27,10 +27,10 @@ describe('inNightGrid', () => {
     expect(inNightGrid({ checkIn: '2026-10-13', checkOut: '2026-10-15', adults: 2 }, today)).toBe(
       false,
     );
-    expect(inNightGrid({ checkIn: '2027-02-10', checkOut: '2027-02-12', adults: 2 }, today)).toBe(
+    expect(inNightGrid({ checkIn: '2027-07-10', checkOut: '2027-07-12', adults: 2 }, today)).toBe(
       false,
     );
-    expect(NIGHT_GRID.windowDays).toBe(120);
+    expect(NIGHT_GRID.windowDays).toBe(270);
   });
 });
 
