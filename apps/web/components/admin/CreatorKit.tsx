@@ -1,7 +1,9 @@
 'use client';
 
 import { useCallback, useId, useState } from 'react';
-import { Copy, ExternalLink, Images, Share2 } from 'lucide-react';
+import { Check, Copy, ExternalLink, Images, Share2 } from 'lucide-react';
+import { PLATFORMS, type Platform } from '@tidaq/core';
+import { markPostedAction } from '@/app/admin/actions';
 import { shareOrDownload } from '@/components/drops/shareFiles';
 import {
   canvasFile,
@@ -30,7 +32,11 @@ export interface KitItem {
   /** The drop page, e.g. `/preissturz/baur-au-lac-zuerich/2026-10-27`. */
   path: string;
   fileName: string;
+  /** For "Gepostet auf" (C-080j). */
+  mark: { slug: string; key: string; period: 'day' | 'week'; posted: Platform[] };
 }
+
+const PLATFORM_NAME: Record<Platform, string> = { tiktok: 'TikTok', instagram: 'Instagram' };
 
 const font = () => getComputedStyle(document.body).fontFamily;
 
@@ -169,6 +175,7 @@ export function CreatorKit({
                 </div>
               </div>
               <Caption text={item.caption} label={`Text für ${item.hotel}`} />
+              <PostedMarks hotel={item.hotel} mark={item.mark} />
               <div className="mt-auto flex flex-wrap gap-2">
                 <Button
                   variant="primary"
@@ -204,6 +211,43 @@ export function CreatorKit({
       </ol>
       {toast && <Toast message={toast} closeLabel="Schließen" onClose={close} />}
     </>
+  );
+}
+
+/**
+ * "Gepostet auf TikTok / Instagram" (C-080j): a marked drop shows up under "Aus unseren Videos"
+ * on the bio-link landing for a week. Plain forms, so a tap works before hydration too.
+ */
+function PostedMarks({ hotel, mark }: { hotel: string; mark: KitItem['mark'] }) {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <span className="text-meta text-muted-ink">Gepostet auf</span>
+      {PLATFORMS.map((p) => {
+        const on = mark.posted.includes(p);
+        return (
+          <form key={p} action={markPostedAction}>
+            <input type="hidden" name="slug" value={mark.slug} />
+            <input type="hidden" name="key" value={mark.key} />
+            <input type="hidden" name="period" value={mark.period} />
+            <input type="hidden" name="platform" value={p} />
+            <input type="hidden" name="on" value={on ? '0' : '1'} />
+            <button
+              type="submit"
+              aria-pressed={on}
+              aria-label={`${hotel} auf ${PLATFORM_NAME[p]} gepostet`}
+              className={
+                on
+                  ? 'inline-flex min-h-11 items-center gap-1.5 rounded-full border border-good-ink bg-good-soft px-3.5 text-[14px] font-semibold text-good-ink'
+                  : 'inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 text-[14px] font-semibold hover:border-line-strong'
+              }
+            >
+              {on && <Icon icon={Check} size={16} />}
+              {PLATFORM_NAME[p]}
+            </button>
+          </form>
+        );
+      })}
+    </div>
   );
 }
 

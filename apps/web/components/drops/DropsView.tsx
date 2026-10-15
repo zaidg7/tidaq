@@ -65,6 +65,7 @@ export function DropsView({
   checked = null,
   source = null,
   alert = null,
+  videos = null,
 }: {
   /** Every hotel with a drop (for the city chips and headline numbers). */
   all: HotelDropsWithPhoto[];
@@ -79,6 +80,8 @@ export function DropsView({
   source?: DropSource | null;
   /** The Preissturz-Alarm sign-up (C-080e1), placed after the drops. */
   alert?: ReactNode;
+  /** "Aus unseren Videos" for bio-link visitors (C-080j), above the hero. */
+  videos?: ReactNode;
 }) {
   const t = useTranslations('drops');
   const locale = useLocale() as Locale;
@@ -141,6 +144,8 @@ export function DropsView({
           </p>
         )}
       </header>
+
+      {videos}
 
       {hero && (
         <div className="mt-6">

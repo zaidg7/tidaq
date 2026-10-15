@@ -10,9 +10,10 @@ import {
   type DropSource,
 } from '@/components/drops/DropsView';
 import { DropAlertSection } from '@/components/drops/DropAlertSection';
+import { FromVideos, videoItems } from '@/components/drops/FromVideos';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
-import { getDrops, getRadarStats } from '@/lib/data/drops';
+import { getDrops, getPosted, getRadarStats } from '@/lib/data/drops';
 import { logView } from '@/lib/data/events';
 import { openGraphFor } from '@/lib/og';
 import { routes } from '@/lib/routes';
@@ -42,8 +43,13 @@ export default async function DropsPage({ params, searchParams }: Props) {
   setRequestLocale(locale);
   const q = await searchParams;
   const today = berlinToday();
-  const [load, checked] = await Promise.all([getDrops(today), getRadarStats(today)]);
   const source = DROP_SOURCES.find((x): x is DropSource => x === q.ref) ?? null;
+  // Bio-link visitors also get the drops from our latest posts (C-080j).
+  const [load, checked, posted] = await Promise.all([
+    getDrops(today),
+    getRadarStats(today),
+    source ? getPosted(today) : Promise.resolve([]),
+  ]);
   // Anonymous count (C-029/C-080d): how many radar views came through which bio link.
   const userAgent = (await headers()).get('user-agent');
   after(() => logView({ name: 'drops_view', props: { ref: source ?? 'none' } }, userAgent));
@@ -67,6 +73,7 @@ export default async function DropsPage({ params, searchParams }: Props) {
       now={new Date()}
       checked={checked}
       source={source}
+      videos={source && <FromVideos items={videoItems(posted, load.drops)} />}
       alert={<DropAlertSection locale={locale} defaultCity={filters.city} />}
     />
   );

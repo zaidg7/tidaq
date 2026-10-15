@@ -1,4 +1,4 @@
-import { addDays, groupDrops, type PriceDropRow } from '@tidaq/core';
+import { addDays, groupDrops, postedDrops, type PriceDropRow, type PostedDrop } from '@tidaq/core';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
 import { hotelPhoto } from '@/lib/hotelPhotos';
 import { berlinToday } from '@/lib/today';
@@ -100,4 +100,35 @@ export function sampleDrops(): HotelDropsWithPhoto[] {
     ...g,
     image: hotelPhoto(g.hotel.slug)?.[960] ?? null,
   }));
+}
+
+/**
+ * Sample "Aus unseren Videos" (C-080j): the Fairmont weekend (still on the radar), Baur au Lac
+ * (still on, a bit cheaper than in the video) and a Claridge's night that is over.
+ */
+export function samplePosted(): PostedDrop[] {
+  const today = berlinToday();
+  const [fairmont, baur] = sampleRows();
+  const claridges = row(CLARIDGES, 20, 104_000, 131_000, EXPEDIA, 5);
+  const posted = (
+    r: PriceDropRow | undefined,
+    daysAgo: number,
+    platforms: ('tiktok' | 'instagram')[],
+  ) =>
+    r && {
+      ...r,
+      check_out: r.check_out ?? addDays(r.night, 1),
+      seen_day: addDays(today, -daysAgo),
+      posted_on: addDays(today, -daysAgo),
+      platforms,
+    };
+  return postedDrops(
+    [
+      posted(fairmont, 1, ['instagram', 'tiktok']),
+      posted(baur && { ...baur, now_cents: 70_200, drop_pct: 1 - 70_200 / baur.prev_cents }, 2, [
+        'tiktok',
+      ]),
+      posted(claridges, 3, ['tiktok']),
+    ].filter((r) => r !== undefined),
+  );
 }

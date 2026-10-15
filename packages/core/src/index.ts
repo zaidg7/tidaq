@@ -278,6 +278,18 @@ export {
   type PriceDrop,
   type PriceDropRow,
 } from './drops';
+export {
+  PLATFORMS,
+  POSTED,
+  platformSchema,
+  postedDropInsert,
+  postedDropRowSchema,
+  postedDrops,
+  postedStatus,
+  type Platform,
+  type PostedDrop,
+  type PostedDropRow,
+} from './postedDrops';
 export { wrapLines } from './wrapLines';
 export { DROP_ALERTS, dropAlertMail, dropsFor } from './dropAlerts';
 export { CAPTION, cityTag, dropCaption, dropHashtags, topCaption } from './dropCaptions';

@@ -995,5 +995,15 @@
     "stayText": "This stay costs {now} today instead of {was} the day before, {pct} {site}.",
     "open": "See the price drop",
     "more": "Also cheaper"
+  },
+  "fromVideos": {
+    "title": "From our videos",
+    "text": "The hotel from the video? Tap it for today's price.",
+    "label": "Price drops from our videos",
+    "posted": "In our video of {date}: {pct}",
+    "live": "Still on",
+    "livePrices": "{now} instead of {was}",
+    "over": "Over",
+    "overText": "See today's price"
   }
 }

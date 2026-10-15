@@ -1,7 +1,14 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { parseEuroCents, trustOutcome, z } from '@tidaq/core';
+import {
+  findDrop,
+  parseDropKey,
+  parseEuroCents,
+  platformSchema,
+  trustOutcome,
+  z,
+} from '@tidaq/core';
 import {
   AUDIT_EXTRAS,
   deleteTest,
@@ -11,7 +18,10 @@ import {
   type AuditExtra,
 } from '@/lib/admin/audit';
 import { approveProvider, runStagingCollector, setHotelActive } from '@/lib/admin/db';
+import { markPosted, unmarkPosted } from '@/lib/admin/posted';
 import { requireAdmin } from '@/lib/admin/session';
+import { getDrops, getWeek } from '@/lib/data/drops';
+import { berlinToday } from '@/lib/today';
 
 /**
  * Admin buttons (C-016) as server actions: Next checks the Origin, `requireAdmin()` checks the
@@ -23,15 +33,20 @@ const id = z.coerce.number().int().positive();
 async function guarded(
   name: string,
   work: () => Promise<string>,
-  page: '/admin' | '/admin/audit' = '/admin',
+  page:
+    | '/admin'
+    | '/admin/audit'
+    | '/admin/preisstuerze'
+    | '/admin/preisstuerze?zeitraum=woche' = '/admin',
 ): Promise<never> {
-  await requireAdmin(page);
+  await requireAdmin(page.split('?')[0] ?? page);
+  const join = page.includes('?') ? '&' : '?';
   let target: string;
   try {
-    target = `${page}?ok=${await work()}`;
+    target = `${page}${join}ok=${await work()}`;
   } catch (e) {
     console.error(`[admin] ${name} failed`, (e as Error).message);
-    target = `${page}?fail=${name}`;
+    target = `${page}${join}fail=${name}`;
   }
   redirect(target);
 }
@@ -137,5 +152,45 @@ export async function deleteAuditTestAction(form: FormData) {
       return 'auditDelete';
     },
     '/admin/audit',
+  );
+}
+
+const postedForm = z.object({
+  slug: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
+  key: z.string().max(30),
+  platform: platformSchema,
+  period: z.enum(['day', 'week']),
+  on: z.enum(['1', '0']),
+});
+
+/**
+ * "Gepostet" in the creator kit (C-080j): marks a drop as posted on TikTok or Instagram, or takes
+ * the mark back. The drop is looked up again on the server (today's radar or the week), so only
+ * real drops get saved, with their current facts.
+ */
+export async function markPostedAction(form: FormData) {
+  const week = form.get('period') === 'week';
+  await guarded(
+    'posted',
+    async () => {
+      const f = postedForm.parse({
+        slug: form.get('slug'),
+        key: form.get('key'),
+        platform: form.get('platform'),
+        period: form.get('period'),
+        on: form.get('on'),
+      });
+      const today = berlinToday();
+      const stay = parseDropKey(f.key);
+      const load = f.period === 'week' ? await getWeek(today) : await getDrops(today);
+      const groups = load.kind !== 'ok' ? null : 'groups' in load ? load.groups : load.drops;
+      if (!stay || !groups) throw new Error('drops unavailable');
+      const hit = findDrop(groups, f.slug, stay);
+      if (!hit) throw new Error('drop not found');
+      if (f.on === '1') await markPosted(hit.group, hit.drop, f.platform, today);
+      else await unmarkPosted(hit.group.hotel.id, hit.drop, f.platform);
+      return 'posted';
+    },
+    week ? '/admin/preisstuerze?zeitraum=woche' : '/admin/preisstuerze',
   );
 }

@@ -1,10 +1,19 @@
 import 'server-only';
-import { dropCaption, dropDates, dropKey, dropPath, formatPrice, topCaption } from '@tidaq/core';
+import {
+  dropCaption,
+  dropDates,
+  dropKey,
+  dropPath,
+  formatPrice,
+  topCaption,
+  type Platform,
+} from '@tidaq/core';
 import type { KitItem } from '@/components/admin/CreatorKit';
 import { dropFacts } from '@/components/drops/DropPage';
 import type { CoverText } from '@/components/drops/storyImage';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
 import { hotelPhoto } from '@/lib/hotelPhotos';
+import { markKey } from './posted';
 
 /** Drops in the creator kit list. */
 export const KIT_SIZE = 10;
@@ -18,6 +27,8 @@ export async function creatorKit(
   now: Date,
   /** Today's radar, or the week's recap (C-080h). */
   period: 'day' | 'week' = 'day',
+  /** "Gepostet" marks of the last week (C-080j), keyed by `markKey`. */
+  marks: ReadonlyMap<string, Platform[]> = new Map(),
 ) {
   const list = drops.slice(0, KIT_SIZE);
   const items: KitItem[] = await Promise.all(
@@ -36,6 +47,12 @@ export async function creatorKit(
         caption: dropCaption(g, d),
         path: dropPath(g.hotel.slug, d),
         fileName: `tidaq-${g.hotel.slug}-${dropKey(d)}`,
+        mark: {
+          slug: g.hotel.slug,
+          key: dropKey(d),
+          period,
+          posted: marks.get(markKey(g.hotel.id, d)) ?? [],
+        },
       };
     }),
   );
