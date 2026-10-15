@@ -1029,5 +1029,8 @@
     "livePrices": "{now} statt {was}",
     "over": "Vorbei",
     "overText": "Preis von heute ansehen"
+  },
+  "photo": {
+    "cityTag": "Stadtbild"
   }
 }
