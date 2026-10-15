@@ -96,7 +96,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-080i | Drops on hotel and stay pages (callout with both prices) | CLOUD | S | C-080f | DONE |
 | C-080j | "Aus unseren Videos": posted drops first on the TikTok/Instagram landing | CLOUD | M | C-080d, C-080c | DONE |
 | C-080k1 | Preissturz-Alarm for one hotel: sign-up on drop and hotel pages, manage page | CLOUD | M | C-080e1 | DONE |
-| C-080k2 | Preissturz-Alarm for one hotel: include followed hotels in the daily send | CLOUD | S | C-080k1, C-080e2 | TODO |
+| C-080k2 | Preissturz-Alarm for one hotel: include followed hotels in the daily send | CLOUD | S | C-080k1, C-080e2 | DONE |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
@@ -1060,10 +1060,10 @@ Owner: CLOUD · Size: M · Depends on: C-080d, C-080c · Status: DONE · PR: see
 
 ### C-080k · Preissturz-Alarm for one hotel
 
-Owner: CLOUD · Size: M + S · Depends on: C-080e1, C-080e2 · Status: k1 DONE, k2 TODO
+Owner: CLOUD · Size: M + S · Depends on: C-080e1, C-080e2 · Status: DONE (k1, k2)
 **Why:** a TikTok viewer often falls for one hotel, not a city. "Sag mir, wenn das Adlon plötzlich günstiger wird" turns that impulse into an email address, for any date.
 **C-080k1 notes (DONE):** Migration `20261015103849_drop_hotel_alerts`: table `drop_hotel_alerts` (watcher × hotel, cascade on delete, RLS on, service role only; max 20 hotels per address), SQL `drop_hotel_alert_request(email, locale, consent, hotel_slug)` (same answer and rules as `drop_alert_request`: double opt-in, 1-minute guard, 7-day cleanup; leaves the city alarm alone), `drop_hotel_alert_off(token, hotel_slug)`, `watch_manage` returns `drop_hotels`. Web: the alarm's select offers "Nur {Hotel}" first (value `hotel:<slug>`, `HOTEL_PREFIX`) and preselects it on drop pages, the "vorbei" page and hotel pages (new `alert` slot after the calendar); the label becomes "Alarm für". The action takes the hotel's name for the email from the catalog, never from the form. Mails: `confirmTextHotel`, `addedTextHotel`. Manage page: "Hotels mit Preissturz-Alarm" with one "Beenden" each. Privacy §6 mentions followed hotels. Nothing is sent for hotels until k2.
-**C-080k2 (TODO):** collector `dropAlertRecipients` also returns addresses with followed hotels (and their hotel ids); core `dropsFor` takes `{ city alarm on, city, hotels }` and adds the followed hotels' drops (one entry per hotel, biggest first). One extra read per run.
+**C-080k2 notes (DONE):** SQL `drop_alert_recipients(p_today)` (migration `20261015105220`, service role only): confirmed addresses not mailed today with the city alarm and/or followed hotels, one row each with `hotel_ids`; the collector reads it instead of the `watchers` query (same one read per run). Core `dropsFor(groups, { cityAlarm, city, hotels }, since)`: city drops when the city alarm is on, plus the followed hotels' drops anywhere; `dropAlertMail` `hotels: 'only' | 'also'` → "Neue Preisstürze in deinen Hotels" / "in Paris und deinen Hotels". The radar button is filtered to a city only with a city alarm. Needs a collector deploy after merge.
 
 ## Checklists
 

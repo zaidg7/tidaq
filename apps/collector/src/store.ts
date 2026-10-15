@@ -196,7 +196,11 @@ export interface NewsletterRecipient {
 
 export interface DropAlertRecipient extends NewsletterRecipient {
   id: string;
+  /** The city alarm is on (C-080e): drops in `city`, or all cities when it is null. */
+  cityAlarm: boolean;
   city: string | null;
+  /** Hotel ids followed one by one (C-080k). */
+  hotels: number[];
 }
 
 export interface DealRow {

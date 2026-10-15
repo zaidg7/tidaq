@@ -45,6 +45,8 @@ const hotel = (n: number, city: string, drop: number, over: Partial<PriceDropRow
     ...over,
   });
 
+const city = (slug: string | null) => ({ cityAlarm: true, city: slug, hotels: [] });
+
 describe('dropsFor', () => {
   const groups = groupDrops([
     hotel(1, 'paris', 0.2),
@@ -58,7 +60,7 @@ describe('dropsFor', () => {
   ]);
 
   it('keeps only drops seen since the last send, in the city, biggest first', () => {
-    const paris = dropsFor(groups, 'paris', SINCE);
+    const paris = dropsFor(groups, city('paris'), SINCE);
     expect(paris.map((g) => g.hotel.id)).toEqual([1, 5, 4]);
     // Hotel 4's biggest drop was mailed yesterday: today's smaller one becomes its entry.
     expect(paris[2]?.top.drop).toBe(0.16);
@@ -66,15 +68,24 @@ describe('dropsFor', () => {
   });
 
   it('all cities when no city is set, at most maxHotels', () => {
-    expect(dropsFor(groups, null, SINCE).map((g) => g.hotel.id)).toEqual([2, 1, 5, 4]);
+    expect(dropsFor(groups, city(null), SINCE).map((g) => g.hotel.id)).toEqual([2, 1, 5, 4]);
     const many = groupDrops(
       Array.from({ length: 8 }, (_, i) => hotel(10 + i, 'paris', 0.2 + i / 100)),
     );
-    expect(dropsFor(many, null, SINCE)).toHaveLength(DROP_ALERTS.maxHotels);
+    expect(dropsFor(many, city(null), SINCE)).toHaveLength(DROP_ALERTS.maxHotels);
   });
 
   it('nothing when the city had no drop today', () => {
-    expect(dropsFor(groups, 'london', SINCE)).toEqual([]);
+    expect(dropsFor(groups, city('london'), SINCE)).toEqual([]);
+  });
+
+  it('followed hotels (C-080k): alone, or on top of a city', () => {
+    const only = { cityAlarm: false, city: null, hotels: [2, 3] };
+    // Hotel 3's drop was mailed yesterday; the city alarm is off, so Paris hotels don't count.
+    expect(dropsFor(groups, only, SINCE).map((g) => g.hotel.id)).toEqual([2]);
+    const both = { cityAlarm: true, city: 'paris', hotels: [2] };
+    expect(dropsFor(groups, both, SINCE).map((g) => g.hotel.id)).toEqual([2, 1, 5, 4]);
+    expect(dropsFor(groups, { cityAlarm: false, city: null, hotels: [] }, SINCE)).toEqual([]);
   });
 });
 
@@ -84,11 +95,17 @@ describe('dropAlertMail', () => {
     row({ night: '2026-10-28', drop_pct: 0.2, now_cents: 72_000 }),
     hotel(2, 'paris', 0.2, { prior_days: 1, now_cents: 300_000, prev_cents: 375_000 }),
   ]);
-  const mail = (locale: 'de' | 'en', cityName: string | null, g = groups) =>
+  const mail = (
+    locale: 'de' | 'en',
+    cityName: string | null,
+    g = groups,
+    hotels?: 'only' | 'also',
+  ) =>
     dropAlertMail({
       locale,
       groups: g,
       cityName,
+      ...(hotels && { hotels }),
       dropUrl: (s, d) => `https://tidaq.com/preissturz/${s}/${dropKey(d)}`,
       radarUrl: 'https://tidaq.com/preissturz',
       manageUrl: 'https://tidaq.com/alarm/verwalten/abc',
@@ -121,6 +138,20 @@ describe('dropAlertMail', () => {
     const en = mail('en', 'Zurich');
     expect(plain(en.subject)).toBe('Price drop: −31% at Baur au Lac and 1 more');
     expect(plain(en.content.items?.[0]?.meta ?? '')).toContain('instead of');
+  });
+
+  it('followed hotels in the heading (C-080k)', () => {
+    expect(mail('de', null, groups, 'only').content.heading).toBe(
+      'Neue Preisstürze in deinen Hotels',
+    );
+    expect(mail('de', 'Paris', groups, 'also').content.heading).toBe(
+      'Neue Preisstürze in Paris und deinen Hotels',
+    );
+    expect(mail('en', null, groups, 'only').content.heading).toBe('New price drops at your hotels');
+    // All cities already include every hotel.
+    expect(mail('de', null, groups, 'also').content.heading).toBe(
+      'Neue Preisstürze in allen Städten',
+    );
   });
 
   it('renders to HTML and text without urgency words', () => {

@@ -12,20 +12,30 @@ export const DROP_ALERTS = {
   batchSize: 100,
 } as const;
 
+/** What one subscriber follows (C-080e, C-080k). */
+export interface DropScope {
+  /** The city alarm is on: drops in `city`, or in all cities when it is null. */
+  cityAlarm: boolean;
+  city: string | null;
+  /** Hotel ids followed one by one, any city. */
+  hotels: readonly number[];
+}
+
 /**
  * The drops one subscriber gets: only those seen since `since` (epoch ms; the send runs daily, so
  * "the last 24 hours" mails every drop once, also those the night grid found after yesterday's
- * send), in their city (null = all), one entry per hotel, biggest first, at most
- * `DROP_ALERTS.maxHotels`.
+ * send), in their city (null = all) when the city alarm is on, plus their followed hotels, one
+ * entry per hotel, biggest first, at most `DROP_ALERTS.maxHotels`.
  */
 export function dropsFor<T extends HotelDrops>(
   groups: readonly T[],
-  city: string | null,
+  scope: DropScope,
   since: number,
 ): T[] {
   const out: T[] = [];
   for (const g of groups) {
-    if (city && g.city.slug !== city) continue;
+    const inCity = scope.cityAlarm && (!scope.city || g.city.slug === scope.city);
+    if (!inCity && !scope.hotels.includes(g.hotel.id)) continue;
     const fresh = [g.top, ...g.more].filter((d) => Date.parse(d.seenAt) >= since);
     const [top, ...rest] = fresh.sort((a, b) => b.drop - a.drop || a.night.localeCompare(b.night));
     if (top) out.push({ ...g, top, more: rest.sort((a, b) => a.night.localeCompare(b.night)) });
@@ -45,6 +55,8 @@ const TEXT = {
     heading: (where: string) => `Neue Preisstürze ${where}`,
     all: 'in allen Städten',
     in: (city: string) => `in ${city}`,
+    hotels: 'in deinen Hotels',
+    andHotels: ' und deinen Hotels',
     intro:
       'Diese Aufenthalte sind seit gestern deutlich billiger geworden, auf den niedrigsten Preis, den wir für sie gesehen haben. 2 Erwachsene, günstigste geprüfte Seite, Gesamtpreis.',
     meta: (city: string, night: string, now: string, was: string, pct: string) =>
@@ -66,6 +78,8 @@ const TEXT = {
     heading: (where: string) => `New price drops ${where}`,
     all: 'in all cities',
     in: (city: string) => `in ${city}`,
+    hotels: 'at your hotels',
+    andHotels: ' and at your hotels',
     intro:
       "These stays got much cheaper since yesterday, to the lowest price we've seen for them. 2 adults, cheapest reviewed site, total price.",
     meta: (city: string, night: string, now: string, was: string, pct: string) =>
@@ -87,6 +101,11 @@ export function dropAlertMail(d: {
   groups: readonly HotelDrops[];
   /** The subscriber's city name, or null for all cities. */
   cityName: string | null;
+  /**
+   * Followed hotels (C-080k): 'only' without the city alarm ("in deinen Hotels"), 'also' next to
+   * a single city ("in Paris und deinen Hotels"). Leave it out for city alarms alone.
+   */
+  hotels?: 'only' | 'also';
   dropUrl: (hotelSlug: string, stay: { night: string; checkOut: string }) => string;
   radarUrl: string;
   manageUrl: string;
@@ -94,7 +113,12 @@ export function dropAlertMail(d: {
   const t = TEXT[d.locale];
   const first = d.groups[0];
   if (!first) throw new Error('dropAlertMail needs at least one drop');
-  const where = d.cityName ? t.in(d.cityName) : t.all;
+  const where =
+    d.hotels === 'only'
+      ? t.hotels
+      : d.cityName
+        ? t.in(d.cityName) + (d.hotels === 'also' ? t.andHotels : '')
+        : t.all;
   return {
     subject: t.subject(formatDrop(first.top.drop, d.locale), first.hotel.name, d.groups.length - 1),
     content: {
