@@ -52,7 +52,7 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
         />
         {d.nights > 1 && (
           <span className="absolute top-4 right-4 z-10 inline-flex h-8 items-center rounded-full bg-white/92 px-3 text-[13px] font-semibold text-ink md:top-5 md:right-5">
-            {t('weekendBadge')}
+            {t('stayBadge', { n: d.nights })}
           </span>
         )}
       </Photo>

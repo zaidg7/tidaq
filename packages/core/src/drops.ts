@@ -4,22 +4,23 @@ import { formatPercent, formatWeekdayDayMonth, type Locale } from './format';
 import { isoDateSchema } from './zod';
 
 /**
- * Sudden price drops (C-080a, Preissturz-Radar): nights whose cheapest reviewed price fell sharply
- * since the previous day's check and reached a new low (SQL `price_drops`). This file groups them
- * per hotel and filters them for the radar, the homepage and city pages. Facts only (CLAUDE.md
- * rule 8): both prices, the day seen, the site; no countdowns, no "only today".
+ * Sudden price drops (C-080a, Preissturz-Radar): stays whose cheapest reviewed price fell sharply
+ * since the previous day's check and reached a new low. Since C-125 the site shows trips only,
+ * 5 or 7 nights in a row (SQL `radar_trip_drops`): a cheaper single night is no reason to travel.
+ * This file groups them per hotel and filters them for the radar, the homepage and city pages.
+ * Facts only (CLAUDE.md rule 8): both prices, the day seen, the site; no countdowns, no "only today".
  */
 export const DROPS = {
   /** At least this much below the previous day's price (SQL `price_drops` uses the same). */
   minDrop: 0.15,
   /** And at least this many cents less. */
   minCents: 5000,
-  /** Other nights listed under a hotel's biggest drop. */
+  /** Other trips listed under a hotel's biggest drop. */
   moreNights: 3,
-  /** "Diese Woche": nights within this many days. */
-  weekDays: 7,
-  /** "Nächste 30 Tage". */
-  monthDays: 30,
+  /** Trip lengths on the radar (C-125, SQL `refresh_trip_drops`), the "Dauer" filter. */
+  tripLengths: [5, 7],
+  /** Longest stay a drop link may name (`parseDropKey`). */
+  maxNights: 14,
   /** "Sonst um X €" only when the average rests on at least this many earlier checks. */
   usualMinDays: 3,
 } as const;
@@ -35,7 +36,7 @@ export const priceDropRowSchema = z.object({
   city_name_de: z.string(),
   city_name_en: z.string(),
   night: day,
-  /** Weekend drops (C-080f, SQL `radar_weekend_drops`); single nights leave it out. */
+  /** Trips and weekends (C-125, C-080f); single nights leave it out. */
   check_out: day.optional(),
   seen_day: day,
   seen_at: z.string(),
@@ -57,9 +58,9 @@ export type PriceDropRow = z.infer<typeof priceDropRowSchema>;
 export interface PriceDrop {
   /** Check-in. */
   night: string;
-  /** Check-out: the next day for a single night, Sunday for a weekend (C-080f). */
+  /** Check-out: the next day for a single night, else check-in plus `nights`. */
   checkOut: string;
-  /** 1, or 2 for a Friday-to-Sunday weekend. Prices are totals for these nights. */
+  /** 5 or 7 for a trip (C-125); 1 or 2 in older rows. Prices are totals for these nights. */
   nights: number;
   /** Day of the check that saw the drop (Berlin). */
   seenDay: string;
@@ -87,7 +88,7 @@ export interface HotelDrops {
   city: { slug: string; name: { de: string; en: string } };
   /** The hotel's biggest drop. */
   top: PriceDrop;
-  /** Its other dropped nights, by date (all of them; pages show `DROPS.moreNights`). */
+  /** Its other dropped trips, by date (all of them; pages show `DROPS.moreNights`). */
   more: PriceDrop[];
 }
 
@@ -135,7 +136,7 @@ export function groupDrops(rows: readonly PriceDropRow[]): HotelDrops[] {
   return groups.sort(byDrop);
 }
 
-/** By check-in, a single night before the weekend starting that day. */
+/** By check-in, the shorter stay first. */
 const byDate = (a: PriceDrop, b: PriceDrop) =>
   a.night.localeCompare(b.night) || a.nights - b.nights;
 
@@ -144,35 +145,39 @@ const byDrop = (a: HotelDrops, b: HotelDrops) =>
   b.top.savedCents - a.top.savedCents ||
   a.hotel.name.localeCompare(b.hotel.name);
 
-export type DropWhen = 'week' | 'month' | 'later';
 export type DropSort = 'pct' | 'eur' | 'soon';
-export const DROP_WHENS: readonly DropWhen[] = ['week', 'month', 'later'];
 export const DROP_SORTS: readonly DropSort[] = ['pct', 'eur', 'soon'];
 
-/** Which "Wann" bucket a night falls in, seen from `today`. */
-export function dropWhen(night: string, today: string): DropWhen {
-  const d = daysBetween(today, night);
-  if (d <= DROPS.weekDays) return 'week';
-  if (d <= DROPS.monthDays) return 'month';
-  return 'later';
+/** The month a trip starts in, `2026-11`: the "Wann" filter (C-125). */
+export function dropMonth(night: string): string {
+  return night.slice(0, 7);
+}
+
+/** Every month with a trip on the radar, earliest first: the month chips. */
+export function dropMonths(groups: readonly HotelDrops[]): string[] {
+  const months = new Set<string>();
+  for (const g of groups) for (const d of [g.top, ...g.more]) months.add(dropMonth(d.night));
+  return [...months].sort();
 }
 
 /**
- * Filters the hotels by city and "Wann". With a time filter a hotel stays when any of its
- * nights matches, and that night becomes its top entry.
+ * Filters the hotels by city, start month (`2026-11`) and trip length. With a month or length
+ * filter a hotel stays when any of its trips matches, and that trip becomes its top entry.
  */
 export function filterDrops<T extends HotelDrops>(
   groups: readonly T[],
-  f: { city?: string | null; when?: DropWhen | null; today: string },
+  f: { city?: string | null; month?: string | null; nights?: number | null },
 ): T[] {
   const out: T[] = [];
   for (const g of groups) {
     if (f.city && g.city.slug !== f.city) continue;
-    if (!f.when) {
+    if (!f.month && !f.nights) {
       out.push(g);
       continue;
     }
-    const all = [g.top, ...g.more].filter((d) => dropWhen(d.night, f.today) === f.when);
+    const all = [g.top, ...g.more].filter(
+      (d) => (!f.month || dropMonth(d.night) === f.month) && (!f.nights || d.nights === f.nights),
+    );
     const [top, ...rest] = all.sort((a, b) => b.drop - a.drop || byDate(a, b));
     if (top) out.push({ ...g, top, more: rest.sort(byDate) });
   }
@@ -204,10 +209,10 @@ export function heroDrop<T extends HotelDrops>(groups: readonly T[]): T | null {
   return groups.find((g) => g.top.priorDays >= DROPS.usualMinDays) ?? groups[0] ?? null;
 }
 
-/** Headline numbers for the radar: cheaper nights (a weekend counts 2), hotels, cities, biggest. */
+/** Headline numbers for the radar: cheaper trips, hotels, cities, the biggest drop. */
 export function dropStats(groups: readonly HotelDrops[]) {
   return {
-    nights: groups.reduce((n, g) => n + g.top.nights + g.more.reduce((m, d) => m + d.nights, 0), 0),
+    trips: groups.reduce((n, g) => n + 1 + g.more.length, 0),
     hotels: groups.length,
     cities: new Set(groups.map((g) => g.city.slug)).size,
     biggest: groups.reduce((m, g) => Math.max(m, g.top.drop), 0),
@@ -243,13 +248,13 @@ export function dropTier(drop: number): DropTier {
 
 /**
  * A drop's id in links: the night (`2026-10-18`), or check-in and check-out for a longer stay
- * (`2026-10-23--2026-10-25`, C-080f).
+ * (`2026-11-03--2026-11-08`, C-080f, C-125).
  */
 export function dropKey(d: { night: string; checkOut: string }): string {
   return daysBetween(d.night, d.checkOut) > 1 ? `${d.night}--${d.checkOut}` : d.night;
 }
 
-/** Reads `dropKey` back; null for anything else (1 or 2 nights only). */
+/** Reads `dropKey` back; null for anything else (1 to `DROPS.maxNights` nights). */
 export function parseDropKey(key: string): { night: string; checkOut: string } | null {
   const m = /^(\d{4}-\d{2}-\d{2})(?:--(\d{4}-\d{2}-\d{2}))?$/.exec(key);
   if (!m?.[1]) return null;
@@ -258,7 +263,7 @@ export function parseDropKey(key: string): { night: string; checkOut: string } |
   const checkOut = m[2] ?? addDays(night, 1);
   if (!isoDateSchema.safeParse(checkOut).success) return null;
   const n = daysBetween(night, checkOut);
-  return n === 1 || n === 2 ? { night, checkOut } : null;
+  return n >= 1 && n <= DROPS.maxNights ? { night, checkOut } : null;
 }
 
 /** The shareable page of one drop, without locale prefix: `/preissturz/adlon/2026-10-18` (C-080b). */
@@ -266,14 +271,14 @@ export function dropPath(slug: string, d: { night: string; checkOut: string }): 
   return `/preissturz/${slug}/${dropKey(d)}`;
 }
 
-/** "Di, 27. Okt." or, for a weekend, "Fr, 23. Okt. – So, 25. Okt." (C-080f). */
+/** "Di, 27. Okt." or, for a longer stay, "Di, 3. Nov. – So, 8. Nov." (C-080f, C-125). */
 export function dropDates(d: { night: string; checkOut: string }, locale: Locale): string {
   return daysBetween(d.night, d.checkOut) > 1
     ? `${formatWeekdayDayMonth(d.night, locale)} – ${formatWeekdayDayMonth(d.checkOut, locale)}`
     : formatWeekdayDayMonth(d.night, locale);
 }
 
-/** One hotel's drop for one stay (night or weekend), if it is on today's radar (C-080b/f). */
+/** One hotel's drop for one stay, if it is on today's radar (C-080b/f, C-125). */
 export function findDrop<T extends HotelDrops>(
   groups: readonly T[],
   slug: string,
@@ -288,10 +293,9 @@ export function findDrop<T extends HotelDrops>(
 
 /** The weekly recap (C-080h): how many drops, in how many hotels, how big. */
 export interface WeekSummary {
-  /** Drop events (a night or weekend seen falling on one day). */
+  /** Drop events (a stay seen falling on one day). */
   drops: number;
   hotels: number;
-  weekends: number;
   /** Average drop, 0.23 = 23 %. */
   average: number;
   biggest: number;
@@ -316,7 +320,6 @@ export function weekSummary(rows: readonly PriceDropRow[]): WeekSummary {
   return {
     drops: rows.length,
     hotels: new Set(rows.map((r) => r.hotel_id)).size,
-    weekends: rows.filter((r) => r.check_out && daysBetween(r.night, r.check_out) > 1).length,
     average: rows.length ? rows.reduce((s, r) => s + r.drop_pct, 0) / rows.length : 0,
     biggest: rows.reduce((m, r) => Math.max(m, r.drop_pct), 0),
     cities: [...cities.values()].sort(

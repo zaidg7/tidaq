@@ -71,6 +71,14 @@ describe('dropCaption', () => {
     );
   });
 
+  it('a trip names its length (C-125)', () => {
+    const [g] = groupDrops([row({ night: '2026-11-03', check_out: '2026-11-10' })]);
+    if (!g) throw new Error('no group');
+    expect(plain(dropCaption(g, g.top))).toContain(
+      '7 Nächte, Di, 3. Nov. – Di, 10. Nov.: 684 € statt 989 € am Vortag',
+    );
+  });
+
   it('says "direkt beim Hotel" and "seit wir messen" when that applies', () => {
     const [g] = groupDrops([row({ provider_direct: true, prior_days: 1 })]);
     if (!g) throw new Error('no group');

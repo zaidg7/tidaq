@@ -8,6 +8,7 @@ import {
   applyDropFilters,
   DROP_SOURCES,
   DropsView,
+  type DropQuery,
   type DropSource,
 } from '@/components/drops/DropsView';
 import { PageSkeleton } from '@/components/shell/PageSkeleton';
@@ -26,7 +27,7 @@ export const dynamic = 'force-dynamic';
 
 type Props = {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ stadt?: string; wann?: string; sort?: string; ref?: string }>;
+  searchParams: Promise<DropQuery & { ref?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -74,7 +75,7 @@ async function DropsPageBody({ params, searchParams }: Props) {
       </StatusPage>
     );
   }
-  const { filters, shown } = applyDropFilters(load.drops, q, today);
+  const { filters, shown } = applyDropFilters(load.drops, q);
   return (
     <DropsView
       all={load.drops}
@@ -82,6 +83,7 @@ async function DropsPageBody({ params, searchParams }: Props) {
       filters={filters}
       seenAt={load.seenAt}
       now={new Date()}
+      today={today}
       checked={checked}
       source={source}
       videos={source && <FromVideos items={videoItems(posted, load.drops)} />}

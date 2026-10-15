@@ -12,28 +12,10 @@ import { berlinToday } from '@/lib/today';
 
 /** Booking sites we compare (Xotelo's set, D-41): the number in the proof row. */
 const SITES = 4;
-/** The "Live" pill only while the last check is fresh. */
-const LIVE_MAX_MS = 36 * 60 * 60 * 1000;
-
-/** "heute 07:08" / "gestern 07:08" in German time, or null when older than 36 h. */
-function liveWhen(seenAt: string | null, today: string, locale: Locale, now = Date.now()) {
-  if (!seenAt) return null;
-  const at = new Date(seenAt);
-  if (Number.isNaN(at.getTime()) || now - at.getTime() > LIVE_MAX_MS) return null;
-  const tz = { timeZone: 'Europe/Berlin' } as const;
-  const day = new Intl.DateTimeFormat('en-CA', tz).format(at);
-  const time = new Intl.DateTimeFormat(locale === 'de' ? 'de-DE' : 'en-GB', {
-    ...tz,
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(at);
-  return { time, today: day === today };
-}
-
 /**
  * Homepage hero (PREMIUM.md §10.1, mockup B): full-bleed rooftop photo with top and bottom
- * scrims, the navbar white on top of it, bottom-left the live pill, "Ist dein Hotel gerade
- * günstig?" and one sentence. Desktop: the search bar overlaps the photo's bottom edge by 46 px,
+ * scrims, the navbar white on top of it, bottom-left "Ist dein Hotel gerade günstig?" and one
+ * sentence. Desktop: the search bar overlaps the photo's bottom edge by 46 px,
  * the proof row sits under it. Phones: the "Wohin?" pill sits in the photo.
  */
 export async function Hero({ locale }: { locale: Locale }) {
@@ -48,7 +30,6 @@ export async function Hero({ locale }: { locale: Locale }) {
   const hotels = catalog?.hotels.length ?? 0;
   const cities = catalog?.cityCount ?? 0;
   const photo = cityPhoto('home-hero');
-  const live = liveWhen(drops.kind === 'ok' ? drops.seenAt : null, today, locale);
 
   return (
     // Never clip: the search popovers hang below the hero.
@@ -63,21 +44,6 @@ export async function Hero({ locale }: { locale: Locale }) {
         <div aria-hidden="true" className="hero-scrim absolute inset-0" />
         <div className="absolute inset-x-0 bottom-[104px] md:bottom-[120px]">
           <div className="mx-auto max-w-[1240px] px-[18px] text-white md:px-10">
-            {live && (
-              <p className="hero-rise mb-4 inline-flex items-center gap-2 rounded-full border border-white/28 bg-white/16 px-3 py-1.5 text-[13px] font-medium backdrop-blur-sm md:mb-[22px] md:gap-2.5 md:px-3.5 md:py-2 md:text-[14px]">
-                <span
-                  aria-hidden="true"
-                  className={
-                    live.today
-                      ? 'live-dot size-2 rounded-full bg-good-bright'
-                      : 'size-2 rounded-full bg-white/60'
-                  }
-                />
-                {live.today
-                  ? t('liveToday', { time: live.time })
-                  : t('liveYesterday', { time: live.time })}
-              </p>
-            )}
             <h1 className="hero-rise max-w-[820px] text-[44px] leading-[1.04] font-[650] tracking-[-0.04em] md:text-[64px] lg:text-[76px] lg:leading-[1.02]">
               {t('heroTitle')}
             </h1>

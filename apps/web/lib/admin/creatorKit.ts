@@ -38,7 +38,7 @@ export async function creatorKit(
       return {
         key: `${g.hotel.slug}-${dropKey(d)}`,
         hotel: g.hotel.name,
-        place: `${g.city.name.de} · ${d.nights > 1 ? 'Wochenende ' : ''}${dropDates(d, 'de')}`,
+        place: `${g.city.name.de} · ${dropDates(d, 'de')}${d.nights > 1 ? ` · ${d.nights} Nächte` : ''}`,
         pct: f.pct,
         prices: `${formatPrice(d.nowCents, 'de')} statt ${formatPrice(d.prevCents, 'de')}`,
         photo: g.image?.src ?? null,

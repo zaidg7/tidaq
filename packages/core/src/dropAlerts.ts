@@ -64,7 +64,7 @@ const TEXT = {
     meta: (city: string, night: string, now: string, was: string) =>
       `${city} · ${night} · ${now} statt ${was} am Vortag`,
     usual: (u: string) => `, sonst um ${u}`,
-    weekend: ' (Wochenende, 2 Nächte)',
+    stay: (n: number) => (n === 2 ? ' (Wochenende, 2 Nächte)' : ` (${n} Nächte)`),
     more: (n: number) => ` · ${n === 1 ? '1 weitere Nacht' : `${n} weitere Nächte`} günstiger`,
     button: 'Alle Preisstürze ansehen',
     hint: 'Preise ändern sich oft mehrmals am Tag. Prüf den Preis auf der Buchungsseite, bevor du buchst.',
@@ -88,7 +88,7 @@ const TEXT = {
     meta: (city: string, night: string, now: string, was: string) =>
       `${city} · ${night} · ${now} instead of ${was} the day before`,
     usual: (u: string) => `, usually around ${u}`,
-    weekend: ' (weekend, 2 nights)',
+    stay: (n: number) => (n === 2 ? ' (weekend, 2 nights)' : ` (${n} nights)`),
     more: (n: number) => ` · ${n === 1 ? '1 more night' : `${n} more nights`} cheaper`,
     button: 'See all price drops',
     hint: 'Prices often change several times a day. Check the price on the booking site before you book.',
@@ -137,7 +137,7 @@ export function dropAlertMail(d: {
           meta:
             t.meta(
               g.city.name[d.locale],
-              dropDates(g.top, d.locale) + (g.top.nights > 1 ? t.weekend : ''),
+              dropDates(g.top, d.locale) + (g.top.nights > 1 ? t.stay(g.top.nights) : ''),
               formatPrice(g.top.nowCents, d.locale),
               formatPrice(g.top.prevCents, d.locale),
             ) +

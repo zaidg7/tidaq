@@ -92,8 +92,8 @@ export function FromVideos({ items }: { items: VideoItem[] }) {
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="text-[15px] leading-snug font-bold">{g.hotel.name}</span>
                   <span className="text-meta text-muted-ink">
-                    {g.city.name[locale]} · {shown.nights > 1 && `${td('weekendBadge')} `}
-                    {dropDates(shown, locale)}
+                    {g.city.name[locale]} · {dropDates(shown, locale)}
+                    {shown.nights > 1 && ` · ${td('stayBadge', { n: shown.nights })}`}
                   </span>
                   <span className="text-meta mt-1">
                     {t('posted', {

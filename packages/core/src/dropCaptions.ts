@@ -29,9 +29,13 @@ function seenText(seenAt: string): string {
   return `${p.date}, ${p.time}`;
 }
 
-/** "Nacht vom Di, 27. Okt." or "Wochenende Fr, 23. Okt. – So, 25. Okt." (C-080f). */
+/** "5 Nächte, Di, 3. Nov. – So, 8. Nov." (C-125), "Wochenende …" or "Nacht vom …" (C-080f). */
 const when = (d: PriceDrop) =>
-  d.nights > 1 ? `Wochenende ${dropDates(d, 'de')}` : `Nacht vom ${dropDates(d, 'de')}`;
+  d.nights > 2
+    ? `${d.nights} Nächte, ${dropDates(d, 'de')}`
+    : d.nights > 1
+      ? `Wochenende ${dropDates(d, 'de')}`
+      : `Nacht vom ${dropDates(d, 'de')}`;
 
 const site = (d: PriceDrop) => (d.provider.direct ? 'direkt beim Hotel' : `bei ${d.provider.name}`);
 

@@ -122,6 +122,20 @@ export function formatDayMonth(day: string, locale: Locale): string {
   return dayMonth(new Date(parseIsoDate(day)), locale);
 }
 
+/**
+ * A month `YYYY-MM` as `November` / `November`, with the year when it isn't `today`'s:
+ * `Januar 2027` (C-125, the radar's month chips).
+ */
+export function formatMonth(month: string, locale: Locale, today: string): string {
+  const date = new Date(parseIsoDate(`${month}-01`));
+  const sameYear = month.slice(0, 4) === today.slice(0, 4);
+  return new Intl.DateTimeFormat(INTL_LOCALE[locale], {
+    month: 'long',
+    ...(sameYear ? {} : { year: 'numeric' }),
+    timeZone: 'UTC',
+  }).format(date);
+}
+
 /** A `YYYY-MM-DD` date with its year: `15. Okt. 2026` / `15 Oct 2026` ("Stand", test dates). */
 export function formatDayMonthYear(day: string, locale: Locale): string {
   const date = new Date(parseIsoDate(day));

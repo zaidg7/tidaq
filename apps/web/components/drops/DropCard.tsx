@@ -25,7 +25,7 @@ const nightHref = (slug: string, d: PriceDrop, locale: Locale) =>
 
 /**
  * One hotel on the Preissturz-Radar (C-080a, mockup B language): the photo is the card, with the
- * drop badge (coloured by size) and "Wochenende"; below it the hotel (→ the drop's own page,
+ * drop badge (coloured by size) and the trip length ("5 Nächte"); below it the hotel (→ the drop's own page,
  * C-080b), city and night, today's price against the day before, the saving at which site, and
  * whether it's the lowest price we've seen. Its other dropped nights follow as small links.
  * Both prices are real checks (CLAUDE.md rule 8); the old one is labelled, not just struck out.
@@ -56,7 +56,7 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
         />
         {d.nights > 1 && (
           <span className="absolute top-3.5 right-3.5 z-10 inline-flex h-8 items-center rounded-full bg-white/92 px-3 text-[13px] font-semibold text-ink">
-            {t('weekendBadge')}
+            {t('stayBadge', { n: d.nights })}
           </span>
         )}
       </Photo>
@@ -100,8 +100,8 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
                   href={nightHref(g.hotel.slug, m, locale)}
                   className="inline-flex h-8 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-[13px] font-medium transition-colors hover:border-ink/40"
                 >
-                  {m.nights > 1 ? `${t('weekendBadge')} ` : ''}
                   {formatWeekdayDayMonth(m.night, locale)}
+                  {m.nights > 1 && ` · ${t('stayBadge', { n: m.nights })}`}
                   <span className="font-bold text-good tabular-nums">
                     {dropPercent(m.drop, locale)}
                   </span>

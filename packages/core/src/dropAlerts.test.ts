@@ -172,6 +172,15 @@ describe('dropAlertMail', () => {
     );
   });
 
+  it('a trip names its length (C-125)', () => {
+    const [w] = groupDrops([row({ night: '2026-11-03', check_out: '2026-11-08' })]);
+    if (!w) throw new Error('no group');
+    const de = mail('de', null, [w]).content.items?.[0];
+    expect(plain(de?.meta ?? '')).toContain('Di, 3. Nov. – So, 8. Nov. (5 Nächte)');
+    const en = mail('en', null, [w]).content.items?.[0];
+    expect(plain(en?.meta ?? '')).toContain('(5 nights)');
+  });
+
   it('refuses an empty list', () => {
     expect(() => mail('de', null, [])).toThrow();
   });

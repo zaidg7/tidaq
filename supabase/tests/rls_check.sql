@@ -46,6 +46,14 @@ select
   has_function_privilege('anon', 'public.radar_stats(date)', 'execute') as anon_can_read_radar_stats,
   has_function_privilege('anon', 'public.radar_weekend_drops(date)', 'execute')
     as anon_can_read_weekend_drops,
+  -- C-125: trip drops are public; computing and storing them is pg_cron's job.
+  has_function_privilege('anon', 'public.radar_trip_drops(date,integer)', 'execute')
+    as anon_can_read_trip_drops,
+  not has_function_privilege('anon', 'public.refresh_trip_drops(date)', 'execute')
+    as anon_cannot_refresh_trip_drops,
+  not has_function_privilege('anon', 'public.compute_trip_drops(date,integer)', 'execute')
+    as anon_cannot_compute_trip_drops,
+  not has_table_privilege('anon', 'public.trip_drops', 'insert') as anon_cannot_write_trip_drops,
   -- C-030a/C-031: everything with addresses or alerts is service role only.
   not has_function_privilege('anon', 'public.alert_inputs(date)', 'execute')
     as anon_cannot_read_alert_inputs,

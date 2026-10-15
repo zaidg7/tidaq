@@ -40,7 +40,7 @@ function row(
   prev: number,
   provider: [slug: string, name: string, direct?: boolean],
   priorDays = 9,
-  nights = 1,
+  nights = 5,
 ): PriceDropRow {
   const today = berlinToday();
   return {
@@ -71,27 +71,21 @@ function row(
 const BOOKING: [string, string] = ['booking-com', 'Booking.com'];
 const EXPEDIA: [string, string] = ['expedia', 'Expedia'];
 
-/** Days from today to the second Friday ahead (a weekend at least a week out). */
-function nextFriday(): number {
-  const dow = new Date(`${berlinToday()}T00:00:00Z`).getUTCDay();
-  return ((5 - dow + 7) % 7) + 7;
-}
-
 /**
- * Sample drops (C-080a/f): five hotels, one with several nights, one a first-ever low, one a
- * Friday-to-Sunday weekend.
+ * Sample drops (C-080a, C-125): five hotels with 5- and 7-night trips, one with several trips over
+ * two months, one a first-ever low. Prices are totals for the trip.
  */
 export function sampleRows(): PriceDropRow[] {
   return [
-    row(FAIRMONT, nextFriday(), 98_000, 124_000, BOOKING, 6, 2),
-    row(BAUR, 12, 68_400, 98_900, BOOKING),
-    row(BAUR, 13, 71_200, 96_000, BOOKING),
-    row(BAUR, 19, 74_800, 92_300, EXPEDIA),
-    row(BAUR, 26, 77_000, 93_500, BOOKING),
-    row(BAUR, 33, 79_900, 95_100, BOOKING),
-    row(ADLON, 3, 38_900, 52_600, ['adlon', 'Hotelseite', true]),
-    row(CLARIDGES, 41, 112_000, 138_000, EXPEDIA, 1),
-    row(ARTS, 6, 31_500, 38_100, BOOKING),
+    row(FAIRMONT, 9, 490_000, 620_000, BOOKING, 6, 7),
+    row(BAUR, 12, 342_000, 494_500, BOOKING),
+    row(BAUR, 13, 498_400, 672_000, BOOKING, 9, 7),
+    row(BAUR, 19, 374_000, 461_500, EXPEDIA),
+    row(BAUR, 26, 385_000, 467_500, BOOKING),
+    row(BAUR, 33, 399_500, 475_500, BOOKING),
+    row(ADLON, 3, 194_500, 263_000, ['adlon', 'Hotelseite', true]),
+    row(CLARIDGES, 41, 784_000, 966_000, EXPEDIA, 1, 7),
+    row(ARTS, 6, 157_500, 190_500, BOOKING),
   ];
 }
 
@@ -103,13 +97,13 @@ export function sampleDrops(): HotelDropsWithPhoto[] {
 }
 
 /**
- * Sample "Aus unseren Videos" (C-080j): the Fairmont weekend (still on the radar), Baur au Lac
- * (still on, a bit cheaper than in the video) and a Claridge's night that is over.
+ * Sample "Aus unseren Videos" (C-080j): the Fairmont trip (still on the radar), Baur au Lac
+ * (still on, a bit cheaper than in the video) and a Claridge's trip that is over.
  */
 export function samplePosted(): PostedDrop[] {
   const today = berlinToday();
   const [fairmont, baur] = sampleRows();
-  const claridges = row(CLARIDGES, 20, 104_000, 131_000, EXPEDIA, 5);
+  const claridges = row(CLARIDGES, 20, 728_000, 917_000, EXPEDIA, 5, 7);
   const posted = (
     r: PriceDropRow | undefined,
     daysAgo: number,
@@ -125,7 +119,7 @@ export function samplePosted(): PostedDrop[] {
   return postedDrops(
     [
       posted(fairmont, 1, ['instagram', 'tiktok']),
-      posted(baur && { ...baur, now_cents: 70_200, drop_pct: 1 - 70_200 / baur.prev_cents }, 2, [
+      posted(baur && { ...baur, now_cents: 351_000, drop_pct: 1 - 351_000 / baur.prev_cents }, 2, [
         'tiktok',
       ]),
       posted(claridges, 3, ['tiktok']),

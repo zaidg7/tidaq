@@ -2,6 +2,7 @@ import 'server-only';
 import { cache } from 'react';
 import {
   addDays,
+  DROPS,
   findDrop,
   hasOutboundSearch,
   parseDropKey,
@@ -33,18 +34,21 @@ export type DropsLoad =
   | { kind: 'unavailable' };
 
 /**
- * Today's sudden price drops (C-080a; SQL `radar_drops`, which adds the usual price, C-080d), one entry per hotel with its photo.
- * Cached per request: the radar, the homepage teaser and city pages share one read.
+ * Today's sudden price drops, one entry per hotel with its photo. Trips only since C-125: 5 and
+ * 7 nights in a row (SQL `radar_trip_drops`, stored every 15 minutes by pg_cron), because a
+ * cheaper single night is no reason to travel. Cached per request: the radar, the homepage
+ * teaser and city pages share one read.
  */
 export const getDrops = cache(async (today: string): Promise<DropsLoad> => {
   if (!hasSupabase()) return { kind: 'unavailable' };
   try {
-    // Single nights and Friday-to-Sunday weekends (C-080f).
-    const [nights, weekends] = await Promise.all([
-      rpc('radar_drops', { p_today: today }, z.array(priceDropRowSchema)),
-      rpc('radar_weekend_drops', { p_today: today }, z.array(priceDropRowSchema)),
-    ]);
-    const rows = [...nights, ...weekends];
+    const rows = (
+      await Promise.all(
+        DROPS.tripLengths.map((n) =>
+          rpc('radar_trip_drops', { p_today: today, p_nights: n }, z.array(priceDropRowSchema)),
+        ),
+      )
+    ).flat();
     const seenAt = rows.reduce<string | null>(
       (max, r) => (max === null || r.seen_at > max ? r.seen_at : max),
       null,
@@ -118,7 +122,7 @@ export type DropPageLoad =
  * drop is gone the page says so and points to the current price.
  */
 export const getDropPage = cache(
-  // `key` is a `dropKey` (a string, so `cache` dedupes metadata and page): night or weekend.
+  // `key` is a `dropKey` (a string, so `cache` dedupes metadata and page): the trip's dates.
   async (slug: string, key: string, today: string): Promise<DropPageLoad> => {
     const stay = parseDropKey(key);
     if (!stay) return { kind: 'missing' };

@@ -78,8 +78,8 @@ export function DropCallout({ group: g, drop }: { group: HotelDrops; drop?: Pric
                     href={href(x)}
                     className="inline-flex h-9 items-center gap-2 rounded-full border border-line bg-surface px-3 text-[14px] font-medium hover:border-ink/40"
                   >
-                    {x.nights > 1 && `${td('weekendBadge')} `}
                     {formatWeekdayDayMonth(x.night, locale)}
+                    {x.nights > 1 && ` · ${td('stayBadge', { n: x.nights })}`}
                     <span className="font-bold text-good tabular-nums">
                       {dropPercent(x.drop, locale)}
                     </span>

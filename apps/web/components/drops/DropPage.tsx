@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { getTranslations } from 'next-intl/server';
 import { Check, TrendingDown } from 'lucide-react';
 import {
+  daysBetween,
   dropDates,
   dropKey,
   dropPath,
@@ -45,7 +46,8 @@ export async function dropFacts(g: HotelDropsWithPhoto, d: PriceDrop, locale: Lo
   const td = await getTranslations({ locale, namespace: 'drops' });
   const pct = dropPercent(d.drop, locale);
   const date = dropDates(d, locale);
-  const weekend = d.nights > 1;
+  // Trips (C-125) and old weekend links: the total for all nights.
+  const trip = d.nights > 1;
   const nowP = formatPrice(d.nowCents, locale);
   const was = formatPrice(d.prevCents, locale);
   const site = d.provider.direct ? t('atDirect') : t('atSite', { provider: d.provider.name });
@@ -57,7 +59,15 @@ export async function dropFacts(g: HotelDropsWithPhoto, d: PriceDrop, locale: Lo
   const saved = d.provider.direct
     ? td('savedDirect', { amount: formatPrice(d.savedCents, locale) })
     : td('saved', { amount: formatPrice(d.savedCents, locale), provider: d.provider.name });
-  const vars = { hotel: g.hotel.name, city: g.city.name[locale], date, pct, now: nowP, was };
+  const vars = {
+    hotel: g.hotel.name,
+    city: g.city.name[locale],
+    date,
+    pct,
+    now: nowP,
+    was,
+    n: d.nights,
+  };
   const story: StoryText = {
     pct,
     hotel: g.hotel.name,
@@ -73,19 +83,19 @@ export async function dropFacts(g: HotelDropsWithPhoto, d: PriceDrop, locale: Lo
   return {
     pct,
     date,
-    weekend,
+    trip,
     site,
     low,
     seen,
     saved,
     story,
     title: t('metaTitle', vars),
-    description: t(weekend ? 'metaDescriptionWeekend' : 'metaDescription', { ...vars, site, low }),
-    shareText: t(weekend ? 'shareTextWeekend' : 'shareText', vars),
+    description: t(trip ? 'metaDescriptionTrip' : 'metaDescription', { ...vars, site, low }),
+    shareText: t(trip ? 'shareTextTrip' : 'shareText', vars),
   };
 }
 
-/** The stay page of a drop's night or weekend (2 adults, like the night grid). */
+/** The stay page of a drop's trip (2 adults, like the night grid). */
 const stayHref = (slug: string, s: { night: string; checkOut: string }, locale: Locale) =>
   localizedPath(stayPath(slug, s.night, s.checkOut, 2), locale);
 
@@ -104,7 +114,7 @@ function meterFacts(series: readonly DailyPrice[], d: PriceDrop, today: string) 
 }
 
 /**
- * `/preissturz/[hotel]/[night]` (C-080b, mockup B drop page; a night or a weekend, C-080f): the
+ * `/preissturz/[hotel]/[night]` (C-080b, mockup B drop page; a 5- or 7-night trip, C-125): the
  * hotel's photo, a sheet sliding over it with the hotel, the stay as chips and the drop card
  * (huge "−54 %", both prices, the new low), the way to the site, then how the price moved, where
  * today sits (meter and one sentence), the hotel's other drops, a Price Alert for this hotel and
@@ -322,7 +332,7 @@ export async function DropPage({
                 {t('chartTitle')}
               </h2>
               <p className="mt-1 mb-4 text-[15px] text-muted">
-                {t(f.weekend ? 'chartLeadWeekend' : 'chartLead')}
+                {f.trip ? t('chartLeadTrip', { n: d.nights }) : t('chartLead')}
               </p>
               <DropStoryChart
                 series={series}
@@ -361,13 +371,15 @@ export async function DropPage({
             )}
             <p className="mt-3.5 text-[15px] text-muted md:text-[16px]">
               {usual !== null
-                ? t.rich(f.weekend ? 'meterUsualWeekend' : 'meterUsual', {
+                ? t.rich(f.trip ? 'meterUsualTrip' : 'meterUsual', {
+                    n: d.nights,
                     usual: price(usual),
                     saved: price(saved),
                     b,
                     g: green,
                   })
-                : t.rich(f.weekend ? 'meterYesterdayWeekend' : 'meterYesterday', {
+                : t.rich(f.trip ? 'meterYesterdayTrip' : 'meterYesterday', {
+                    n: d.nights,
                     was: price(d.prevCents),
                     saved: price(saved),
                     b,
@@ -394,9 +406,7 @@ export async function DropPage({
                       <span>
                         <span className="block font-semibold">
                           {n.nights > 1
-                            ? t('moreWeekend', {
-                                date: formatDateRange(n.night, n.checkOut, locale),
-                              })
+                            ? formatDateRange(n.night, n.checkOut, locale)
                             : formatWeekdayDayMonth(n.night, locale)}
                         </span>
                         <span className="text-[14px] text-muted">
@@ -474,7 +484,7 @@ export async function DropOver({
   today,
 }: {
   hotel: { slug: string; name: string; city?: { slug: string; name: { de: string; en: string } } };
-  /** The night or weekend of the link. */
+  /** The stay of the link. */
   stay: { night: string; checkOut: string };
   locale: Locale;
   today: string;
@@ -486,9 +496,10 @@ export async function DropOver({
       <StatusPage
         eyebrow={t('overEyebrow')}
         title={t('overTitle')}
-        text={t(dropKey(stay) === stay.night ? 'overText' : 'overTextWeekend', {
+        text={t(dropKey(stay) === stay.night ? 'overText' : 'overTextTrip', {
           date: dropDates(stay, locale),
           hotel: hotel.name,
+          n: daysBetween(stay.night, stay.checkOut),
         })}
       >
         <div className="flex flex-wrap justify-center gap-3">

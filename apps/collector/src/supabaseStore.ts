@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { DEALS, priceDropRowSchema, z, type Database } from '@tidaq/core';
+import { DEALS, DROPS, priceDropRowSchema, z, type Database } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from './ingest';
 import type {
   CatalogHotel,
@@ -537,16 +537,12 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
     },
 
     async todayDrops(today) {
-      // Single nights and weekends (C-080f).
-      const [nights, weekends] = await Promise.all([
-        db.rpc('radar_drops', { p_today: today }),
-        db.rpc('radar_weekend_drops', { p_today: today }),
-      ]);
+      // Trips of 5 and 7 nights, like the radar (C-125); single nights are no reason to travel.
+      const results = await Promise.all(
+        DROPS.tripLengths.map((n) => db.rpc('radar_trip_drops', { p_today: today, p_nights: n })),
+      );
       const rows = z.array(priceDropRowSchema);
-      return [
-        ...rows.parse(check(nights, 'load drops')),
-        ...rows.parse(check(weekends, 'load weekend drops')),
-      ];
+      return results.flatMap((r) => rows.parse(check(r, 'load trip drops')));
     },
 
     async markDropAlertsSent(ids, today) {

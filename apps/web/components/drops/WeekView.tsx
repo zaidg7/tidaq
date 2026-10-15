@@ -90,7 +90,6 @@ export function WeekView({
               {t('statDrops', { n: s.drops })} {t('statHotels', { n: s.hotels })}{' '}
               {t('statAverage', { pct: pct(s.average) })}{' '}
               {t('statBiggest', { pct: pct(s.biggest) })}
-              {s.weekends > 0 && <> {t('statWeekends', { n: s.weekends })}</>}
             </p>
             <dl
               aria-hidden="true"

@@ -3,16 +3,17 @@ import { useLocale, useTranslations } from 'next-intl';
 import { CalendarRange, Check, TrendingDown } from 'lucide-react';
 import {
   DROP_SORTS,
-  DROP_WHENS,
+  DROPS,
+  dropMonths,
   dropStats,
   heroDrop,
   filterDrops,
   formatDrop,
+  formatMonth,
   sortDrops,
   localizedPath,
   updatedAtParts,
   type DropSort,
-  type DropWhen,
   type Locale,
 } from '@tidaq/core';
 import { buttonClasses } from '@/components/ui/Button';
@@ -31,29 +32,38 @@ const SOURCE_NAME: Record<DropSource, string> = { tiktok: 'TikTok', instagram: '
 
 export interface DropFilters {
   city: string | null;
-  when: DropWhen | null;
+  /** Start month, `2026-11` (C-125). */
+  month: string | null;
+  /** Trip length, 5 or 7 nights (C-125). */
+  nights: number | null;
   sort: DropSort;
 }
 
-/** Reads `?stadt=&wann=&sort=`; unknown values fall back to "all" and biggest drop first. */
+export type DropQuery = { stadt?: string; monat?: string; dauer?: string; sort?: string };
+
+/**
+ * Reads `?stadt=&monat=&dauer=&sort=`; unknown values fall back to "all" and biggest drop first.
+ * Only months that have a trip on the radar count, so a stale link shows everything.
+ */
 export function applyDropFilters(
   all: HotelDropsWithPhoto[],
-  q: { stadt?: string; wann?: string; sort?: string },
-  today: string,
+  q: DropQuery,
 ): { filters: DropFilters; shown: HotelDropsWithPhoto[] } {
   const city = q.stadt && all.some((g) => g.city.slug === q.stadt) ? q.stadt : null;
-  const when = DROP_WHENS.find((w) => w === q.wann) ?? null;
+  const month = q.monat && dropMonths(all).includes(q.monat) ? q.monat : null;
+  const nights = DROPS.tripLengths.find((n) => String(n) === q.dauer) ?? null;
   const sort = DROP_SORTS.find((s) => s === q.sort) ?? 'pct';
   return {
-    filters: { city, when, sort },
-    shown: sortDrops(filterDrops(all, { city, when, today }), sort),
+    filters: { city, month, nights, sort },
+    shown: sortDrops(filterDrops(all, { city, month, nights }), sort),
   };
 }
 
 /**
- * `/preissturz` (C-080a), the Preissturz-Radar: every hotel whose night price fell sharply since
- * the day before to a new low, biggest drop first. City, travel time and sort are URL parameters
- * (`?stadt=paris&wann=week&sort=eur`), so every view can be shared as a link.
+ * `/preissturz` (C-080a), the Preissturz-Radar: every hotel whose price for a 5- or 7-night trip
+ * fell sharply since the day before to a new low (C-125), biggest drop first. City, start month,
+ * trip length and sort are URL parameters (`?stadt=paris&monat=2026-12&dauer=7&sort=eur`), so
+ * every view can be shared as a link.
  */
 export function DropsView({
   all,
@@ -61,6 +71,7 @@ export function DropsView({
   filters,
   seenAt,
   now,
+  today,
   checked = null,
   source = null,
   alert = null,
@@ -73,6 +84,8 @@ export function DropsView({
   filters: DropFilters;
   seenAt: string | null;
   now: Date;
+  /** Berlin day: month chips name the year only when it isn't this one. */
+  today: string;
   /** What the night grid checked today: the proof line. */
   checked?: RadarStats | null;
   /** Set when the visitor came through a social bio link: shows the welcome strip. */
@@ -90,7 +103,8 @@ export function DropsView({
     const next = { ...filters, ...f };
     const q = new URLSearchParams();
     if (next.city) q.set('stadt', next.city);
-    if (next.when) q.set('wann', next.when);
+    if (next.month) q.set('monat', next.month);
+    if (next.nights) q.set('dauer', String(next.nights));
     if (next.sort !== 'pct') q.set('sort', next.sort);
     const s = q.toString();
     return s ? `${base}?${s}` : base;
@@ -98,7 +112,8 @@ export function DropsView({
   const cities = [...new Map(all.map((g) => [g.city.slug, g.city.name[locale]]))].sort((a, b) =>
     a[1].localeCompare(b[1], locale),
   );
-  const filtered = filters.city !== null || filters.when !== null;
+  const months = dropMonths(all);
+  const filtered = filters.city !== null || filters.month !== null || filters.nights !== null;
   const seen = seenAt ? updatedAtParts(seenAt, now, locale) : null;
   // The biggest drop with real history gets the hero spot on the unfiltered default view and
   // leaves the grid (C-080d2).
@@ -122,11 +137,7 @@ export function DropsView({
               {t('welcome.title', { source: SOURCE_NAME[source] })}
             </p>
           )}
-          <p className="inline-flex h-8 items-center gap-2 rounded-full border border-line bg-surface px-3 text-[13px] font-medium text-ink md:text-[14px]">
-            <span aria-hidden="true" className="live-dot size-2 rounded-full bg-good" />
-            {when ? t('asOf', { when }) : t('eyebrow')}
-          </p>
-          <h1 className="mt-4 text-[36px] leading-[1.04] font-[650] tracking-[-0.04em] md:text-[60px] md:leading-[1.02]">
+          <h1 className="text-[36px] leading-[1.04] font-[650] tracking-[-0.04em] md:text-[60px] md:leading-[1.02]">
             {t('title')}
           </h1>
           {/* Visitors from a bio link saw the idea in the video: straight to the drops. */}
@@ -138,17 +149,18 @@ export function DropsView({
           >
             {t('intro')}
           </p>
+          {when && <p className="mt-2 text-[14px] text-muted">{t('asOf', { when })}</p>}
         </header>
 
         {stats.hotels > 0 && (
           <dl className="mt-7 grid grid-cols-3 gap-3 md:mt-10 md:flex md:gap-14">
             <div>
-              <dt className="sr-only">{t('statNightsLabel')}</dt>
+              <dt className="sr-only">{t('statTripsLabel')}</dt>
               <dd className="text-[26px] leading-none font-bold tracking-[-0.03em] tabular-nums md:text-[36px]">
-                {stats.nights}
+                {stats.trips}
               </dd>
               <dd className="mt-1.5 text-[13px] text-muted md:text-[15px]">
-                {t('statNightsShort', { n: stats.nights })}
+                {t('statTripsShort', { n: stats.trips })}
               </dd>
             </div>
             <div>
@@ -172,7 +184,7 @@ export function DropsView({
         {/* The facts behind the numbers, for readers and tests: one sentence. */}
         {stats.hotels > 0 && (
           <p className="sr-only">
-            {t('statNights', { n: stats.nights })} {t('statHotels', { n: stats.hotels })}
+            {t('statTrips', { n: stats.trips })} {t('statHotels', { n: stats.hotels })}
           </p>
         )}
 
@@ -228,18 +240,36 @@ export function DropsView({
                 </ul>
               </nav>
             )}
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <nav aria-label={t('filterWhen')} className="-mx-[18px] md:mx-0">
-                <ul className="snap-row flex gap-2 overflow-x-auto px-[18px] pb-1 md:px-0">
+            {months.length > 1 && (
+              <nav aria-label={t('filterMonth')} className="-mx-[18px] md:mx-0">
+                <ul className="snap-row flex gap-2 overflow-x-auto px-[18px] pb-1 md:flex-wrap md:overflow-visible md:px-0">
                   <li className="shrink-0">
-                    <ChipLink href={href({ when: null })} selected={!filters.when}>
-                      {t('when.all')}
+                    <ChipLink href={href({ month: null })} selected={!filters.month}>
+                      {t('monthAll')}
                     </ChipLink>
                   </li>
-                  {DROP_WHENS.map((w) => (
-                    <li key={w} className="shrink-0">
-                      <ChipLink href={href({ when: w })} selected={filters.when === w}>
-                        {t(`when.${w}`)}
+                  {months.map((m) => (
+                    <li key={m} className="shrink-0">
+                      <ChipLink href={href({ month: m })} selected={filters.month === m}>
+                        {formatMonth(m, locale, today)}
+                      </ChipLink>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )}
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <nav aria-label={t('filterNights')} className="-mx-[18px] md:mx-0">
+                <ul className="snap-row flex gap-2 overflow-x-auto px-[18px] pb-1 md:px-0">
+                  <li className="shrink-0">
+                    <ChipLink href={href({ nights: null })} selected={!filters.nights}>
+                      {t('nightsAll')}
+                    </ChipLink>
+                  </li>
+                  {DROPS.tripLengths.map((n) => (
+                    <li key={n} className="shrink-0">
+                      <ChipLink href={href({ nights: n })} selected={filters.nights === n}>
+                        {t('nightsChip', { n })}
                       </ChipLink>
                     </li>
                   ))}
@@ -352,7 +382,7 @@ export function DropsView({
             </p>
           </div>
           <ol className="grid gap-px overflow-hidden rounded-card border border-line bg-line">
-            {(['compare', 'threshold', 'weekend', 'confirm', 'check'] as const).map((k, i) => (
+            {(['compare', 'threshold', 'trip', 'confirm', 'check'] as const).map((k, i) => (
               <li
                 key={k}
                 className="flex gap-4 bg-surface px-5 py-4 text-[15px] md:px-6 md:text-[16px]"

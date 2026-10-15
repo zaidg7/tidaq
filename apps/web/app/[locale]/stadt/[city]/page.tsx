@@ -124,8 +124,7 @@ async function CityPageRouteBody(props: Props) {
   const userAgent = (await headers()).get('user-agent');
   after(() => logView({ name: 'city_view', props: { city: slug } }, userAgent));
   // The city's sudden drops (C-080a); the teaser renders nothing without any.
-  const cityDrops =
-    drops.kind === 'ok' ? filterDrops(drops.drops, { city: slug, when: null, today }) : [];
+  const cityDrops = drops.kind === 'ok' ? filterDrops(drops.drops, { city: slug }) : [];
   const name = result.city.name[locale];
   const tc = await getTranslations({ locale, namespace: 'city' });
   return (

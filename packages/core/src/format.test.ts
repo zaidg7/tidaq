@@ -4,6 +4,7 @@ import {
   formatDateRange,
   formatDayMonth,
   formatDayMonthYear,
+  formatMonth,
   formatWeekdayDayMonth,
   updatedAtParts,
   formatPercent,
@@ -140,6 +141,15 @@ describe('formatDayMonth', () => {
     expect(formatDayMonth('2026-10-15', 'de')).toBe('15. Okt.');
     expect(formatDayMonth('2026-05-03', 'de')).toBe('3. Mai');
     expect(formatDayMonth('2026-10-15', 'en')).toBe('15 Oct');
+  });
+});
+
+describe('formatMonth', () => {
+  it('names the month, with the year only when it is not this year', () => {
+    expect(formatMonth('2026-11', 'de', '2026-10-15')).toBe('November');
+    expect(formatMonth('2027-01', 'de', '2026-10-15')).toBe('Januar 2027');
+    expect(formatMonth('2026-03', 'en', '2026-10-15')).toBe('March');
+    expect(formatMonth('2027-02', 'en', '2026-10-15')).toBe('February 2027');
   });
 });
 
