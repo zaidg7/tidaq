@@ -114,7 +114,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-101 | Mockups v2 with Zaid's feedback + icon options (canvas) | CLOUD | S | C-100 | DONE |
 | C-102 | Foundations: tokens, Instrument Sans, type, spacing, motion, focus | CLOUD | M | C-100 | DONE ([#99](https://github.com/zaidg7/tidaq/pull/99)) |
 | C-103 | Primitives: Button, Chip, Badge, Field, Toast, Skeleton, Segmented, Accordion, Sheet | CLOUD | M | C-102 | DONE ([#100](https://github.com/zaidg7/tidaq/pull/100)) |
-| C-104 | Photos A: Commons sweep for every hotel, picks, focal points, AVIF/WebP + blur-up | CLOUD | M | C-102 | TODO |
+| C-104 | Photos A: Commons sweep for every hotel, picks, focal points, AVIF/WebP + blur-up | CLOUD | M | C-102 | DONE ([#101](https://github.com/zaidg7/tidaq/pull/101)) |
 | C-105 | Photos B: city photos, fallback with "Stadtbild", every hotel shows a photo | CLOUD | S | C-104 | TODO |
 | C-106 | Shell: navbar, docked search pill, mobile menu, footer, symbol + icons, /kassen-check links | CLOUD | M | C-103, B-020 | TODO |
 | C-107 | Search 1: desktop search bar + destination panel | CLOUD | M | C-103, C-105 | TODO |
@@ -962,6 +962,8 @@ Canvas boards "B · Clean Premium" updated with Zaid's feedback: "Price Drops" w
 **C-102 notes (DONE, [#99](https://github.com/zaidg7/tidaq/pull/99)):** Instrument Sans (`lib/fonts.ts`), PREMIUM.md tokens in `globals.css`. Soft Modern token names are aliases of the new ones (`fg`→`ink`, `bad`→`high`, `shadow-float`→`shadow-2`, …) so unrebuilt pages work; new code uses the new names; C-123 removes the aliases. `font-extrabold` = 700. Calendar tints stay soft until C-112. Visual baselines re-rendered.
 
 **C-103 notes (DONE, [#100](https://github.com/zaidg7/tidaq/pull/100)):** Button variants `secondary` (alias `ghost`), `subtle`, `onPhoto`, `dark`; sizes 44/52/60; `trailing` slot. `Chip` ink when selected; `Badge` tones `drop`, `onPhoto`; `TextField` label above; ink `Toast`; shimmer `Skeleton`. New `Segmented`, `Accordion`, `Sheet` (`components/ui`). The old `menu-sheet`/`date-sheet` dialogs move onto `Sheet` in C-106/C-108.
+
+**C-104 notes (DONE, [#101](https://github.com/zaidg7/tidaq/pull/101)):** `scripts/photos/candidates.ts` (workflow **Catalog photos**, mode `candidates`) looked at each hotel's Wikidata image, Commons category, a name search and geotagged files: 67 of 83 hotels had candidates. 51 picked by eye from per-city contact sheets (`scripts/photos/picks.json`; sheets removed before merge, re-run the mode to see them), fetched by `fetch.ts` (mode `fetch`) as 160/480/960/1600 px WebP + 24 px blur placeholder in `lib/hotelPhotos.generated.ts`; credits in migration `20261015142921_hotel_photos_c104`. 4 older photos kept (Beverly Hills Hotel, Peninsula Beverly Hills, Hotel Eden, Rosewood Hong Kong). **27 hotels still have no own photo** (no usable free image: e.g. Shanghai EDITION, all three Dubai and Maldives resorts, Aman Tokyo): they get the labelled city photo in C-105; LiteAPI images (B-021) would close the gap. Weaker picks to replace when better ones exist: Four Seasons Ritz Lisbon, The Lowell, Peninsula Shanghai. Component `components/ui/Photo.tsx` (srcset, blur-up, focal point, tag) is used by the page tasks; existing pages already show the new files because the 160/960 names are unchanged. WebP only (AVIF not needed: every target browser reads WebP, and it halves the file count).
 
 ### C-102 … C-123
 
