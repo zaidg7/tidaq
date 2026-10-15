@@ -32,6 +32,8 @@ export default async function DevWatchPage({
         locale,
         confirmed: neu === undefined,
         newsletter: true,
+        drop_alerts: true,
+        drop_city: { slug: 'paris', name_de: 'Paris', name_en: 'Paris' },
         watches: [
           {
             id: '11111111-1111-4111-8111-111111111111',

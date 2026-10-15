@@ -24,6 +24,7 @@ import { DROP_HISTORY_DAYS, type HotelDropsWithPhoto } from '@/lib/data/drops';
 import { routes } from '@/lib/routes';
 import { dropPercent } from './DropCard';
 import { DropShare } from './DropShare';
+import { DropAlertSection } from './DropAlertSection';
 import { DropsTeaser, dropsHref } from './DropsTeaser';
 import type { StoryText } from './storyImage';
 
@@ -223,6 +224,13 @@ export async function DropPage({
         </section>
       )}
 
+      <div className="mt-14 lg:mt-[88px]">
+        <DropAlertSection
+          locale={locale}
+          defaultCity={{ slug: g.city.slug, name: g.city.name[locale] }}
+        />
+      </div>
+
       {others.length > 0 && (
         <div className="mt-14 lg:mt-[88px]">
           <DropsTeaser
@@ -245,7 +253,7 @@ export async function DropOver({
   locale,
   today,
 }: {
-  hotel: { slug: string; name: string };
+  hotel: { slug: string; name: string; city?: { slug: string; name: { de: string; en: string } } };
   night: string;
   locale: Locale;
   today: string;
@@ -253,27 +261,39 @@ export async function DropOver({
   const t = await getTranslations({ locale, namespace: 'drop' });
   const upcoming = night > today;
   return (
-    <StatusPage
-      eyebrow={t('overEyebrow')}
-      title={t('overTitle')}
-      text={t('overText', {
-        date: formatWeekdayDayMonth(night, locale),
-        hotel: hotel.name,
-      })}
-    >
-      <div className="flex flex-wrap justify-center gap-3">
-        {upcoming && (
-          <a href={nightStay(hotel.slug, night, locale)} className={buttonClasses({ size: 'lg' })}>
-            {t('overStay')}
+    <>
+      <StatusPage
+        eyebrow={t('overEyebrow')}
+        title={t('overTitle')}
+        text={t('overText', {
+          date: formatWeekdayDayMonth(night, locale),
+          hotel: hotel.name,
+        })}
+      >
+        <div className="flex flex-wrap justify-center gap-3">
+          {upcoming && (
+            <a
+              href={nightStay(hotel.slug, night, locale)}
+              className={buttonClasses({ size: 'lg' })}
+            >
+              {t('overStay')}
+            </a>
+          )}
+          <a
+            href={localizedPath(routes.drops, locale)}
+            className={buttonClasses({ size: 'lg', variant: upcoming ? 'ghost' : 'primary' })}
+          >
+            {t('overAll')}
           </a>
-        )}
-        <a
-          href={localizedPath(routes.drops, locale)}
-          className={buttonClasses({ size: 'lg', variant: upcoming ? 'ghost' : 'primary' })}
-        >
-          {t('overAll')}
-        </a>
+        </div>
+      </StatusPage>
+      {/* Missed this one: the alert catches the next. */}
+      <div className="mx-auto w-full max-w-[1080px] px-5 pb-16 md:px-7 lg:pb-[88px]">
+        <DropAlertSection
+          locale={locale}
+          defaultCity={hotel.city ? { slug: hotel.city.slug, name: hotel.city.name[locale] } : null}
+        />
       </div>
-    </StatusPage>
+    </>
   );
 }

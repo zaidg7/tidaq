@@ -482,6 +482,7 @@
           "text": [
             "This feature is coming soon. Once it exists: when you set up a price alert, we store your email address, the stay you watch, the text of your consent and its time. We first send you an email with a confirmation link (double opt-in). Only after that do you get alerts, and only for what you asked to watch.",
             "For the deals by email (once a week, only if you sign up) we store your email address, your language, the text of your consent and its time. Double opt-in applies here too. You can stop just the deals (on the manage page, linked in every email); your price alerts then stay.",
+            "For the price drop alert (at most one email a day, only if you sign up) we store your email address, your language, the city you chose (or \"all cities\"), the text of your consent, its time and the day of the last email, so you never get more than one a day. Double opt-in applies here too, and you can stop just the price drop alert; your other alerts then stay.",
             "The legal basis is your consent (Art. 6(1)(a) GDPR). You can withdraw it at any time: with the unsubscribe link in every email or by email to us. We then delete your email address, all your alerts and the proof of your consent. If you don't confirm an address, we delete it after 7 days.",
             "The emails are sent by the service Resend (USA). Resend processes your email address and the content of the email for this.",
             "We don't measure whether you open our emails or click links in them."
@@ -732,7 +733,13 @@
     "newsletterTitle": "Deals by email",
     "newsletterText": "You get the best deals every Monday.",
     "newsletterOff": "Stop the deals",
-    "newsletterOffDone": "You won't get the deals by email any more. Your price alerts stay active."
+    "newsletterOffDone": "You won't get the deals by email any more. Your price alerts stay active.",
+    "confirmedDrops": "Thanks, your price drop alert is confirmed. From tomorrow we'll email you about new drops.",
+    "dropsTitle": "Price drop alert",
+    "dropsAll": "You get new price drops in all cities, at most once a day.",
+    "dropsCity": "You get new price drops in {city}, at most once a day.",
+    "dropsOff": "Stop price drop alert",
+    "dropsOffDone": "You won't get price drops by email any more. Your other alerts stay active."
   },
   "provider": {
     "metaTitle": "{name}: checkout accuracy and prices compared | Tidaq",
@@ -878,7 +885,8 @@
       "fair": "Sorted by the drop only",
       "free": "Free, no sign-up",
       "label": "Why Tidaq"
-    }
+    },
+    "alertCta": "Set up a price drop alert: we'll let you know"
   },
   "drop": {
     "metaTitle": "{hotel}: {pct} for {date} | Tidaq",
@@ -908,5 +916,40 @@
     "overText": "The price for the night of {date} at {hotel} is no longer on the radar. It went back up, or the night has already started.",
     "overStay": "See the current price",
     "overAll": "See all sudden drops"
+  },
+  "dropAlert": {
+    "title": "Price drop alert",
+    "text": "We email you when a five-star hotel in your city gets much cheaper overnight. At most one email a day, only with new drops. Free, unsubscribe in one click.",
+    "email": "Your email address",
+    "city": "City",
+    "allCities": "All cities",
+    "consent": "Yes, send me new price drops by email, at most once a day. I can unsubscribe any time in one click.",
+    "privacy": "Privacy",
+    "submit": "Set up alert",
+    "preview": "Open test link (preview only)",
+    "results": {
+      "sent": "Almost done: please confirm your address with the link in our email.",
+      "added": "Done: from tomorrow we'll send you new price drops.",
+      "invalid": "Please enter a valid email address and tick the box.",
+      "too_soon": "We just sent you an email. Check your inbox or try again in a minute.",
+      "rate_limited": "Too many attempts in a short time. Please wait a few minutes.",
+      "error": "That didn't work. Please try again in a moment."
+    }
+  },
+  "dropAlertMail": {
+    "confirmSubject": "Please confirm your price drop alert",
+    "confirmPreheader": "One click left, then we'll email you about new price drops.",
+    "confirmHeading": "Please confirm your price drop alert",
+    "confirmText": "You'd like an email from Tidaq when a five-star hotel gets much cheaper overnight.",
+    "what": "It lists the new price drops at most once a day, with both prices and a link to the price history. Nothing else.",
+    "confirmIgnore": "Wasn't you? Just ignore this email. Without confirmation we'll never write to you again, and we delete your address after 7 days.",
+    "confirmButton": "Confirm alert",
+    "addedSubject": "Your price drop alert is active",
+    "addedPreheader": "From tomorrow we'll email you about new price drops.",
+    "addedHeading": "Your price drop alert is active",
+    "addedText": "From tomorrow we'll send you new price drops, at most once a day.",
+    "manageButton": "Manage alert",
+    "footerWhy": "You're getting this email because the price drop alert was requested for this address on tidaq.com.",
+    "footerManage": "Unsubscribe or change alerts: {url}"
   }
 }

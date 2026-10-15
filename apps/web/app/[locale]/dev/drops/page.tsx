@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { addDays, type DailyPrice, type Locale } from '@tidaq/core';
+import { DropAlertSection } from '@/components/drops/DropAlertSection';
 import { DropOver, DropPage } from '@/components/drops/DropPage';
 import { DropsTeaser, dropsHref } from '@/components/drops/DropsTeaser';
 import { applyDropFilters, DROP_SOURCES, DropsView } from '@/components/drops/DropsView';
@@ -57,7 +58,11 @@ export default async function DevDropsPage({
   if (q.over !== undefined) {
     return (
       <DropOver
-        hotel={{ slug: ADLON[1], name: ADLON[2] }}
+        hotel={{
+          slug: ADLON[1],
+          name: ADLON[2],
+          city: { slug: ADLON[3], name: { de: ADLON[4], en: ADLON[5] } },
+        }}
         night={addDays(today, 3)}
         locale={locale}
         today={today}
@@ -102,6 +107,15 @@ export default async function DevDropsPage({
       now={new Date()}
       checked={all.length ? { day: today, nights: 5722, hotels: 82, cities: 27, sites: 4 } : null}
       source={DROP_SOURCES.find((x) => x === q.ref) ?? null}
+      alert={
+        <DropAlertSection
+          locale={locale}
+          defaultCity={filters.city}
+          cities={[...new Map(all.map((g) => [g.city.slug, g.city.name[locale]]))].map(
+            ([slug, name]) => ({ slug, name }),
+          )}
+        />
+      }
     />
   );
 }

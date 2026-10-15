@@ -149,6 +149,12 @@ const manageResult = z
     confirmed: z.boolean(),
     /** Weekly deals newsletter on (C-054a). */
     newsletter: z.boolean().default(false),
+    /** Preissturz-Alarm on, and its city (null = all cities) (C-080e1). */
+    drop_alerts: z.boolean().default(false),
+    drop_city: z
+      .object({ slug: z.string(), name_de: z.string(), name_en: z.string() })
+      .nullable()
+      .default(null),
     watches: z.array(
       z.object({
         id: z.string().uuid(),

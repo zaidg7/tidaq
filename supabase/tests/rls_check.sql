@@ -49,6 +49,10 @@ select
     as anon_cannot_read_alert_inputs,
   not has_function_privilege('anon', 'public.alert_offers(uuid,date)', 'execute')
     as anon_cannot_read_alert_offers,
+  not has_function_privilege('anon', 'public.drop_alert_request(text,text,text,text)', 'execute')
+    as anon_cannot_request_drop_alerts,
+  not has_function_privilege('anon', 'public.drop_alert_off(uuid)', 'execute')
+    as anon_cannot_stop_drop_alerts,
   -- C-041c: website errors are written and read by the service role only.
   not has_table_privilege('anon', 'public.web_errors', 'select') as anon_cannot_read_web_errors,
   not has_function_privilege('anon', 'public.log_web_error(text,text,text)', 'execute')

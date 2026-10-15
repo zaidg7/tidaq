@@ -1,5 +1,6 @@
+import type { ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { Check, TrendingDown } from 'lucide-react';
+import { BellRing, Check, TrendingDown } from 'lucide-react';
 import {
   DROP_SORTS,
   DROP_WHENS,
@@ -20,6 +21,7 @@ import { cn } from '@/lib/cn';
 import type { HotelDropsWithPhoto, RadarStats } from '@/lib/data/drops';
 import { routes } from '@/lib/routes';
 import { DropCard } from './DropCard';
+import { DROP_ALERT_ID } from './alertId';
 import { DropHero } from './DropHero';
 
 /** Social bio links that land on the radar (`/tiktok` → `/preissturz?ref=tiktok`, C-080d). */
@@ -61,6 +63,7 @@ export function DropsView({
   now,
   checked = null,
   source = null,
+  alert = null,
 }: {
   /** Every hotel with a drop (for the city chips and headline numbers). */
   all: HotelDropsWithPhoto[];
@@ -73,6 +76,8 @@ export function DropsView({
   checked?: RadarStats | null;
   /** Set when the visitor came through a social bio link: shows the welcome strip. */
   source?: DropSource | null;
+  /** The Preissturz-Alarm sign-up (C-080e1), placed after the drops. */
+  alert?: ReactNode;
 }) {
   const t = useTranslations('drops');
   const locale = useLocale() as Locale;
@@ -165,6 +170,18 @@ export function DropsView({
         </ul>
       )}
 
+      {alert && (
+        <p className="mt-4">
+          <a
+            href={`#${DROP_ALERT_ID}`}
+            className="inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-accent underline-offset-4 hover:underline"
+          >
+            <Icon icon={BellRing} size={18} />
+            {t('alertCta')}
+          </a>
+        </p>
+      )}
+
       {stats.hotels > 0 && (
         <div className="mt-8 grid gap-3">
           {cities.length > 1 && (
@@ -247,6 +264,8 @@ export function DropsView({
           </a>
         </Card>
       )}
+
+      {alert && <div className="mt-14">{alert}</div>}
 
       <section aria-labelledby="drops-how" className="mt-14 max-w-[44em]">
         <h2 id="drops-how" className="text-h3">

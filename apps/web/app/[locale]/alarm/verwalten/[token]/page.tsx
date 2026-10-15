@@ -57,16 +57,20 @@ export default async function ManagePage({ params, searchParams }: Props) {
   }
   const notice =
     q.bestaetigt !== undefined
-      ? // A newsletter-only address confirmed the newsletter, not an alert (C-054a).
-        data.watches.length === 0 && data.newsletter
-        ? t('confirmedNewsletter')
-        : t('confirmedNotice')
+      ? // An address without price alerts confirmed the drops or the newsletter (C-054a, C-080e1).
+        data.watches.length === 0 && data.drop_alerts
+        ? t('confirmedDrops')
+        : data.watches.length === 0 && data.newsletter
+          ? t('confirmedNewsletter')
+          : t('confirmedNotice')
       : q.beendet !== undefined
         ? t('removed')
         : q['newsletter-aus'] !== undefined
           ? t('newsletterOffDone')
-          : q.fehler !== undefined
-            ? t('error')
-            : null;
+          : q['preissturz-aus'] !== undefined
+            ? t('dropsOffDone')
+            : q.fehler !== undefined
+              ? t('error')
+              : null;
   return <ManageView data={data} token={token} notice={notice} />;
 }
