@@ -290,6 +290,7 @@ export {
   type PostedDrop,
   type PostedDropRow,
 } from './postedDrops';
+export { TURNSTILE_FIELD, TURNSTILE_SITEVERIFY, verifyTurnstileToken } from './turnstile';
 export { wrapLines } from './wrapLines';
 export { DROP_ALERTS, dropAlertMail, dropsFor, type DropScope } from './dropAlerts';
 export { CAPTION, cityTag, dropCaption, dropHashtags, topCaption } from './dropCaptions';

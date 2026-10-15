@@ -87,6 +87,9 @@ jobs:
       - name: Build web Worker (OpenNext)
         if: ${{ !inputs.collector_only }}
         working-directory: apps/web
+        env:
+          # Public by design: Turnstile's site key ends up in the page (C-030c).
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY }}
         run: pnpm exec opennextjs-cloudflare build
 
       - name: Deploy web
@@ -103,8 +106,9 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           # Price-alert emails (C-030). Only production with ALERTS_DRY_RUN=false really sends.
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
         run: |
-          node ../../scripts/deploy/secrets-json.mjs SUPABASE_URL SUPABASE_ANON_KEY SUPABASE_SERVICE_ROLE_KEY RESEND_API_KEY > "$RUNNER_TEMP/web-secrets.json"
+          node ../../scripts/deploy/secrets-json.mjs SUPABASE_URL SUPABASE_ANON_KEY SUPABASE_SERVICE_ROLE_KEY RESEND_API_KEY TURNSTILE_SECRET_KEY > "$RUNNER_TEMP/web-secrets.json"
           pnpm exec wrangler secret bulk "$RUNNER_TEMP/web-secrets.json" $ENV_FLAG
           rm "$RUNNER_TEMP/web-secrets.json"
 
