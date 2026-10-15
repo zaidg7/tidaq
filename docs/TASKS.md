@@ -116,8 +116,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-103 | Primitives: Button, Chip, Badge, Field, Toast, Skeleton, Segmented, Accordion, Sheet | CLOUD | M | C-102 | DONE ([#100](https://github.com/zaidg7/tidaq/pull/100)) |
 | C-104 | Photos A: Commons sweep for every hotel, picks, focal points, AVIF/WebP + blur-up | CLOUD | M | C-102 | DONE ([#101](https://github.com/zaidg7/tidaq/pull/101)) |
 | C-105 | Photos B: city photos, fallback with "Stadtbild", every hotel shows a photo | CLOUD | S | C-104 | DONE ([#102](https://github.com/zaidg7/tidaq/pull/102)) |
-| C-106 | Shell: navbar, docked search pill, mobile menu, footer, symbol + icons, /kassen-check links | CLOUD | M | C-103, B-020 | TODO |
-| C-107 | Search 1: desktop search bar + destination panel | CLOUD | M | C-103, C-105 | TODO |
+| C-106 | Shell: navbar, docked search pill, mobile menu, footer, symbol + icons, /kassen-check links | CLOUD | M | C-103, B-020 | DONE ([#104](https://github.com/zaidg7/tidaq/pull/104)) |
+| C-107 | Search 1: desktop search bar + destination panel + docked navbar search pill | CLOUD | M | C-103, C-105 | TODO |
 | C-108 | Search 2: calendar engine with price tints, date + guests popovers | CLOUD | M | C-107 | TODO |
 | C-109 | Search 3: phone full-screen search flow | CLOUD | M | C-108 | TODO |
 | C-110 | Search 4: submit routing, loading states, loading.tsx skeletons | CLOUD | S | C-109 | TODO |
@@ -125,7 +125,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-112 | Charts 2: meter, story chart, site bars, calendar cells | CLOUD | M | C-111 | TODO |
 | C-113 | Drop page redesign (TikTok landing) | CLOUD | M | C-105, C-112 | TODO |
 | C-114 | Price Drops page + /price-drops routes + Deals as a view | CLOUD | M | C-113 | TODO |
-| C-115 | Home redesign | CLOUD | M | C-110, C-114 | TODO |
+| C-115 | Home redesign (+ navbar transparent over the photo hero, photo strip in the phone menu) | CLOUD | M | C-110, C-114 | TODO |
 | C-116 | Stay page redesign (a/b) | CLOUD | L | C-110, C-112 | TODO |
 | C-117 | Hotel page: gallery, lightbox, cheapest dates, calendar | CLOUD | M | C-112, C-104 | TODO |
 | C-118 | City page + all hotels | CLOUD | M | C-105 | TODO |
@@ -968,6 +968,8 @@ Canvas boards "B · Clean Premium" updated with Zaid's feedback: "Price Drops" w
 **C-105 notes (DONE):** 26 city photos + the home hero (`scripts/photos/cities.json` → `cities.mjs`, Unsplash License, 480/960/1600 px WebP + blur placeholder, `lib/cityPhotos.ts`). **Hamburg has none yet** (no reliable Unsplash pick; take a Commons photo of the Elbphilharmonie or Alster when the city tiles are built, C-115). `lib/photos.ts` `hotelImage(hotel, city, width)` returns the hotel's photo or the city's (`city: true`); `CityPhotoTag` shows "Stadtbild". Wired into Price Drop cards, the drop of the day, drop pages (story images use only the hotel's own photo) and city-page hotel cards. Hotel and stay page headers keep their own photo or the placeholder until their rebuild (C-116, C-117) uses `Photo` with the tag; thumbnails (week recap, "Aus unseren Videos") stay without a fallback, because a tag can't be read at 64 px.
 
 **C-111 notes (DONE, [#103](https://github.com/zaidg7/tidaq/pull/103)):** `PriceChart`: ink line drawn in (`.chart-line`, `pathLength=1`), soft accent area, the usual range (core `chartGeometry().usual`, 25th–75th percentile of regular prices, ≥ 7 points) as a grey band labelled "üblich" with a legend instead of the dashed average, low marker kept, today's dot in the verdict colour (`todayTone`) with a pop, dark scrub pill. `ChartRanges` (14 T · 30 T · Alles) on the stay page renders one chart per range on the server and shows one. The stay page's layout itself is C-116.
+
+**C-106 notes (DONE, [#104](https://github.com/zaidg7/tidaq/pull/104)):** Symbol = t-Monogramm (option 1, the B-020 default; swap only `TidaqSymbol` in `components/ui/Logo.tsx` + `app/icon.svg` and re-run the icon PNGs if Zaid picks another). Favicon, apple icon, 192/512/maskable PNGs and `app/manifest.ts`. Navbar: Price Drops · Hotels · Kassen-Check · So messen wir, DE/EN, search, Price Alert (secondary, desktop only) → `/preissturz#preissturz-alarm`. Full-screen phone menu (native `<dialog>`, `.menu-sheet`). Footer on `--bg`, 2-column links on phones. "Kassen-Check" links to `/methodik#anbieter` until C-119 builds the page (fixes the 404). **Moved on:** the docked search pill goes into C-107 (needs the search panel); the transparent-over-photo navbar and the 3-photo strip in the menu go into C-115 (no photo hero exists yet).
 
 ### C-102 … C-123
 

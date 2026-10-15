@@ -4,16 +4,20 @@ import { expect, test } from '@playwright/test';
 test.describe('desktop shell', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
-  test('shows the navbar links, CTA and footer columns', async ({ page }) => {
-    // The homepage hides the navbar CTA while its search card is visible; other pages show it.
+  test('shows the navbar links, Price Alert and footer columns (C-106)', async ({ page }) => {
     await page.goto('/dev/ui');
     const nav = page.getByRole('navigation', { name: 'Hauptnavigation' });
-    for (const name of ['Preisstürze', 'Hotels', 'Kassen-Check', 'So funktioniert’s']) {
+    for (const name of ['Price Drops', 'Hotels', 'Kassen-Check', 'So messen wir']) {
       await expect(nav.getByRole('link', { name })).toBeVisible();
     }
     await expect(
-      page.getByRole('banner').getByRole('link', { name: 'Preise ansehen' }),
-    ).toBeVisible();
+      page.getByRole('banner').getByRole('link', { name: 'Price Alert' }),
+    ).toHaveAttribute('href', '/preissturz#preissturz-alarm');
+    // Until the Kassen-Check page exists (C-119), the link goes to the provider scores.
+    await expect(nav.getByRole('link', { name: 'Kassen-Check' })).toHaveAttribute(
+      'href',
+      '/methodik#anbieter',
+    );
     await expect(page.getByRole('link', { name: 'Tidaq, zur Startseite' })).toHaveAttribute(
       'href',
       '/',
@@ -52,11 +56,23 @@ test.describe('mobile shell', () => {
   test('menu opens as a modal sheet and closes with Esc', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('navigation', { name: 'Hauptnavigation' })).toBeHidden();
+    // Phones keep the bar to logo, search and menu; Price Alert lives in the menu.
+    await expect(
+      page.getByRole('banner').getByRole('link', { name: 'Price Alert', exact: true }),
+    ).toBeHidden();
     const open = page.getByRole('button', { name: 'Menü öffnen' });
     await open.click();
     const sheet = page.getByRole('dialog', { name: 'Menü' });
     await expect(sheet).toBeVisible();
     await expect(sheet.getByRole('link', { name: 'Kassen-Check' })).toBeVisible();
+    await expect(sheet.getByRole('link', { name: 'Price Alert aktivieren' })).toBeVisible();
+    // Full screen: the sheet covers the whole viewport.
+    await expect
+      .poll(async () => {
+        const box = await sheet.boundingBox();
+        return box && [Math.round(box.x), Math.round(box.width), Math.round(box.height)];
+      })
+      .toEqual([0, 390, 844]);
     await expect(sheet.getByRole('button', { name: 'Menü schließen' })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(sheet).toBeHidden();

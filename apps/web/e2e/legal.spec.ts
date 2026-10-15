@@ -14,7 +14,7 @@ const PAGES = [
     path: '/methodik',
     de: 'So funktioniert Tidaq',
     en: 'How Tidaq works',
-    footer: 'So funktioniert’s',
+    footer: 'So messen wir',
   },
 ];
 

@@ -89,33 +89,34 @@
     "hotels": "Hotels",
     "deals": "Deals",
     "checkoutCheck": "Kassen-Check",
-    "method": "So funktioniert’s",
-    "search": "Hotel suchen",
-    "cta": "Preise ansehen",
+    "method": "So messen wir",
+    "search": "Hotel oder Stadt suchen",
+    "cta": "Price Alert",
     "menuOpen": "Menü öffnen",
     "menuClose": "Menü schließen",
     "menuTitle": "Menü",
-    "drops": "Preisstürze"
+    "drops": "Price Drops",
+    "menuAlert": "Price Alert aktivieren"
   },
   "footer": {
-    "tagline": "Preisverlauf für Luxushotels. Damit du weißt, ob ein Preis gerade gut ist.",
+    "tagline": "Preise für Fünf-Sterne-Hotels. Jeden Morgen neu geprüft.",
     "explore": "Entdecken",
     "transparency": "Transparenz",
     "legal": "Rechtliches",
     "links": {
       "hotels": "Alle Hotels",
       "deals": "Deals",
-      "method": "So funktioniert’s",
+      "method": "So messen wir",
       "checkoutCheck": "Kassen-Check",
       "ranking": "So sortieren wir",
       "affiliate": "Affiliate-Hinweis",
       "imprint": "Impressum",
       "privacy": "Datenschutz",
-      "drops": "Preisstürze",
+      "drops": "Price Drops",
       "dropsWeek": "Wochenrückblick"
     },
     "copyright": "© {year} Tidaq",
-    "source": "Preise jeden Morgen von den Buchungsseiten. Ohne Cookies."
+    "source": "Ohne Cookies · Partnerlinks sind gekennzeichnet."
   },
   "notFound": {
     "meta": "Seite nicht gefunden",
