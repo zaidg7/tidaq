@@ -151,6 +151,10 @@ export interface CollectorStore {
   recordNightAccuracy(day: string): Promise<NightAccuracyRow>;
   /** Stored accuracy days from `fromDay` on, newest first. */
   nightAccuracy(fromDay: string): Promise<NightAccuracyRow[]>;
+  /** Confirmed addresses with the weekly deals newsletter on (C-054b). */
+  newsletterRecipients(): Promise<NewsletterRecipient[]>;
+  /** Upcoming active stays with 14+ days of data and a price today, for core `pickDeals`. */
+  dealCandidates(today: string): Promise<DealRow[]>;
   /** The website's most frequent server errors since `since` (SQL `web_error_digest`, C-041c). */
   webErrors(env: string, since: string): Promise<WebErrorRow[]>;
   /** Removes raw JSON older than 30 days (SQL `prune_raw_snapshots`, D-19). Returns the count. */
@@ -172,6 +176,25 @@ export interface CollectorStore {
     priceCents: number,
     resendId: string | null,
   ): Promise<void>;
+}
+
+export interface NewsletterRecipient {
+  email: string;
+  locale: 'de' | 'en';
+  manageToken: string;
+}
+
+export interface DealRow {
+  stayId: number;
+  hotelSlug: string;
+  hotelName: string;
+  cityName: { de: string; en: string };
+  checkIn: string;
+  checkOut: string;
+  adults: number;
+  nowCents: number | null;
+  avg30Cents: number | null;
+  daysTracked: number | null;
 }
 
 export interface WebErrorRow {

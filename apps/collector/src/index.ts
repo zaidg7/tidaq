@@ -1,5 +1,6 @@
 import { runToken, safeEqual } from '@tidaq/core';
 import { runAlerts } from './alerts';
+import { runNewsletter } from './newsletter';
 import { runCollect } from './collect';
 import type { FetchFn } from './dataforseo';
 import type { Env } from './env';
@@ -162,6 +163,20 @@ export function createWorker(deps: Deps = {}) {
           log('alerts done', { ...alerts });
         } catch (err) {
           await mail(env, crashEmail('alerts', err));
+        }
+        // Weekly deals newsletter (C-054b): Mondays only; its own try, like the alerts.
+        try {
+          const newsletter = await runNewsletter({
+            store: storeFor(env, deps),
+            env,
+            now: now(),
+            fetchFn: deps.mailFetchFn,
+          });
+          if (newsletter.skipped !== 'weekday') {
+            log('newsletter done', { ...newsletter });
+          }
+        } catch (err) {
+          await mail(env, crashEmail('newsletter', err));
         }
         return;
       }

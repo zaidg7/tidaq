@@ -252,3 +252,4 @@ export {
 } from './alerts';
 export { scrubErrorText } from './errorText';
 export { clientIp, createRateLimiter } from './rateLimit';
+export { NEWSLETTER, newsletterMail, type NewsletterDeal } from './newsletter';

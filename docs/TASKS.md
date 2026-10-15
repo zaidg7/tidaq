@@ -106,7 +106,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-052                                                           | "Beste Buchungszeit" and event SEO pages                                     | CLOUD | M             | C-044 (30+ days data)             | TODO           |
 | C-053                                                           | Coverage expansion and "request a hotel"                                     | CLOUD | M             | C-044                             | TODO           |
 | C-054a                                                          | Weekly deals newsletter: opt-in sign-up, manage, privacy text                | CLOUD | S             | C-031a                            | DONE           |
-| C-054b                                                          | Weekly deals newsletter: Monday send (dry run until launch)                  | CLOUD | S             | C-054a                            | TODO           |
+| C-054b                                                          | Weekly deals newsletter: Monday send (dry run until launch)                  | CLOUD | S             | C-054a                            | DONE           |
 | C-055                                                           | Breakfast/room filters (if the spike allows)                                 | CLOUD | M             | C-010 result                      | DROPPED (D-40) |
 | C-056                                                           | Research: "watch my booking" rebooking alerts (v2)                           | CLOUD | S             | C-044                             | TODO           |
 
@@ -965,10 +965,13 @@ Owner: CLOUD · Size: S · Depends on: C-031a · Status: DONE · PR: see `[C-054
 
 ### C-054b · Newsletter: Monday send
 
-Owner: CLOUD · Size: S · Depends on: C-054a · Status: TODO · PR: –
+Owner: CLOUD · Size: S · Depends on: C-054a · Status: DONE · PR: see `[C-054b]`
 Collector: every Monday in the daily cron (after the alerts), load confirmed subscribers (SQL, service role) and the current deals (same rule as `/deals`: ≥ 8 % under the stay's 30-day average, 14+ days of history, one per hotel, top 8), render one email per locale with core `renderMail` (list of hotel, dates, price, drop, link to the stay page), send through Resend in batches with `List-Unsubscribe` per recipient, record the send (no per-recipient tracking). Skip the week when there are fewer than 3 deals. Dry run (log counts only) unless `APP_ENV=production`, `ALERTS_DRY_RUN=false` and a key are set, like the alerts.
 - **C-055 Breakfast and room filters:** dropped for v1 (D-40): the source has no breakfast data.
 - **C-056 Watch my booking (v2):** forward a booking confirmation → we watch the same stay → alert when it's cheaper to rebook (refundable bookings). Research and spec only.
+
+**C-054b notes (DONE):** Collector `newsletter.ts` `runNewsletter` runs in the daily cron after the alerts (own try; a crash emails the admins) and only on Mondays (UTC day of the 07:55 check). It reads deal candidates from `v_stay_public` and confirmed subscribers from `watchers` with the service role (no new SQL), picks the top 8 with core `pickDeals` (same rule as /deals), skips the week below 3 deals, renders one email per recipient with core `newsletterMail` + `renderMail` (new `MailContent.items`: linked list entries) and sends through Resend's batch API (100 per request) from `deals@tidaq.com` with `List-Unsubscribe` one-click. Live only with the alerts' conditions (`APP_ENV=production`, `ALERTS_DRY_RUN=false`, key); before C-044 it logs `newsletter dry run` with counts. Nothing per recipient is stored or tracked. Watch the Workers free plan's 50 subrequests per cron run: the daily run now does the daily check, ~3 calls per due alert, 2 reads + 1 call per 100 subscribers; split the newsletter into its own cron if alerts grow.
+
 
 ---
 
