@@ -51,7 +51,7 @@ export const STATS = {
 } as const;
 
 /** Mid-rank position of `value` among `values` (which contain it), 0..1. */
-function percentileOf(value: number, values: readonly number[]): number | null {
+export function percentileOf(value: number, values: readonly number[]): number | null {
   if (values.length < 2) return null;
   let below = 0;
   let equal = 0;

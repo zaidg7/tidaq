@@ -6,6 +6,7 @@ export const routes = {
   home: '/',
   search: '/#suche',
   hotels: '/hotels',
+  cities: '/staedte',
   deals: '/deals',
   drops: '/preissturz',
   dropsWeek: '/preissturz/woche',
@@ -20,13 +21,12 @@ export const routes = {
 
 export type RouteKey = keyof typeof routes;
 
-/**
- * Navbar order (PREMIUM.md §12): Price Drops · Hotels · Kassen-Check · So messen wir.
- * Deals stays in the footer and on the radar page.
- */
-export const navRoutes = [
-  'drops',
-  'hotels',
+/** Navbar links (mockup B): Price Drops · Hotels · Städte. The rest lives in the footer. */
+export const navRoutes = ['drops', 'hotels', 'cities'] as const satisfies readonly RouteKey[];
+
+/** The phone menu has room for more: the navbar links, then how we measure. */
+export const menuRoutes = [
+  ...navRoutes,
   'checkoutCheck',
   'method',
 ] as const satisfies readonly RouteKey[];

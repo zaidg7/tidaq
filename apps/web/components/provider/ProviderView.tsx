@@ -16,6 +16,7 @@ import {
 import { Card } from '@/components/ui/Card';
 import { ChipLink } from '@/components/ui/Chip';
 import { TrustScore } from '@/components/ui/TrustScore';
+import { PageHead } from '@/components/shell/PageHead';
 import { routes } from '@/lib/routes';
 import { FactGrid, type Fact } from './FactGrid';
 
@@ -43,19 +44,19 @@ export function ProviderView({
   const others = facts.providers.filter((p) => p.slug !== provider.slug && isProviderIndexable(p));
 
   return (
-    <div className="mx-auto w-full max-w-[1080px] px-5 pt-8 pb-16 md:px-7 lg:pt-14 lg:pb-[88px]">
-      <header className="max-w-[40em]">
-        <p className="text-eyebrow text-accent">
+    <div className="mx-auto w-full max-w-[1240px] px-[18px] pt-6 pb-16 md:px-10 md:pt-12 md:pb-24">
+      <PageHead
+        pill={
           <a
             href={`${localizedPath(routes.method, locale)}#anbieter`}
             className="underline-offset-2 hover:underline"
           >
             {t('eyebrow')}
           </a>
-        </p>
-        <h1 className="text-h2 mt-2">{name}</h1>
-        <p className="text-lead mt-4 text-muted-ink">{t('intro', { name })}</p>
-      </header>
+        }
+        title={name}
+        lead={t('intro', { name })}
+      />
 
       <div className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2">
         <TrustCard provider={provider} name={name} locale={locale} />

@@ -1,13 +1,11 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { alternatesFor, jsonLdString, siteJsonLd, type Locale } from '@tidaq/core';
-import { CheckoutTeaser } from '@/components/home/CheckoutTeaser';
-import { Deals } from '@/components/home/Deals';
-import { Drops } from '@/components/home/Drops';
-import { FinalCta } from '@/components/home/FinalCta';
 import { Hero } from '@/components/home/Hero';
-import { HowItWorks } from '@/components/home/HowItWorks';
-import { LiveExample } from '@/components/home/LiveExample';
+import { HomeAlert } from '@/components/home/HomeAlert';
+import { HomeCities } from '@/components/home/HomeCities';
+import { HomeDrops } from '@/components/home/HomeDrops';
+import { HomeResult } from '@/components/home/HomeResult';
 
 // Live prices change every morning: render per request (no build-time snapshot).
 export const dynamic = 'force-dynamic';
@@ -19,6 +17,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { alternates: alternatesFor('/', locale) };
 }
 
+/**
+ * Homepage (mockup B): photo hero with the search, today's Price Drops, popular cities, what an
+ * answer looks like, and the Price Alert. Every section reads real data; one that has nothing to
+ * show leaves itself out instead of showing an empty frame.
+ */
 export default async function Home({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -31,12 +34,10 @@ export default async function Home({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: jsonLdString(siteJsonLd(t('description'), locale)) }}
       />
       <Hero locale={locale} />
-      <Drops locale={locale} />
-      <LiveExample locale={locale} />
-      <HowItWorks locale={locale} />
-      <CheckoutTeaser locale={locale} />
-      <Deals locale={locale} />
-      <FinalCta locale={locale} />
+      <HomeDrops locale={locale} />
+      <HomeCities locale={locale} />
+      <HomeResult locale={locale} />
+      <HomeAlert locale={locale} />
     </>
   );
 }

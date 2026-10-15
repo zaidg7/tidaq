@@ -1,5 +1,5 @@
 import { useLocale, useTranslations } from 'next-intl';
-import { ArrowRight, TrendingDown } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import {
   dropDates,
   dropKey,
@@ -12,6 +12,7 @@ import {
   type PriceDrop,
 } from '@tidaq/core';
 import { Icon } from '@/components/ui/Icon';
+import { DropBadge } from './DropBadge';
 import { dropPercent } from './DropCard';
 
 /** Other dropped nights shown as chips on the hotel page. */
@@ -35,17 +36,24 @@ export function DropCallout({ group: g, drop }: { group: HotelDrops; drop?: Pric
   return (
     <aside
       aria-labelledby="drop-callout"
-      className="relative rounded-card border border-line bg-good-soft p-4 sm:p-5"
+      className="relative rounded-[24px] border border-[#ece9f1] bg-surface p-5 shadow-[0_16px_40px_rgba(21,19,28,0.06)] md:p-6"
     >
-      <div className="flex items-start gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-drop text-white">
-          <Icon icon={TrendingDown} size={20} />
-        </span>
+      <div className="flex items-start gap-4">
+        <DropBadge
+          drop={d.drop}
+          locale={locale}
+          label={td('dropLabel', { pct: dropPercent(d.drop, locale) })}
+          size="lg"
+          className="drop-badge-outline shrink-0"
+        />
         <div className="min-w-0">
-          <h2 id="drop-callout" className="text-[16px] leading-snug font-bold">
+          <h2
+            id="drop-callout"
+            className="text-[18px] leading-snug font-semibold tracking-[-0.01em]"
+          >
             {drop ? t('stayTitle') : t('hotelTitle')}
           </h2>
-          <p className="mt-0.5 text-[15px]">
+          <p className="mt-1 text-[15px] text-muted">
             {t(drop ? 'stayText' : 'hotelText', {
               pct: dropPercent(d.drop, locale),
               dates: dropDates(d, locale),
@@ -57,7 +65,7 @@ export function DropCallout({ group: g, drop }: { group: HotelDrops; drop?: Pric
           </p>
           <a
             href={href(d)}
-            className="mt-2 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-good-ink underline-offset-4 hover:underline"
+            className="mt-1.5 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-accent underline-offset-4 hover:underline"
           >
             {t('open')}
             <Icon icon={ArrowRight} size={16} />
@@ -68,11 +76,11 @@ export function DropCallout({ group: g, drop }: { group: HotelDrops; drop?: Pric
                 <li key={dropKey(x)}>
                   <a
                     href={href(x)}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-surface px-3.5 text-[14px] font-semibold hover:border-line-strong"
+                    className="inline-flex h-9 items-center gap-2 rounded-full border border-line bg-surface px-3 text-[14px] font-medium hover:border-ink/40"
                   >
                     {x.nights > 1 && `${td('weekendBadge')} `}
                     {formatWeekdayDayMonth(x.night, locale)}
-                    <span className="text-good-ink tabular-nums">
+                    <span className="font-bold text-good tabular-nums">
                       {dropPercent(x.drop, locale)}
                     </span>
                   </a>

@@ -227,6 +227,20 @@ export function formatDrop(drop: number, locale: Locale): string {
   return formatPercent(-drop, locale, { signed: true }).replace('-', '−');
 }
 
+/** How a drop's badge looks (PREMIUM.md §11): the bigger the drop, the louder the badge. */
+export type DropTier = 'huge' | 'big' | 'small';
+
+/** Lower bounds of the tiers: 60 % and more is `huge`, 40 % to 59 % `big`, below that `small`. */
+export const DROP_TIERS = { huge: 0.6, big: 0.4 } as const;
+
+/** The badge tier of a drop share (0.53 = 53 % less). Rounded like the label, so "−60 %" is huge. */
+export function dropTier(drop: number): DropTier {
+  const pct = Math.round(drop * 100) / 100;
+  if (pct >= DROP_TIERS.huge) return 'huge';
+  if (pct >= DROP_TIERS.big) return 'big';
+  return 'small';
+}
+
 /**
  * A drop's id in links: the night (`2026-10-18`), or check-in and check-out for a longer stay
  * (`2026-10-23--2026-10-25`, C-080f).

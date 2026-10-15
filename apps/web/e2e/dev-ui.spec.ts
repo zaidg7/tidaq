@@ -149,7 +149,7 @@ test.describe('/dev/ui', () => {
     ).toBeVisible();
     await expect(
       panel.getByRole('img', {
-        name: /^Aktuell .+, zwischen Tief .+ und Hoch .+ seit 15\. Aug\.$/,
+        name: /^(Günstig|Normal|Teuer): aktuell .+, zwischen Tief .+ und Hoch .+ seit 15\. Aug\.$/,
       }),
     ).toBeVisible();
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { localizedPath } from './paths';
-import { ADULTS, hotelPath, parseStayParams, stayPath } from './stayParams';
+import { ADULTS, cityStayPath, hotelPath, parseStayParams, stayPath } from './stayParams';
 
 describe('parseStayParams', () => {
   it('reads a valid stay with adults', () => {
@@ -76,5 +76,14 @@ describe('stayPath', () => {
 describe('hotelPath', () => {
   it('is the stay path without the dates', () => {
     expect(hotelPath('aman-tokyo')).toBe('/hotel/aman-tokyo');
+  });
+});
+
+describe('cityStayPath', () => {
+  it('puts the dates in a query the stay parser reads', () => {
+    const path = cityStayPath('wien', '2026-11-06', '2026-11-08', 3);
+    expect(path).toBe('/stadt/wien?daten=2026-11-06--2026-11-08&adults=3');
+    const daten = new URL(path, 'https://tidaq.com').searchParams.get('daten') ?? '';
+    expect(parseStayParams(daten, '3')).toMatchObject({ ok: true, params: { nights: 2 } });
   });
 });

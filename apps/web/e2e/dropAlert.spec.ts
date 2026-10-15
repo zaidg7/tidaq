@@ -1,13 +1,12 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('Preissturz-Alarm (C-080e1)', () => {
-  test('radar: jump link, city choice, consent never pre-ticked, failure keeps the input', async ({
+  test('radar: the alert band, city choice, consent never pre-ticked, failure keeps the input', async ({
     page,
   }) => {
-    await page.goto('/dev/drops?stadt=berlin');
-    await page.getByRole('link', { name: /Preissturz-Alarm einrichten/ }).click();
-    await expect(page).toHaveURL(/#preissturz-alarm$/);
-    const section = page.getByRole('region', { name: 'Preissturz-Alarm' });
+    // The navbar's Price Alert lands on the band.
+    await page.goto('/dev/drops?stadt=berlin#preissturz-alarm');
+    const section = page.getByRole('region', { name: 'Verpass keinen Price Drop.' });
     await expect(section).toBeInViewport();
 
     const city = section.getByLabel('Stadt');
@@ -22,45 +21,45 @@ test.describe('Preissturz-Alarm (C-080e1)', () => {
     );
 
     await city.selectOption('zuerich');
-    await section.getByLabel('Deine E-Mail-Adresse').fill('gast@example.com');
+    await section.getByLabel('E-Mail', { exact: true }).fill('gast@example.com');
     await consent.check();
-    await section.getByRole('button', { name: 'Alarm einrichten' }).click();
+    await section.getByRole('button', { name: 'Aktivieren' }).click();
     // Without a database (CI) the request fails gracefully and keeps what was entered.
     await expect(section.getByRole('alert')).toHaveText(
       'Das hat gerade nicht geklappt. Versuch es gleich noch einmal.',
     );
-    await expect(section.getByLabel('Deine E-Mail-Adresse')).toHaveValue('gast@example.com');
+    await expect(section.getByLabel('E-Mail', { exact: true })).toHaveValue('gast@example.com');
     await expect(section.getByLabel('Stadt')).toHaveValue('zuerich');
     await expect(section.getByRole('checkbox')).toBeChecked();
   });
 
   test('drop pages and hotel pages offer "only this hotel" first (C-080k1)', async ({ page }) => {
+    // The drop page (mockup B): the alert is for this hotel, only the address to enter.
     await page.goto('/dev/drops?share');
-    const section = page.getByRole('region', { name: 'Preissturz-Alarm' });
-    const scope = section.getByLabel('Alarm für');
-    await expect(scope).toHaveValue('hotel:baur-au-lac-zuerich');
-    await expect(scope.locator('option').first()).toHaveText('Nur Baur au Lac');
-    await expect(scope.locator('option').nth(1)).toHaveText('Alle Städte');
-    await expect(section).toContainText('sobald Baur au Lac über Nacht deutlich günstiger wird');
-    // A whole city is still one tap away.
-    await scope.selectOption('zuerich');
+    const onDrop = page.getByRole('region', { name: 'Price Alert für dieses Hotel' });
+    await expect(onDrop.locator('input[name="city"]')).toHaveValue('hotel:baur-au-lac-zuerich');
+    await expect(onDrop).toContainText('wenn Baur au Lac wieder billiger wird');
 
+    // The gone-drop page keeps the full form: this hotel first, a whole city one tap away.
     await page.goto('/dev/drops?over');
-    await expect(
-      page.getByRole('region', { name: 'Preissturz-Alarm' }).getByLabel('Alarm für'),
-    ).toHaveValue('hotel:hotel-adlon-kempinski-berlin');
+    const scope = page.getByRole('region', { name: 'Preissturz-Alarm' }).getByLabel('Alarm für');
+    await expect(scope).toHaveValue('hotel:hotel-adlon-kempinski-berlin');
+    await expect(scope.locator('option').first()).toHaveText('Nur Hotel Adlon Kempinski');
+    await expect(scope.locator('option').nth(1)).toHaveText('Alle Städte');
+    await scope.selectOption('berlin');
 
     await page.goto('/dev/hotel/calendar');
-    const onHotel = page.getByRole('region', { name: 'Preissturz-Alarm' });
-    await expect(onHotel.getByLabel('Alarm für')).toHaveValue(/^hotel:/);
-    await onHotel.getByLabel('Deine E-Mail-Adresse').fill('gast@example.com');
+    const onHotel = page.getByRole('region', { name: 'Price Alert für dieses Hotel' });
+    await expect(onHotel.locator('input[name="city"]')).toHaveValue(/^hotel:/);
+    await onHotel.getByLabel('E-Mail', { exact: true }).fill('gast@example.com');
     await onHotel.getByRole('checkbox').check();
-    await onHotel.getByRole('button', { name: 'Alarm einrichten' }).click();
-    // Without a database (CI) it fails gracefully and keeps the hotel chosen.
+    await onHotel.getByRole('button', { name: 'Price Alert aktivieren' }).click();
+    // Without a database (CI) it fails gracefully and keeps the address.
     await expect(onHotel.getByRole('alert')).toHaveText(
       'Das hat gerade nicht geklappt. Versuch es gleich noch einmal.',
     );
-    await expect(onHotel.getByLabel('Alarm für')).toHaveValue(/^hotel:/);
+    await expect(onHotel.getByLabel('E-Mail', { exact: true })).toHaveValue('gast@example.com');
+    await expect(onHotel.locator('input[name="city"]')).toHaveValue(/^hotel:/);
   });
 
   test('manage page: stop only the Preissturz-Alarm', async ({ page }) => {
@@ -82,8 +81,8 @@ test.describe('Preissturz-Alarm (C-080e1)', () => {
 
   test('English', async ({ page }) => {
     await page.goto('/en/dev/drops');
-    const section = page.getByRole('region', { name: 'Price drop alert' });
+    const section = page.getByRole('region', { name: 'Never miss a Price Drop.' });
     await expect(section.getByLabel('City')).toHaveValue('');
-    await expect(section.getByRole('button', { name: 'Set up alert' })).toBeVisible();
+    await expect(section.getByRole('button', { name: 'Activate' })).toBeVisible();
   });
 });

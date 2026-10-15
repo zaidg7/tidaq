@@ -29,6 +29,7 @@ export {
 } from './xotelo';
 export {
   ADULTS,
+  cityStayPath,
   parseStayParams,
   hotelPath,
   stayPath,
@@ -164,6 +165,7 @@ export {
 } from './normalize';
 export {
   computeStayStats,
+  percentileOf,
   relativeChange,
   STATS,
   type AdviceKey,
@@ -194,7 +196,7 @@ export {
   type TrustLevel,
   type TrustTestPrices,
 } from './trust';
-export { verdictFacts, type VerdictFacts } from './verdict';
+export { meter, verdictFacts, type MeterZone, type VerdictFacts } from './verdict';
 export { FEATURED_MIN_LEAD_DAYS, pickFeaturedStay, type FeaturedCandidate } from './featured';
 export { DEALS, pickDeals, type DealCandidate } from './deals';
 export { z, isoDateSchema } from './zod';
@@ -269,6 +271,9 @@ export {
   dropPath,
   dropStats,
   formatDrop,
+  dropTier,
+  DROP_TIERS,
+  type DropTier,
   dropDates,
   dropKey,
   dropWhen,
@@ -306,3 +311,4 @@ export { wrapLines } from './wrapLines';
 export { DROP_ALERTS, dropAlertMail, dropsFor, type DropScope } from './dropAlerts';
 export { CAPTION, cityTag, dropCaption, dropHashtags, topCaption } from './dropCaptions';
 export { NEWSLETTER, newsletterMail, type NewsletterDeal } from './newsletter';
+export { storyChart, type StoryPoint } from './storyChart';

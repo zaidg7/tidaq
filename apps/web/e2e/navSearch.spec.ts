@@ -7,8 +7,9 @@ test.describe('navbar search', () => {
   }) => {
     await page.setViewportSize({ width: 1280, height: 860 });
     await page.goto('/impressum');
-    const pill = page.locator('.nav-pill');
+    const pill = page.getByRole('banner').getByRole('button', { name: 'Hotel oder Stadt suchen' });
     await expect(pill).toBeVisible();
+    await expect(pill).toHaveText('Suchen');
     await pill.click();
     const dialog = page.getByRole('dialog', { name: 'Suche' });
     await expect(dialog).toBeVisible();
@@ -31,34 +32,37 @@ test.describe('navbar search', () => {
   test('picking a city from the navbar goes to its page', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 860 });
     await page.goto('/methodik');
-    await page.locator('.nav-pill').click();
+    await page.getByRole('banner').getByRole('button', { name: 'Hotel oder Stadt suchen' }).click();
     const dialog = page.getByRole('dialog', { name: 'Suche' });
     await dialog.getByRole('option', { name: 'Berlin', exact: true }).click();
     await dialog.getByRole('button', { name: 'Preis prüfen' }).click();
     await expect(page).toHaveURL(/\/stadt\/berlin$/);
   });
 
-  test('on the homepage the pill appears once the hero search scrolls away', async ({ page }) => {
+  test('on the homepage the button appears once the hero search scrolls away', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 860 });
     await page.goto('/');
-    const pill = page.locator('.nav-pill');
-    await expect(pill).toHaveAttribute('aria-hidden', 'true');
+    const pill = page.getByRole('banner').getByRole('button', { name: 'Hotel oder Stadt suchen' });
+    // Taken out of the bar, not just faded: no gap where it would sit.
+    await expect(pill).toBeHidden();
     await page.mouse.wheel(0, 1200);
-    await expect(pill).not.toHaveAttribute('aria-hidden');
+    await expect(pill).toBeVisible();
   });
 
-  test('below 1280 px an icon opens the same search', async ({ page }) => {
-    await page.setViewportSize({ width: 1024, height: 800 });
+  test('below 1024 px an icon opens the same search', async ({ page }) => {
+    await page.setViewportSize({ width: 900, height: 800 });
     await page.goto('/impressum');
-    await expect(page.locator('.nav-pill')).toBeHidden();
-    await page.getByRole('banner').getByRole('button', { name: 'Hotel oder Stadt suchen' }).click();
+    const icon = page.getByRole('banner').getByRole('button', { name: 'Hotel oder Stadt suchen' });
+    await expect(icon).not.toContainText('Suchen');
+    await icon.click();
     await expect(page.getByRole('dialog', { name: 'Suche' })).toBeVisible();
   });
 
-  test('phones still go to the hero search (until C-109)', async ({ page }) => {
+  test('phones: the icon opens the full-screen search', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/impressum');
     await page.getByRole('banner').getByRole('button', { name: 'Hotel oder Stadt suchen' }).click();
-    await expect(page).toHaveURL(/\/#suche$/);
+    await expect(page.getByRole('dialog', { name: 'Suche' })).toBeVisible();
+    await expect(page).toHaveURL(/\/impressum$/);
   });
 });

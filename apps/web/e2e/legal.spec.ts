@@ -7,7 +7,7 @@ const PAGES = [
     path: '/affiliate-hinweis',
     de: 'Affiliate-Hinweis',
     en: 'Affiliate disclosure',
-    footer: 'Affiliate-Hinweis',
+    footer: 'Partnerlinks',
   },
   { path: '/ranking', de: 'So sortieren wir', en: 'How we sort', footer: 'So sortieren wir' },
   {

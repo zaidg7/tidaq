@@ -1,4 +1,4 @@
-import { cache } from 'react';
+import { cache, Suspense } from 'react';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
@@ -15,6 +15,7 @@ import {
   type Locale,
   type StayParams,
 } from '@tidaq/core';
+import { PageSkeleton } from '@/components/shell/PageSkeleton';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { EditStay } from '@/components/stay/EditStay';
 import { DropCallout } from '@/components/drops/DropCallout';
@@ -89,7 +90,20 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
+/**
+ * Validates the URL first (a 404 must be decided before anything is sent), then streams the
+ * skeleton while the data loads (PREMIUM.md §10.17).
+ */
 export default async function StayPage(props: Props) {
+  await resolve(props);
+  return (
+    <Suspense fallback={<PageSkeleton kind="stay" />}>
+      <StayPageBody {...props} />
+    </Suspense>
+  );
+}
+
+async function StayPageBody(props: Props) {
   const { locale, slug, p } = await resolve(props);
   setRequestLocale(locale);
   const today = berlinToday();

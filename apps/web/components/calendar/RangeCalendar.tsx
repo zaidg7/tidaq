@@ -49,7 +49,10 @@ type Props = {
   today: string;
   locale: Locale;
   labels: RangeCalendarLabels;
-  months: 1 | 2;
+  /** Months side by side (1 or 2), or all of them stacked with `stacked`. */
+  months: number;
+  /** Phones: every month from today's on, one below the other, scrolled instead of paged. */
+  stacked?: boolean;
   /** The night's price, or null (no price yet / beyond the grid). Without it: plain days. */
   price?: (day: string) => CellPrice | null;
   /** Put keyboard focus on the start day when the calendar mounts (popovers, sheets). */
@@ -85,11 +88,19 @@ export function RangeCalendar({
   today,
   locale,
   labels,
-  months,
+  months: wanted,
+  stacked,
   price,
   autoFocus,
   className,
 }: Props) {
+  // Stacked: today's month through the last bookable day's month.
+  const months = stacked
+    ? Number(lastDay(today).slice(0, 4)) * 12 +
+      Number(lastDay(today).slice(5, 7)) -
+      (Number(today.slice(0, 4)) * 12 + Number(today.slice(5, 7))) +
+      1
+    : wanted;
   const [focusDay, setFocusDay] = useState(() => {
     const start =
       draft.phase === 'out' && draft.checkIn
@@ -97,7 +108,7 @@ export function RangeCalendar({
         : draft.checkIn || today;
     return start < today ? today : start > lastDay(today) ? lastDay(today) : start;
   });
-  const [view, setView] = useState(() => monthOf(focusDay));
+  const [view, setView] = useState(() => (stacked ? monthOf(today) : monthOf(focusDay)));
   const [pointer, setPointer] = useState<string>();
   const grids = useRef<HTMLDivElement>(null);
   const moveDomFocus = useRef(Boolean(autoFocus));
@@ -202,7 +213,12 @@ export function RangeCalendar({
 
   return (
     <div ref={grids} className={cn('relative', className)}>
-      <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-between">
+      <div
+        className={cn(
+          'pointer-events-none absolute inset-x-0 top-0 flex justify-between',
+          stacked && 'hidden',
+        )}
+      >
         <IconButton
           label={labels.prevMonth}
           onClick={() => page(-1)}
@@ -220,7 +236,7 @@ export function RangeCalendar({
           <Icon icon={ChevronRight} />
         </IconButton>
       </div>
-      <div className={cn('grid gap-8', months === 2 && 'grid-cols-2')}>
+      <div className={cn('grid gap-8', !stacked && months === 2 && 'grid-cols-2')}>
         {shown.map((month) => (
           <MonthGrid
             key={month}
@@ -232,6 +248,7 @@ export function RangeCalendar({
             focusDay={focusDay}
             today={today}
             price={price}
+            stacked={stacked}
             label={label}
             onPick={pick}
             onKey={onGridKey}
@@ -253,6 +270,7 @@ type GridProps = {
   focusDay: string;
   today: string;
   price?: (day: string) => CellPrice | null;
+  stacked?: boolean;
   label: (day: string, role: ReturnType<typeof dayRole>) => string;
   onPick: (day: string) => void;
   onKey: (e: KeyboardEvent<HTMLElement>, day: string) => void;
@@ -274,6 +292,7 @@ function MonthGrid({
   focusDay,
   today,
   price,
+  stacked,
   label,
   onPick,
   onKey,
@@ -285,7 +304,11 @@ function MonthGrid({
     <div>
       <h3
         id={headingId}
-        className="flex h-11 items-center justify-center text-[15px] font-semibold"
+        className={cn(
+          'flex h-11 items-center text-[15px] font-semibold',
+          // Phones: the month name stays on top while its days scroll by.
+          stacked ? 'sticky top-0 z-10 bg-surface' : 'justify-center',
+        )}
       >
         {heading}
       </h3>

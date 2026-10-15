@@ -1,4 +1,4 @@
-import { cache } from 'react';
+import { cache, Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -11,6 +11,7 @@ import {
   type ProviderFact,
   type ProviderFacts,
 } from '@tidaq/core';
+import { PageSkeleton } from '@/components/shell/PageSkeleton';
 import { ProviderView } from '@/components/provider/ProviderView';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
@@ -55,7 +56,20 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
+/**
+ * Validates the URL first (a 404 must be decided before anything is sent), then streams the
+ * skeleton while the data loads (PREMIUM.md §10.17).
+ */
 export default async function ProviderPageRoute(props: Props) {
+  await resolve(props);
+  return (
+    <Suspense fallback={<PageSkeleton kind="text" />}>
+      <ProviderPageRouteBody {...props} />
+    </Suspense>
+  );
+}
+
+async function ProviderPageRouteBody(props: Props) {
   const r = await resolve(props);
   setRequestLocale(r.locale);
   if (r.kind !== 'ok') {

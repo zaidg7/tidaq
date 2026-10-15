@@ -39,4 +39,23 @@ describe('pickFeaturedStay', () => {
     expect(pickFeaturedStay([], TODAY)).toBeNull();
     expect(pickFeaturedStay([row({ nowCents: null })], TODAY)).toBeNull();
   });
+
+  it("with prefer 'cheap', puts a stay with a cheap verdict first", () => {
+    const rows = [
+      row({ stayId: 1, daysTracked: 20, state: 'normal', hasImage: true }),
+      row({ stayId: 2, daysTracked: 8, state: 'good' }),
+      row({ stayId: 3, daysTracked: 5, state: 'near_low' }),
+    ];
+    expect(pickFeaturedStay(rows, TODAY, 'cheap')?.stayId).toBe(2);
+    expect(pickFeaturedStay(rows, TODAY)?.stayId).toBe(1);
+    // No cheap verdict yet (too few days): back to the most history.
+    const [normal, , early] = rows;
+    expect(
+      pickFeaturedStay(
+        [normal, early].filter((r) => r !== undefined),
+        TODAY,
+        'cheap',
+      )?.stayId,
+    ).toBe(1);
+  });
 });

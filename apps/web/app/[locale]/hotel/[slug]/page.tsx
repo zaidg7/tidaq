@@ -1,4 +1,4 @@
-import { cache } from 'react';
+import { cache, Suspense } from 'react';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -12,7 +12,8 @@ import {
   localizedPath,
   type Locale,
 } from '@tidaq/core';
-import { DropAlertSection } from '@/components/drops/DropAlertSection';
+import { PageSkeleton } from '@/components/shell/PageSkeleton';
+import { HotelAlertBox } from '@/components/drops/HotelAlertBox';
 import { DropCallout } from '@/components/drops/DropCallout';
 import { HotelView } from '@/components/hotel/HotelView';
 import { StatusPage } from '@/components/shell/StatusPage';
@@ -57,7 +58,20 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
+/**
+ * Validates the URL first (a 404 must be decided before anything is sent), then streams the
+ * skeleton while the data loads (PREMIUM.md §10.17).
+ */
 export default async function HotelPageRoute(props: Props) {
+  await resolve(props);
+  return (
+    <Suspense fallback={<PageSkeleton kind="hotel" />}>
+      <HotelPageRouteBody {...props} />
+    </Suspense>
+  );
+}
+
+async function HotelPageRouteBody(props: Props) {
   const { locale, slug } = await resolve(props);
   setRequestLocale(locale);
   const today = berlinToday();
@@ -110,10 +124,10 @@ export default async function HotelPageRoute(props: Props) {
         today={today}
         drops={dropGroup && <DropCallout group={dropGroup} />}
         alert={
-          <DropAlertSection
+          <HotelAlertBox
             locale={locale}
-            defaultCity={{ slug: hotel.city.slug, name: city }}
             hotel={{ slug: hotel.slug, name: hotel.name }}
+            citySlug={hotel.city.slug}
           />
         }
       />

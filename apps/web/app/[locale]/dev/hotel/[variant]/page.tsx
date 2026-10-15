@@ -6,7 +6,7 @@ import { addDays, weekdayMonFirst, type Locale, type NightPrice } from '@tidaq/c
 import { HotelView } from '@/components/hotel/HotelView';
 import type { HotelPage } from '@/lib/data/hotel';
 import { hotelPhoto } from '@/lib/hotelPhotos';
-import { DropAlertSection } from '@/components/drops/DropAlertSection';
+import { HotelAlertBox } from '@/components/drops/HotelAlertBox';
 import { DropCallout } from '@/components/drops/DropCallout';
 import { sampleDrops } from '@/lib/dropsSample';
 
@@ -90,11 +90,10 @@ export default async function DevHotelPage({
       now={NOW}
       drops={drop && <DropCallout group={drop} />}
       alert={
-        <DropAlertSection
+        <HotelAlertBox
           locale={locale}
-          defaultCity={{ slug: data.hotel.city.slug, name: data.hotel.city.name[locale] }}
           hotel={{ slug: data.hotel.slug, name: data.hotel.name }}
-          cities={[{ slug: data.hotel.city.slug, name: data.hotel.city.name[locale] }]}
+          citySlug={data.hotel.city.slug}
         />
       }
     />

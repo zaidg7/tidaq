@@ -119,21 +119,26 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-106 | Shell: navbar, docked search pill, mobile menu, footer, symbol + icons, /kassen-check links | CLOUD | M | C-103, B-020 | DONE ([#104](https://github.com/zaidg7/tidaq/pull/104)) |
 | C-107 | Search 1: desktop search bar + destination panel + docked navbar search pill | CLOUD | M | C-103, C-105 | DONE ([#105](https://github.com/zaidg7/tidaq/pull/105)) |
 | C-108 | Search 2: calendar engine with price tints, date + guests popovers | CLOUD | M | C-107 | DONE |
-| C-109 | Search 3: phone full-screen search flow | CLOUD | M | C-108 | TODO |
-| C-110 | Search 4: submit routing, loading states, loading.tsx skeletons | CLOUD | S | C-109 | TODO |
+| C-109 | Search 3: phone full-screen search flow | CLOUD | M | C-108 | DONE |
+| C-110 | Search 4: submit routing, loading states, loading.tsx skeletons | CLOUD | S | C-109 | DONE |
 | C-111 | Charts 1: price history redesign | CLOUD | M | C-102 | DONE ([#103](https://github.com/zaidg7/tidaq/pull/103)) |
-| C-112 | Charts 2: meter, story chart, site bars, calendar cells | CLOUD | M | C-111 | TODO |
-| C-113 | Drop page redesign (TikTok landing) | CLOUD | M | C-105, C-112 | TODO |
-| C-114 | Price Drops page + /price-drops routes + Deals as a view | CLOUD | M | C-113 | TODO |
-| C-115 | Home redesign (+ navbar transparent over the photo hero, photo strip in the phone menu) | CLOUD | M | C-110, C-114 | TODO |
-| C-116 | Stay page redesign (a/b) | CLOUD | L | C-110, C-112 | TODO |
-| C-117 | Hotel page: gallery, lightbox, cheapest dates, calendar | CLOUD | M | C-112, C-104 | TODO |
-| C-118 | City page + all hotels | CLOUD | M | C-105 | TODO |
-| C-119 | Kassen-Check page (new), provider, method, ranking, legal pages | CLOUD | M | C-103 | TODO |
-| C-120 | Alert confirm/manage, status pages, weekly recap | CLOUD | M | C-103 | TODO |
+| C-112 | Charts 2: meter, story chart, site bars, calendar cells | CLOUD | M | C-111 | DONE (meter + story chart; cells → C-112b) |
+| C-112b | Calendar cells: strong price scale in the hotel calendar and the search popover | CLOUD | S | C-112 | TODO |
+| C-113 | Drop page redesign (TikTok landing) | CLOUD | M | C-105, C-112 | DONE |
+| C-114 | Price Drops page + /price-drops routes + Deals as a view | CLOUD | M | C-113 | DONE (page; routes + Deals view → C-114b) |
+| C-114b | /price-drops English routes, Deals as a view of the Price Drops page | CLOUD | S | C-114 | TODO |
+| C-115 | Home redesign (+ navbar transparent over the photo hero, photo strip in the phone menu) | CLOUD | M | C-110, C-114 | DONE |
+| C-116 | Stay page redesign (a/b) | CLOUD | L | C-110, C-112 | DONE (a: photo sheet, chips, cards; b → C-116b) |
+| C-116b | Stay page b: verdict card like the drop card, story chart for the stay, site bars | CLOUD | M | C-116 | TODO |
+| C-117 | Hotel page: gallery, lightbox, cheapest dates, calendar | CLOUD | M | C-112, C-104 | DONE (gallery + lightbox → C-117b) |
+| C-117b | Hotel page gallery + lightbox (needs more than one photo per hotel, B-021) | CLOUD | S | C-117, B-021 | TODO |
+| C-118 | City page + all hotels | CLOUD | M | C-105 | DONE |
+| C-119 | Kassen-Check page (new), provider, method, ranking, legal pages | CLOUD | M | C-103 | TODO (provider, method, ranking, legal restyled; Kassen-Check page left) |
+| C-120 | Alert confirm/manage, status pages, weekly recap | CLOUD | M | C-103 | TODO (status pages, weekly recap, manage header done; confirm page left) |
 | C-121 | Emails, OG cards, default OG image re-skin | CLOUD | S | C-106 | TODO |
 | C-122 | Copy pass: glossary, text budgets, Price Alert URLs | CLOUD | S | C-115 | TODO |
 | C-123 | Polish + QA at 4 widths, Lighthouse, axe, WebKit, baselines, before/after sheet | CLOUD | M | C-102 … C-122 | TODO |
+| C-124 | Regenerate the visual baselines after the redesign (CI image; Actions budget resets 1 Nov, D-45) | CLOUD | S | C-118 | TODO |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034, C-123               | TODO           |
 | C-041a                                                          | Launch hardening: axe checks, security headers                               | CLOUD | S             | C-031a                            | DONE           |
@@ -974,6 +979,12 @@ Canvas boards "B · Clean Premium" updated with Zaid's feedback: "Price Drops" w
 **C-107 notes (DONE, [#105](https://github.com/zaidg7/tidaq/pull/105)):** `components/search/`: `SearchBar` (from 768 px; phones keep `SearchCard` until C-109), `DestinationField` (combobox = the destination panel: popular cities as photo chips, "Gerade günstig" = today's 3 biggest drops, live filter with core `matchCities`/`highlightRange`), `NavSearch` (pill from 1280 px, icon below; opens the bar in a top dialog; on the homepage hidden while `#suche` is visible; phones still jump to `/#suche`). Index built by `lib/searchIndex.ts`: inline on the homepage, `/api/search-index` for the navbar (bar code loads on first open via `next/dynamic`). Without a database outside production the API serves the `/dev/search` sample (`lib/searchSample.ts`). Hotel thumbnails only from the hotel's own photo (a 48 px city photo can't carry its "Stadtbild" tag). City photos now also have a 160 px size. City submit ignores dates until C-110.
 
 **C-108 notes (DONE):** One calendar engine, `components/calendar/RangeCalendar.tsx` (WAI-ARIA grid, ink ends, `surface-2` nights between, hover preview, optional price per night with level tint + `PriceLegend`). Used by the desktop `DatePopover` (two months, "Genaue Daten · Flexibel"; Flexibel = month chips + the 3 cheapest Fri → Sun stays from core `weekendStays`/`cheapestInMonth`) and by the phone `DateRangePicker` sheet. `GuestsPopover`: adults 1–4. Prices come from `/api/hotel-nights` (nights + levels + weekend totals on one reviewed site; no totals for unreliable nights; sample data without a database outside production). **Still separate:** the hotel page's `PriceCalendar` moves onto `RangeCalendar` in C-117; the phone flow gets prices in C-109.
+
+**C-109 notes (DONE):** `components/search/PhoneSearch.tsx`: full-screen `<dialog>` with Wohin? (inline `DestinationField`, popular cities as a 64 px photo row) → Wann? (`RangeCalendar stacked`: every month to the last bookable day, sticky month names, nightly prices) → Wer? (`GuestsStepper`). Sticky bottom bar: "Alles löschen" + "Preise ansehen" (step 2: "Überspringen" + "Weiter"). Each step is a history entry (`tidaqSearch` in `history.state`), so the back gesture steps back and ✕ unwinds them; selections stay when closed. State and submit rules shared with the desktop bar in `useSearch`. Homepage phones show the "Wohin?" pill (the old `SearchCard` stays only on the stay page's "Ändern" until C-116 and on `/dev/ui`); the navbar icon on phones opens the sheet (loaded on first tap).
+
+**C-110 notes (DONE):** Submit routing per PREMIUM.md §9.3: a city with dates goes to `/stadt/<slug>?daten=<in>--<out>&adults=n` (core `cityStayPath`); the city page then loads each hotel's total for those nights from the night grid (one reviewed site, `cityStays` in `lib/data/city.ts`, none for unreliable hotels) and sorts cheapest first, with "Ohne Daten ansehen". Loading skeletons (`components/shell/PageSkeleton`, kinds list/stay/hotel/drop/text): `loading.tsx` only on leaf routes without URL checks (`/hotels`, `/deals`, `/preissturz/woche`); routes with params validate first and then stream the skeleton through `<Suspense>` in the page, because a `loading.tsx` above them makes a 404 impossible (status already sent). Known trade-off: a well-formed but unknown slug (hotel, city, drop) now answers 200 with the not-found page and `noindex` for browsers; crawlers get blocking metadata and still see the 404. Buttons show a spinner while navigating (bar, phone sheet).
+
+**C-112 … C-118 notes (DONE, one batched PR, D-45):** The whole site now speaks mockup B. Shared pieces: `PhotoHero` (city, landing), `PhotoSheet` (photo + sheet: drop, hotel, stay), `PageHead` (pages without a photo), `AlertBand` (dark Price Alert band, `#preissturz-alarm`, real drops as previews), `HotelAlertBox` (alert for one hotel), `HotelPhotoCard`, `DropTile`/`DropCard`/`DropBadge`, `SectionHead`/`PillLink`, `CityTile`. Navbar: white on any page with `data-photo-hero`, frosted ink after 24 px of scroll (`HeaderState`), links Price Drops · Hotels · Städte, the search button leaves the bar while the page's own search (`data-hero-search`) is on screen. Drop badges by size (core `dropTier`, D-46). Meter: three equal zones, knob mapped piecewise onto thirds (core `meter().knob`). Drop page story chart: core `storyChart`. City stand-in photos get a different crop per hotel (`standInFocus`); Hamburg's tile uses a hotel photo; no grey placeholders left on public pages. The home result card shows a labelled example until a stay has a 7-day verdict (`getFeaturedStay(…, 'cheap')` then takes over). New page `/staedte`. `.env.local` is never used for e2e: live-data checks run a dev server with env from outside the repo.
 
 ### C-102 … C-123
 

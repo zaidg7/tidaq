@@ -33,11 +33,8 @@ export function LocaleLinks({ current, label, names, fullNames, className }: Pro
               aria-label={fullNames?.[locale]}
               aria-current={locale === current ? 'true' : undefined}
               className={cn(
-                'inline-flex h-11 min-w-11 items-center justify-center rounded-full px-3 text-[14px] font-semibold',
-                'transition-colors duration-[180ms] ease-soft',
-                locale === current
-                  ? 'text-fg'
-                  : 'text-muted-ink hover:bg-accent-soft hover:text-fg',
+                'nav-link inline-flex h-11 min-w-10 items-center justify-center rounded-full px-2.5 text-[15px]',
+                locale === current ? 'font-semibold' : 'nav-dim',
               )}
             >
               {names[locale]}

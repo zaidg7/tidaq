@@ -86,7 +86,10 @@ export interface FeaturedStay {
  * providers. Null without Supabase (CI, local dev), without data, or on any read error;
  * the homepage then shows its labelled static example.
  */
-export async function getFeaturedStay(now = new Date()): Promise<FeaturedStay | null> {
+export async function getFeaturedStay(
+  now = new Date(),
+  prefer: 'history' | 'cheap' = 'history',
+): Promise<FeaturedStay | null> {
   if (!hasSupabase()) return null;
   const today = toIsoDate(now.getTime());
   try {
@@ -111,6 +114,7 @@ export async function getFeaturedStay(now = new Date()): Promise<FeaturedStay | 
         hasImage: !!hotelPhoto(s.hotel_slug) && !!imageByHotel.get(s.hotel_id)?.image_credit,
       })),
       today,
+      prefer,
     );
     if (!picked) return null;
 

@@ -43,6 +43,11 @@ type Props = {
   invalid?: boolean;
   describedBy?: string;
   autoFocus?: boolean;
+  /**
+   * Phones (C-109): the list sits below the field and is always shown, popular cities as a
+   * horizontal row of round photos; the full-screen sheet scrolls it.
+   */
+  inline?: boolean;
 };
 
 const MAX_CITIES = 3;
@@ -124,6 +129,7 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
     invalid,
     describedBy,
     autoFocus,
+    inline,
   },
   ref,
 ) {
@@ -217,7 +223,7 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
 
   // Leaving the field with an exact name typed counts as a pick ("Berlin" + Tab works).
   const onBlur = () => {
-    onOpenChange(false);
+    if (!inline) onOpenChange(false);
     if (value || !query.trim()) return;
     const q = foldText(query);
     const city = index.cities.find((c) => foldText(c.name) === q);
@@ -226,9 +232,10 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
     else if (hotel) onChange({ kind: 'hotel', slug: hotel.slug });
   };
 
+  const shown = (inline || open) && (search !== '' || sections.length > 0);
   const total = search ? options.length : -1;
   const status =
-    open && total >= 0
+    shown && total >= 0
       ? (total === 0
           ? labels.results[0]
           : total === 1
@@ -253,6 +260,7 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
         onMouseMove={() => setActive(pos)}
         className={cn(
           'flex cursor-pointer items-center gap-3 rounded-card px-2.5 py-2 transition-colors duration-[var(--t-fast)]',
+          inline && 'active:bg-surface-2',
           pos === active && 'bg-surface-2',
           className,
         )}
@@ -264,16 +272,22 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
 
   return (
     <>
-      <div className="flex items-center gap-1">
+      <div
+        className={cn(
+          'flex items-center gap-1',
+          inline &&
+            'h-14 rounded-input border border-line-strong bg-surface px-4 focus-within:border-ink',
+        )}
+      >
         <input
           ref={ref}
           id={id}
           type="text"
           role="combobox"
           aria-autocomplete="list"
-          aria-expanded={open}
+          aria-expanded={shown}
           aria-controls={listId}
-          aria-activedescendant={open && active >= 0 ? optionId(active) : undefined}
+          aria-activedescendant={shown && active >= 0 ? optionId(active) : undefined}
           aria-invalid={invalid || undefined}
           aria-describedby={describedBy}
           autoComplete="off"
@@ -318,14 +332,20 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
       </span>
       <div
         // Nothing to show before typing (no catalog): no empty panel.
-        hidden={!open || (!search && sections.length === 0)}
-        className="search-panel absolute top-[calc(100%+12px)] left-0 z-30 w-[480px] max-w-[calc(100vw-32px)] overflow-hidden rounded-panel border border-line bg-surface shadow-3"
+        hidden={!shown}
+        className={cn(
+          inline
+            ? 'mt-4'
+            : 'search-panel absolute top-[calc(100%+12px)] left-0 z-30 w-[480px] max-w-[calc(100vw-32px)] overflow-hidden rounded-panel border border-line bg-surface shadow-3',
+        )}
       >
         <ul
           id={listId}
           role="listbox"
           aria-label={labels.listLabel}
-          className="max-h-[min(520px,65vh)] overflow-y-auto overscroll-contain p-3"
+          className={cn(
+            !inline && 'max-h-[min(520px,65vh)] overflow-y-auto overscroll-contain p-3',
+          )}
         >
           {sections.length === 0 ? (
             <li role="presentation" className="px-3 py-4 text-small text-muted-ink">
@@ -334,30 +354,36 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
           ) : (
             sections.map((section) => (
               <li key={section.key} role="presentation" className="not-first:mt-2">
+                <p aria-hidden="true" className="px-2.5 pt-1.5 pb-2 text-label text-muted-ink">
+                  {section.title}
+                </p>
                 <ul
                   role="group"
                   aria-label={section.title}
-                  className={cn(section.key === 'popular' && 'grid grid-cols-2 gap-x-1')}
+                  className={cn(
+                    section.key === 'popular' &&
+                      (inline
+                        ? '-mx-4 flex gap-1 overflow-x-auto px-2 pb-2 [scrollbar-width:none]'
+                        : 'grid grid-cols-2 gap-x-1'),
+                  )}
                 >
-                  <li
-                    role="presentation"
-                    aria-hidden="true"
-                    className="col-span-2 px-2.5 pt-1.5 pb-2 text-label text-muted-ink"
-                  >
-                    {section.title}
-                  </li>
                   {section.options.map((option) =>
                     option.kind === 'city'
                       ? option.chip
                         ? row(
                             option,
                             <>
-                              <Thumb photo={option.city.thumb} round size={40} />
-                              <span className="min-w-0 truncate text-[15px] font-semibold text-ink">
+                              <Thumb photo={option.city.thumb} round size={inline ? 64 : 40} />
+                              <span
+                                className={cn(
+                                  'min-w-0 truncate font-semibold text-ink',
+                                  inline ? 'text-[13px]' : 'text-[15px]',
+                                )}
+                              >
                                 {option.city.name}
                               </span>
                             </>,
-                            'py-1.5',
+                            inline ? 'w-[84px] shrink-0 flex-col gap-2 py-2 text-center' : 'py-1.5',
                           )
                         : row(
                             option,

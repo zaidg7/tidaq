@@ -5,7 +5,7 @@ import { Icon } from '@/components/ui/Icon';
 import { getCatalog } from '@/lib/data/catalog';
 import { routes } from '@/lib/routes';
 import { DROP_ALERT_ID } from './alertId';
-import { DropAlertForm } from './DropAlertForm';
+import { DropAlertForm, type DropAlertFormLabels } from './DropAlertForm';
 
 /**
  * Preissturz-Alarm (C-080e1): "Schick mir Preisstürze in Paris", the step that turns a visitor
@@ -28,22 +28,12 @@ export async function DropAlertSection({
 }) {
   const t = await getTranslations({ locale, namespace: 'dropAlert' });
   const preset = typeof defaultCity === 'string' ? null : defaultCity;
-  const listed =
-    given ??
-    [
-      ...new Map(
-        ((await getCatalog())?.hotels ?? []).map((h) => [h.city.slug, h.city.name[locale]]),
-      ),
-    ]
-      .map(([slug, name]) => ({ slug, name }))
-      .sort((a, b) => a.name.localeCompare(b.name, locale));
+  const listed = given ?? (await alertCities(locale));
   const cities =
     preset && !listed.some((c) => c.slug === preset.slug)
       ? [...listed, preset].sort((a, b) => a.name.localeCompare(b.name, locale))
       : listed;
-  const privacy = `${localizedPath(routes.privacy, locale)}#${
-    locale === 'de' ? '6-preisalarm-und-deals-per-e-mail' : '6-price-alerts-and-deals-by-email'
-  }`;
+  const labels = await dropAlertLabels(locale, hotel);
   return (
     <section
       id={DROP_ALERT_ID}
@@ -67,29 +57,56 @@ export async function DropAlertSection({
           cities={cities}
           defaultCity={typeof defaultCity === 'string' ? defaultCity : (defaultCity?.slug ?? null)}
           hotel={hotel}
-          labels={{
-            email: t('email'),
-            city: t('city'),
-            scope: t('scope'),
-            ...(hotel && { onlyHotel: t('onlyHotel', { hotel: hotel.name }) }),
-            allCities: t('allCities'),
-            consent: t('consent'),
-            privacy: t('privacy'),
-            privacyHref: privacy,
-            submit: t('submit'),
-            preview: t('preview'),
-            results: {
-              sent: t('results.sent'),
-              added: t('results.added'),
-              invalid: t('results.invalid'),
-              too_soon: t('results.too_soon'),
-              rate_limited: t('results.rate_limited'),
-              bot: t('results.bot'),
-              error: t('results.error'),
-            },
-          }}
+          labels={labels}
         />
       </div>
     </section>
   );
+}
+
+/** The sign-up form's texts (both layouts), with the privacy link in the right language. */
+export async function dropAlertLabels(
+  locale: Locale,
+  hotel: { slug: string; name: string } | null = null,
+): Promise<DropAlertFormLabels> {
+  const t = await getTranslations({ locale, namespace: 'dropAlert' });
+  const privacy = `${localizedPath(routes.privacy, locale)}#${
+    locale === 'de' ? '6-preisalarm-und-deals-per-e-mail' : '6-price-alerts-and-deals-by-email'
+  }`;
+  return {
+    email: t('email'),
+    city: t('city'),
+    scope: t('scope'),
+    ...(hotel && { onlyHotel: t('onlyHotel', { hotel: hotel.name }) }),
+    allCities: t('allCities'),
+    consent: t('consent'),
+    privacy: t('privacy'),
+    privacyHref: privacy,
+    submit: t('submit'),
+    preview: t('preview'),
+    results: {
+      sent: t('results.sent'),
+      added: t('results.added'),
+      invalid: t('results.invalid'),
+      too_soon: t('results.too_soon'),
+      rate_limited: t('results.rate_limited'),
+      bot: t('results.bot'),
+      error: t('results.error'),
+    },
+    bar: {
+      email: t('emailShort'),
+      placeholder: t('emailPlaceholder'),
+      submit: t('submitShort'),
+      submitPhone: t('submitPhone'),
+    },
+  };
+}
+
+/** Every city we track, A–Z, for the form's select. */
+export async function alertCities(locale: Locale): Promise<{ slug: string; name: string }[]> {
+  return [
+    ...new Map(((await getCatalog())?.hotels ?? []).map((h) => [h.city.slug, h.city.name[locale]])),
+  ]
+    .map(([slug, name]) => ({ slug, name }))
+    .sort((a, b) => a.name.localeCompare(b.name, locale));
 }

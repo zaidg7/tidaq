@@ -1,11 +1,18 @@
+import type { CSSProperties } from 'react';
 import { cn } from '@/lib/cn';
 
 /**
  * Loading placeholder (PREMIUM.md §6, §10.17): `--surface-2` blocks in the final geometry with a
  * soft shimmer sweep (1.4 s), static under reduced motion. Decorative: the page announces loading.
  */
-export function Skeleton({ className }: { className?: string }) {
-  return <span aria-hidden="true" className={cn('skeleton block rounded-input', className)} />;
+export function Skeleton({ className, style }: { className?: string; style?: CSSProperties }) {
+  return (
+    <span
+      aria-hidden="true"
+      style={style}
+      className={cn('skeleton block rounded-input', className)}
+    />
+  );
 }
 
 /** The verdict block while its data loads: same geometry as `VerdictBlock`. */

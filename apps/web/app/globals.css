@@ -19,7 +19,7 @@
   --ink: #15131c;
   --ink-2: #3a3744;
   --muted: #5b5866;
-  --faint: #8c8996;
+  --faint: #6a6775;
   /* Action */
   --accent: #4b33c9;
   --accent-hover: #3d28a8;
@@ -340,31 +340,98 @@
 }
 
 /*
- * Navbar scroll state (CRAFT.md §3): transparent at the top, frosted after 64 px of scroll.
- * Scroll-driven animation, no JavaScript; browsers without it get the frosted bar always.
+ * Navbar (PREMIUM.md §12, mockup B). One header for every page, coloured through variables:
+ * transparent with white text while it sits on a photo hero (`[data-photo-hero]` on the page),
+ * frosted with ink text once the page scrolls (`data-scrolled`, set by HeaderState) and on pages
+ * without a photo. Without JavaScript it stays frosted (the <noscript> style in Navbar).
  */
+:root {
+  /* Defaults for nav-styled links anywhere (footer language links too). */
+  --nav-fg: var(--ink);
+  --nav-dim: var(--muted);
+  --nav-hover: rgba(21, 19, 28, 0.05);
+  --nav-pill-bg: var(--surface);
+  --nav-pill-border: var(--line-strong);
+  --nav-pill-fg: var(--ink);
+  --nav-pill-hover: var(--surface-2);
+}
 .site-header {
-  --header-frost: color-mix(in srgb, var(--bg) 82%, transparent);
+  color: var(--nav-fg);
+  background-color: color-mix(in srgb, var(--bg) 82%, transparent);
+  border-bottom-color: var(--line);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  transition:
+    background-color var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    color var(--t-base) var(--ease-out),
+    backdrop-filter var(--t-base) var(--ease-out);
 }
-@keyframes header-frost {
-  to {
-    background-color: var(--header-frost);
-    border-bottom-color: var(--line);
-    backdrop-filter: blur(12px) saturate(140%);
-  }
+/* Pages without a photo: transparent at the very top, frosted after scrolling. */
+.site-header:not([data-scrolled]) {
+  background-color: transparent;
+  border-bottom-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
-@supports (animation-timeline: scroll()) {
-  .site-header {
-    animation: header-frost linear both;
-    animation-timeline: scroll(root block);
-    animation-range: 0 64px;
-  }
+:root:has([data-photo-hero]) .site-header:not([data-scrolled]) {
+  --nav-fg: #ffffff;
+  --nav-dim: rgba(255, 255, 255, 0.75);
+  --nav-hover: rgba(255, 255, 255, 0.12);
+  --nav-pill-bg: rgba(255, 255, 255, 0.16);
+  --nav-pill-border: rgba(255, 255, 255, 0.4);
+  --nav-pill-fg: #ffffff;
+  --nav-pill-hover: rgba(255, 255, 255, 0.26);
 }
-@supports not (animation-timeline: scroll()) {
-  .site-header {
-    background-color: var(--header-frost);
-    border-bottom-color: var(--line);
-    backdrop-filter: blur(12px) saturate(140%);
+:root:has([data-photo-hero]) .site-header:not([data-scrolled]) :focus-visible {
+  outline-color: #ffffff;
+}
+.nav-link {
+  color: var(--nav-fg);
+  transition:
+    background-color var(--t-fast) var(--ease-out),
+    color var(--t-base) var(--ease-out);
+}
+.nav-link:hover {
+  background-color: var(--nav-hover);
+}
+.nav-dim {
+  color: var(--nav-dim);
+}
+.nav-btn {
+  color: var(--nav-fg);
+}
+.nav-btn:hover {
+  background-color: var(--nav-hover);
+}
+.nav-pill {
+  color: var(--nav-pill-fg);
+  background-color: var(--nav-pill-bg);
+  border: 1px solid var(--nav-pill-border);
+  transition:
+    background-color var(--t-fast) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    color var(--t-base) var(--ease-out);
+}
+.nav-pill:hover {
+  background-color: var(--nav-pill-hover);
+}
+:root:has([data-photo-hero]) .site-header:not([data-scrolled]) .nav-pill {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+/* The search button leaves the bar (no gap) while the page's own search is on screen. */
+.nav-search[data-state='visible'],
+:root:has([data-hero-search]) .nav-search[data-state='unknown'] {
+  display: none;
+}
+.nav-search {
+  animation: nav-search-in var(--t-base) var(--ease-out) both;
+}
+@keyframes nav-search-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
   }
 }
 
@@ -741,4 +808,191 @@
     opacity: 0;
     transform: translateY(-16px);
   }
+}
+
+/* Phone search (C-109): a full-screen sheet that rises in; each step slides in from the right. */
+.phone-search {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--surface);
+  color: var(--ink);
+}
+.phone-search[open] {
+  animation: search-rise var(--t-panel) var(--ease-out) both;
+}
+.phone-search::backdrop {
+  background: transparent;
+}
+@keyframes search-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+}
+.phone-step {
+  animation: step-in var(--t-base) var(--ease-out) both;
+}
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}
+
+/* Photo hero (mockup B): dark at the top for the navbar, clear in the middle, dark at the bottom
+   for the headline. Phones get a slightly stronger bottom (more text over less photo). */
+.hero-scrim {
+  background: linear-gradient(
+    180deg,
+    rgba(14, 12, 18, 0.5) 0%,
+    rgba(14, 12, 18, 0) 25%,
+    rgba(14, 12, 18, 0.05) 45%,
+    rgba(14, 12, 18, 0.8) 100%
+  );
+}
+@media (min-width: 768px) {
+  .hero-scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(14, 12, 18, 0.45) 0%,
+      rgba(14, 12, 18, 0.05) 30%,
+      rgba(14, 12, 18, 0.1) 55%,
+      rgba(14, 12, 18, 0.7) 100%
+    );
+  }
+}
+/* The hero headline rises in once (PREMIUM.md §6), lead and pill a beat later. */
+.hero-rise {
+  animation: fade-up var(--t-slow) var(--ease-out) both;
+}
+.hero-rise-2 {
+  animation: fade-up var(--t-slow) var(--ease-out) 90ms both;
+}
+.hero-rise-3 {
+  animation: fade-up var(--t-slow) var(--ease-out) 180ms both;
+}
+
+/* "Live" dot: a soft ring breathes out every 2.4 s (off under reduced motion). */
+.live-dot {
+  position: relative;
+}
+.live-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: live-ping 2.4s var(--ease-out) infinite;
+}
+@keyframes live-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .live-dot::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Meter knob: slides from the left end to today's price once (PREMIUM.md §8). */
+.meter-knob {
+  animation: meter-knob-in 700ms var(--ease-out) 150ms both;
+}
+@keyframes meter-knob-in {
+  from {
+    left: 0;
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+
+/* Photo tiles (drop tiles, city tiles): the photo zooms a touch on hover, never the layout. */
+.tile-zoom .photo-img,
+.tile-zoom > img {
+  transition:
+    opacity 400ms var(--ease-out),
+    transform 700ms var(--ease-out);
+}
+@media (hover: hover) {
+  .tile-zoom:hover .photo-img,
+  .tile-zoom:hover > img {
+    transform: scale(1.04);
+  }
+}
+
+/* Drop badges by size (core dropTier): huge = bright mint on ink, big = deep green, small = white
+   with green text. Every pair is AA. */
+.drop-badge-huge {
+  background: var(--good-bright);
+  color: var(--ink);
+}
+.drop-badge-big {
+  background: var(--good);
+  color: #ffffff;
+}
+.drop-badge-small {
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--good);
+}
+/* On white rows the small badge needs its own fill. */
+.drop-badge-outline.drop-badge-small {
+  background: var(--good-soft);
+}
+
+/* Horizontal snap rows on phones (city tiles): no scrollbar, momentum, padding stays visible. */
+.snap-row {
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 14px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.snap-row::-webkit-scrollbar {
+  display: none;
+}
+.snap-row > * {
+  scroll-snap-align: start;
+}
+
+/* Drop story chart: the line reveals left to right, then today's dot pops (PREMIUM.md §6). */
+.story-reveal svg {
+  animation: story-wipe 900ms var(--ease-out) 100ms both;
+}
+@keyframes story-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.story-dot {
+  animation: story-pop 320ms var(--ease-spring) 950ms both;
+}
+@keyframes story-pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+  }
+}
+
+/* Photo page header (drop page): the content sheet slides up over the photo's bottom edge. */
+.photo-sheet {
+  border-radius: 28px 28px 0 0;
 }

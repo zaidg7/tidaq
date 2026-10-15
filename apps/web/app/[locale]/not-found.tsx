@@ -19,6 +19,12 @@ export default async function NotFound() {
       <a href={localizedPath(routes.home, locale)} className={buttonClasses({ size: 'lg' })}>
         {t('home')}
       </a>
+      <a
+        href={localizedPath(routes.drops, locale)}
+        className={buttonClasses({ size: 'lg', variant: 'onPhoto' })}
+      >
+        {t('drops')}
+      </a>
     </StatusPage>
   );
 }

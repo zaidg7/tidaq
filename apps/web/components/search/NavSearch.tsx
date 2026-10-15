@@ -3,10 +3,9 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import { Search, X } from 'lucide-react';
-import { localizedPath, type Locale } from '@tidaq/core';
+import type { Locale } from '@tidaq/core';
 import { IconButton } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
-import { cn } from '@/lib/cn';
 import type { SearchBarLabels } from './SearchBar';
 import type { SearchIndex } from './types';
 
@@ -16,9 +15,13 @@ const SearchBar = dynamic(() => import('./SearchBar').then((m) => m.SearchBar), 
   loading: () => <div className="h-[76px] rounded-search border border-line bg-surface" />,
 });
 
+const PhoneSearch = dynamic(() => import('./PhoneSearch').then((m) => m.PhoneSearch), {
+  ssr: false,
+});
+
 const EMPTY: SearchIndex = { cities: [], hotels: [], popular: [], cheap: [] };
-/** The homepage's hero search; while it is on screen the pill hides. */
-const HERO_ID = 'suche';
+/** Marks a page's own search (hero bar, hero pill); while one is on screen the button leaves. */
+const HERO_SEARCH = '[data-hero-search]';
 const DESKTOP = '(min-width: 768px)';
 
 type Props = {
@@ -26,8 +29,8 @@ type Props = {
   today: string;
   guestOptions: string[];
   labels: SearchBarLabels & {
-    /** Pill text: "Hotel oder Stadt", "Daten", "Gäste". */
-    pill: [string, string, string];
+    /** Visible text of the desktop button: "Suchen". */
+    pillShort: string;
     open: string;
     close: string;
     dialog: string;
@@ -47,22 +50,39 @@ function loadIndex(locale: Locale): Promise<SearchIndex> {
 }
 
 /**
- * Navbar search (PREMIUM.md §12, C-107b). From 1280 px a compact pill "Hotel oder Stadt ·
- * Daten · Gäste"; below, an icon. Either opens the full search bar in place, in a panel that
- * drops from the top (no jump to the homepage). On the homepage the pill fades in only once the
- * hero search has scrolled away. Phones keep the jump to the hero search until C-109.
+ * Navbar search (PREMIUM.md §12, C-107b). Desktop: a compact "Suchen" pill that opens the full
+ * search bar in a panel dropping from the top (no jump to the homepage). Phones: an icon that opens
+ * the full-screen search (C-109). On pages with their own search (`data-hero-search`) the button
+ * is taken out of the bar while that search is on screen and fades in once it scrolls away.
  */
 export function NavSearch({ locale, today, guestOptions, labels }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
-  const [heroVisible, setHeroVisible] = useState(false);
+  // 'unknown' until measured: CSS hides it on pages with a hero search, so it never flashes in.
+  const [heroSearch, setHeroSearch] = useState<'unknown' | 'visible' | 'gone'>('unknown');
   const [mounted, setMounted] = useState(false);
   const [index, setIndex] = useState<SearchIndex>(EMPTY);
+  const [phoneKey, setPhoneKey] = useState(0);
 
   useEffect(() => {
-    const hero = document.getElementById(HERO_ID);
-    if (!hero) return;
-    const observer = new IntersectionObserver(([entry]) => setHeroVisible(!!entry?.isIntersecting));
-    observer.observe(hero);
+    const targets = [...document.querySelectorAll(HERO_SEARCH)];
+    if (targets.length === 0) {
+      setHeroSearch('gone');
+      return;
+    }
+    // Hidden copies (the bar on phones, the pill on desktop) never intersect.
+    const seen = new Set<Element>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) seen.add(e.target);
+          else seen.delete(e.target);
+        }
+        setHeroSearch(seen.size > 0 ? 'visible' : 'gone');
+      },
+      // The part under the sticky navbar doesn't count as on screen.
+      { rootMargin: '-76px 0px 0px 0px' },
+    );
+    for (const t of targets) observer.observe(t);
     return () => observer.disconnect();
   }, []);
 
@@ -72,7 +92,8 @@ export function NavSearch({ locale, today, guestOptions, labels }: Props) {
 
   const open = () => {
     if (!window.matchMedia(DESKTOP).matches) {
-      window.location.assign(`${localizedPath('/', locale)}#${HERO_ID}`);
+      prefetch();
+      setPhoneKey((k) => k + 1);
       return;
     }
     prefetch();
@@ -85,47 +106,43 @@ export function NavSearch({ locale, today, guestOptions, labels }: Props) {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={open}
-        onPointerEnter={prefetch}
-        onFocus={prefetch}
-        aria-haspopup="dialog"
-        aria-hidden={heroVisible || undefined}
-        tabIndex={heroVisible ? -1 : undefined}
-        className={cn(
-          'nav-pill hidden h-12 items-center gap-3 rounded-full border border-line bg-surface pr-1.5 pl-5 shadow-1 xl:flex',
-          'transition-[opacity,transform,box-shadow] duration-[var(--t-base)] ease-out hover:shadow-2',
-          heroVisible && 'pointer-events-none translate-y-1 opacity-0',
-        )}
-      >
-        <span className="sr-only">{labels.open}</span>
-        <span
-          aria-hidden="true"
-          className="flex items-center gap-2.5 text-[14px] whitespace-nowrap"
-        >
-          <span className="font-semibold text-ink">{labels.pill[0]}</span>
-          <span className="h-4 w-px bg-line" />
-          <span className="text-muted-ink">{labels.pill[1]}</span>
-          <span className="h-4 w-px bg-line" />
-          <span className="text-muted-ink">{labels.pill[2]}</span>
-        </span>
-        <span
-          aria-hidden="true"
-          className="grid size-9 place-items-center rounded-full bg-accent text-white"
-        >
-          <Icon icon={Search} size={16} />
-        </span>
-      </button>
-      <IconButton
-        label={labels.open}
-        aria-haspopup="dialog"
-        onClick={open}
-        onPointerEnter={prefetch}
-        className="xl:hidden"
-      >
-        <Icon icon={Search} />
-      </IconButton>
+      <div data-state={heroSearch} className="nav-search">
+        {/* `cn` doesn't merge conflicting classes: wrappers own visibility per breakpoint. */}
+        <div className="hidden lg:block">
+          <button
+            type="button"
+            onClick={open}
+            onPointerEnter={prefetch}
+            onFocus={prefetch}
+            aria-haspopup="dialog"
+            aria-label={labels.open}
+            className="nav-pill inline-flex h-11 items-center gap-2 rounded-full pr-4 pl-3.5 text-[15px] font-semibold"
+          >
+            <Icon icon={Search} size={16} />
+            <span aria-hidden="true">{labels.pillShort}</span>
+          </button>
+        </div>
+        <div className="lg:hidden">
+          <IconButton
+            label={labels.open}
+            aria-haspopup="dialog"
+            onClick={open}
+            onPointerEnter={prefetch}
+            variant="nav"
+          >
+            <Icon icon={Search} />
+          </IconButton>
+        </div>
+      </div>
+      {phoneKey > 0 && (
+        <PhoneSearch
+          index={index}
+          today={today}
+          locale={locale}
+          labels={labels}
+          openKey={phoneKey}
+        />
+      )}
       <dialog
         ref={dialog}
         aria-label={labels.dialog}

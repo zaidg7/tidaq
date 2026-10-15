@@ -10,7 +10,7 @@ test.describe('Preissturz-Radar (C-080a, sample data on /dev/drops)', () => {
     page,
   }) => {
     await page.goto('/dev/drops');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Preisstürze in Luxushotels');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Price Drops heute');
     const main = page.getByRole('main');
     await expect(main).toContainText('10 Nächte günstiger in 5 Hotels');
     await expect(main).toContainText('5.722 Nächte in 82 Hotels auf 4 Buchungsseiten geprüft');
@@ -68,11 +68,13 @@ test.describe('Preissturz-Radar (C-080a, sample data on /dev/drops)', () => {
 
     await page.goto('/dev/drops?share=fairmont-hotel-vier-jahreszeiten-hamburg');
     const main = page.getByRole('main');
+    await expect(main.getByRole('heading', { name: 'So hat sich der Preis bewegt' })).toBeVisible();
     await expect(
-      main.getByRole('heading', { name: 'Preisverlauf dieses Wochenendes' }),
+      main.getByText('Gesamtpreis für beide Nächte, jeden Morgen gemessen.'),
     ).toBeVisible();
+    await expect(main.getByRole('list').getByText('2 Nächte', { exact: true })).toBeVisible();
     const stay = await main
-      .getByRole('link', { name: 'Alle Anbieter und Preisverlauf' })
+      .getByRole('link', { name: 'Alle Seiten und Preise für diese Daten' })
       .getAttribute('href');
     const m = /\/(\d{4}-\d{2}-\d{2})--(\d{4}-\d{2}-\d{2})\?adults=2$/.exec(stay ?? '');
     expect(m).not.toBeNull();
@@ -175,46 +177,61 @@ test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
     await page.goto('/dev/drops?share');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Baur au Lac');
     const main = page.getByRole('main');
-    await expect(main).toContainText('Preis um −31 % gefallen');
-    await expect(main).toContainText('Vortag 989 €');
-    await expect(main).toContainText('305 € weniger bei Booking.com');
-    await expect(main).toContainText(/Gesehen heute, \d\d:\d\d bei Booking\.com/);
+    const card = main.getByRole('region', { name: 'Preis um −31 % gefallen' });
+    await expect(card.getByText('Price Drop seit gestern')).toBeVisible();
+    await expect(card).toContainText('684 €');
+    await expect(card).toContainText('statt 989 € gestern');
+    await expect(card).toContainText(/Gesehen heute, \d\d:\d\d bei Booking\.com\./);
     await expect(
-      main.getByRole('link', { name: 'Alle Anbieter und Preisverlauf' }),
+      main.getByRole('link', { name: 'Alle Seiten und Preise für diese Daten' }),
     ).toHaveAttribute('href', STAY('baur-au-lac-zuerich'));
-    await expect(main.getByRole('link', { name: 'Preissturz · Zürich' })).toHaveAttribute(
+    await expect(main.getByRole('link', { name: 'Zürich', exact: true })).toHaveAttribute(
       'href',
       '/preissturz?stadt=zuerich',
     );
-    await expect(main.getByRole('heading', { name: 'Preisverlauf dieser Nacht' })).toBeVisible();
-    const nights = main.getByRole('region', { name: 'Auch günstiger im Baur au Lac' });
+    await expect(main.getByRole('heading', { name: 'So hat sich der Preis bewegt' })).toBeVisible();
+    await expect(
+      main.getByRole('img', { name: /^Preisverlauf: .+ kostete .+, heute 684 €\.$/ }),
+    ).toBeVisible();
+    const meter = main.getByRole('region', { name: 'Günstig oder teuer?' });
+    await expect(meter.getByRole('img', { name: /^Günstig: aktuell 684 €/ })).toBeVisible();
+    await expect(meter).toContainText('Heute zahlst du');
+    const nights = main.getByRole('region', { name: 'Weitere Price Drops hier' });
     await expect(nights.getByRole('link')).toHaveCount(4);
     await expect(nights.getByRole('link').first()).toHaveAttribute(
       'href',
       DROP('baur-au-lac-zuerich'),
     );
-    const others = main.getByRole('region', { name: 'Weitere Preisstürze heute' });
-    await expect(others.getByRole('listitem')).toHaveCount(3);
+    // Four of today's other drops as tiles.
+    const others = main.getByRole('region', { name: 'Heute auch gefallen' });
+    await expect(others.getByRole('listitem')).toHaveCount(4);
+    // The alert is for this hotel only: no city to pick, consent never pre-ticked.
+    const alert = main.getByRole('region', { name: 'Price Alert für dieses Hotel' });
+    await expect(alert.getByRole('combobox')).toHaveCount(0);
+    await expect(alert.getByRole('checkbox')).not.toBeChecked();
+    await expect(alert.getByRole('button', { name: 'Price Alert aktivieren' })).toBeVisible();
   });
 
   test('straight to the site with the price: labelled partner link, new tab', async ({ page }) => {
     await page.goto('/dev/drops?share');
-    const offer = page.getByRole('link', { name: 'Zum Angebot bei Booking.com (neuer Tab)' });
+    const offer = page.getByRole('link', { name: 'Bei Booking.com ansehen · 684 € (neuer Tab)' });
     await expect(offer).toHaveAttribute(
       'href',
       /^\/go\/booking-com\/baur-au-lac-zuerich\?in=\d{4}-\d{2}-\d{2}&out=\d{4}-\d{2}-\d{2}&adults=2&lang=de$/,
     );
     await expect(offer).toHaveAttribute('target', '_blank');
     await expect(offer).toHaveAttribute('rel', 'sponsored nofollow noopener');
-    await expect(page.getByText(/^Partnerlink: Bucht jemand darüber/)).toBeVisible();
+    await expect(page.getByText(/^Partnerlink\. Prüf den Preis vor dem Buchen/)).toBeVisible();
     await expect(page.getByRole('link', { name: 'Mehr dazu' })).toHaveAttribute(
       'href',
       '/affiliate-hinweis',
     );
-    // The hotel's own site needs its address: no button, the stay page stays the way on.
+    // The hotel's own site needs its address: no button, the stay page is the way on.
     await page.goto('/dev/drops?share=hotel-adlon-kempinski-berlin');
     await expect(page.getByRole('link', { name: /neuer Tab/ })).toHaveCount(0);
-    await expect(page.getByRole('link', { name: 'Alle Anbieter und Preisverlauf' })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Alle Seiten und Preise für diese Daten' }),
+    ).toBeVisible();
   });
 
   test('"Als Story teilen" makes a 1080 × 1920 PNG (download where sharing files is unsupported)', async ({

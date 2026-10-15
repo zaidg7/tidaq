@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { BellRing, CalendarRange, Check, TrendingDown } from 'lucide-react';
+import { CalendarRange, Check, TrendingDown } from 'lucide-react';
 import {
   DROP_SORTS,
   DROP_WHENS,
   dropStats,
   heroDrop,
   filterDrops,
+  formatDrop,
   sortDrops,
   localizedPath,
   updatedAtParts,
@@ -15,14 +16,12 @@ import {
   type Locale,
 } from '@tidaq/core';
 import { buttonClasses } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
 import { ChipLink } from '@/components/ui/Chip';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
 import type { HotelDropsWithPhoto, RadarStats } from '@/lib/data/drops';
 import { routes } from '@/lib/routes';
 import { DropCard } from './DropCard';
-import { DROP_ALERT_ID } from './alertId';
 import { DropHero } from './DropHero';
 
 /** Social bio links that land on the radar (`/tiktok` → `/preissturz?ref=tiktok`, C-080d). */
@@ -106,205 +105,270 @@ export function DropsView({
   const hero = !filtered && filters.sort === 'pct' ? heroDrop(shown) : null;
   const grid = hero ? shown.filter((g) => g !== hero) : shown;
 
+  const when = seen
+    ? seen.day === 'today'
+      ? t('today', { time: seen.time })
+      : seen.day === 'yesterday'
+        ? t('yesterday', { time: seen.time })
+        : `${seen.date}, ${seen.time}`
+    : null;
+
   return (
-    <div className="mx-auto w-full max-w-[1080px] px-5 pt-8 pb-16 md:px-7 lg:pt-14 lg:pb-[88px]">
-      <header className="max-w-[44em]">
-        {source && (
-          <p className="mb-4 inline-flex rounded-full bg-accent-soft px-4 py-2 text-[14px] font-semibold text-accent">
-            {t('welcome.title', { source: SOURCE_NAME[source] })}
+    <>
+      <div className="mx-auto w-full max-w-[1240px] px-[18px] pt-6 md:px-10 md:pt-12">
+        <header className="max-w-[760px]">
+          {source && (
+            <p className="mb-4 inline-flex rounded-full bg-accent-soft px-4 py-2 text-[14px] font-semibold text-accent">
+              {t('welcome.title', { source: SOURCE_NAME[source] })}
+            </p>
+          )}
+          <p className="inline-flex h-8 items-center gap-2 rounded-full border border-line bg-surface px-3 text-[13px] font-medium text-ink md:text-[14px]">
+            <span aria-hidden="true" className="live-dot size-2 rounded-full bg-good" />
+            {when ? t('asOf', { when }) : t('eyebrow')}
           </p>
-        )}
-        <p className="text-eyebrow flex items-center gap-2 text-accent">
-          <span aria-hidden="true" className="relative flex size-2">
-            <span className="absolute inline-flex size-full rounded-full bg-good opacity-60 motion-safe:animate-ping" />
-            <span className="relative inline-flex size-2 rounded-full bg-good" />
-          </span>
-          {t('eyebrow')}
-        </p>
-        <h1 className="text-h2 mt-2">{t('title')}</h1>
-        {/* Visitors from a bio link saw the idea in the video: straight to the drops. */}
-        <p className={cn('text-lead mt-3 text-muted-ink', source && 'sr-only')}>{t('intro')}</p>
-        {(seen || stats.hotels > 0) && (
-          <p className="text-meta mt-2 text-muted-ink">
-            {seen &&
-              t('asOf', {
-                when:
-                  seen.day === 'today'
-                    ? t('today', { time: seen.time })
-                    : seen.day === 'yesterday'
-                      ? t('yesterday', { time: seen.time })
-                      : `${seen.date}, ${seen.time}`,
-              })}
-            {seen && stats.hotels > 0 && ' · '}
-            {stats.hotels > 0 && (
-              <span className="font-semibold text-fg">
-                {t('statNights', { n: stats.nights })} {t('statHotels', { n: stats.hotels })}
-              </span>
+          <h1 className="mt-4 text-[36px] leading-[1.04] font-[650] tracking-[-0.04em] md:text-[60px] md:leading-[1.02]">
+            {t('title')}
+          </h1>
+          {/* Visitors from a bio link saw the idea in the video: straight to the drops. */}
+          <p
+            className={cn(
+              'mt-3 text-[17px] text-muted md:mt-4 md:text-[20px]',
+              source && 'sr-only',
             )}
+          >
+            {t('intro')}
+          </p>
+        </header>
+
+        {stats.hotels > 0 && (
+          <dl className="mt-7 grid grid-cols-3 gap-3 md:mt-10 md:flex md:gap-14">
+            <div>
+              <dt className="sr-only">{t('statNightsLabel')}</dt>
+              <dd className="text-[26px] leading-none font-bold tracking-[-0.03em] tabular-nums md:text-[36px]">
+                {stats.nights}
+              </dd>
+              <dd className="mt-1.5 text-[13px] text-muted md:text-[15px]">
+                {t('statNightsShort', { n: stats.nights })}
+              </dd>
+            </div>
+            <div>
+              <dt className="sr-only">{t('statHotelsLabel')}</dt>
+              <dd className="text-[26px] leading-none font-bold tracking-[-0.03em] tabular-nums md:text-[36px]">
+                {stats.hotels}
+              </dd>
+              <dd className="mt-1.5 text-[13px] text-muted md:text-[15px]">
+                {t('statHotelsShort', { n: stats.hotels })}
+              </dd>
+            </div>
+            <div>
+              <dt className="sr-only">{t('statMaxLabel')}</dt>
+              <dd className="text-[26px] leading-none font-bold tracking-[-0.03em] text-good tabular-nums md:text-[36px]">
+                {formatDrop(stats.biggest, locale)}
+              </dd>
+              <dd className="mt-1.5 text-[13px] text-muted md:text-[15px]">{t('statMaxShort')}</dd>
+            </div>
+          </dl>
+        )}
+        {/* The facts behind the numbers, for readers and tests: one sentence. */}
+        {stats.hotels > 0 && (
+          <p className="sr-only">
+            {t('statNights', { n: stats.nights })} {t('statHotels', { n: stats.hotels })}
           </p>
         )}
-      </header>
 
-      {videos}
+        {videos}
 
-      {hero && (
-        <div className="mt-6">
-          <DropHero group={hero} />
-        </div>
-      )}
-
-      {stats.hotels > 0 && (
-        <ul
-          aria-label={t('welcome.label')}
-          className="mt-5 grid gap-x-6 gap-y-1.5 text-[14px] font-semibold sm:flex sm:flex-wrap"
-        >
-          {checked && (
-            <li className="flex gap-2">
-              <Icon icon={Check} size={16} className="mt-0.5 shrink-0 text-good-ink" />
-              {t('proof', {
-                nights: checked.nights,
-                hotels: checked.hotels,
-                sites: checked.sites,
-              })}
-            </li>
-          )}
-          {(['fair', 'free'] as const).map((k) => (
-            <li key={k} className="flex gap-2">
-              <Icon icon={Check} size={16} className="mt-0.5 shrink-0 text-good-ink" />
-              {t(`welcome.${k}`)}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <p className="mt-4 flex flex-wrap gap-x-6">
-        {alert && (
-          <a
-            href={`#${DROP_ALERT_ID}`}
-            className="inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-accent underline-offset-4 hover:underline"
-          >
-            <Icon icon={BellRing} size={18} />
-            {t('alertCta')}
-          </a>
-        )}
-        <a
-          href={localizedPath(routes.dropsWeek, locale)}
-          className="inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-accent underline-offset-4 hover:underline"
-        >
-          <Icon icon={CalendarRange} size={18} />
-          {t('weekLink')}
-        </a>
-      </p>
-
-      {stats.hotels > 0 && (
-        <div className="mt-8 grid gap-3">
-          {cities.length > 1 && (
-            <nav aria-label={t('filterCity')}>
-              <ul className="flex flex-wrap gap-2">
-                <li>
-                  <ChipLink href={href({ city: null })} selected={!filters.city}>
-                    {t('allCities')}
-                  </ChipLink>
-                </li>
-                {cities.map(([slug, name]) => (
-                  <li key={slug}>
-                    <ChipLink href={href({ city: slug })} selected={filters.city === slug}>
-                      {name}
-                    </ChipLink>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          )}
-          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-            <nav aria-label={t('filterWhen')}>
-              <ul className="flex flex-wrap gap-2">
-                <li>
-                  <ChipLink href={href({ when: null })} selected={!filters.when}>
-                    {t('when.all')}
-                  </ChipLink>
-                </li>
-                {DROP_WHENS.map((w) => (
-                  <li key={w}>
-                    <ChipLink href={href({ when: w })} selected={filters.when === w}>
-                      {t(`when.${w}`)}
-                    </ChipLink>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-            <nav aria-label={t('sortLabel')}>
-              <ul className="flex flex-wrap gap-2">
-                {DROP_SORTS.map((s) => (
-                  <li key={s}>
-                    <ChipLink href={href({ sort: s })} selected={filters.sort === s}>
-                      {t(`sort.${s}`)}
-                    </ChipLink>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+        {hero && (
+          <div className="mt-9 md:mt-14">
+            <DropHero group={hero} />
           </div>
-        </div>
-      )}
+        )}
 
-      {shown.length > 0 ? (
-        grid.length > 0 && (
+        {stats.hotels > 0 && (
           <ul
-            aria-label={t('listLabel')}
-            className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            aria-label={t('welcome.label')}
+            className="mt-8 flex flex-col gap-2 border-y border-line py-4 text-[14px] text-ink-2 md:mt-12 md:flex-row md:flex-wrap md:gap-x-9 md:py-5 md:text-[15px]"
           >
-            {grid.map((g) => (
-              <li key={g.hotel.id}>
-                <DropCard group={g} />
+            {checked && (
+              <li className="flex gap-2">
+                <Icon icon={Check} size={16} className="mt-0.5 shrink-0 text-good" />
+                {t('proof', {
+                  nights: checked.nights,
+                  hotels: checked.hotels,
+                  sites: checked.sites,
+                })}
+              </li>
+            )}
+            {(['fair', 'free'] as const).map((k) => (
+              <li key={k} className="flex gap-2">
+                <Icon icon={Check} size={16} className="mt-0.5 shrink-0 text-good" />
+                {t(`welcome.${k}`)}
               </li>
             ))}
           </ul>
-        )
-      ) : (
-        <Card variant="float" radius="search" className="mt-10 max-w-[44em] lg:p-8">
-          <span className="grid size-12 place-items-center rounded-full bg-accent-soft text-accent">
-            <Icon icon={TrendingDown} size={24} />
-          </span>
-          <h2 className="text-h3 mt-4">{t('emptyTitle')}</h2>
-          <p className="mt-1 text-[15px] text-muted-ink">
-            {filtered ? t('emptyFiltered') : t('emptyText')}
-          </p>
-          <a
-            href={filtered ? base : localizedPath(routes.hotels, locale)}
-            className={cn(buttonClasses({ variant: 'ghost' }), 'mt-6')}
-          >
-            {filtered ? t('emptyReset') : t('emptyCta')}
-          </a>
-        </Card>
-      )}
+        )}
 
-      {alert && <div className="mt-14">{alert}</div>}
+        {stats.hotels > 0 && (
+          <div className="mt-8 flex flex-col gap-3 md:mt-12">
+            {cities.length > 1 && (
+              <nav aria-label={t('filterCity')} className="-mx-[18px] md:mx-0">
+                <ul className="snap-row flex gap-2 overflow-x-auto px-[18px] pb-1 md:flex-wrap md:overflow-visible md:px-0">
+                  <li className="shrink-0">
+                    <ChipLink href={href({ city: null })} selected={!filters.city}>
+                      {t('allCities')}
+                    </ChipLink>
+                  </li>
+                  {cities.map(([slug, name]) => (
+                    <li key={slug} className="shrink-0">
+                      <ChipLink href={href({ city: slug })} selected={filters.city === slug}>
+                        {name}
+                      </ChipLink>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )}
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <nav aria-label={t('filterWhen')} className="-mx-[18px] md:mx-0">
+                <ul className="snap-row flex gap-2 overflow-x-auto px-[18px] pb-1 md:px-0">
+                  <li className="shrink-0">
+                    <ChipLink href={href({ when: null })} selected={!filters.when}>
+                      {t('when.all')}
+                    </ChipLink>
+                  </li>
+                  {DROP_WHENS.map((w) => (
+                    <li key={w} className="shrink-0">
+                      <ChipLink href={href({ when: w })} selected={filters.when === w}>
+                        {t(`when.${w}`)}
+                      </ChipLink>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+              <nav aria-label={t('sortLabel')} className="-mx-[18px] md:mx-0">
+                <ul className="snap-row flex items-center gap-2 overflow-x-auto px-[18px] pb-1 md:px-0">
+                  <li aria-hidden="true" className="shrink-0 pr-1 text-[14px] text-muted">
+                    {t('sortLabel')}:
+                  </li>
+                  {DROP_SORTS.map((s) => (
+                    <li key={s} className="shrink-0">
+                      <ChipLink href={href({ sort: s })} selected={filters.sort === s}>
+                        {t(`sort.${s}`)}
+                      </ChipLink>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          </div>
+        )}
 
-      <section aria-labelledby="drops-how" className="mt-14 max-w-[44em]">
-        <h2 id="drops-how" className="text-h3">
-          {t('howTitle')}
-        </h2>
-        <ul className="mt-3 grid list-disc gap-1.5 pl-5 text-[15px] leading-relaxed marker:text-muted-ink">
-          {(['compare', 'threshold', 'weekend', 'confirm', 'check'] as const).map((k) => (
-            <li key={k}>{t(`how.${k}`)}</li>
-          ))}
-        </ul>
-        <p className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[15px]">
+        {shown.length > 0 ? (
+          grid.length > 0 && (
+            <ul
+              aria-label={t('listLabel')}
+              className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-x-6 gap-y-10 sm:grid-cols-2 md:mt-10 lg:grid-cols-3 lg:gap-x-7 lg:gap-y-14"
+            >
+              {grid.map((g) => (
+                <li key={g.hotel.id}>
+                  <DropCard group={g} />
+                </li>
+              ))}
+            </ul>
+          )
+        ) : (
+          <div className="mt-10 flex flex-col items-start gap-4 rounded-panel border border-line bg-surface p-6 md:p-10">
+            <span className="grid size-12 place-items-center rounded-full bg-good-soft text-good">
+              <Icon icon={TrendingDown} size={24} />
+            </span>
+            <div>
+              <h2 className="text-[22px] font-semibold tracking-[-0.02em] md:text-[26px]">
+                {t('emptyTitle')}
+              </h2>
+              <p className="mt-1.5 max-w-[40em] text-[15px] text-muted md:text-[16px]">
+                {filtered ? t('emptyFiltered') : t('emptyText')}
+              </p>
+            </div>
+            <a
+              href={filtered ? base : localizedPath(routes.hotels, locale)}
+              className={buttonClasses({ variant: 'secondary' })}
+            >
+              {filtered ? t('emptyReset') : t('emptyCta')}
+            </a>
+          </div>
+        )}
+
+        <p className="mt-12 md:mt-16">
           <a
-            href={localizedPath(routes.method, locale)}
-            className="font-semibold text-accent underline underline-offset-2 hover:no-underline"
+            href={localizedPath(routes.dropsWeek, locale)}
+            className="group flex items-center justify-between gap-4 rounded-panel bg-surface-accent px-5 py-5 md:px-8 md:py-7"
           >
-            {t('howLink')}
-          </a>
-          <a
-            href={localizedPath(routes.deals, locale)}
-            className="font-semibold text-accent underline underline-offset-2 hover:no-underline"
-          >
-            {t('dealsLink')}
+            <span>
+              <span className="flex items-center gap-2 text-[17px] font-semibold md:text-[20px]">
+                <Icon icon={CalendarRange} size={20} className="text-accent" />
+                {t('weekTitleShort')}
+              </span>
+              <span className="mt-0.5 block text-[14px] text-muted md:text-[15px]">
+                {t('weekLink')}
+              </span>
+            </span>
+            <span
+              aria-hidden="true"
+              className="grid size-11 shrink-0 place-items-center rounded-full bg-surface text-accent transition-transform group-hover:translate-x-0.5"
+            >
+              →
+            </span>
           </a>
         </p>
+      </div>
+
+      {alert && <div className="mt-14 md:mt-24">{alert}</div>}
+
+      <section
+        aria-labelledby="drops-how"
+        className="mx-auto w-full max-w-[1240px] px-[18px] pt-14 pb-16 md:px-10 md:pt-24 md:pb-24"
+      >
+        <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] md:gap-16">
+          <div>
+            <h2
+              id="drops-how"
+              className="text-[26px] leading-[1.12] font-[650] tracking-[-0.03em] md:text-[40px]"
+            >
+              {t('howTitle')}
+            </h2>
+            <p className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[15px]">
+              <a
+                href={localizedPath(routes.method, locale)}
+                className="font-semibold text-accent underline-offset-4 hover:underline"
+              >
+                {t('howLink')}
+              </a>
+              <a
+                href={localizedPath(routes.deals, locale)}
+                className="font-semibold text-accent underline-offset-4 hover:underline"
+              >
+                {t('dealsLink')}
+              </a>
+            </p>
+          </div>
+          <ol className="grid gap-px overflow-hidden rounded-card border border-line bg-line">
+            {(['compare', 'threshold', 'weekend', 'confirm', 'check'] as const).map((k, i) => (
+              <li
+                key={k}
+                className="flex gap-4 bg-surface px-5 py-4 text-[15px] md:px-6 md:text-[16px]"
+              >
+                <span
+                  aria-hidden="true"
+                  className="grid size-7 shrink-0 place-items-center rounded-full bg-surface-accent text-[13px] font-bold text-accent"
+                >
+                  {i + 1}
+                </span>
+                <span>{t(`how.${k}`)}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
-    </div>
+    </>
   );
 }
