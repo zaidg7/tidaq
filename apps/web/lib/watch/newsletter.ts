@@ -53,6 +53,7 @@ export async function requestNewsletter(
       confirm
         ? {
             preheader: t('confirmPreheader'),
+            eyebrow: t('eyebrow'),
             heading: t('confirmHeading'),
             paragraphs: [t('confirmText'), t('what'), t('confirmIgnore')],
             button: { label: t('confirmButton'), url: confirmUrl },
@@ -60,6 +61,7 @@ export async function requestNewsletter(
           }
         : {
             preheader: t('addedPreheader'),
+            eyebrow: t('eyebrow'),
             heading: t('addedHeading'),
             paragraphs: [t('addedText'), t('what')],
             button: { label: t('manageButton'), url: manageUrl },

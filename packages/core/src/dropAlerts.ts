@@ -53,14 +53,16 @@ const TEXT = {
         : `Preissturz: ${pct} im ${hotel} und ${more} ${more === 1 ? 'weiterer' : 'weitere'}`,
     preheader: (where: string) => `Neue Preisstürze in Fünf-Sterne-Hotels ${where}, Stand heute.`,
     heading: (where: string) => `Neue Preisstürze ${where}`,
+    eyebrow: 'Preissturz-Alarm',
     all: 'in allen Städten',
     in: (city: string) => `in ${city}`,
     hotels: 'in deinen Hotels',
     andHotels: ' und deinen Hotels',
     intro:
       'Diese Aufenthalte sind seit gestern deutlich billiger geworden, auf den niedrigsten Preis, den wir für sie gesehen haben. 2 Erwachsene, günstigste geprüfte Seite, Gesamtpreis.',
-    meta: (city: string, night: string, now: string, was: string, pct: string) =>
-      `${city} · ${night} · ${now} statt ${was} am Vortag (${pct})`,
+    // The drop itself is the card's badge (C-083).
+    meta: (city: string, night: string, now: string, was: string) =>
+      `${city} · ${night} · ${now} statt ${was} am Vortag`,
     usual: (u: string) => `, sonst um ${u}`,
     weekend: ' (Wochenende, 2 Nächte)',
     more: (n: number) => ` · ${n === 1 ? '1 weitere Nacht' : `${n} weitere Nächte`} günstiger`,
@@ -76,14 +78,15 @@ const TEXT = {
         : `Price drop: ${pct} at ${hotel} and ${more} more`,
     preheader: (where: string) => `New price drops at five-star hotels ${where}, as of today.`,
     heading: (where: string) => `New price drops ${where}`,
+    eyebrow: 'Price drop alert',
     all: 'in all cities',
     in: (city: string) => `in ${city}`,
     hotels: 'at your hotels',
     andHotels: ' and at your hotels',
     intro:
       "These stays got much cheaper since yesterday, to the lowest price we've seen for them. 2 adults, cheapest reviewed site, total price.",
-    meta: (city: string, night: string, now: string, was: string, pct: string) =>
-      `${city} · ${night} · ${now} instead of ${was} the day before (${pct})`,
+    meta: (city: string, night: string, now: string, was: string) =>
+      `${city} · ${night} · ${now} instead of ${was} the day before`,
     usual: (u: string) => `, usually around ${u}`,
     weekend: ' (weekend, 2 nights)',
     more: (n: number) => ` · ${n === 1 ? '1 more night' : `${n} more nights`} cheaper`,
@@ -123,19 +126,20 @@ export function dropAlertMail(d: {
     subject: t.subject(formatDrop(first.top.drop, d.locale), first.hotel.name, d.groups.length - 1),
     content: {
       preheader: t.preheader(where),
+      eyebrow: t.eyebrow,
       heading: t.heading(where),
       paragraphs: [t.intro],
       items: d.groups.map((g) => {
         const usual = usualCents(g.top);
         return {
-          title: `${formatDrop(g.top.drop, d.locale)} · ${g.hotel.name}`,
+          badge: formatDrop(g.top.drop, d.locale),
+          title: g.hotel.name,
           meta:
             t.meta(
               g.city.name[d.locale],
               dropDates(g.top, d.locale) + (g.top.nights > 1 ? t.weekend : ''),
               formatPrice(g.top.nowCents, d.locale),
               formatPrice(g.top.prevCents, d.locale),
-              formatDrop(g.top.drop, d.locale),
             ) +
             (usual !== null ? t.usual(formatPrice(usual, d.locale)) : '') +
             (g.more.length > 0 ? t.more(g.more.length) : ''),

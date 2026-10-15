@@ -686,6 +686,7 @@
     "unavailable": "Die Hotelliste ist gerade nicht erreichbar. Versuch es gleich noch einmal."
   },
   "watchMail": {
+    "eyebrow": "Preisalarm",
     "stay": "{hotel}, {dates}, {adults, plural, one {# Erwachsener} other {# Erwachsene}}",
     "confirmSubject": "Bitte bestätige deinen Preisalarm",
     "confirmPreheader": "Ein Klick fehlt noch, dann sagen wir dir Bescheid, wenn der Preis fällt.",
@@ -812,6 +813,7 @@
     "unavailable": "Die aktuellen Zahlen sind gerade nicht erreichbar. Lade die Seite später neu."
   },
   "newsletterMail": {
+    "eyebrow": "Deals der Woche",
     "confirmSubject": "Bitte bestätige deine Anmeldung für die Deals",
     "confirmPreheader": "Ein Klick fehlt noch, dann bekommst du jeden Montag die Deals.",
     "confirmHeading": "Bitte bestätige deine Anmeldung",
@@ -961,6 +963,7 @@
     "textHotel": "Wir schreiben dir, sobald {hotel} über Nacht deutlich günstiger wird, egal für welches Datum. Oder wähl eine ganze Stadt. Höchstens eine E-Mail am Tag. Kostenlos, abmelden mit einem Klick."
   },
   "dropAlertMail": {
+    "eyebrow": "Preissturz-Alarm",
     "confirmSubject": "Bitte bestätige deinen Preissturz-Alarm",
     "confirmPreheader": "Ein Klick fehlt noch, dann schreiben wir dir bei neuen Preisstürzen.",
     "confirmHeading": "Bitte bestätige deinen Preissturz-Alarm",

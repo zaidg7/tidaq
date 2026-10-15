@@ -116,9 +116,11 @@ describe('dropAlertMail', () => {
     expect(plain(subject)).toBe('Preissturz: −31 % im Baur au Lac und 1 weiterer');
     expect(content.heading).toBe('Neue Preisstürze in allen Städten');
     const [first, second] = content.items ?? [];
-    expect(plain(first?.title ?? '')).toBe('−31 % · Baur au Lac');
+    expect(first?.title).toBe('Baur au Lac');
+    expect(plain(first?.badge ?? '')).toBe('−31 %');
+    expect(content.eyebrow).toBe('Preissturz-Alarm');
     expect(plain(first?.meta ?? '')).toBe(
-      'Zürich · Di, 27. Okt. · 684 € statt 989 € am Vortag (−31 %), sonst um 1.029 € · 1 weitere Nacht günstiger',
+      'Zürich · Di, 27. Okt. · 684 € statt 989 € am Vortag, sonst um 1.029 € · 1 weitere Nacht günstiger',
     );
     expect(first?.url).toBe('https://tidaq.com/preissturz/baur-au-lac-zuerich/2026-10-27');
     // One earlier check only: no "usual" price.

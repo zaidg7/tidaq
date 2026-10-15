@@ -150,6 +150,7 @@ const TEXT = {
     linkTo: (who: string) => `Zu ${who}`,
     linkDirect: 'Zur Website des Hotels',
     partner: ' (Partnerlink)',
+    eyebrow: 'Preisalarm',
     preheader: (p: string) => `Jetzt ${p}. Höchstens eine E-Mail pro Tag.`,
     why: 'Du bekommst diese E-Mail, weil du auf tidaq.com einen Preisalarm für diesen Aufenthalt bestätigt hast. Höchstens eine E-Mail pro Tag und Alarm.',
     manage: (u: string) => `Alarme ändern oder abbestellen: ${u}`,
@@ -180,6 +181,7 @@ const TEXT = {
     linkTo: (who: string) => `Go to ${who}`,
     linkDirect: "Go to the hotel's website",
     partner: ' (partner link)',
+    eyebrow: 'Price alert',
     preheader: (p: string) => `Now ${p}. At most one email a day.`,
     why: "You're getting this email because you confirmed a price alert for this stay on tidaq.com. At most one email a day per alert.",
     manage: (u: string) => `Change or cancel alerts: ${u}`,
@@ -197,6 +199,7 @@ export function alertMail(d: AlertMailData): { subject: string; content: MailCon
     subject: t.subject[d.kind](d.hotel, now),
     content: {
       preheader: t.preheader(now),
+      eyebrow: t.eyebrow,
       heading: t.heading[d.kind],
       paragraphs: [
         t.now(stay, now),

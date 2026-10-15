@@ -27,6 +27,7 @@ export interface NewsletterDeal {
 const TEXT = {
   de: {
     subject: (n: number) => `${n} Luxushotels gerade deutlich günstiger`,
+    eyebrow: 'Deals der Woche',
     preheader: 'Die Aufenthalte, die diese Woche am weitesten unter ihrem 30-Tage-Schnitt liegen.',
     heading: 'Die besten Deals dieser Woche',
     intro:
@@ -40,6 +41,7 @@ const TEXT = {
   },
   en: {
     subject: (n: number) => `${n} luxury hotels clearly cheaper right now`,
+    eyebrow: 'Deals of the week',
     preheader: 'The stays furthest below their 30-day average this week.',
     heading: "This week's best deals",
     intro:
@@ -65,6 +67,7 @@ export function newsletterMail(d: {
     subject: t.subject(d.deals.length),
     content: {
       preheader: t.preheader,
+      eyebrow: t.eyebrow,
       heading: t.heading,
       paragraphs: [t.intro],
       items: d.deals.map((x) => ({
