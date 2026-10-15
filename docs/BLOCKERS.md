@@ -18,7 +18,7 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ## B-020 · Pick the new symbol (2 min)
 
-Status: OPEN · Opened: 2026-10-15 by CLOUD · Blocks: C-106 (navbar, browser icon, app icon)
+Status: DONE (15 Oct): Zaid chose **the `t` from the wordmark, black on white** (app icon, favicon, touch icon). · Opened: 2026-10-15 by CLOUD · Blocks: C-106 (navbar, browser icon, app icon)
 What I need: the number of the symbol you like. Open the design canvas → board **"Icon-Ideen v2"**: 1 t-Monogramm, 2 Tür, 3 Rezeptionsglocke, 4 Schlüsselanhänger, 5 Ort mit Stern. Each is shown big, as an app icon, as a 16-pixel browser icon and next to the `tidaq` wordmark.
 Steps for Zaid (≈ 2 min):
 
