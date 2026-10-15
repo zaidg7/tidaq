@@ -145,7 +145,13 @@
     "tableHide": "Hide table",
     "date": "Date",
     "price": "Best price",
-    "provider": "Provider"
+    "provider": "Provider",
+    "usual": "usual",
+    "usualLegend": "Usual: {low} to {high}",
+    "range": "Range",
+    "range14": "14 d",
+    "range30": "30 d",
+    "rangeAll": "All"
   },
   "verdict": {
     "near_low": "Close to the lowest price since {since}.",

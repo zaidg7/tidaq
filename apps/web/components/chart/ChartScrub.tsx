@@ -169,19 +169,19 @@ export function ChartScrub({ days, restIndex, labels }: Props) {
             {day.y !== null && (
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-surface bg-accent ring-1 ring-accent"
+                className="pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-surface bg-ink ring-1 ring-ink"
                 style={{ left: `${day.x * 100}%`, top: `${day.y * 100}%` }}
               />
             )}
             <div
               ref={chip}
               aria-hidden="true"
-              className="pointer-events-none absolute -top-9 flex h-8 items-center gap-2 rounded-full bg-ink-surface px-3 text-[12.5px] whitespace-nowrap text-white shadow-[0_4px_12px_-4px_rgba(34,28,59,0.28)]"
+              className="pointer-events-none absolute -top-9 flex h-8 items-center gap-2 rounded-full bg-night px-3.5 text-[13px] whitespace-nowrap text-white shadow-2"
               style={{ left: chipLeft }}
             >
               <span className="font-semibold text-ink-muted">{day.date}</span>
               {day.price ? (
-                <span className="text-[14px] font-extrabold tabular-nums">{day.price}</span>
+                <span className="text-[14px] font-bold tabular-nums">{day.price}</span>
               ) : (
                 <span className="font-semibold">{labels.noPrice}</span>
               )}

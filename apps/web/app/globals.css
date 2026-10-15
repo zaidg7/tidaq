@@ -629,3 +629,35 @@
     block-size: auto;
   }
 }
+
+/* Chart entrance (PREMIUM.md §6): the line draws in from the left, the area fades in, today's
+   dot pops once the line arrives. Off under reduced motion (global rule). */
+.chart-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: chart-draw 900ms var(--ease-out) both;
+}
+@keyframes chart-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+.chart-area {
+  animation: chart-fade 700ms var(--ease-out) 200ms both;
+}
+@keyframes chart-fade {
+  from {
+    opacity: 0;
+  }
+}
+.chart-today {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: chart-pop 300ms var(--ease-spring) 850ms both;
+}
+@keyframes chart-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}

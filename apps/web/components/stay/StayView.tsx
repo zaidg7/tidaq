@@ -21,6 +21,7 @@ import {
   type StayParams,
   type StayStatsResult,
 } from '@tidaq/core';
+import { ChartRanges } from '@/components/chart/ChartRanges';
 import { PriceChart } from '@/components/chart/PriceChart';
 import { buttonClasses } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -281,6 +282,7 @@ function TrackedPanel({
 }) {
   const t = useTranslations('stay');
   const tAdvice = useTranslations('advice');
+  const tc = useTranslations('chart');
   const stats = computeStayStats(series, today, params.checkIn);
   const collecting = stats.state === 'collecting';
   const facts = verdictFacts(series, today, stats.nowCents);
@@ -303,13 +305,44 @@ function TrackedPanel({
           updatedAt={updatedAt}
           now={now}
         />
-        <PriceChart
-          series={series}
-          from={addDays(today, -(STATS.windowDays - 1))}
-          to={today}
-          avgCents={collecting ? null : stats.avg30Cents}
-          providerByDay={providerByDay}
-        />
+        {collecting ? (
+          <PriceChart
+            series={series}
+            from={addDays(today, -(STATS.windowDays - 1))}
+            to={today}
+            providerByDay={providerByDay}
+          />
+        ) : (
+          <ChartRanges
+            label={tc('range')}
+            panels={(
+              [
+                ['14', 14, tc('range14')],
+                ['30', 30, tc('range30')],
+                ['all', STATS.windowDays, tc('rangeAll')],
+              ] as const
+            ).map(([value, days, label]) => ({
+              value,
+              label,
+              content: (
+                <PriceChart
+                  series={series}
+                  from={addDays(today, -(days - 1))}
+                  to={today}
+                  avgCents={stats.avg30Cents}
+                  providerByDay={providerByDay}
+                  todayTone={
+                    stats.state === 'near_low' || stats.state === 'good'
+                      ? 'good'
+                      : stats.state === 'high'
+                        ? 'high'
+                        : 'normal'
+                  }
+                />
+              ),
+            }))}
+          />
+        )}
       </div>
 
       {collecting ? (
