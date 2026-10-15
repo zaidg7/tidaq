@@ -4,6 +4,7 @@ import { useActionState, useId } from 'react';
 import { newsletterAction, type NewsletterFormState } from '@/app/[locale]/deals/newsletterAction';
 import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/Field';
+import { Turnstile } from '@/components/ui/Turnstile';
 
 export type NewsletterFormLabels = {
   email: string;
@@ -87,6 +88,7 @@ export function NewsletterForm({
           {labels.results[state.status]}
         </p>
       )}
+      <Turnstile locale={locale} />
       <Button type="submit" block loading={pending}>
         {labels.submit}
       </Button>

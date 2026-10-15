@@ -105,6 +105,7 @@ export function DealsView({ deals, city }: { deals: Deal[]; city: string | null 
                 invalid: t('newsletterResults.invalid'),
                 too_soon: t('newsletterResults.too_soon'),
                 rate_limited: t('newsletterResults.rate_limited'),
+                bot: t('newsletterResults.bot'),
                 error: t('newsletterResults.error'),
               },
             }}
