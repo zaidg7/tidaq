@@ -16,9 +16,28 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-020 · Pick the new symbol (2 min)
+
+Status: OPEN · Opened: 2026-10-15 by CLOUD · Blocks: C-106 (navbar, browser icon, app icon)
+What I need: the number of the symbol you like. Open the design canvas → board **"Icon-Ideen v2"**: 1 t-Monogramm, 2 Tür, 3 Rezeptionsglocke, 4 Schlüsselanhänger, 5 Ort mit Stern. Each is shown big, as an app icon, as a 16-pixel browser icon and next to the `tidaq` wordmark.
+Steps for Zaid (≈ 2 min):
+
+1. Open the canvas, scroll to the bottom board.
+2. Reply in the chat with a number (or "none, more like X").
+   Where to put the result: the chat. If you don't answer by the time C-106 starts, the session uses **1 t-Monogramm** (closest to the wordmark you liked) and you can still switch later; it's one file.
+
+## B-021 · Optional: ask LiteAPI whether we may show their hotel photos (3 min)
+
+Status: OPEN · Opened: 2026-10-15 by CLOUD · Blocks: nothing (C-104/C-105 work without it; this would add professional photos and galleries)
+What I need: a written yes/no from LiteAPI (Nuitee). Their hotel data has many professional photos per hotel. We may only show them with permission, because people book on other sites through our links.
+Steps for Zaid (≈ 3 min), as a reply in your existing B-012 support ticket:
+
+1. Paste: `One more question: may we display the hotel images from your content API (hotel details endpoint) on our price comparison pages, with credit, when the booking itself happens on other sites through affiliate links? If yes, are there conditions (caching, attribution, size)?`
+   Where to put the result: tell the session what they answered (chat or weekly issue).
+
 ## B-019 · Decision: which design direction (A Haussmann or B Clean Premium)
 
-Status: OPEN · Opened: 2026-10-15 by CLOUD · Blocks: the design overhaul (tasks get written once you pick)
+Status: DONE (15 Oct): **B**, with changes (Price Drops wording, thicker hero type, no 25-numbers section, no room photo, new icon). Plan: `docs/design/PREMIUM.md`. · Opened: 2026-10-15 by CLOUD · Blocks: the design overhaul (tasks get written once you pick)
 What I need: your pick, plus what you'd change. The mockups are on a private canvas (link in the chat from 15 Oct, also under claude.ai → Artifacts → "Tidaq design directions"): homepage on desktop and phone, and the price-drop page on the phone, for both directions, plus three browser-icon options.
 Steps for Zaid (≈ 10 min):
 

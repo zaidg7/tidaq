@@ -8,7 +8,7 @@ Read these before doing anything else, in this order:
 3. `docs/TASKS.md`: the backlog, your work queue
 4. `docs/BLOCKERS.md`: open questions for Zaid
 5. `docs/PLAN.md`: product, architecture, data model, methods (read the parts your task touches)
-6. `docs/DESIGN.md` and `docs/design/reference-homepage.html`: before any UI work
+6. `docs/design/PREMIUM.md` (Clean Premium, D-44) before any UI work; `docs/DESIGN.md` only for pages not yet rebuilt
 
 ## 1. Which session are you?
 
@@ -81,7 +81,7 @@ pnpm workspace. Node 22 LTS. If reality differs, update this map in your PR.
 
 - **TypeScript strict**, no `any` without a comment explaining why. Validate every external response with **Zod** before it touches the database.
 - **Tests:** unit tests (Vitest) for all logic in `packages/core` (stats, trust score, normalization, budget guard) with ≥ 90 % line coverage there; integration tests for the collector using recorded fixtures (never live API in CI); Playwright smoke tests for key pages (home, stay page, legal pages) in both locales.
-- **UI:** follow `docs/DESIGN.md` exactly. Compare against `docs/design/reference-homepage.html`. Test at 390 px and 1280 px. Real German copy, no lorem ipsum.
+- **UI:** follow `docs/design/PREMIUM.md` exactly (pages not yet rebuilt: `docs/DESIGN.md`). Test at 390 px and 1280 px. Real German copy, no lorem ipsum.
 - **Copy:** German first, informal "du", short sentences, no hype words ("revolutionär", "unschlagbar"). Every user-facing string goes through next-intl. Provide `en.json` at the same time.
 - **Money:** store integer cents in EUR. Format only at the edge with `Intl.NumberFormat` (`1.184 €` in DE).
 - **Dates:** store UTC timestamps; stay dates as `date` (no time). Hotel nights are check-in to check-out.

@@ -109,14 +109,39 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-031b                                                          | Alert emails: best trusted provider with its link                            | CLOUD | S             | C-031a                            | DONE           |
 | C-034                                                           | Provider pages and methodology page with live data                           | CLOUD | S             | C-032                             | DONE           |
 | C-034b                                                          | Link the stay table's trust score to the provider page                       | CLOUD | S             | C-034                             | DONE           |
+| **Phase 3b: Clean Premium overhaul** (weeks 42–48, spec `docs/design/PREMIUM.md`) | | | | | |
+| C-100 | Clean Premium spec, D-44, overhaul task list (`docs/design/PREMIUM.md`) | CLOUD | S | C-083 | DONE ([#98](https://github.com/zaidg7/tidaq/pull/98)) |
+| C-101 | Mockups v2 with Zaid's feedback + icon options (canvas) | CLOUD | S | C-100 | DONE |
+| C-102 | Foundations: tokens, Instrument Sans, type, spacing, motion, focus | CLOUD | M | C-100 | TODO |
+| C-103 | Primitives: Button, Chip, Badge, Field, Toast, Skeleton, Segmented, Accordion, Sheet | CLOUD | M | C-102 | TODO |
+| C-104 | Photos A: Commons sweep for every hotel, picks, focal points, AVIF/WebP + blur-up | CLOUD | M | C-102 | TODO |
+| C-105 | Photos B: city photos, fallback with "Stadtbild", every hotel shows a photo | CLOUD | S | C-104 | TODO |
+| C-106 | Shell: navbar, docked search pill, mobile menu, footer, symbol + icons, /kassen-check links | CLOUD | M | C-103, B-020 | TODO |
+| C-107 | Search 1: desktop search bar + destination panel | CLOUD | M | C-103, C-105 | TODO |
+| C-108 | Search 2: calendar engine with price tints, date + guests popovers | CLOUD | M | C-107 | TODO |
+| C-109 | Search 3: phone full-screen search flow | CLOUD | M | C-108 | TODO |
+| C-110 | Search 4: submit routing, loading states, loading.tsx skeletons | CLOUD | S | C-109 | TODO |
+| C-111 | Charts 1: price history redesign | CLOUD | M | C-102 | TODO |
+| C-112 | Charts 2: meter, story chart, site bars, calendar cells | CLOUD | M | C-111 | TODO |
+| C-113 | Drop page redesign (TikTok landing) | CLOUD | M | C-105, C-112 | TODO |
+| C-114 | Price Drops page + /price-drops routes + Deals as a view | CLOUD | M | C-113 | TODO |
+| C-115 | Home redesign | CLOUD | M | C-110, C-114 | TODO |
+| C-116 | Stay page redesign (a/b) | CLOUD | L | C-110, C-112 | TODO |
+| C-117 | Hotel page: gallery, lightbox, cheapest dates, calendar | CLOUD | M | C-112, C-104 | TODO |
+| C-118 | City page + all hotels | CLOUD | M | C-105 | TODO |
+| C-119 | Kassen-Check page (new), provider, method, ranking, legal pages | CLOUD | M | C-103 | TODO |
+| C-120 | Alert confirm/manage, status pages, weekly recap | CLOUD | M | C-103 | TODO |
+| C-121 | Emails, OG cards, default OG image re-skin | CLOUD | S | C-106 | TODO |
+| C-122 | Copy pass: glossary, text budgets, Price Alert URLs | CLOUD | S | C-115 | TODO |
+| C-123 | Polish + QA at 4 widths, Lighthouse, axe, WebKit, baselines, before/after sheet | CLOUD | M | C-102 … C-122 | TODO |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
-| L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034                      | TODO           |
+| L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034, C-123               | TODO           |
 | C-041a                                                          | Launch hardening: axe checks, security headers                               | CLOUD | S             | C-031a                            | DONE           |
 | C-041b                                                          | Launch hardening: Lighthouse, backups, rate limits, robots                   | CLOUD | S             | C-041a                            | DONE           |
 | C-041c                                                          | Launch hardening: daily email with the website's server errors               | CLOUD | S             | C-041b                            | DONE           |
 | C-042                                                           | Trust report page "150 Checkouts getestet"                                   | CLOUD | S             | L-033, C-034                      | TODO           |
 | C-043                                                           | Launch content pack for Zaid                                                 | CLOUD | S             | C-042                             | TODO           |
-| C-044                                                           | Go live on tidaq.com                                                         | CLOUD | S             | C-041c, L-040, Z-12               | TODO           |
+| C-044                                                           | Go live on tidaq.com                                                         | CLOUD | S             | C-041c, L-040, Z-12, C-123        | TODO           |
 | **Phase 5: Growth** (Dec 2026 – Mar 2027)                       |                                                                              |       |               |                                   |
 | C-050                                                           | Affiliate wiring per approved program                                        | CLOUD | S             | Z-11                              | TODO           |
 | C-051                                                           | Weekly content pack routine                                                  | CLOUD | S             | C-044                             | TODO           |
@@ -143,6 +168,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | Z-10  | Social handles                                                                                 | TODO               |
 | Z-11  | Affiliate program applications (after launch)                                                  | TODO               |
 | Z-12  | Read legal pages before launch                                                                 | DONE (B-014)       |
+| Z-13  | 10-min phone review of the new design on staging after C-115                                    | TODO               |
+| Z-14  | 10-min phone review after C-123 (before launch)                                                | TODO               |
 
 Tasks marked **parallel-safe** for LOCAL (no shared files with typical CLOUD work): C-003, C-007, C-015, C-027, C-029.
 
@@ -919,6 +946,22 @@ In the stay page's provider table, make the trust score (or the provider name in
 **C-034b notes (DONE):** The Preistreue score in each provider row links to `/anbieter/[slug]` (core `StayOffer.slug`; link sits above the phone row link with `z-[2]`, screen readers hear "…, Preistreue von Booking.com im Detail"). So these links never 404, every reviewed provider now has a page; the ones without grid prices and tests are `noindex`, not in the sitemap and not listed on /methodik (core `isProviderIndexable`, renamed from `hasProviderPage`).
 
 ---
+
+## Phase 3b: Clean Premium overhaul
+
+The full spec, frame by frame, is `docs/design/PREMIUM.md` (§10 pages, §11 components, §14 order). Every task below is built and reviewed against it and its quality bar (§13). Production keeps the old build until launch (D-38); each PR ships to staging.
+
+### C-100 · Spec and plan (Owner CLOUD · S · DONE, [#98](https://github.com/zaidg7/tidaq/pull/98))
+
+Zaid picked direction B "Clean Premium" (canvas "Tidaq design directions", 15 Oct) and asked for a step-by-step plan where every frame, photo, animation and chart is thought through. `docs/design/PREMIUM.md`, decision D-44, this phase.
+
+### C-101 · Mockups v2 (Owner CLOUD · S · DONE)
+
+Canvas boards "B · Clean Premium" updated with Zaid's feedback: "Price Drops" wording, readable heavy hero type, "Beliebte Ziele" instead of the 25-numbers section and the how-it-works cards, dark Price Alert section with alert previews instead of the room photo, wordmark only. Board "Icon-Ideen v2": five symbols (t-Monogramm, Tür, Rezeptionsglocke, Schlüsselanhänger, Ort mit Stern) → B-020.
+
+### C-102 … C-123
+
+Scope, order and dependencies: PREMIUM.md §14. Acceptance for each: the page/component matches its §10/§11 entry, all its states exist on a `/dev/*` page, §13 passes, before/after screenshots in the PR. Notes go here when a task is done.
 
 ## Phase 4: Launch
 
