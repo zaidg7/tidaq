@@ -40,10 +40,11 @@ Steps for Zaid (≈ 2 min):
 2. Reply in the chat with a number (or "none, more like X").
    Where to put the result: the chat. If you don't answer by the time C-106 starts, the session uses **1 t-Monogramm** (closest to the wordmark you liked) and you can still switch later; it's one file.
 
-## B-021 · Optional: ask LiteAPI whether we may show their hotel photos (3 min)
+## B-021 · Recommended: ask LiteAPI whether we may show their hotel photos (3 min)
 
-Status: OPEN · Opened: 2026-10-15 by CLOUD · Blocks: nothing (C-104/C-105 work without it; this would add professional photos and galleries)
+Status: OPEN · Opened: 2026-10-15 by CLOUD · Updated: 15 Oct, evening · Blocks: own photos for the last 17 hotels, galleries (C-117b)
 What I need: a written yes/no from LiteAPI (Nuitee). Their hotel data has many professional photos per hotel. We may only show them with permission, because people book on other sites through our links.
+Why it matters now: you want every hotel to have its own picture. 66 of 83 hotels now have a free, licensed photo (Wikimedia Commons, Flickr). For the other 17, no free photo exists anywhere: Bulgari Hotel Milano, Bulgari Resort Dubai, Capella Bangkok, Cheval Blanc Randheli, Four Seasons Abu Dhabi, Four Seasons Resort Dubai, Mandarin Oriental Bosphorus, Mandarin Oriental Jumeira, Raffles Sentosa, Rosewood Abu Dhabi, The Abu Dhabi EDITION, The Ivens, The Ritz-Carlton Maldives, The Shanghai EDITION, The Siam, St. Regis Saadiyat, Waldorf Astoria Maldives. Until then they show the city's photo, labelled "Stadtbild". One "yes" from LiteAPI fixes all 17 at once (and gives every hotel a gallery).
 Steps for Zaid (≈ 3 min), as a reply in your existing B-012 support ticket:
 
 1. Paste: `One more question: may we display the hotel images from your content API (hotel details endpoint) on our price comparison pages, with credit, when the booking itself happens on other sites through affiliate links? If yes, are there conditions (caching, attribution, size)?`
