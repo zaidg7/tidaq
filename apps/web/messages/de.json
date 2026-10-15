@@ -973,7 +973,7 @@
       "threshold": "Er muss um mindestens 15 % und 50 € gefallen sein und unter jedem Preis liegen, den wir für diesen Aufenthalt in den 14 Tagen davor gesehen haben.",
       "trip": "Alle Nächte müssen auf derselben Buchungsseite frei sein, so wie du sie buchen würdest. Einzelne günstige Nächte zeigen wir nicht: Dafür fliegt niemand los.",
       "confirm": "Sehr große Drops zeigen wir nur, wenn eine zweite Seite den Preis bestätigt.",
-      "check": "Preise ändern sich oft mehrmals am Tag. Prüf den Preis auf der Buchungsseite, bevor du buchst."
+      "check": "Preise ändern sich oft mehrmals am Tag. Deshalb prüfen wir jeden Price Drop alle 30 Minuten noch einmal auf seiner Buchungsseite und nehmen ihn heraus, sobald er dort nicht mehr gilt."
     },
     "howLink": "Mehr zur Methodik",
     "dealsLink": "Lieber Aufenthalte unter ihrem 30-Tage-Schnitt? Zu den Deals",
@@ -1018,7 +1018,7 @@
     "eyebrow": "Price Drop · {city}",
     "atSite": "bei {provider}",
     "atDirect": "direkt beim Hotel",
-    "seen": "Gesehen {when} {site}",
+    "seen": "Geprüft {when} {site}",
     "ctaStay": "Alle Anbieter und Preisverlauf",
     "shareTitle": "Teilen",
     "shareLink": "Link teilen",
@@ -1049,7 +1049,7 @@
     "chipAdults": "2 Erwachsene",
     "chipSince": "Price Drop seit gestern",
     "insteadYesterday": "statt {price} gestern",
-    "seenShort": "Gesehen {when} {site}.",
+    "seenShort": "Geprüft {when} {site}.",
     "ctaGo": "Bei {provider} ansehen",
     "ctaGoDirect": "Auf der Hotelseite ansehen",
     "partnerCheck": "Partnerlink. Prüf den Preis vor dem Buchen, er ändert sich oft.",

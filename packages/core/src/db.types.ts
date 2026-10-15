@@ -180,6 +180,47 @@ export type Database = {
           },
         ]
       }
+      drop_checks: {
+        Row: {
+          best_cents: number | null
+          cents: number | null
+          check_out: string
+          checked_at: string
+          hotel_id: number
+          live: boolean
+          night: string
+          provider_slug: string
+        }
+        Insert: {
+          best_cents?: number | null
+          cents?: number | null
+          check_out: string
+          checked_at?: string
+          hotel_id: number
+          live: boolean
+          night: string
+          provider_slug: string
+        }
+        Update: {
+          best_cents?: number | null
+          cents?: number | null
+          check_out?: string
+          checked_at?: string
+          hotel_id?: number
+          live?: boolean
+          night?: string
+          provider_slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drop_checks_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           at: string
@@ -1058,6 +1099,17 @@ export type Database = {
       }
       collector_ingest: { Args: { payload: Json }; Returns: Json }
       newsletter_off: { Args: { p_token: string }; Returns: boolean }
+      drop_check_jobs: {
+        Args: { p_limit: number; p_stale_minutes: number; p_today: string }
+        Returns: {
+          check_out: string
+          hotel_id: number
+          night: string
+          now_cents: number
+          provider_slug: string
+          xotelo_key: string
+        }[]
+      }
       drop_alert_off: { Args: { p_token: string }; Returns: boolean }
       drop_alert_request: {
         Args: { p_consent_text: string; p_email: string; p_locale: string; p_city: string | null }

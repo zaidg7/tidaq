@@ -240,7 +240,7 @@ test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
     await expect(card.getByText('Price Drop seit gestern')).toBeVisible();
     await expect(card).toContainText('3.420 €');
     await expect(card).toContainText('statt 4.945 € gestern');
-    await expect(card).toContainText(/Gesehen heute, \d\d:\d\d bei Booking\.com\./);
+    await expect(card).toContainText(/Geprüft heute, \d\d:\d\d bei Booking\.com\./);
     await expect(
       main.getByRole('link', { name: 'Alle Seiten und Preise für diese Daten' }),
     ).toHaveAttribute('href', STAY('baur-au-lac-zuerich'));

@@ -971,7 +971,7 @@
       "threshold": "It must have fallen by at least 15 % and 50 € and be below every price we saw for that stay in the 14 days before.",
       "trip": "Every night has to be available on the same booking site, the way you would book it. We don't show single cheap nights: nobody travels for those.",
       "confirm": "Very large drops only show when a second site confirms the price.",
-      "check": "Prices often change several times a day. Check the price on the booking site before you book."
+      "check": "Prices often change several times a day. That’s why we check every Price Drop again on its booking site every 30 minutes and take it down as soon as it no longer holds there."
     },
     "howLink": "More on our method",
     "dealsLink": "Prefer stays below their 30-day average? See the deals",
@@ -1016,7 +1016,7 @@
     "eyebrow": "Price Drop · {city}",
     "atSite": "on {provider}",
     "atDirect": "on the hotel's own site",
-    "seen": "Seen {when} {site}",
+    "seen": "Checked {when} {site}",
     "ctaStay": "All sites and price history",
     "shareTitle": "Share",
     "shareLink": "Share link",
@@ -1047,7 +1047,7 @@
     "chipAdults": "2 adults",
     "chipSince": "Price Drop since yesterday",
     "insteadYesterday": "instead of {price} yesterday",
-    "seenShort": "Seen {when} {site}.",
+    "seenShort": "Checked {when} {site}.",
     "ctaGo": "View on {provider}",
     "ctaGoDirect": "View on the hotel's site",
     "partnerCheck": "Partner link. Check the price before you book, it changes often.",
