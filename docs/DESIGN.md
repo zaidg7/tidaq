@@ -1,5 +1,7 @@
 # Tidaq design system: Soft Modern
 
+> **Being replaced (D-44, 15 Oct 2026):** the new design is **Clean Premium**, spec `docs/design/PREMIUM.md`. Pages switch over task by task (C-102 … C-123); a page that has been rebuilt follows PREMIUM.md, everything else still follows this file.
+
 Chosen by Zaid from six full-page directions (D-20). Visual reference: `docs/design/reference-homepage.html` (open it in a browser; it is the Soft Modern homepage with example data). Build to this spec; when the reference and this file disagree, this file wins.
 
 **Craft spec:** `docs/design/CRAFT.md` (C-006b) sets the exact sizes, states, motion and wording every UI PR is built and reviewed against. Where it changed this file, the line below is marked **Δ CRAFT**. If the two ever disagree, CRAFT.md wins.
