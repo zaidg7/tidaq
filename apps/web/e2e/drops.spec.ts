@@ -298,23 +298,12 @@ test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
     ).toBeVisible();
   });
 
-  test('"Als Story teilen" makes a 1080 × 1920 PNG (download where sharing files is unsupported)', async ({
+  test('the public drop page has no story button (admin creator kit only, C-130)', async ({
     page,
   }) => {
     await page.goto('/dev/drops?share');
-    const download = page.waitForEvent('download');
-    await page.getByRole('button', { name: 'Als Story teilen' }).click();
-    const file = await download;
-    expect(file.suggestedFilename()).toMatch(
-      /^tidaq-baur-au-lac-zuerich-\d{4}-\d{2}-\d{2}--\d{4}-\d{2}-\d{2}\.png$/,
-    );
-    const stream = await file.createReadStream();
-    const chunks: Buffer[] = [];
-    for await (const c of stream) chunks.push(c as Buffer);
-    const png = Buffer.concat(chunks);
-    expect(png.subarray(1, 4).toString()).toBe('PNG');
-    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1080, 1920]);
-    await expect(page.getByRole('status')).toHaveText('Bild gespeichert');
+    await expect(page.getByRole('button', { name: 'Link teilen' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Als Story teilen' })).toHaveCount(0);
   });
 
   test('"Link teilen" copies the drop page link', async ({ page, context }) => {

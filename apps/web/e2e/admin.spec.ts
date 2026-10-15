@@ -93,7 +93,7 @@ test.describe('dashboard preview (made-up data)', () => {
         has: page.getByRole('heading', { level: 2, name: 'Einzelnächte' }),
       })
       .last();
-    await expect(nights.getByText('3.912 von 4.200 Nächten heute')).toBeVisible();
+    await expect(nights.getByText('3.912 von 9.450 Nächten heute')).toBeVisible();
     const table = nights.getByRole('table');
     await expect(table.getByRole('row')).toHaveCount(3);
     // Hotels shown: 309 of 418 within 3 % is under the 75 % target, so it's marked; the share

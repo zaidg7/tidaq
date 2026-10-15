@@ -144,6 +144,12 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-127 | Night window 120 → 270 days so June/July show up in the Price Drops month filter (D-42 change) | CLOUD | S | B-022 | DONE (NIGHT_WINDOW_DAYS 270, NIGHT_BATCH 40; first full July data the day after the production collector deploy) |
 | C-128 | Deals page: city pills → the one-button Filter pattern of Price Drops (D-48), once deals exist (14 days of history, ~28 Oct) | CLOUD | S | C-125 | TODO |
 | C-129 | Own photos for the last 17 hotels from LiteAPI images, if allowed (list in B-021) | CLOUD | S | B-021 | BLOCKED (B-021) |
+| C-130 | Desktop review fixes (Zaid, 15 Oct): no public "Als Story teilen", hero hairline + readable text, search panels open upward, laptop hero fits the bar | CLOUD | S | – | IN PROGRESS |
+| C-131 | Hotels page: per region a carousel of 3 cards with arrow buttons (one card per click); names as "Hotel, Stadt" unless the name has the city | CLOUD | S | – | TODO |
+| C-132 | Hotel page: a price chart, a clear "pick dates → price history" flow, own dates that work at hotels with unreliable nights (Rosewood München) | CLOUD | M | – | TODO |
+| C-133 | Partner links open the hotel with dates filled in on Agoda, Trip.com, Expedia & co. (Booking.com already does) | CLOUD | S | – | TODO |
+| C-134 | Cities page: premium pass (bigger photos, more feel, same data) | CLOUD | S | – | TODO |
+| C-135 | Children in the guest picker: needs prices per child age (LiteAPI occupancies, D-43); until then adults only | CLOUD | S | C-075 | TODO |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034, C-123               | TODO           |
 | C-041a                                                          | Launch hardening: axe checks, security headers                               | CLOUD | S             | C-031a                            | DONE           |

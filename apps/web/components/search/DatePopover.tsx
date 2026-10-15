@@ -22,6 +22,7 @@ import { Chip } from '@/components/ui/Chip';
 import { Segmented } from '@/components/ui/Segmented';
 import { cn } from '@/lib/cn';
 import type { HotelNights } from './types';
+import { usePanelSide } from './usePanelSide';
 
 export type DatePopoverLabels = RangeCalendarLabels & {
   title: string;
@@ -133,6 +134,7 @@ export function DatePopover({
         ? labels.chooseOut
         : labels.chooseIn;
 
+  const side = usePanelSide<HTMLDivElement>(true);
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key !== 'Escape') return;
     e.preventDefault();
@@ -142,11 +144,13 @@ export function DatePopover({
 
   return (
     <div
+      ref={side.ref}
       id={id}
       role="dialog"
       aria-label={labels.title}
       onKeyDown={onKeyDown}
-      className="search-panel absolute top-[calc(100%+12px)] left-1/2 z-30 w-[760px] max-w-[calc(100vw-32px)] -translate-x-1/2 rounded-panel border border-line bg-surface p-6 shadow-3"
+      data-side={side.up ? 'up' : 'down'}
+      className="search-panel absolute top-[calc(100%+12px)] data-[side=up]:top-auto data-[side=up]:bottom-[calc(100%+12px)] left-1/2 z-30 w-[760px] max-w-[calc(100vw-32px)] -translate-x-1/2 rounded-panel border border-line bg-surface p-6 shadow-3"
     >
       <Segmented
         label={labels.tabs}

@@ -212,7 +212,7 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
 
   test('dates beyond the night grid say how far ahead we collect', async ({ page }) => {
     await page.goto('/dev/stay/untracked');
-    await expect(page.getByText(/die Preise jeder Nacht für die nächsten 120 Tage/)).toBeVisible();
+    await expect(page.getByText(/die Preise jeder Nacht für die nächsten 270 Tage/)).toBeVisible();
     await page.goto('/en/dev/stay/untracked-guests');
     await expect(
       page.getByRole('heading', { level: 2, name: 'No history for 3 people yet' }),
