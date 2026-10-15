@@ -4,22 +4,26 @@ import {
   cityPath,
   groupByRegion,
   hotelPath,
+  hotelWithCity,
   localizedPath,
   type Locale,
 } from '@tidaq/core';
 import { HotelPhotoCard } from '@/components/hotel/HotelPhotoCard';
 import { PageHead } from '@/components/shell/PageHead';
+import { Carousel } from '@/components/ui/Carousel';
 import type { DirectoryCity } from '@/lib/data/city';
 import { routes } from '@/lib/routes';
 
 /**
- * `/hotels` (C-024, mockup B language): every hotel we track as a photo card, by region, then
- * city, then name (`/ranking`). The regions are jump links at the top; each city is a row with its
- * name (→ city page) and its hotels (→ hotel page).
+ * `/hotels` (C-024, mockup B language): every hotel we track as a photo card, by region. The
+ * regions are jump links at the top; each region is one carousel of its hotels (three at a time
+ * on desktop, C-131), city by city, each named "Hotel, Stadt" unless the name says the city. The
+ * region's cities link to their city pages above the carousel.
  */
 export function HotelDirectory({ cities }: { cities: DirectoryCity[] }) {
   const t = useTranslations('hotels');
   const locale = useLocale() as Locale;
+  const other: Locale = locale === 'de' ? 'en' : 'de';
   const hotelCount = cities.reduce((n, c) => n + c.hotels.length, 0);
   const groups = groupByRegion(
     cities,
@@ -62,41 +66,43 @@ export function HotelDirectory({ cities }: { cities: DirectoryCity[] }) {
           >
             {t(`regions.${g.region}`)}
           </h2>
-          <ul className="mt-6 flex flex-col gap-10 md:mt-8 md:gap-12">
+          <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5 md:mt-5">
             {g.items.map((c) => (
               <li key={c.slug}>
-                <div className="mb-3.5 flex items-baseline justify-between gap-3 border-b border-line pb-2.5 md:mb-5">
-                  <a
-                    href={localizedPath(cityPath(c.slug), locale)}
-                    className="text-[20px] font-semibold tracking-[-0.02em] underline-offset-4 hover:underline md:text-[22px]"
-                    aria-label={t('cityLabel', {
-                      where: cityIn(c.slug, c.name[locale], locale),
-                      n: c.hotels.length,
-                    })}
-                  >
-                    {c.name[locale]}
-                  </a>
-                  <span className="text-[14px] text-muted">
-                    {t('cityCount', { n: c.hotels.length })}
-                  </span>
-                </div>
-                <ul className="grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-3 md:gap-x-6">
-                  {c.hotels.map((h) => (
-                    <li key={h.slug}>
-                      <HotelPhotoCard
-                        slug={h.slug}
-                        name={h.name}
-                        citySlug={c.slug}
-                        href={localizedPath(hotelPath(h.slug), locale)}
-                        sizes="(min-width: 1240px) 390px, (min-width: 768px) 33vw, 50vw"
-                        className="[&_h3]:text-[15px] md:[&_h3]:text-[17px]"
-                      />
-                    </li>
-                  ))}
-                </ul>
+                <a
+                  href={localizedPath(cityPath(c.slug), locale)}
+                  className="inline-flex min-h-11 items-baseline gap-1.5 text-[16px] font-semibold text-ink-2 underline-offset-4 hover:text-ink hover:underline md:min-h-0"
+                  aria-label={t('cityLabel', {
+                    where: cityIn(c.slug, c.name[locale], locale),
+                    n: c.hotels.length,
+                  })}
+                >
+                  {c.name[locale]}
+                  <span className="text-[14px] font-normal text-muted">{c.hotels.length}</span>
+                </a>
               </li>
             ))}
           </ul>
+          <Carousel
+            label={t('regionHotels', { region: t(`regions.${g.region}`) })}
+            prevLabel={t('prev')}
+            nextLabel={t('next')}
+            className="mt-5 md:mt-7"
+          >
+            {g.items.flatMap((c) =>
+              c.hotels.map((h) => (
+                <HotelPhotoCard
+                  key={h.slug}
+                  slug={h.slug}
+                  name={hotelWithCity(h.name, [c.name[locale], c.name[other]])}
+                  citySlug={c.slug}
+                  href={localizedPath(hotelPath(h.slug), locale)}
+                  sizes="(min-width: 1240px) 390px, (min-width: 768px) 33vw, 78vw"
+                  className="[&_h3]:text-[16px] md:[&_h3]:text-[18px]"
+                />
+              )),
+            )}
+          </Carousel>
         </section>
       ))}
     </div>

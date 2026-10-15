@@ -30,6 +30,7 @@ const CITIES: DirectoryCity[] = [
     hotels: [
       { slug: 'hotel-adlon-kempinski-berlin', name: 'Hotel Adlon Kempinski' },
       { slug: 'the-ritz-carlton-berlin', name: 'The Ritz-Carlton Berlin' },
+      { slug: 'waldorf-astoria-berlin', name: 'Waldorf Astoria Berlin' },
     ],
   },
   {

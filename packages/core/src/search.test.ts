@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { foldText, highlightRange, matchCities, matchesCity, matchHotels } from './search';
+import {
+  foldText,
+  highlightRange,
+  hotelWithCity,
+  matchCities,
+  matchesCity,
+  matchHotels,
+} from './search';
 
 const hotels = [
   { slug: 'baur-au-lac', name: 'Baur au Lac', city: 'Zürich' },
@@ -104,5 +111,28 @@ describe('highlightRange', () => {
   it('returns null without a match or query', () => {
     expect(highlightRange('Berlin', 'xyz')).toBeNull();
     expect(highlightRange('Berlin', '  ')).toBeNull();
+  });
+});
+
+describe('hotelWithCity', () => {
+  it('adds the city when the name lacks it', () => {
+    expect(hotelWithCity('Hotel Eden', ['Rom', 'Rome'])).toBe('Hotel Eden, Rom');
+    expect(hotelWithCity('Baur au Lac', ['Zürich', 'Zurich'])).toBe('Baur au Lac, Zürich');
+  });
+  it('keeps the name when it has the city in any language, accents ignored', () => {
+    expect(hotelWithCity('Rosewood Munich', ['München', 'Munich'])).toBe('Rosewood Munich');
+    expect(hotelWithCity('Hotel Adlon Kempinski Berlin', ['Berlin', 'Berlin'])).toBe(
+      'Hotel Adlon Kempinski Berlin',
+    );
+    expect(hotelWithCity('The Dolder Grand Zuerich', ['Zürich', 'Zurich'])).toBe(
+      'The Dolder Grand Zuerich',
+    );
+    expect(hotelWithCity('Mandarin Oriental, Hong Kong', ['Hongkong', 'Hong Kong'])).toBe(
+      'Mandarin Oriental, Hong Kong',
+    );
+  });
+  it('matches whole words only and copes with no city', () => {
+    expect(hotelWithCity('Romantik Hotel', ['Rom'])).toBe('Romantik Hotel, Rom');
+    expect(hotelWithCity('Hotel X', [])).toBe('Hotel X');
   });
 });

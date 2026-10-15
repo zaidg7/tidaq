@@ -134,3 +134,20 @@ export function highlightRange(text: string, query: string): [number, number] | 
   }
   return null;
 }
+
+/**
+ * "Hotel Adlon Kempinski, Berlin" (C-131): a hotel name with its city, unless the name already
+ * says it in any of the city's names ("Rosewood Munich" stays, "Hotel Eden" → "Hotel Eden, Rom").
+ * `cityNames` holds the page-language name first; it is the one appended.
+ */
+export function hotelWithCity(name: string, cityNames: readonly string[]): string {
+  const [shown] = cityNames;
+  if (!shown) return name;
+  const words = ` ${foldText(name)} `;
+  // "Zürich" is also "Zuerich" in hotel names.
+  const umlauts = (c: string) => c.replace(/ä/gi, 'ae').replace(/ö/gi, 'oe').replace(/ü/gi, 'ue');
+  const named = cityNames.some((c) =>
+    [foldText(c), foldText(umlauts(c))].some((city) => city !== '' && words.includes(` ${city} `)),
+  );
+  return named ? name : `${name}, ${shown}`;
+}

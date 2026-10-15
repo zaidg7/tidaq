@@ -67,17 +67,34 @@ test.describe('all hotels (C-024, sample data on /dev/hotels)', () => {
     ]);
     const germany = page.getByRole('region', { name: 'Deutschland' });
     await expect(germany.getByRole('link', { name: /^\d Hotels? in/ })).toHaveText([
-      'Berlin',
-      'München',
+      /^Berlin/,
+      /^München/,
     ]);
     await expect(page.getByRole('link', { name: '1 Hotel auf den Malediven' })).toHaveAttribute(
       'href',
       '/stadt/malediven',
     );
-    await expect(germany.getByRole('link', { name: 'Hotel Adlon Kempinski' })).toHaveAttribute(
-      'href',
-      '/hotel/hotel-adlon-kempinski-berlin',
-    );
+    // C-131: names carry the city unless they already say it.
+    await expect(
+      germany.getByRole('link', { name: 'Hotel Adlon Kempinski, Berlin' }),
+    ).toHaveAttribute('href', '/hotel/hotel-adlon-kempinski-berlin');
+    await expect(germany.getByRole('link', { name: 'Mandarin Oriental Munich' })).toBeVisible();
+  });
+
+  test('each region is a carousel: three cards, arrows move one card (C-131)', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/dev/hotels');
+    const germany = page.getByRole('region', { name: 'Deutschland' });
+    const list = germany.getByRole('list', { name: 'Hotels in Deutschland' });
+    await expect(list.getByRole('listitem')).toHaveCount(4);
+    await expect(germany.getByRole('button', { name: 'Zurück' })).toHaveCount(0);
+    await germany.getByRole('button', { name: 'Weiter' }).click();
+    await expect(germany.getByRole('button', { name: 'Zurück' })).toBeVisible();
+    // One card further is the end: the next arrow goes away.
+    await expect(germany.getByRole('button', { name: 'Weiter' })).toHaveCount(0);
+    await expect.poll(() => list.evaluate((e) => e.scrollLeft)).toBeGreaterThan(300);
+    // Europe has one hotel: no arrows at all.
+    await expect(page.getByRole('region', { name: 'Europa' }).getByRole('button')).toHaveCount(0);
   });
 
   test('English names and region order', async ({ page }) => {
