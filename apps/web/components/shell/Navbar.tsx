@@ -29,7 +29,7 @@ export async function Navbar({ locale }: { locale: Locale }) {
   const alertHref = `${localizedPath(routes.drops, locale)}#${DROP_ALERT_ID}`;
 
   return (
-    <header className="site-header sticky top-0 z-40 border-b">
+    <header className="site-header sticky top-0 z-40">
       <noscript>
         {/* Without JavaScript nothing marks the scroll: keep the frosted, ink version. */}
         <style>{`.site-header{--nav-fg:#15131c!important;--nav-dim:#5b5866!important;--nav-pill-bg:#fff!important;--nav-pill-border:#d9d5e2!important;--nav-pill-fg:#15131c!important;background-color:rgba(250,249,247,.92)!important}`}</style>

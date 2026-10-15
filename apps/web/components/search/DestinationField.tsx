@@ -7,6 +7,7 @@ import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
 import type { PhotoSize } from '@/lib/hotelPhotos';
 import type { Destination, SearchCity, SearchDestHotel, SearchIndex } from './types';
+import { usePanelSide } from './usePanelSide';
 
 export type DestinationLabels = {
   placeholder: string;
@@ -233,6 +234,7 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
   };
 
   const shown = (inline || open) && (search !== '' || sections.length > 0);
+  const side = usePanelSide<HTMLDivElement>(shown && !inline);
   const total = search ? options.length : -1;
   const status =
     shown && total >= 0
@@ -331,12 +333,14 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
         {status}
       </span>
       <div
+        ref={side.ref}
         // Nothing to show before typing (no catalog): no empty panel.
         hidden={!shown}
+        data-side={inline ? undefined : side.up ? 'up' : 'down'}
         className={cn(
           inline
             ? 'mt-4'
-            : 'search-panel absolute top-[calc(100%+12px)] left-0 z-30 w-[480px] max-w-[calc(100vw-32px)] overflow-hidden rounded-panel border border-line bg-surface shadow-3',
+            : 'search-panel absolute top-[calc(100%+12px)] data-[side=up]:top-auto data-[side=up]:bottom-[calc(100%+12px)] left-0 z-30 w-[480px] max-w-[calc(100vw-32px)] overflow-hidden rounded-panel border border-line bg-surface shadow-3',
         )}
       >
         <ul

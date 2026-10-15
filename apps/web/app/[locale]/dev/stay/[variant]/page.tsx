@@ -157,8 +157,8 @@ const VARIANTS: Record<
     history: 'nights',
     realVsNights: { realCents: 154_400, nightsCents: 224_400 },
   },
-  // Beyond the 120-day night grid.
-  untracked: { status: 'untracked', checkIn: '2027-03-05', series: [], others: OTHERS },
+  // Beyond the 270-day night grid.
+  untracked: { status: 'untracked', checkIn: '2027-08-06', series: [], others: OTHERS },
   // 3 adults: the night grid collects 2.
   'untracked-guests': {
     status: 'untracked',

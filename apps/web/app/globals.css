@@ -364,22 +364,24 @@
   --nav-pill-fg: var(--ink);
   --nav-pill-hover: var(--surface-2);
 }
+/* The hairline is a shadow, not a border: it takes no height, so a photo pulled up under the
+   bar by exactly its height starts at the very top (no 1 px strip, C-130). */
 .site-header {
   color: var(--nav-fg);
   background-color: color-mix(in srgb, var(--bg) 82%, transparent);
-  border-bottom-color: var(--line);
+  box-shadow: 0 1px 0 var(--line);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   transition:
     background-color var(--t-base) var(--ease-out),
-    border-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out),
     color var(--t-base) var(--ease-out),
     backdrop-filter var(--t-base) var(--ease-out);
 }
 /* Pages without a photo: transparent at the very top, frosted after scrolling. */
 .site-header:not([data-scrolled]) {
   background-color: transparent;
-  border-bottom-color: transparent;
+  box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -770,6 +772,16 @@
     transform: translateY(-8px);
   }
 }
+/* Opening above the bar (C-130): it rises from the bar instead. */
+.search-panel[data-side='up']:not([hidden]) {
+  animation-name: panel-in-up;
+}
+@keyframes panel-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
 .shake {
   animation: shake 360ms var(--ease-out);
 }
@@ -857,25 +869,37 @@
 
 /* Photo hero (mockup B): dark at the top for the navbar, clear in the middle, dark at the bottom
    for the headline. Phones get a slightly stronger bottom (more text over less photo). */
+/* Top for the navbar, bottom for the search; plus a soft dark glow behind the headline at the
+   bottom left, so white text reads on a bright sky without a box (C-130, Zaid). */
 .hero-scrim {
-  background: linear-gradient(
-    180deg,
-    rgba(14, 12, 18, 0.5) 0%,
-    rgba(14, 12, 18, 0) 25%,
-    rgba(14, 12, 18, 0.05) 45%,
-    rgba(14, 12, 18, 0.8) 100%
-  );
+  background:
+    radial-gradient(ellipse 90% 45% at 20% 72%, rgba(14, 12, 18, 0.45), rgba(14, 12, 18, 0) 70%),
+    linear-gradient(
+      180deg,
+      rgba(14, 12, 18, 0.5) 0%,
+      rgba(14, 12, 18, 0) 25%,
+      rgba(14, 12, 18, 0.1) 45%,
+      rgba(14, 12, 18, 0.82) 100%
+    );
 }
 @media (min-width: 768px) {
   .hero-scrim {
-    background: linear-gradient(
-      180deg,
-      rgba(14, 12, 18, 0.45) 0%,
-      rgba(14, 12, 18, 0.05) 30%,
-      rgba(14, 12, 18, 0.1) 55%,
-      rgba(14, 12, 18, 0.7) 100%
-    );
+    background:
+      radial-gradient(ellipse 55% 50% at 22% 70%, rgba(14, 12, 18, 0.5), rgba(14, 12, 18, 0) 72%),
+      linear-gradient(
+        180deg,
+        rgba(14, 12, 18, 0.45) 0%,
+        rgba(14, 12, 18, 0.05) 30%,
+        rgba(14, 12, 18, 0.15) 55%,
+        rgba(14, 12, 18, 0.72) 100%
+      );
   }
+}
+/* White type on photos: a soft shadow that separates letters from busy backgrounds. */
+.photo-text {
+  text-shadow:
+    0 1px 2px rgba(14, 12, 18, 0.28),
+    0 4px 28px rgba(14, 12, 18, 0.38);
 }
 /* The hero headline rises in once (PREMIUM.md §6), lead and pill a beat later. */
 .hero-rise {

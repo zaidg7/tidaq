@@ -121,11 +121,14 @@ export function RangeCalendar({
   }, [focusDay, view, viewEnd, months]);
 
   // DOM focus follows the focused day after opening and keyboard moves (not mouse paging).
+  // The first focus doesn't scroll the page: a popover may still be moving to its side (C-130).
+  const opened = useRef(false);
   useEffect(() => {
     if (!moveDomFocus.current) return;
     const cell = grids.current?.querySelector<HTMLElement>(`[data-day="${focusDay}"]`);
     if (cell) {
-      cell.focus();
+      cell.focus({ preventScroll: !opened.current });
+      opened.current = true;
       moveDomFocus.current = false;
     }
   }, [focusDay, view]);

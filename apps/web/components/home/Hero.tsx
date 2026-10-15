@@ -39,11 +39,12 @@ export async function Hero({ locale }: { locale: Locale }) {
         alt={photo?.alt ?? ''}
         sizes="100vw"
         priority
-        className="h-[620px] bg-[#2a2620] lg:h-[760px]"
+        // Laptops (720 px tall) still see the whole search bar without scrolling (C-130).
+        className="h-[620px] bg-[#2a2620] lg:h-[clamp(600px,calc(100svh-44px),760px)]"
       >
         <div aria-hidden="true" className="hero-scrim absolute inset-0" />
         <div className="absolute inset-x-0 bottom-[104px] md:bottom-[120px]">
-          <div className="mx-auto max-w-[1240px] px-[18px] text-white md:px-10">
+          <div className="photo-text mx-auto max-w-[1240px] px-[18px] text-white md:px-10">
             <h1 className="hero-rise max-w-[820px] text-[44px] leading-[1.04] font-[650] tracking-[-0.04em] md:text-[64px] lg:text-[76px] lg:leading-[1.02]">
               {t('heroTitle')}
             </h1>
@@ -70,7 +71,7 @@ export async function Hero({ locale }: { locale: Locale }) {
         id="suche"
         className="relative mx-auto max-w-[1240px] scroll-mt-28 px-[18px] md:-mt-[46px] md:px-10"
       >
-        <div data-hero-search className="hidden md:block">
+        <div data-hero-search data-panels="up" className="hidden md:block">
           <SearchBar index={index} today={today} locale={locale} {...barProps} />
         </div>
         <ul className="mt-4 hidden flex-wrap justify-center gap-x-9 gap-y-1 text-center text-[15px] text-muted md:mt-6 md:flex">

@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef, type KeyboardEvent } from 'react';
+import { useEffect, useRef, type KeyboardEvent } from 'react';
 import { Minus, Plus } from 'lucide-react';
 import { IconButton } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
+import { usePanelSide } from './usePanelSide';
 
 export type GuestsLabels = {
   title: string;
@@ -26,6 +27,7 @@ export const MAX_ADULTS = 4;
 
 /** "Gäste" popover (PREMIUM.md §9.1): adults 1–4 with a stepper; children come later. */
 export function GuestsPopover({ id, adults, onChange, onClose, labels }: Props) {
+  const side = usePanelSide<HTMLDivElement>(true);
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key !== 'Escape') return;
     e.preventDefault();
@@ -34,11 +36,13 @@ export function GuestsPopover({ id, adults, onChange, onClose, labels }: Props) 
   };
   return (
     <div
+      ref={side.ref}
       id={id}
       role="dialog"
       aria-label={labels.title}
       onKeyDown={onKeyDown}
-      className="search-panel absolute top-[calc(100%+12px)] right-0 z-30 w-[340px] rounded-panel border border-line bg-surface p-6 shadow-3"
+      data-side={side.up ? 'up' : 'down'}
+      className="search-panel absolute top-[calc(100%+12px)] data-[side=up]:top-auto data-[side=up]:bottom-[calc(100%+12px)] right-0 z-30 w-[340px] rounded-panel border border-line bg-surface p-6 shadow-3"
     >
       <GuestsStepper adults={adults} onChange={onChange} labels={labels} autoFocus />
     </div>
@@ -63,6 +67,13 @@ export function GuestsStepper({
 }) {
   const fewer = useRef<HTMLButtonElement>(null);
   const more = useRef<HTMLButtonElement>(null);
+  // Not the autoFocus attribute: that scrolls the page before the popover picks its side (C-130).
+  const first = useRef(adults);
+  useEffect(() => {
+    if (!autoFocus) return;
+    const target = first.current >= MAX_ADULTS ? fewer.current : more.current;
+    target?.focus({ preventScroll: true });
+  }, [autoFocus]);
   const step = (by: number) => {
     const next = Math.min(MAX_ADULTS, Math.max(MIN_ADULTS, adults + by));
     onChange(next);
@@ -81,7 +92,6 @@ export function GuestsStepper({
           label={labels.fewer}
           onClick={() => step(-1)}
           disabled={adults <= MIN_ADULTS}
-          autoFocus={autoFocus && adults >= MAX_ADULTS}
           className="border border-line-strong disabled:opacity-30"
         >
           <Icon icon={Minus} size={16} />
@@ -97,7 +107,6 @@ export function GuestsStepper({
           label={labels.more}
           onClick={() => step(1)}
           disabled={adults >= MAX_ADULTS}
-          autoFocus={autoFocus && adults < MAX_ADULTS}
           className="border border-line-strong disabled:opacity-30"
         >
           <Icon icon={Plus} size={16} />

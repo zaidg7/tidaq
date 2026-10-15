@@ -324,17 +324,11 @@ export async function DropPage({
             <div className="mt-3 flex justify-center">
               <DropShare
                 path={localizedPath(dropPath(g.hotel.slug, d), locale)}
-                photo={g.image && !g.image.city ? g.image.src : null}
-                story={f.story}
                 title={f.title}
                 text={f.shareText}
-                fileName={`tidaq-${g.hotel.slug}-${dropKey(d)}`}
                 labels={{
-                  shareStory: t('shareStory'),
-                  storyWorking: t('storyWorking'),
                   shareLink: t('shareLink'),
                   linkCopied: t('linkCopied'),
-                  imageSaved: t('imageSaved'),
                   shareFailed: t('shareFailed'),
                   close: t('close'),
                 }}
