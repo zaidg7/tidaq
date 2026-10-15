@@ -110,7 +110,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-034                                                           | Provider pages and methodology page with live data                           | CLOUD | S             | C-032                             | DONE           |
 | C-034b                                                          | Link the stay table's trust score to the provider page                       | CLOUD | S             | C-034                             | DONE           |
 | **Phase 3b: Clean Premium overhaul** (weeks 42–48, spec `docs/design/PREMIUM.md`) | | | | | |
-| C-100 | Clean Premium spec, D-44, overhaul task list (`docs/design/PREMIUM.md`) | CLOUD | S | C-083 | IN PROGRESS |
+| C-100 | Clean Premium spec, D-44, overhaul task list (`docs/design/PREMIUM.md`) | CLOUD | S | C-083 | DONE ([#98](https://github.com/zaidg7/tidaq/pull/98)) |
 | C-101 | Mockups v2 with Zaid's feedback + icon options (canvas) | CLOUD | S | C-100 | DONE |
 | C-102 | Foundations: tokens, Instrument Sans, type, spacing, motion, focus | CLOUD | M | C-100 | TODO |
 | C-103 | Primitives: Button, Chip, Badge, Field, Toast, Skeleton, Segmented, Accordion, Sheet | CLOUD | M | C-102 | TODO |
@@ -951,7 +951,7 @@ In the stay page's provider table, make the trust score (or the provider name in
 
 The full spec, frame by frame, is `docs/design/PREMIUM.md` (§10 pages, §11 components, §14 order). Every task below is built and reviewed against it and its quality bar (§13). Production keeps the old build until launch (D-38); each PR ships to staging.
 
-### C-100 · Spec and plan (Owner CLOUD · S · IN PROGRESS)
+### C-100 · Spec and plan (Owner CLOUD · S · DONE, [#98](https://github.com/zaidg7/tidaq/pull/98))
 
 Zaid picked direction B "Clean Premium" (canvas "Tidaq design directions", 15 Oct) and asked for a step-by-step plan where every frame, photo, animation and chart is thought through. `docs/design/PREMIUM.md`, decision D-44, this phase.
 
