@@ -41,7 +41,6 @@ export async function Hero({ locale }: { locale: Locale }) {
 
   return (
     <section className="relative isolate overflow-hidden">
-      <div aria-hidden="true" className="hero-blobs" />
       <div className="mx-auto flex w-full max-w-[1080px] flex-col items-center px-5 pt-10 pb-12 text-center md:px-7 lg:pt-12 lg:pb-16">
         <p className="text-eyebrow text-accent">{t('eyebrow')}</p>
         <h1 className="text-display mt-4 max-w-[16ch]">

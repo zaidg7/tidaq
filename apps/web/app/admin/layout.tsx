@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import { jakarta } from '@/lib/fonts';
+import { instrumentSans } from '@/lib/fonts';
 import '../globals.css';
 
 /**
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="de" className={jakarta.variable}>
+    <html lang="de" className={instrumentSans.variable}>
       <body className="flex min-h-dvh flex-col">
         <main id="inhalt" className="flex flex-1 flex-col">
           {children}

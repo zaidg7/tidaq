@@ -109,22 +109,27 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
 
       <Section title="Typografie">
         <div className="flex w-full flex-col gap-3">
-          <p className="text-display max-w-[16ch]">
-            Ist dein Hotelpreis gerade <span className="text-accent">tief</span> oder hoch?
+          <p className="text-display max-w-[16ch]">Ist dein Hotel gerade günstig?</p>
+          <p className="text-hero-number text-good">−54 %</p>
+          <p className="text-h1">The Peninsula Beverly Hills</p>
+          <p className="text-h2">Price Drops heute</p>
+          <p className="text-h3">Four Seasons Hotel Bangkok at Chao Phraya River</p>
+          <p className="text-price-xl">1.139 €</p>
+          <p className="text-price-l">
+            634 € <span className="text-small font-normal text-muted">statt 953 €</span>
           </p>
-          <p className="text-h2">Wie Tidaq funktioniert</p>
-          <p className="text-title">Hotel Adlon Kempinski Berlin</p>
-          <p className="text-h3">Preisverlauf der letzten 60 Tage</p>
-          <p className="text-lead max-w-[30em] text-muted-ink">
-            Wir prüfen jeden Tag die Preise deines Hotels bei vielen Buchungsseiten und zeigen dir,
-            ob der Preis gerade günstig ist.
+          <p className="text-lead max-w-[30em] text-muted">
+            Wir prüfen jeden Morgen 83 Fünf-Sterne-Hotels. Du siehst sofort, ob sich Buchen gerade
+            lohnt.
           </p>
           <p className="prose-de">
             Fließtext: Übernachtungspreise schwanken stark. Ein Zimmer kann am Dienstag 980 € kosten
             und am Freitag 1.240 €. Tidaq macht diese Schwankung sichtbar.
           </p>
-          <p className="text-meta text-muted-ink">Meta: 1.–3. Dez. 2026 · 2 Nächte · 2 Gäste</p>
-          <p className="text-eyebrow text-accent">Eyebrow · Live-Beispiel</p>
+          <p className="text-small text-muted">Los Angeles · Fr, 6. Nov · 1 Nacht</p>
+          <p className="text-label">Hotel oder Stadt</p>
+          <p className="text-caption text-muted">Foto: Toglenn, CC BY-SA 3.0</p>
+          <p className="text-eyebrow text-muted">Eyebrow · So sieht das Ergebnis aus</p>
         </div>
       </Section>
 
@@ -133,27 +138,54 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
           ['bg', 'bg-bg'],
           ['surface', 'bg-surface'],
           ['surface-2', 'bg-surface-2'],
-          ['field', 'bg-field'],
+          ['surface-accent', 'bg-surface-accent'],
           ['line', 'bg-line'],
           ['line-strong', 'bg-line-strong'],
-          ['fg', 'bg-fg'],
+          ['ink', 'bg-ink'],
+          ['ink-2', 'bg-ink-2'],
           ['muted', 'bg-muted'],
+          ['faint', 'bg-faint'],
           ['accent', 'bg-accent'],
           ['accent-hover', 'bg-accent-hover'],
           ['accent-soft', 'bg-accent-soft'],
           ['good', 'bg-good'],
           ['good-soft', 'bg-good-soft'],
-          ['bad', 'bg-bad'],
-          ['bad-soft', 'bg-bad-soft'],
+          ['good-bright', 'bg-good-bright'],
+          ['high', 'bg-high'],
+          ['high-soft', 'bg-high-soft'],
+          ['high-fill', 'bg-high-fill'],
           ['warn', 'bg-warn'],
-          ['warn-soft', 'bg-warn-soft'],
-          ['neutral-soft', 'bg-neutral-soft'],
-          ['gradient', 'bg-accent-gradient'],
+          ['night', 'bg-night'],
           ['placeholder', 'bg-placeholder'],
         ].map(([name, cls]) => (
           <div key={name} className="flex w-[88px] flex-col gap-1">
-            <div className={`h-12 rounded-cell border border-line ${cls}`} />
-            <span className="text-meta text-muted-ink">{name}</span>
+            <div className={`h-12 rounded-input border border-line ${cls}`} />
+            <span className="text-meta text-muted">{name}</span>
+          </div>
+        ))}
+      </Section>
+
+      <Section title="Fläche und Tiefe">
+        {[
+          ['shadow-1', 'shadow-1'],
+          ['shadow-2', 'shadow-2'],
+          ['shadow-3', 'shadow-3'],
+        ].map(([name, cls]) => (
+          <div key={name} className="flex w-[120px] flex-col gap-2">
+            <div className={`h-20 rounded-card bg-surface ${cls}`} />
+            <span className="text-meta text-muted">{name}</span>
+          </div>
+        ))}
+        {[
+          ['tag 6', 'rounded-tag'],
+          ['input 12', 'rounded-input'],
+          ['button 16', 'rounded-button'],
+          ['card 22', 'rounded-card'],
+          ['panel 28', 'rounded-panel'],
+        ].map(([name, cls]) => (
+          <div key={name} className="flex w-[88px] flex-col gap-2">
+            <div className={`h-20 border border-line-strong bg-surface-2 ${cls}`} />
+            <span className="text-meta text-muted">{name}</span>
           </div>
         ))}
       </Section>

@@ -85,7 +85,7 @@ All tokens live in `apps/web/app/globals.css` as CSS variables and Tailwind them
 Rules:
 - **Accent is for action.** Only buttons, links, selection and focus are violet. Never violet text blocks, never violet backgrounds behind content, never gradients of it.
 - **Green means cheaper, red means more expensive** (D-22). Green and red never carry meaning alone: always with a sign (−/+), a word or an arrow.
-- **Price-level scale** (calendar cells, meter, sparklines): 5 steps from `--good` to `--high-fill`: `#0E6B47`, `#5FA585`, `#E4E1EA` (normal), `#F0C3A2`, `#E8A87C`. Text on the two dark-green steps is white; on the others `--ink`.
+- **Price-level scale** (calendar cells, meter, sparklines): 5 steps from `--good` to `--high-fill`: `#0E6B47`, `#5FA585`, `#E4E1EA` (normal), `#F0C3A2`, `#E8A87C`. Text on the darkest green step is white; on the others `--ink` (white on `#5FA585` would fail AA). Until C-112 the calendar uses soft tints of this scale.
 - **Dark mode:** not in this overhaul. Today it is opt-in only (`data-theme="dark"`, never set), so nothing is lost. The old dark tokens are deleted in C-102; revisit after launch.
 
 ### 3.2 Typography
