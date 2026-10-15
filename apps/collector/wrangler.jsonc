@@ -25,8 +25,8 @@
     "GRID_MIDWEEK": "1",
     // Results fetched per collect run; the Workers free plan allows 50 subrequests per run.
     "COLLECT_BATCH": "30",
-    "NIGHT_WINDOW_DAYS": "120",
-    "NIGHT_BATCH": "36",
+    "NIGHT_WINDOW_DAYS": "270",
+    "NIGHT_BATCH": "40",
     // Free price source (D-41); `dataforseo` switches back to the paid API (needs balance).
     "PRICE_SOURCE": "xotelo",
     // Operations emails (failed runs, 80 % budget, daily check). Comma-separated (CLAUDE.md §7).
@@ -46,8 +46,8 @@
         "GRID_WEEKENDS": "6",
         "GRID_MIDWEEK": "2",
         "COLLECT_BATCH": "30",
-        "NIGHT_WINDOW_DAYS": "120",
-        "NIGHT_BATCH": "36",
+        "NIGHT_WINDOW_DAYS": "270",
+        "NIGHT_BATCH": "40",
         "PRICE_SOURCE": "xotelo",
         "ADMIN_EMAILS": "zaidghazal216@gmail.com",
         "ALERTS_DRY_RUN": "true",

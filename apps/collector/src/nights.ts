@@ -18,9 +18,10 @@ export const NIGHTS = {
   defaultWindow: NIGHT_GRID.windowDays,
   /**
    * Nights per run. The Workers free plan allows 50 outgoing requests per run; a nights run also
-   * makes ~6 Supabase calls, so 36 Xotelo calls leave a safety margin.
+   * makes ~6 Supabase calls, so 40 Xotelo calls leave a margin. 270 nights × 83 hotels ≈ 22,400
+   * calls a day ≈ 560 runs ≈ 19 h of the 2-minute cron (C-127); nearest nights go first.
    */
-  defaultBatch: 36,
+  defaultBatch: 40,
   /** Xotelo calls in flight at once (spike: 8 in parallel, 0 errors, ~3 s each). */
   concurrency: 8,
 } as const;

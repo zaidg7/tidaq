@@ -18,7 +18,7 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ## B-022 · Decision: track prices up to mid-July instead of mid-February (1 min)
 
-Status: OPEN · Opened: 2026-10-15 by CLOUD · Blocks: C-127 (June/July in the Price Drops month filter)
+Status: DONE (15 Oct, evening: Zaid said yes; C-127 sets 270 days) · Opened: 2026-10-15 by CLOUD · Blocks: nothing now
 What I need: a yes or no. You asked to search Price Drops in June or July. Right now we check every night of every hotel for the next **120 days** (decision D-42), so the latest month we have is February. The month filter on Price Drops already works; it simply has no June or July to show yet.
 If you say yes, the collector checks **270 days** ahead (to mid-July; next spring that window moves on into August):
 - Cost: €0. The price source (Xotelo) is free.

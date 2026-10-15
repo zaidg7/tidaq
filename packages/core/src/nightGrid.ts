@@ -3,7 +3,7 @@ import { dayDiff } from './calendar';
 /** Night grid (D-42, PLAN §7.0): prices of every single night, collected daily. */
 export const NIGHT_GRID = {
   /** Nights ahead per hotel; the collector's NIGHT_WINDOW_DAYS default. */
-  windowDays: 120,
+  windowDays: 270,
   /** The only occupancy the grid collects (the most common luxury booking). */
   adults: 2,
   /** A real stay price this far from the night sum gets a note on the stay page. */
