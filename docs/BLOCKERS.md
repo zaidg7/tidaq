@@ -18,7 +18,7 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ## B-017 · Decision: Cloudflare Workers Paid ($5/month) for share images with today's price
 
-Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-028c (preview images for drop and stay links)
+Status: DONE – not needed (15 Oct): Zaid would pay only if there's no free way. There is one: a Supabase Edge Function on the Pro plan we already pay for (2 s CPU per call, 2 M calls a month included) draws the images, so the web Worker stays on the free plan. C-028c is built that way. · Opened: 2026-10-14 by CLOUD · Blocks: nothing now
 What I need: a yes or no. When someone shares a link to a price drop or a stay page (WhatsApp, Instagram DM, iMessage, X), the preview could be an image with the hotel, **"−33 %"**, today's price against yesterday's and a small price chart, instead of just the hotel photo. Drawing such an image takes about 0.1–0.5 seconds of computing. The free Cloudflare plan allows 0.01 seconds per request, so it only works on the paid plan ($5 a month, already in the €50 budget plan as Z-04). The in-browser story images (C-080b) work without it; this is only about link previews.
 My recommendation (updated 15 Oct): **yes, before launch.** Price drops are now our main sharing feature (`/preissturz`), and most sharing in Germany happens as WhatsApp links, where the preview image is all people see. A "−33 %" preview gets far more clicks than a hotel photo. If you'd rather wait, nothing breaks: previews keep showing the photo.
 Steps for Zaid if yes (≈ 3 min):
@@ -28,7 +28,7 @@ Steps for Zaid if yes (≈ 3 min):
 
 ## B-016 · Turnstile keys for the price-alert form (bot protection)
 
-Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-030c (not urgent: the form has a rate limit and a honeypot until then)
+Status: DONE (15 Oct: Zaid stored `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` as GitHub secrets) · Opened: 2026-10-14 by CLOUD · Blocks: nothing now (C-030c can start)
 What I need: a free Cloudflare Turnstile widget, so bots can't use our form to send emails to strangers.
 Steps for Zaid (≈ 4 min):
 
@@ -39,7 +39,7 @@ Steps for Zaid (≈ 4 min):
 
 ## B-015 · Turn on Cloudflare Web Analytics (cookieless visitor numbers)
 
-Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: nothing urgent (visitor numbers in the weekly summary; needed before launch)
+Status: DONE (15 Oct: Zaid added the site; automatic setup wasn't offered, so Cloudflare gave a script snippet. Its token is public by design (it's in every page's HTML). The session adds the snippet to the site, production only: C-082) · Opened: 2026-10-14 by CLOUD · Blocks: nothing now
 What I need: one switch in your Cloudflare account. It counts visits without cookies (decision D-15), so no cookie banner is needed. The privacy page already describes it.
 Steps for Zaid (≈ 3 min):
 
@@ -62,6 +62,7 @@ Steps for Zaid (≈ 20 min, any time before launch on 30 Nov):
 ## B-013 · Decision: $50 DataForSEO top-up to bring back CHECK24, HolidayCheck, TUI
 
 Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-076
+**Update 15 Oct, Zaid asked: "Is $50 enough for 5 months of ALL five-star hotels?"** Not at today's depth. One check = one hotel × one stay × $0.0008. Today: 83 hotels × 4 real stay checks a day ≈ $8 a month → $50 lasts ~6 months. All five-star hotels in the 25 cities (D-43; estimate 500–700) × 4 checks ≈ $50–65 a month → less than a month (and the $12 monthly guard would stop it after ~6 days). With **1 check per hotel a day plus the stays visitors open or watch** it's ≈ $12–17 a month → **~3–4 months**. CHECK24 for every night of every hotel (like the free night grid) would cost several hundred dollars a month: not possible. Recommendation: top up $50 around **20 Nov** (just before launch) and run 1 check per hotel a day; the free night grid keeps covering every date.
 What I need: a yes or no. Our free source (Tripadvisor via Xotelo) doesn't show German platforms. CHECK24, HolidayCheck and TUI only come through Google Hotels (DataForSEO), which we used until 13 Oct. Research (C-073, `docs/research/german-platforms.md`): none of these platforms offers us a price API; Google Hotels is the only legal way.
 Cost: about **$9.60 a month** (≈ 400 real stay checks a day × $0.0008). The minimum top-up is **$50, which lasts about 5 months**. The monthly limit of $12 (D-13) still applies and stops spending automatically. The free night grid stays as it is.
 My recommendation: **yes**, once there's a launch date in sight (German users will look for CHECK24 first). If money is tight, it can wait until shortly before launch (30 Nov); nothing else depends on it.
@@ -74,6 +75,7 @@ Steps for Zaid (≈ 5 min, only if yes):
 ## B-012 · Ask LiteAPI (Nuitee) two questions in writing
 
 Status: OPEN · Opened: 2026-10-14 by CLOUD · Blocks: C-074, C-075 (prices per guest count, room and board, D-43)
+**Update 15 Oct (the support form asks for "Environment" and "Priority"):** choose **Sandbox** (that's the key we use) and **Low** (a question before going live, not an outage) → Continue. Subject: `Usage questions before going live: search volume, storing rates, production key`. Description: the text in step 1 below, as it is.
 What I need: written answers from LiteAPI. The test (C-072, `docs/research/liteapi.md`) works: one search gives every room type and board (room only, breakfast, half board) for any guest count, close to market prices. Before we run it daily we need their OK, because we compare prices and rarely book. It has to come from your account.
 Steps for Zaid (≈ 5 min):
 
@@ -122,7 +124,7 @@ Steps for Zaid (≈ 1 min):
 
 ## B-008 · GitHub Actions minutes: optional safety budget
 
-Status: SUPERSEDED by B-011 (the minutes ran out on 14 Oct) · Opened: 2026-10-13 by CLOUD · Blocks: see B-011. If the 2,000 free minutes run out before 1 Nov, CI stops and no PR can be merged until then.
+Status: DONE ($5 Actions budget set, see B-011) · Opened: 2026-10-13 by CLOUD · Blocks: see B-011. If the 2,000 free minutes run out before 1 Nov, CI stops and no PR can be merged until then.
 What I need: a decision. CI now uses far fewer minutes (C-002b), and I'm pacing the work, so we should land under the limit. If you want a safety net: extra minutes cost less than 1 cent each, so a $5 cap buys at least 600 minutes. Don't set a $0 budget: that stops CI completely at the limit.
 Steps for Zaid (≈ 2 min, optional):
 
@@ -132,7 +134,7 @@ Steps for Zaid (≈ 2 min, optional):
 
 ## B-007 · Turn on the admin login (Supabase settings + email via Resend)
 
-Status: OPEN · Opened: 2026-10-13 by CLOUD · Blocks: using `/admin` (C-016 data health, C-032 checkout audit tool). Building them is not blocked.
+Status: DONE (15 Oct: Zaid set it up and tested the login. Feedback: the email looks plain; it needs a premium design → C-083 redesigns all Tidaq emails and gives a matching Supabase login template to paste) · Opened: 2026-10-13 by CLOUD · Blocks: nothing now
 What I need: two settings in the Supabase dashboard so the login link can reach you and bring you back to tidaq.com. The code is done; without these the link either never arrives or lands on the wrong address.
 Steps for Zaid (≈ 6 min):
 
