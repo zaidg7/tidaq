@@ -16,6 +16,17 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-019 · Decision: which design direction (A Haussmann or B Clean Premium)
+
+Status: OPEN · Opened: 2026-10-15 by CLOUD · Blocks: the design overhaul (tasks get written once you pick)
+What I need: your pick, plus what you'd change. The mockups are on a private canvas (link in the chat from 15 Oct, also under claude.ai → Artifacts → "Tidaq design directions"): homepage on desktop and phone, and the price-drop page on the phone, for both directions, plus three browser-icon options.
+Steps for Zaid (≈ 10 min):
+
+1. Open the canvas on your phone and on your PC. Look at the phone screens first; that's where TikTok visitors land.
+2. Answer in the chat: **A**, **B**, or a mix (e.g. "B layout with A's arched photos"). Name the icon you like.
+3. Optional: click any spot on the canvas and leave a comment ("too much text here", "love this").
+   Where to put the result: reply in the chat or change this Status to DONE with your pick.
+
 ## B-018 · Paste the new login email into Supabase (3 min)
 
 Status: OPEN · Opened: 2026-10-15 by CLOUD · Blocks: nothing (only the look of your admin login email)
