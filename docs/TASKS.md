@@ -105,7 +105,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-051                                                           | Weekly content pack routine                                                  | CLOUD | S             | C-044                             | TODO           |
 | C-052                                                           | "Beste Buchungszeit" and event SEO pages                                     | CLOUD | M             | C-044 (30+ days data)             | TODO           |
 | C-053                                                           | Coverage expansion and "request a hotel"                                     | CLOUD | M             | C-044                             | TODO           |
-| C-054                                                           | Weekly deals newsletter (opt-in)                                             | CLOUD | M             | C-031                             | TODO           |
+| C-054a                                                          | Weekly deals newsletter: opt-in sign-up, manage, privacy text                | CLOUD | S             | C-031a                            | DONE           |
+| C-054b                                                          | Weekly deals newsletter: Monday send (dry run until launch)                  | CLOUD | S             | C-054a                            | TODO           |
 | C-055                                                           | Breakfast/room filters (if the spike allows)                                 | CLOUD | M             | C-010 result                      | DROPPED (D-40) |
 | C-056                                                           | Research: "watch my booking" rebooking alerts (v2)                           | CLOUD | S             | C-044                             | TODO           |
 
@@ -954,7 +955,18 @@ Final launch checklist (below), production deploy to tidaq.com, collector prod c
 - **C-051 Weekly content pack:** a Claude routine (or the first session each Sunday) writes 3 short-video scripts and 1 post from the week's data into `docs/content/YYYY-Www/`.
 - **C-052 SEO pages:** "Beste Zeit, [Hotel] zu buchen" (needs 30+ days of data), "Silvester in [Stadt]".
 - **C-053 Coverage expansion:** more hotels as budget allows; a "Hotel vorschlagen" form; track user-requested hotels.
-- **C-054 Newsletter:** weekly deals email for opt-in subscribers.
+- **C-054 Newsletter:** weekly deals email for opt-in subscribers. Split into C-054a (sign-up) and C-054b (sending), see below.
+
+### C-054a · Newsletter sign-up
+
+Owner: CLOUD · Size: S · Depends on: C-031a · Status: DONE · PR: see `[C-054a]`
+
+**C-054a notes (DONE):** The newsletter shares the price-alert address (`watchers`): new columns `newsletter`, `newsletter_consent_text`, `newsletter_at` (migration `20261015000528`); SQL `newsletter_request` (same 1-minute resend guard and 7-day cleanup as `watch_request`; `email_kind` confirm / added / already) and `newsletter_off`; `watch_manage` returns `newsletter`. Double opt-in through the same `watch_confirm` link; the manage page shows "Deals per E-Mail" with "Deals abbestellen" (alerts stay); the one-click unsubscribe still deletes everything. Web: `lib/watch/newsletter.ts`, server action `app/[locale]/deals/newsletterAction.ts` (honeypot, 5 per 10 min per IP), `components/deals/NewsletterForm.tsx` below the deals on `/deals`; emails `newsletterMail` (DE/EN); privacy §6 now covers the deals emails and states that we don't track opens or clicks (Resend open and click tracking are off for tidaq.com, checked 15 Oct). Nothing is sent to subscribers yet (C-054b).
+
+### C-054b · Newsletter: Monday send
+
+Owner: CLOUD · Size: S · Depends on: C-054a · Status: TODO · PR: –
+Collector: every Monday in the daily cron (after the alerts), load confirmed subscribers (SQL, service role) and the current deals (same rule as `/deals`: ≥ 8 % under the stay's 30-day average, 14+ days of history, one per hotel, top 8), render one email per locale with core `renderMail` (list of hotel, dates, price, drop, link to the stay page), send through Resend in batches with `List-Unsubscribe` per recipient, record the send (no per-recipient tracking). Skip the week when there are fewer than 3 deals. Dry run (log counts only) unless `APP_ENV=production`, `ALERTS_DRY_RUN=false` and a key are set, like the alerts.
 - **C-055 Breakfast and room filters:** dropped for v1 (D-40): the source has no breakfast data.
 - **C-056 Watch my booking (v2):** forward a booking confirmation → we watch the same stay → alert when it's cheaper to rebook (refundable bookings). Research and spec only.
 

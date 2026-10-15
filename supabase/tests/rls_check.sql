@@ -52,5 +52,10 @@ select
     as anon_cannot_log_web_errors,
   not has_function_privilege('anon', 'public.web_error_digest(text,timestamptz)', 'execute')
     as anon_cannot_read_web_error_digest,
+  -- C-054a: newsletter sign-up and opt-out are service role only (the web server calls them).
+  not has_function_privilege('anon', 'public.newsletter_request(text,text,text)', 'execute')
+    as anon_cannot_request_newsletter,
+  not has_function_privilege('anon', 'public.newsletter_off(uuid)', 'execute')
+    as anon_cannot_stop_newsletter,
   (select count(*) = 0 from pg_tables where schemaname = 'public' and not rowsecurity)
     as all_tables_have_rls;

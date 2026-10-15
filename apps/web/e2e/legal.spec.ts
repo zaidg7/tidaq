@@ -23,7 +23,8 @@ test.describe('legal and transparency pages (C-027)', () => {
     test(`${p.path} in German and English`, async ({ page }) => {
       await page.goto(p.path);
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(p.de);
-      await expect(page.getByText('Stand: 14. Oktober 2026')).toBeVisible();
+      // Each page carries its own date (the privacy page changes with features).
+      await expect(page.getByText(/^Stand: \d{1,2}\. \p{L}+ 20\d\d$/u)).toBeVisible();
       await expect(page.getByText(/German version is legally binding/)).toHaveCount(0);
       await expect(page.locator('main, article').first()).not.toContainText('TMG');
 

@@ -57,11 +57,16 @@ export default async function ManagePage({ params, searchParams }: Props) {
   }
   const notice =
     q.bestaetigt !== undefined
-      ? t('confirmedNotice')
+      ? // A newsletter-only address confirmed the newsletter, not an alert (C-054a).
+        data.watches.length === 0 && data.newsletter
+        ? t('confirmedNewsletter')
+        : t('confirmedNotice')
       : q.beendet !== undefined
         ? t('removed')
-        : q.fehler !== undefined
-          ? t('error')
-          : null;
+        : q['newsletter-aus'] !== undefined
+          ? t('newsletterOffDone')
+          : q.fehler !== undefined
+            ? t('error')
+            : null;
   return <ManageView data={data} token={token} notice={notice} />;
 }

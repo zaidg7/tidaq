@@ -245,7 +245,22 @@
     "emptyCta": "See all hotels",
     "metaTitle": "Deals: five-star hotels below their average price | Tidaq",
     "metaDescription": "Luxury hotels whose price is clearly below their own 30-day average right now. Only real drops, updated daily.",
-    "unavailable": "The deals are unavailable right now. Please try again in a moment."
+    "unavailable": "The deals are unavailable right now. Please try again in a moment.",
+    "newsletterTitle": "The best deals every Monday by email",
+    "newsletterText": "Once a week we send you the stays that are furthest below their own 30-day average right now. Free, unsubscribe with one click.",
+    "newsletterEmail": "Your email address",
+    "newsletterConsent": "Yes, send me the deals by email every Monday. I can unsubscribe at any time with one click.",
+    "newsletterPrivacy": "Privacy",
+    "newsletterSubmit": "Get the deals by email",
+    "newsletterPreview": "Test mode: open the email link",
+    "newsletterResults": {
+      "sent": "Almost done: please confirm your address with the link in our email.",
+      "added": "Done: you'll get the deals from next Monday.",
+      "invalid": "Please enter a valid email address and tick the box.",
+      "too_soon": "We just sent you an email. Check your inbox or try again in a minute.",
+      "rate_limited": "Too many attempts in a short time. Please wait a few minutes.",
+      "error": "That didn't work just now. Please try again in a moment."
+    }
   },
   "cta": {
     "title": "Find the right moment for your hotel.",
@@ -420,7 +435,7 @@
       "eyebrow": "Legal",
       "title": "Privacy policy",
       "intro": "In short: Tidaq sets no cookies, uses no tracking and no ads, and you don't need an account. Our own code stores no IP addresses.",
-      "updated": "Last updated: 14 October 2026",
+      "updated": "Last updated: 15 October 2026",
       "sections": [
         {
           "title": "1. Controller",
@@ -461,11 +476,13 @@
           ]
         },
         {
-          "title": "6. Price alerts by email",
+          "title": "6. Price alerts and deals by email",
           "text": [
             "This feature is coming soon. Once it exists: when you set up a price alert, we store your email address, the stay you watch, the text of your consent and its time. We first send you an email with a confirmation link (double opt-in). Only after that do you get alerts, and only for what you asked to watch.",
+            "For the deals by email (once a week, only if you sign up) we store your email address, your language, the text of your consent and its time. Double opt-in applies here too. You can stop just the deals (on the manage page, linked in every email); your price alerts then stay.",
             "The legal basis is your consent (Art. 6(1)(a) GDPR). You can withdraw it at any time: with the unsubscribe link in every email or by email to us. We then delete your email address, all your alerts and the proof of your consent. If you don't confirm an address, we delete it after 7 days.",
-            "The emails are sent by the service Resend (USA). Resend processes your email address and the content of the email for this."
+            "The emails are sent by the service Resend (USA). Resend processes your email address and the content of the email for this.",
+            "We don't measure whether you open our emails or click links in them."
           ]
         },
         {
@@ -708,7 +725,12 @@
     "unsubscribedText": "We've deleted your email address and all your alerts. You won't get any more emails from us.",
     "notFoundTitle": "These alerts no longer exist",
     "notFoundText": "Maybe you already unsubscribed. You can set up new alerts on any stay's page.",
-    "error": "That didn't work just now. Please try again in a moment."
+    "error": "That didn't work just now. Please try again in a moment.",
+    "confirmedNewsletter": "Thanks, your sign-up is confirmed. The deals start next Monday.",
+    "newsletterTitle": "Deals by email",
+    "newsletterText": "You get the best deals every Monday.",
+    "newsletterOff": "Stop the deals",
+    "newsletterOffDone": "You won't get the deals by email any more. Your price alerts stay active."
   },
   "provider": {
     "metaTitle": "{name}: checkout accuracy and prices compared | Tidaq",
@@ -772,5 +794,21 @@
     "providersTitle": "The booking sites in our data",
     "providersText": "For each one: how often it was cheapest and what our checkout tests show.",
     "unavailable": "The current numbers can't be loaded right now. Reload the page later."
+  },
+  "newsletterMail": {
+    "confirmSubject": "Please confirm your sign-up for the deals",
+    "confirmPreheader": "One click left, then you get the deals every Monday.",
+    "confirmHeading": "Please confirm your sign-up",
+    "confirmText": "You'd like to get Tidaq's best deals by email every Monday.",
+    "what": "It lists the luxury hotel stays that are furthest below their own 30-day average right now, with a link to the price history. Nothing else.",
+    "confirmIgnore": "Wasn't you? Just ignore this email. Without confirmation we never write to you again, and we delete your address after 7 days.",
+    "confirmButton": "Confirm sign-up",
+    "addedSubject": "You'll now get the deals every Monday",
+    "addedPreheader": "Your sign-up is active.",
+    "addedHeading": "You're signed up",
+    "addedText": "From next Monday we'll send you the best deals.",
+    "manageButton": "Manage sign-up",
+    "footerWhy": "You're getting this email because the deals by email were requested for this address on tidaq.com.",
+    "footerManage": "Unsubscribe or change alerts: {url}"
   }
 }

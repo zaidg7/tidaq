@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { isLocale, localizedPath } from '@tidaq/core';
+import { newsletterOff } from '@/lib/watch/newsletter';
 import { confirmWatch, removeWatch, unsubscribe, WATCH_PATHS } from '@/lib/watch/watch';
 
 const str = (form: FormData, key: string) => {
@@ -33,4 +34,14 @@ export async function unsubscribeAction(form: FormData) {
   const token = str(form, 'token');
   const ok = await unsubscribe(token).catch(() => false);
   redirect(`${localizedPath(WATCH_PATHS.manage(token), locale)}?${ok ? 'abgemeldet' : 'fehler'}=1`);
+}
+
+/** "Newsletter abbestellen" (C-054a): the newsletter only, price alerts stay. */
+export async function newsletterOffAction(form: FormData) {
+  const locale = localeOf(form);
+  const token = str(form, 'token');
+  const ok = await newsletterOff(token).catch(() => false);
+  redirect(
+    `${localizedPath(WATCH_PATHS.manage(token), locale)}?${ok ? 'newsletter-aus' : 'fehler'}=1`,
+  );
 }
