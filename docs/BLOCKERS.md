@@ -16,6 +16,31 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-024 · Store the LiteAPI key as a GitHub secret (3 min)
+
+Status: OPEN · Opened: 2026-10-16 by CLOUD · Blocks: C-147 (second check of every Price Drop against LiteAPI)
+What I need: the LiteAPI key you already have (sandbox), stored where the collector can read it. With it, every drop is also checked against LiteAPI's live rooms: if the hotel has no room left for those dates, or only for much more, the drop disappears even when the booking site's listing on TripAdvisor is outdated (your Four Seasons Dubai case). Never paste the key into the chat, an issue or a PR.
+Steps for Zaid (≈ 3 min):
+
+1. Log in at **dashboard.liteapi.travel** → **API Keys** → copy the **sandbox** key.
+2. github.com/zaidg7/tidaq → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. Name: `LITEAPI_KEY`, value: the key → **Add secret**.
+   Where to put the result: change this Status to DONE; the next session wires it into the deploy and builds C-147.
+
+## B-023 · Decision: Cloudflare Workers Paid ($5/month) for hundreds of hotels (1 min)
+
+Status: OPEN · Opened: 2026-10-16 by CLOUD · Blocks: C-071b beyond ~90 hotels
+What I need: a yes or no. You want every five-star hotel in the big cities (hundreds). Each hotel costs 270 price calls a day (one per night, D-42) plus the live checks of its drops. The free Cloudflare plan allows 50 requests per run, every 2 minutes: about 28,000 calls a day. 83 hotels already use ~22,400, and since tonight the live drop checks take their share too. So the free plan is full at about 90 hotels.
+Options:
+
+- **Workers Paid, $5 a month (recommended).** 10,000 requests per run instead of 50. Room for 500+ hotels with the same code, and the same plan unlocks the share images (C-028c) later. It's inside the €50 budget plan (Z-04).
+- **Free:** move the night grid to a Supabase Edge Function (the Pro plan you already pay includes 2 M calls a month). About a day of work, and the collector then runs on two platforms, so more can break. I'd only do this if $5 is a no.
+
+Either way I'll also make the grid lighter (next 90 nights daily, later nights every 3 days, C-146), so Xotelo isn't hammered.
+Steps for Zaid if yes (≈ 3 min):
+
+1. dash.cloudflare.com → account **tidaq** → **Workers & Pages** → **Plans** → **Workers Paid** → subscribe.
+   Where to put the result: change this Status to DONE ("paid plan active") or tell the session in chat.
+
 ## B-022 · Decision: track prices up to mid-July instead of mid-February (1 min)
 
 Status: DONE (15 Oct, evening: Zaid said yes; C-127 sets 270 days) · Opened: 2026-10-15 by CLOUD · Blocks: nothing now
