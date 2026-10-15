@@ -42,7 +42,7 @@ Steps for Zaid (≈ 2 min):
 
 ## B-021 · Recommended: ask LiteAPI whether we may show their hotel photos (3 min)
 
-Status: OPEN, now urgent (Zaid, 15 Oct night: "this has to work") · Opened: 2026-10-15 by CLOUD · Updated: 15 Oct, 23:00 · Blocks: own photos for the last 15 hotels, galleries (C-117b)
+Status: DONE (15 Oct, D-51: Zaid said use LiteAPI without waiting; 14 of 15 hotels now have LiteAPI photos, Cheval Blanc Randheli isn't in LiteAPI). Earlier: OPEN, urgent (Zaid, 15 Oct night: "this has to work") · Opened: 2026-10-15 by CLOUD · Updated: 15 Oct, 23:00 · Blocks: own photos for the last 15 hotels, galleries (C-117b)
 What I need: a written yes/no from LiteAPI (Nuitee). Their hotel data has many professional photos per hotel. We may only show them with permission, because people book on other sites through our links.
 Why it matters now: you want every hotel to have its own picture. 68 of 83 hotels now have a free, licensed photo (Wikimedia Commons, Flickr, and since C-141 Unsplash). For the other 15, a second search on Unsplash, Pexels and Flickr (15 Oct night) found nothing that shows the hotel: Bulgari Hotel Milano, Bulgari Resort Dubai, Capella Bangkok, Cheval Blanc Randheli, Four Seasons Abu Dhabi, Four Seasons Resort Dubai, Mandarin Oriental Bosphorus, Mandarin Oriental Jumeira, Raffles Sentosa, The Abu Dhabi EDITION, The Ivens, The Ritz-Carlton Maldives, The Shanghai EDITION, The Siam, St. Regis Saadiyat. Hotel and booking-site photos are copyrighted, so we can't just take them. Until then they show the city's photo, labelled "Stadtbild". One "yes" from LiteAPI fixes all 15 at once (and gives every hotel a gallery).
 Steps for Zaid (≈ 3 min), as a reply in your existing B-012 support ticket:
