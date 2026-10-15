@@ -47,7 +47,7 @@ test.describe('homepage', () => {
     const result = page.getByRole('region', { name: 'Grün heißt: jetzt buchen.' });
     await expect(result.getByText('Beispiel', { exact: true })).toBeVisible();
     await expect(result.getByText(/^Beispiel mit erfundenen Preisen/)).toBeVisible();
-    await expect(result.getByRole('img', { name: /^Günstig: aktuell 634/ })).toBeVisible();
+    await expect(result.getByRole('img', { name: /^Günstig: aktuell 3\.170/ })).toBeVisible();
     await expect(result.getByText('Gerade günstig')).toBeVisible();
   });
 

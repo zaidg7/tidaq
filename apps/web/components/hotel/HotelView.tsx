@@ -37,7 +37,7 @@ type Props = {
 
 /**
  * Hotel page (C-023a, mockup B language): the hotel's photo with the page on a sheet over it,
- * then the cheapest upcoming weekend and midweek stay (C-023b), the price calendar of every night
+ * then the cheapest upcoming 5 nights and week (C-023b, C-125), the price calendar of every night
  * (night grid, D-42) → pick dates → stay page with the history, and the alert for this hotel.
  */
 export function HotelView({ data, today, now, drops, alert }: Props) {
@@ -56,8 +56,8 @@ export function HotelView({ data, today, now, drops, alert }: Props) {
   const best =
     hotel.active && !nightsUnreliable
       ? cheapestStays(nights, today, new Set(providers.map((p) => p.id)))
-      : { weekend: null, midweek: null };
-  const bestStays = (['weekend', 'midweek'] as const).flatMap((kind) => {
+      : { trip: null, week: null };
+  const bestStays = (['trip', 'week'] as const).flatMap((kind) => {
     const stay = best[kind];
     return stay ? [{ kind, stay }] : [];
   });
@@ -228,7 +228,7 @@ function BestStayCard({
   return (
     <article className="group relative flex h-full flex-col gap-1 rounded-card border border-[#ece9f1] bg-surface p-5 transition-[border-color,box-shadow] duration-[var(--t-base)] hover:border-line-strong hover:shadow-2 md:p-6">
       <p className="text-[14px] font-semibold text-accent">
-        {t(kind === 'weekend' ? 'bestWeekend' : 'bestMidweek')}
+        {t(kind === 'trip' ? 'bestTrip' : 'bestWeek')}
       </p>
       <a
         href={localizedPath(stayPath(slug, stay.checkIn, stay.checkOut, NIGHT_GRID.adults), locale)}

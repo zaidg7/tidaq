@@ -184,6 +184,27 @@ export function filterDrops<T extends HotelDrops>(
   return out.sort(byDrop);
 }
 
+/**
+ * Up to `max` of a hotel's other trips that don't overlap `top` or each other (C-125): trips
+ * starting a day apart are nearly the same holiday, so a card offers different dates instead.
+ * Bigger drops win; the result is by date.
+ */
+export function distinctTrips(
+  top: PriceDrop,
+  more: readonly PriceDrop[],
+  max: number,
+): PriceDrop[] {
+  const picked: PriceDrop[] = [];
+  const taken = [top];
+  for (const d of [...more].sort((a, b) => b.drop - a.drop || byDate(a, b))) {
+    if (picked.length >= max) break;
+    if (taken.some((t) => d.night < t.checkOut && t.night < d.checkOut)) continue;
+    picked.push(d);
+    taken.push(d);
+  }
+  return picked.sort(byDate);
+}
+
 /** A hotel's earliest dropped night (`more` is by date). */
 const soonest = (g: HotelDrops) => {
   const first = g.more[0]?.night;

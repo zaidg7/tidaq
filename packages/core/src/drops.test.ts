@@ -8,6 +8,7 @@ import {
   dropDates,
   dropKey,
   dropTier,
+  distinctTrips,
   dropMonth,
   dropMonths,
   filterDrops,
@@ -142,6 +143,26 @@ describe('dropMonth, dropMonths and filterDrops (C-125)', () => {
     ]);
     expect(filterDrops(g, { nights: 7 }).map((x) => x.hotel.id)).toEqual([1]);
     expect(filterDrops(g, { nights: 7, month: '2026-12' })).toEqual([]);
+  });
+});
+
+describe('distinctTrips (C-125)', () => {
+  it('offers dates that do not overlap the top trip or each other, biggest drop first', () => {
+    const [g] = groupDrops([
+      row({ night: '2026-11-03', check_out: '2026-11-08', drop_pct: 0.4 }),
+      row({ night: '2026-11-04', check_out: '2026-11-09', drop_pct: 0.3 }),
+      row({ night: '2026-11-08', check_out: '2026-11-15', drop_pct: 0.2 }),
+      row({ night: '2026-11-09', check_out: '2026-11-14', drop_pct: 0.25 }),
+      row({ night: '2026-12-01', check_out: '2026-12-06', drop_pct: 0.16 }),
+    ]);
+    if (!g) throw new Error('no group');
+    expect(g.top.night).toBe('2026-11-03');
+    expect(distinctTrips(g.top, g.more, 3).map((d) => d.night)).toEqual([
+      '2026-11-09',
+      '2026-12-01',
+    ]);
+    expect(distinctTrips(g.top, g.more, 1).map((d) => d.night)).toEqual(['2026-11-09']);
+    expect(distinctTrips(g.top, [], 3)).toEqual([]);
   });
 });
 

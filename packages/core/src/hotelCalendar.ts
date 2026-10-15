@@ -86,12 +86,17 @@ export function stayFromNights(
 }
 
 /** The kinds of stay the hotel page highlights, as in the stay grid (PLAN §7.1). */
+/**
+ * The hotel page's "Günstigste Termine" (C-125: holidays, not short breaks): the cheapest 5
+ * nights and the cheapest week, any check-in day.
+ */
 export const BEST_STAY_KINDS = {
-  /** Friday → Sunday (`weekdayMonFirst`: Monday = 0). */
-  weekend: { checkInWeekday: 4, nights: 2 },
-  /** Tuesday → Thursday. */
-  midweek: { checkInWeekday: 1, nights: 2 },
+  trip: { checkInWeekday: null, nights: 5 },
+  week: { checkInWeekday: null, nights: 7 },
 } as const;
+
+/** Friday → Sunday (`weekdayMonFirst`: Monday = 0): the search calendar's "Flexibel" tab. */
+export const WEEKEND_STAY = { checkInWeekday: 4, nights: 2 } as const;
 
 export type BestStayKind = keyof typeof BEST_STAY_KINDS;
 
@@ -113,11 +118,12 @@ export function cheapestStays(
   today: string,
   reviewed: ReadonlySet<number>,
 ): Record<BestStayKind, BestStay | null> {
-  const result: Record<BestStayKind, BestStay | null> = { weekend: null, midweek: null };
+  const result: Record<BestStayKind, BestStay | null> = { trip: null, week: null };
   for (const kind of Object.keys(BEST_STAY_KINDS) as BestStayKind[]) {
     const { checkInWeekday, nights: count } = BEST_STAY_KINDS[kind];
     for (const { night } of nights) {
-      if (night <= today || weekdayMonFirst(night) !== checkInWeekday) continue;
+      if (night <= today) continue;
+      if (checkInWeekday !== null && weekdayMonFirst(night) !== checkInWeekday) continue;
       const checkOut = shiftDays(night, count);
       const stay = stayFromNights(nights, night, checkOut, reviewed);
       const best = result[kind];
@@ -151,7 +157,7 @@ export function weekendStays(
   today: string,
   reviewed: ReadonlySet<number>,
 ): WeekendStay[] {
-  const { checkInWeekday, nights: count } = BEST_STAY_KINDS.weekend;
+  const { checkInWeekday, nights: count } = WEEKEND_STAY;
   const out: WeekendStay[] = [];
   for (const { night } of nights) {
     if (night <= today || weekdayMonFirst(night) !== checkInWeekday) continue;

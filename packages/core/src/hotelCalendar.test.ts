@@ -102,42 +102,42 @@ describe('cheapestStays', () => {
   }));
   const reviewed = new Set([1]);
 
-  it('finds the cheapest Fri → Sun and Tue → Thu stay on one reviewed site', () => {
+  it('finds the cheapest 5 nights and week on one reviewed site, any check-in day (C-125)', () => {
     expect(cheapestStays(nights, '2026-11-30', reviewed)).toEqual({
-      weekend: {
-        checkIn: '2026-12-11',
-        checkOut: '2026-12-13',
-        totalCents: 91_000,
+      // 6–10 Dec: 28 + 28 + 25 + 26 + 27 = 134.000 (the unreviewed site 9 never counts).
+      trip: {
+        checkIn: '2026-12-06',
+        checkOut: '2026-12-11',
+        totalCents: 134_000,
         providerId: 1,
-        nights: 2,
+        nights: 5,
       },
-      midweek: {
-        checkIn: '2026-12-08',
-        checkOut: '2026-12-10',
-        totalCents: 51_000,
+      // 6–12 Dec: 28 + 28 + 25 + 26 + 27 + 45 + 46 = 225.000 beats 1–7 Dec (251.000).
+      week: {
+        checkIn: '2026-12-06',
+        checkOut: '2026-12-13',
+        totalCents: 225_000,
         providerId: 1,
-        nights: 2,
+        nights: 7,
       },
     });
   });
 
   it('skips today and stays whose nights are not all priced', () => {
-    // 12 Dec has no next night: the 11 Dec weekend has no total, so 4 Dec wins.
-    const short = nights.filter((n) => n.night !== '2026-12-12');
-    expect(cheapestStays(short, '2026-11-30', reviewed).weekend?.checkIn).toBe('2026-12-04');
-    // Check-in today doesn't count: the next Tuesday is the only midweek stay left.
-    expect(cheapestStays(nights, '2026-12-01', reviewed).midweek?.checkIn).toBe('2026-12-08');
-    expect(cheapestStays(nights, '2026-12-08', reviewed).midweek).toBeNull();
+    // Without 9 Dec no stay can cross it: only stays ending by 8 Dec are left.
+    const gap = nights.filter((n) => n.night !== '2026-12-09');
+    expect(cheapestStays(gap, '2026-11-30', reviewed).trip?.checkIn).toBe('2026-12-04');
+    expect(cheapestStays(gap, '2026-11-30', reviewed).week?.checkIn).toBe('2026-12-02');
+    // Check-in today doesn't count; too few nights left means no stay.
+    expect(cheapestStays(nights, '2026-12-01', reviewed).trip?.checkIn).toBe('2026-12-06');
+    expect(cheapestStays(nights, '2026-12-08', reviewed).week).toBeNull();
   });
 
   it('keeps the earlier date on a tie and returns nulls without reviewed prices', () => {
     const flat = nights.map((n) => ({ ...n, perProvider: { '1': 20_000 } }));
-    expect(cheapestStays(flat, '2026-11-30', reviewed).weekend?.checkIn).toBe('2026-12-04');
-    expect(cheapestStays(nights, '2026-11-30', new Set([4]))).toEqual({
-      weekend: null,
-      midweek: null,
-    });
-    expect(cheapestStays([], '2026-11-30', reviewed)).toEqual({ weekend: null, midweek: null });
+    expect(cheapestStays(flat, '2026-11-30', reviewed).trip?.checkIn).toBe('2026-12-01');
+    expect(cheapestStays(nights, '2026-11-30', new Set([4]))).toEqual({ trip: null, week: null });
+    expect(cheapestStays([], '2026-11-30', reviewed)).toEqual({ trip: null, week: null });
   });
 });
 

@@ -879,36 +879,6 @@
   animation: fade-up var(--t-slow) var(--ease-out) 180ms both;
 }
 
-/* "Live" dot: a soft ring breathes out every 2.4 s (off under reduced motion). */
-.live-dot {
-  position: relative;
-}
-.live-dot::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: inherit;
-  animation: live-ping 2.4s var(--ease-out) infinite;
-}
-@keyframes live-ping {
-  0% {
-    transform: scale(1);
-    opacity: 0.7;
-  }
-  70%,
-  100% {
-    transform: scale(2.6);
-    opacity: 0;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .live-dot::after {
-    animation: none;
-    opacity: 0;
-  }
-}
-
 /* Meter knob: slides from the left end to today's price once (PREMIUM.md §8). */
 .meter-knob {
   animation: meter-knob-in 700ms var(--ease-out) 150ms both;
@@ -950,10 +920,23 @@
 .drop-badge-small {
   background: rgba(255, 255, 255, 0.94);
   color: var(--good);
+  /* A hairline and a soft shadow keep it visible on bright photos. */
+  box-shadow:
+    0 0 0 1px rgba(21, 19, 28, 0.06),
+    0 1px 3px rgba(21, 19, 28, 0.14);
 }
 /* On white rows the small badge needs its own fill. */
 .drop-badge-outline.drop-badge-small {
   background: var(--good-soft);
+  box-shadow: none;
+}
+
+/* The trip length on a photo ("5 Nächte"): white chip that holds up on bright photos too. */
+.photo-chip {
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 0 0 1px rgba(21, 19, 28, 0.06),
+    0 1px 3px rgba(21, 19, 28, 0.14);
 }
 
 /* Horizontal snap rows on phones (city tiles): no scrollbar, momentum, padding stays visible. */

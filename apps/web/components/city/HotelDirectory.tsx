@@ -80,7 +80,7 @@ export function HotelDirectory({ cities }: { cities: DirectoryCity[] }) {
                     {t('cityCount', { n: c.hotels.length })}
                   </span>
                 </div>
-                <ul className="grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-4 md:gap-x-6">
+                <ul className="grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-3 md:gap-x-6">
                   {c.hotels.map((h) => (
                     <li key={h.slug}>
                       <HotelPhotoCard
@@ -88,7 +88,7 @@ export function HotelDirectory({ cities }: { cities: DirectoryCity[] }) {
                         name={h.name}
                         citySlug={c.slug}
                         href={localizedPath(hotelPath(h.slug), locale)}
-                        sizes="(min-width: 1240px) 290px, (min-width: 768px) 25vw, 50vw"
+                        sizes="(min-width: 1240px) 390px, (min-width: 768px) 33vw, 50vw"
                         className="[&_h3]:text-[15px] md:[&_h3]:text-[17px]"
                       />
                     </li>

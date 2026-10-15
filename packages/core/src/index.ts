@@ -40,6 +40,7 @@ export {
 export { parseEuroCents } from './money';
 export {
   BEST_STAY_KINDS,
+  WEEKEND_STAY,
   cheapestInMonth,
   cheapestStays,
   PRICE_LEVELS,
@@ -278,6 +279,7 @@ export {
   type DropTier,
   dropDates,
   dropKey,
+  distinctTrips,
   filterDrops,
   findDrop,
   groupDrops,

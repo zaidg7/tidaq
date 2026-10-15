@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { getTranslations } from 'next-intl/server';
 import { Check, TrendingDown } from 'lucide-react';
 import {
+  distinctTrips,
   daysBetween,
   dropDates,
   dropKey,
@@ -155,9 +156,12 @@ export async function DropPage({
       : f.seen.day === 'yesterday'
         ? td('yesterday', { time: f.seen.time })
         : `${f.seen.date}, ${f.seen.time}`;
-  const nights = [g.top, ...g.more]
-    .filter((n) => dropKey(n) !== dropKey(d))
-    .sort((a, b) => a.night.localeCompare(b.night) || a.nights - b.nights);
+  // Other dates for this hotel, not the same holiday a day later (C-125).
+  const nights = distinctTrips(
+    d,
+    [g.top, ...g.more].filter((n) => dropKey(n) !== dropKey(d)),
+    6,
+  );
   const pic = cardPhoto(g.hotel.slug, g.city.slug);
   const usual = usualCents(d);
   const saved = (usual ?? d.prevCents) - d.nowCents;
@@ -209,7 +213,11 @@ export async function DropPage({
               {g.hotel.name}
             </h1>
             <ul className="mt-3.5 flex flex-wrap gap-2">
-              {[f.date, t('chipNights', { n: d.nights }), t('chipAdults')].map((c) => (
+              {[
+                d.nights > 1 ? formatDateRange(d.night, d.checkOut, locale) : f.date,
+                t('chipNights', { n: d.nights }),
+                t('chipAdults'),
+              ].map((c) => (
                 <li
                   key={c}
                   className="inline-flex h-8 items-center rounded-full border border-line bg-surface px-3 text-[14px] font-medium"

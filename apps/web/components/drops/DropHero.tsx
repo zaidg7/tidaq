@@ -51,16 +51,13 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
           className="absolute top-4 left-4 z-10 md:top-5 md:left-5 md:h-12 md:px-5 md:text-[26px]"
         />
         {d.nights > 1 && (
-          <span className="absolute top-4 right-4 z-10 inline-flex h-8 items-center rounded-full bg-white/92 px-3 text-[13px] font-semibold text-ink md:top-5 md:right-5">
+          <span className="absolute top-4 right-4 z-10 inline-flex h-8 items-center photo-chip rounded-full px-3 text-[13px] font-semibold text-ink md:top-5 md:right-5">
             {t('stayBadge', { n: d.nights })}
           </span>
         )}
       </Photo>
       <div className="px-1 md:px-0">
-        <p className="inline-flex items-center gap-2 text-[14px] font-semibold text-good md:text-[15px]">
-          <span aria-hidden="true" className="live-dot size-2 rounded-full bg-good" />
-          {t('heroEyebrow')}
-        </p>
+        <p className="text-[14px] font-semibold text-good md:text-[15px]">{t('heroEyebrow')}</p>
         <h2
           id="drop-hero"
           className="mt-2 text-[28px] leading-[1.08] font-[650] tracking-[-0.03em] md:text-[44px]"

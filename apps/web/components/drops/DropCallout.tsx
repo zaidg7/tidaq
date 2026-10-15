@@ -1,6 +1,7 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { ArrowRight } from 'lucide-react';
 import {
+  distinctTrips,
   dropDates,
   dropKey,
   dropPath,
@@ -32,7 +33,7 @@ export function DropCallout({ group: g, drop }: { group: HotelDrops; drop?: Pric
   const d = drop ?? g.top;
   const href = (x: PriceDrop) => localizedPath(dropPath(g.hotel.slug, x), locale);
   const site = d.provider.direct ? tp('atDirect') : tp('atSite', { provider: d.provider.name });
-  const others = drop ? [] : [g.top, ...g.more].filter((x) => x !== d).slice(0, MORE);
+  const others = drop ? [] : distinctTrips(g.top, g.more, MORE);
   return (
     <aside
       aria-labelledby="drop-callout"

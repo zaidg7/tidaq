@@ -51,7 +51,7 @@ export function DropTile({
           className="absolute top-2.5 left-2.5 z-10 md:top-3.5 md:left-3.5 md:h-8 md:px-3 md:text-[16px]"
         />
         {d.nights > 1 && (
-          <span className="absolute top-2.5 right-2.5 z-10 inline-flex h-7 items-center rounded-full bg-white/92 px-2.5 text-[12px] leading-none font-semibold text-ink md:top-3.5 md:right-3.5 md:h-8 md:px-3 md:text-[13px]">
+          <span className="absolute top-2.5 right-2.5 z-10 inline-flex h-7 items-center photo-chip rounded-full px-2.5 text-[12px] leading-none font-semibold text-ink md:top-3.5 md:right-3.5 md:h-8 md:px-3 md:text-[13px]">
             {t('stayBadge', { n: d.nights })}
           </span>
         )}

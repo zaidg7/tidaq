@@ -139,6 +139,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-122 | Copy pass: glossary, text budgets, Price Alert URLs | CLOUD | S | C-115 | TODO |
 | C-123 | Polish + QA at 4 widths, Lighthouse, axe, WebKit, baselines, before/after sheet | CLOUD | M | C-102 … C-122 | TODO |
 | C-124 | Regenerate the visual baselines after the redesign (CI image; Actions budget resets 1 Nov, D-45) | CLOUD | S | C-118 | TODO |
+| C-125 | Trip drops (5/7 nights) instead of single nights, month + length filters, no live pills, hotel photos, desktop sweep (Zaid, 15 Oct) | CLOUD | M | C-118 | DONE |
+| C-126 | City page: cheapest week per hotel instead of the cheapest weekend (like the hotel page since C-125) | CLOUD | S | C-125 | DONE (in the C-125 PR, SQL `city_best_trips`) |
+| C-127 | Night window 120 → 270 days so June/July show up in the Price Drops month filter (D-42 change) | CLOUD | S | B-022 | BLOCKED (B-022) |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034, C-123               | TODO           |
 | C-041a                                                          | Launch hardening: axe checks, security headers                               | CLOUD | S             | C-031a                            | DONE           |

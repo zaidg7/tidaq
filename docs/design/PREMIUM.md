@@ -73,7 +73,7 @@ All tokens live in `apps/web/app/globals.css` as CSS variables and Tailwind them
 | `--accent-soft` | `#EEEAFE` | selected chip fill, icon tiles |
 | `--good` | `#0E6B47` | price down, "günstig", drop badges (white text on it passes AA) |
 | `--good-soft` | `#E1F2E9` | good chips |
-| `--good-bright` | `#3DDC97` | live dot and accents on dark or photo only |
+| `--good-bright` | `#3DDC97` | accents on dark or photo only |
 | `--high` | `#B42318` | price up, "teuer" text (D-22) |
 | `--high-soft` | `#FDEBE7` | high chips |
 | `--high-fill` | `#E8A87C` | "teuer" zone in meters and heat cells (fill only, never text) |
@@ -117,7 +117,7 @@ No ALL CAPS letter-spaced labels (that was an AI-template tell); labels are sent
 - **Page gutters:** 16 (≤ 480), 24 (≤ 768), 40 (≥ 1024). Max content width 1240; text measure max 640.
 - **Section rhythm:** 72 mobile / 120 desktop between sections; 20 / 36 between a section title and its content.
 - **Grid:** 4 columns mobile, 8 tablet, 12 desktop, gutter 12 / 20 / 28.
-- **Radius:** 6 (credit tags), 12 (inputs, small thumbs), 16 (buttons), 22 (cards, photos), 28 (panels, sheets, search bar), 999 (chips, badges, live dot).
+- **Radius:** 6 (credit tags), 12 (inputs, small thumbs), 16 (buttons), 22 (cards, photos), 28 (panels, sheets, search bar), 999 (chips, badges).
 - **Elevation:** `--shadow-1` `0 1px 2px rgba(21,19,28,.06)` (resting cards); `--shadow-2` `0 1px 2px rgba(21,19,28,.06), 0 12px 32px rgba(21,19,28,.10)` (hover, popovers); `--shadow-3` `0 1px 2px rgba(21,19,28,.06), 0 24px 56px rgba(21,19,28,.16)` (search bar, sheets, dialogs). No colored glows.
 - **Touch targets:** ≥ 44 × 44. **Focus:** 2 px `--accent` ring, 2 px offset, on every interactive element (`:focus-visible`).
 - **Borders:** 1 px `--line`; cards on `--bg` get border + `--shadow-1`, cards on white get border only.
@@ -199,7 +199,6 @@ Tokens in CSS: `--ease-out: cubic-bezier(.2,.8,.2,1)`, `--ease-in: cubic-bezier(
 | big drop number | counts from 0 to −54 % over 700 ms on first view only (not on back navigation) |
 | skeletons | shimmer sweep 1.4 s, `--surface-2` → white 60 % → `--surface-2` |
 | toasts | slide up 12 px + fade, auto-hide after 4 s, pause on hover |
-| live dot | soft pulse (opacity .6 → 1, 2 s) |
 
 `prefers-reduced-motion: reduce`: no movement, no scale, no count-up, no draw-in; only opacity fades ≤ 150 ms. Never animate layout properties that cause jank (only transform/opacity).
 
@@ -297,7 +296,7 @@ Order inside each page = top to bottom on a phone. "→" means a link or tap tar
 
 Hero fact: *Is your hotel cheap right now?* + today's Price Drops.
 
-1. **Hero** (phone 620 px tall, desktop 760): full-bleed photo (rooftop loungers at sunset), `--scrim-top` + `--scrim-bottom`. Transparent navbar on top (white wordmark and links). Content bottom-left: live pill "Live · heute 07:08 aktualisiert" (green dot pulsing; time = last collection run; hidden if older than 36 h), `display` headline **"Ist dein Hotel gerade günstig?"** (white, weight 650), lead "Wir prüfen jeden Morgen 83 Fünf-Sterne-Hotels. Du siehst sofort, ob sich Buchen gerade lohnt." (desktop) / "Wir prüfen jeden Morgen 83 Fünf-Sterne-Hotels." (phone). Desktop: the search bar (§9.1) overlaps the hero's bottom edge by 46 px. Phone: the "Wohin?" pill sits inside the hero, 24 px from the bottom (§9.2).
+1. **Hero** (phone 620 px tall, desktop 760): full-bleed photo (rooftop loungers at sunset), `--scrim-top` + `--scrim-bottom`. Transparent navbar on top (white wordmark and links). Content bottom-left: `display` headline **"Ist dein Hotel gerade günstig?"** (white, weight 650), lead "Wir prüfen jeden Morgen 83 Fünf-Sterne-Hotels. Du siehst sofort, ob sich Buchen gerade lohnt." (desktop) / "Wir prüfen jeden Morgen 83 Fünf-Sterne-Hotels." (phone). Desktop: the search bar (§9.1) overlaps the hero's bottom edge by 46 px. Phone: the "Wohin?" pill sits inside the hero, 24 px from the bottom (§9.2).
 2. **Trust row:** one line, centered, `small` `--muted`: "Booking.com, Expedia, Trip.com und Agoda im Vergleich · kostenlos". No icons.
 3. **Price Drops heute:** `h2` + lead "Über Nacht bis zu 70 % billiger." (the % is today's biggest drop; if none ≥ 20 %: "Über Nacht deutlich billiger.") and → "Alle 24" (count). Grid: 2 columns on phones, 4 on desktop, 4 cards (§11 DropCard). Empty: the section is replaced by a quiet card "Heute keine großen Price Drops. Morgen früh schauen wir wieder." + → "Price Alert aktivieren".
 4. **Beliebte Ziele:** `h2` + → "Alle 27". Phone: horizontal snap row of 240 × 300 photo tiles; desktop: bento grid (1 large 2×2 + 4 small, row height 260). Each tile: city photo, `--scrim-bottom`, city name (24/34 px, 650) and "3 Hotels · 2 Price Drops heute" (omit the drops part when 0). Cities ordered by today's drops, then by popularity. → city page.
@@ -315,7 +314,7 @@ Motion: §6 hero sequence; drop cards and city tiles fade up with stagger; alert
 Hero fact: the biggest drop of the day.
 
 1. Navbar solid (white).
-2. **Header:** for bio-link visitors a welcome pill "Hi! Schön, dass du von TikTok kommst." (Instagram accordingly), then `h1` "Price Drops heute", one line "Stand 07:08 · 31 Nächte in 24 Hotels günstiger" with the live dot.
+2. **Header:** for bio-link visitors a welcome pill "Hi! Schön, dass du von TikTok kommst." (Instagram accordingly), then `h1` "Price Drops heute", the intro and a quiet muted line "Stand: heute, 07:08". No live dots or "Live" pills anywhere (Zaid, C-125: they look generated and add nothing).
 3. **Aus unseren Videos** (bio-link visitors only): horizontal row of compact cards (photo, hotel, "Im Video vom 12. Okt", pill "Läuft noch" green / "Vorbei" neutral).
 4. **Drop of the day** (default sort, no filter): large card, photo 16:9 (phone 4:5) with the % badge in `hero-number`-like 40 px on the photo, hotel, city · date, `price-xl` + "statt 2.500 €", button "Ansehen". Whole card is the link.
 5. **Filter bar** (sticky under the navbar when scrolling, white with `--shadow-1`): horizontally scrollable chips: **Alle Städte ▾** (opens a sheet/popover with city list + photo chips), **Wann ▾** (Nächste 7 Tage / 30 Tage / Später), **Wochenende** (toggle), **Sortieren ▾** (Größter Drop / Meiste Ersparnis / Bald). Selected chips fill `--ink` with white text. Changing a filter updates the URL (shareable) and the grid without a full reload; results fade/cross-fade (200 ms).

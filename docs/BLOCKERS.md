@@ -16,6 +16,20 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-022 · Decision: track prices up to mid-July instead of mid-February (1 min)
+
+Status: OPEN · Opened: 2026-10-15 by CLOUD · Blocks: C-127 (June/July in the Price Drops month filter)
+What I need: a yes or no. You asked to search Price Drops in June or July. Right now we check every night of every hotel for the next **120 days** (decision D-42), so the latest month we have is February. The month filter on Price Drops already works; it simply has no June or July to show yet.
+If you say yes, the collector checks **270 days** ahead (to mid-July; next spring that window moves on into August):
+- Cost: €0. The price source (Xotelo) is free.
+- Calls per day: about 22,400 instead of 9,960. The collector then needs ~21 hours a day instead of ~9. That fits, but leaves less room for retries.
+- Risk: Xotelo has no SLA. If it starts refusing that many calls, I turn the window back down and tell you. Nothing else breaks.
+- Database: grows about 2.3× faster; still far below the 8 GB of the Pro plan for a year.
+My recommendation: **yes**. Summer holidays are what people plan months ahead, and that's exactly where 5- and 7-night drops are most useful.
+Steps:
+1. Reply "B-022 yes" (or "no") in the chat or change this Status to DONE with your answer.
+   Where to put the result: nothing else. The session updates D-42 and the collector setting.
+
 ## B-020 · Pick the new symbol (2 min)
 
 Status: DONE (15 Oct): Zaid chose **the `t` from the wordmark, black on white** (app icon, favicon, touch icon). · Opened: 2026-10-15 by CLOUD · Blocks: C-106 (navbar, browser icon, app icon)
