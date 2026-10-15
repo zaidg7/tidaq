@@ -93,6 +93,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-080f | Weekend drops (2 nights, same site) on the radar | CLOUD | M | C-080a | DONE |
 | C-080g | Drop page: "Zum Angebot bei …" straight to the site with the price | CLOUD | S | C-080b, C-026 | DONE |
 | C-080h | Weekly recap /preissturz/woche + weekly set in the creator kit | CLOUD | M | C-080f | DONE |
+| C-080i | Drops on hotel and stay pages (callout with both prices) | CLOUD | S | C-080f | DONE |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
@@ -1043,6 +1044,11 @@ Owner: CLOUD · Size: S · Depends on: C-080b, C-026 · Status: DONE · PR: see 
 
 Owner: CLOUD · Size: M · Depends on: C-080f · Status: DONE · PR: see `[C-080h]`
 **Notes (DONE):** The radar only shows today; on a quiet day it looks thin, and there was no evergreen content. SQL `radar_week(p_today, p_days = 7)` (migration `20261015091403`, anon-readable, max 14 days, about 150 ms) calls `radar_drops` and `radar_weekend_drops` for each day and keeps each drop event once (a drop seen on one day is also on the next day's radar). Nothing new is stored. Core `weekSummary` (drops, hotels, weekends, average, biggest, cities ranked). `/preissturz/woche` (`routes.dropsWeek`, in the sitemap and the footer, linked from the radar): headline numbers, the top 10 hotels (each one's biggest drop of the week with "gesehen Do, 15. Okt." and a link to the stay's price history, because the price may have moved since), "Wo es diese Woche am meisten fiel" (cities → radar filtered), link to today's radar, the Preissturz-Alarm. Creator kit: "Heute" / "Diese Woche" tabs (`?zeitraum=woche`): the weekly cover ("Preisstürze der Woche"), stories and `topCaption(…, 'week')`, for a weekly TikTok carousel. Sample: `/dev/drops?week`, `/dev/admin/drops?zeitraum=woche`.
+
+### C-080i · Drops where people already are
+
+Owner: CLOUD · Size: S · Depends on: C-080f · Status: DONE · PR: see `[C-080i]`
+**Notes (DONE):** People who come through search or a hotel link land on hotel and stay pages, not on the radar. `DropCallout` (green, `aside`): on a hotel page with drops today, "Preissturz bei diesem Hotel" with its biggest drop ("Di, 27. Okt. (1 Nacht): 684 € statt 989 € am Vortag, −31 % bei Booking.com."), "Zum Preissturz" and up to 4 chips for its other nights/weekends; on a stay page whose exact stay (night or weekend, 2 adults) is on today's radar, "Preissturz seit gestern: Dieser Aufenthalt kostet heute …". Both pages read the radar with the request-cached `getDrops` (two extra Supabase calls per page view, in parallel with the page's own reads). Dev: `?drop` on `/dev/hotel/[variant]` and `/dev/stay/[variant]`.
 
 ## Checklists
 

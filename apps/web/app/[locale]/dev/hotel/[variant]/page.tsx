@@ -6,6 +6,8 @@ import { addDays, weekdayMonFirst, type Locale, type NightPrice } from '@tidaq/c
 import { HotelView } from '@/components/hotel/HotelView';
 import type { HotelPage } from '@/lib/data/hotel';
 import { hotelPhoto } from '@/lib/hotelPhotos';
+import { DropCallout } from '@/components/drops/DropCallout';
+import { sampleDrops } from '@/lib/dropsSample';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { robots: { index: false, follow: false } };
@@ -67,8 +69,10 @@ const VARIANTS: Record<string, HotelPage> = {
  */
 export default async function DevHotelPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: Locale; variant: string }>;
+  searchParams: Promise<{ drop?: string }>;
 }) {
   await connection();
   if (process.env.APP_ENV === 'production') notFound();
@@ -76,5 +80,9 @@ export default async function DevHotelPage({
   setRequestLocale(locale);
   const data = VARIANTS[variant];
   if (!data) notFound();
-  return <HotelView data={data} today={TODAY} now={NOW} />;
+  // `?drop`: the drop callout (C-080i) with a sample drop.
+  const drop = (await searchParams).drop !== undefined ? sampleDrops()[0] : undefined;
+  return (
+    <HotelView data={data} today={TODAY} now={NOW} drops={drop && <DropCallout group={drop} />} />
+  );
 }

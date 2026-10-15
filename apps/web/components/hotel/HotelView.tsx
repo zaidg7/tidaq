@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { CalendarClock, CalendarOff } from 'lucide-react';
 import {
@@ -28,6 +29,8 @@ type Props = {
   today: string;
   /** For the dev page and tests; defaults to the request time. */
   now?: Date;
+  /** Today's drops at this hotel (C-080i), right under the header. */
+  drops?: ReactNode;
 };
 
 /**
@@ -35,7 +38,7 @@ type Props = {
  * midweek stay (C-023b) → price calendar of every night (night grid, D-42) → pick dates → stay
  * page with the history.
  */
-export function HotelView({ data, today, now }: Props) {
+export function HotelView({ data, today, now, drops }: Props) {
   const t = useTranslations('hotel');
   const tv = useTranslations('verdict');
   const locale = useLocale() as Locale;
@@ -126,6 +129,8 @@ export function HotelView({ data, today, now }: Props) {
           <p className="mt-2 text-[15px] text-muted-ink">{t('facts', { city })}</p>
         </div>
       </header>
+
+      {drops && <div className="mt-6">{drops}</div>}
 
       {bestStays.length > 0 && (
         <section aria-labelledby="best-title" className="mt-8">

@@ -24,6 +24,8 @@ const PAGES = [
   '/dev/drops?over',
   '/dev/drops?ref=tiktok',
   '/dev/drops?week',
+  '/dev/hotel/calendar?drop',
+  '/dev/stay/tracked?drop',
   '/en/dev/drops',
   '/preissturz',
   '/dev/provider?p=booking-com',

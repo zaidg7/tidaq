@@ -79,6 +79,8 @@ type Props = {
   edit: ReactNode;
   /** For the dev page and tests; defaults to the request time. */
   now?: Date;
+  /** This stay dropped since yesterday (C-080i): the callout under the header. */
+  drop?: ReactNode;
 };
 
 /**
@@ -101,6 +103,7 @@ export function StayView({
   today,
   edit,
   now,
+  drop = null,
 }: Props) {
   const t = useTranslations('stay');
   const locale = useLocale() as Locale;
@@ -148,6 +151,8 @@ export function StayView({
         </div>
         {edit}
       </header>
+
+      {drop && <div className="mt-6">{drop}</div>}
 
       {status === 'tracked' ? (
         <>

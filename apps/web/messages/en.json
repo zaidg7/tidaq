@@ -987,5 +987,13 @@
     "today": "See today's price drops",
     "empty": "There hasn't been a price drop in the last 7 days yet. We check every day, come back soon.",
     "unavailable": "The weekly recap can't be loaded right now. Please try again in a moment."
+  },
+  "dropCallout": {
+    "hotelTitle": "Price drop at this hotel",
+    "hotelText": "{dates} ({n, plural, one {# night} other {# nights}}): {now} instead of {was} the day before, {pct} {site}.",
+    "stayTitle": "Price drop since yesterday",
+    "stayText": "This stay costs {now} today instead of {was} the day before, {pct} {site}.",
+    "open": "See the price drop",
+    "more": "Also cheaper"
   }
 }
