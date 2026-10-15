@@ -483,7 +483,7 @@
           "text": [
             "This feature is coming soon. Once it exists: when you set up a price alert, we store your email address, the stay you watch, the text of your consent and its time. We first send you an email with a confirmation link (double opt-in). Only after that do you get alerts, and only for what you asked to watch.",
             "For the deals by email (once a week, only if you sign up) we store your email address, your language, the text of your consent and its time. Double opt-in applies here too. You can stop just the deals (on the manage page, linked in every email); your price alerts then stay.",
-            "For the price drop alert (at most one email a day, only if you sign up) we store your email address, your language, the city you chose (or \"all cities\"), the text of your consent, its time and the day of the last email, so you never get more than one a day. Double opt-in applies here too, and you can stop just the price drop alert; your other alerts then stay.",
+            "For the price drop alert (at most one email a day, only if you sign up) we store your email address, your language, the city you chose (or \"all cities\") or the hotels you follow, the text of your consent, its time and the day of the last email, so you never get more than one a day. Double opt-in applies here too, and you can stop just the price drop alert or single hotels; your other alerts then stay.",
             "The legal basis is your consent (Art. 6(1)(a) GDPR). You can withdraw it at any time: with the unsubscribe link in every email or by email to us. We then delete your email address, all your alerts and the proof of your consent. If you don't confirm an address, we delete it after 7 days.",
             "The emails are sent by the service Resend (USA). Resend processes your email address and the content of the email for this.",
             "We don't measure whether you open our emails or click links in them."
@@ -740,7 +740,11 @@
     "dropsAll": "You get new price drops in all cities, at most once a day.",
     "dropsCity": "You get new price drops in {city}, at most once a day.",
     "dropsOff": "Stop price drop alert",
-    "dropsOffDone": "You won't get price drops by email any more. Your other alerts stay active."
+    "dropsOffDone": "You won't get price drops by email any more. Your other alerts stay active.",
+    "dropsHotels": "Hotels with a price drop alert",
+    "dropsHotel": "You get an email when {hotel} gets much cheaper overnight.",
+    "dropsHotelOffLabel": "Stop price drop alert for {hotel}",
+    "dropsHotelOffDone": "You won't get price drops for this hotel any more. Your other alerts stay active."
   },
   "provider": {
     "metaTitle": "{name}: checkout accuracy and prices compared | Tidaq",
@@ -949,7 +953,10 @@
       "too_soon": "We just sent you an email. Check your inbox or try again in a minute.",
       "rate_limited": "Too many attempts in a short time. Please wait a few minutes.",
       "error": "That didn't work. Please try again in a moment."
-    }
+    },
+    "scope": "Alert for",
+    "onlyHotel": "Only {hotel}",
+    "textHotel": "We email you as soon as {hotel} gets much cheaper overnight, for any date. Or pick a whole city. At most one email a day. Free, unsubscribe in one click."
   },
   "dropAlertMail": {
     "confirmSubject": "Please confirm your price drop alert",
@@ -965,7 +972,9 @@
     "addedText": "From tomorrow we'll send you new price drops, at most once a day.",
     "manageButton": "Manage alert",
     "footerWhy": "You're getting this email because the price drop alert was requested for this address on tidaq.com.",
-    "footerManage": "Unsubscribe or change alerts: {url}"
+    "footerManage": "Unsubscribe or change alerts: {url}",
+    "confirmTextHotel": "You'd like an email from Tidaq when {hotel} gets much cheaper overnight.",
+    "addedTextHotel": "From tomorrow we'll email you when {hotel} gets much cheaper overnight, at most once a day."
   },
   "dropsWeek": {
     "metaTitle": "The biggest price drops of the week at luxury hotels | Tidaq",

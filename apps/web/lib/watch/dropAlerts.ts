@@ -30,21 +30,30 @@ export interface DropAlertResult {
 }
 
 export async function requestDropAlert(
-  req: { email: string; locale: Locale; consentText: string; city: string | null },
+  req: {
+    email: string;
+    locale: Locale;
+    consentText: string;
+    city: string | null;
+    /** One hotel instead of a city (C-080k1, SQL `drop_hotel_alert_request`). */
+    hotel?: { slug: string; name: string } | null;
+  },
   origin: string,
 ): Promise<DropAlertResult> {
   if (!hasServiceRole()) return { status: 'error' };
   try {
-    const r = await serviceRest('rpc/drop_alert_request', requestResult, {
-      method: 'POST',
-      prefer: 'return=representation',
-      body: {
-        p_email: req.email,
-        p_locale: req.locale,
-        p_consent_text: req.consentText,
-        p_city: req.city,
-      },
-    });
+    const base = { p_email: req.email, p_locale: req.locale, p_consent_text: req.consentText };
+    const r = req.hotel
+      ? await serviceRest('rpc/drop_hotel_alert_request', requestResult, {
+          method: 'POST',
+          prefer: 'return=representation',
+          body: { ...base, p_hotel: req.hotel.slug },
+        })
+      : await serviceRest('rpc/drop_alert_request', requestResult, {
+          method: 'POST',
+          prefer: 'return=representation',
+          body: { ...base, p_city: req.city },
+        });
     if (r.status !== 'ok' || !r.confirm_token || !r.manage_token) {
       return { status: r.status === 'ok' ? 'error' : r.status };
     }
@@ -61,14 +70,21 @@ export async function requestDropAlert(
         ? {
             preheader: t('confirmPreheader'),
             heading: t('confirmHeading'),
-            paragraphs: [t('confirmText'), t('what'), t('confirmIgnore')],
+            paragraphs: [
+              req.hotel ? t('confirmTextHotel', { hotel: req.hotel.name }) : t('confirmText'),
+              t('what'),
+              t('confirmIgnore'),
+            ],
             button: { label: t('confirmButton'), url: confirmUrl },
             footer,
           }
         : {
             preheader: t('addedPreheader'),
             heading: t('addedHeading'),
-            paragraphs: [t('addedText'), t('what')],
+            paragraphs: [
+              req.hotel ? t('addedTextHotel', { hotel: req.hotel.name }) : t('addedText'),
+              t('what'),
+            ],
             button: { label: t('manageButton'), url: manageUrl },
             footer,
           },
@@ -98,5 +114,15 @@ export async function dropAlertOff(token: string): Promise<boolean> {
     method: 'POST',
     prefer: 'return=representation',
     body: { p_token: token },
+  });
+}
+
+/** Stops the alarm for one hotel (C-080k1); the city alarm and everything else stay. */
+export async function dropHotelAlertOff(token: string, hotel: string): Promise<boolean> {
+  if (!hasServiceRole() || !isUuid(token) || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(hotel)) return false;
+  return serviceRest('rpc/drop_hotel_alert_off', z.boolean(), {
+    method: 'POST',
+    prefer: 'return=representation',
+    body: { p_token: token, p_hotel: hotel },
   });
 }

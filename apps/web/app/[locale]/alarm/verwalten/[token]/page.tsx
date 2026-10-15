@@ -58,7 +58,7 @@ export default async function ManagePage({ params, searchParams }: Props) {
   const notice =
     q.bestaetigt !== undefined
       ? // An address without price alerts confirmed the drops or the newsletter (C-054a, C-080e1).
-        data.watches.length === 0 && data.drop_alerts
+        data.watches.length === 0 && (data.drop_alerts || data.drop_hotels.length > 0)
         ? t('confirmedDrops')
         : data.watches.length === 0 && data.newsletter
           ? t('confirmedNewsletter')
@@ -69,8 +69,10 @@ export default async function ManagePage({ params, searchParams }: Props) {
           ? t('newsletterOffDone')
           : q['preissturz-aus'] !== undefined
             ? t('dropsOffDone')
-            : q.fehler !== undefined
-              ? t('error')
-              : null;
+            : q['preissturz-hotel-aus'] !== undefined
+              ? t('dropsHotelOffDone')
+              : q.fehler !== undefined
+                ? t('error')
+                : null;
   return <ManageView data={data} token={token} notice={notice} />;
 }

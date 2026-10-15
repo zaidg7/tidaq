@@ -155,6 +155,8 @@ const manageResult = z
       .object({ slug: z.string(), name_de: z.string(), name_en: z.string() })
       .nullable()
       .default(null),
+    /** Hotels whose drops this address follows (C-080k1). */
+    drop_hotels: z.array(z.object({ slug: z.string(), name: z.string() })).default([]),
     watches: z.array(
       z.object({
         id: z.string().uuid(),

@@ -2,6 +2,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { formatDateRange, formatPrice, localizedPath, stayPath, type Locale } from '@tidaq/core';
 import {
   dropAlertOffAction,
+  dropHotelAlertOffAction,
   newsletterOffAction,
   removeAction,
   unsubscribeAction,
@@ -99,26 +100,50 @@ export function ManageView({
         </ul>
       )}
 
-      {data.drop_alerts && (
+      {(data.drop_alerts || data.drop_hotels.length > 0) && (
         <section aria-labelledby="drops-title" className="mt-10">
           <h2 id="drops-title" className="text-h3">
             {t('dropsTitle')}
           </h2>
-          <Card className="mt-3 flex flex-wrap items-center justify-between gap-4">
-            <p className="max-w-[30em] text-[15px]">
-              {data.drop_city
-                ? t('dropsCity', {
-                    city: locale === 'de' ? data.drop_city.name_de : data.drop_city.name_en,
-                  })
-                : t('dropsAll')}
-            </p>
-            <form action={dropAlertOffAction}>
-              {hidden}
-              <button type="submit" className={buttonClasses({ variant: 'ghost', size: 'sm' })}>
-                {t('dropsOff')}
-              </button>
-            </form>
-          </Card>
+          {data.drop_hotels.length > 0 && (
+            <ul className="mt-3 flex flex-col gap-3" aria-label={t('dropsHotels')}>
+              {data.drop_hotels.map((h) => (
+                <li key={h.slug}>
+                  <Card className="flex flex-wrap items-center justify-between gap-4">
+                    <p className="max-w-[30em] text-[15px]">{t('dropsHotel', { hotel: h.name })}</p>
+                    <form action={dropHotelAlertOffAction}>
+                      {hidden}
+                      <input type="hidden" name="hotel" value={h.slug} />
+                      <button
+                        type="submit"
+                        aria-label={t('dropsHotelOffLabel', { hotel: h.name })}
+                        className={buttonClasses({ variant: 'ghost', size: 'sm' })}
+                      >
+                        {t('remove')}
+                      </button>
+                    </form>
+                  </Card>
+                </li>
+              ))}
+            </ul>
+          )}
+          {data.drop_alerts && (
+            <Card className="mt-3 flex flex-wrap items-center justify-between gap-4">
+              <p className="max-w-[30em] text-[15px]">
+                {data.drop_city
+                  ? t('dropsCity', {
+                      city: locale === 'de' ? data.drop_city.name_de : data.drop_city.name_en,
+                    })
+                  : t('dropsAll')}
+              </p>
+              <form action={dropAlertOffAction}>
+                {hidden}
+                <button type="submit" className={buttonClasses({ variant: 'ghost', size: 'sm' })}>
+                  {t('dropsOff')}
+                </button>
+              </form>
+            </Card>
+          )}
         </section>
       )}
 

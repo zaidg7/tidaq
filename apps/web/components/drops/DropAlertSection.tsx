@@ -16,12 +16,15 @@ export async function DropAlertSection({
   locale,
   defaultCity,
   cities: given,
+  hotel = null,
 }: {
   locale: Locale;
   /** Preselected city; always offered, even if the catalog can't be read. */
   defaultCity: { slug: string; name: string } | string | null;
   /** Pass when the page already has the list; otherwise it's read from the catalog. */
   cities?: { slug: string; name: string }[];
+  /** "Nur dieses Hotel" as the first, preselected choice (C-080k1). */
+  hotel?: { slug: string; name: string } | null;
 }) {
   const t = await getTranslations({ locale, namespace: 'dropAlert' });
   const preset = typeof defaultCity === 'string' ? null : defaultCity;
@@ -55,15 +58,20 @@ export async function DropAlertSection({
           <h2 id={`${DROP_ALERT_ID}-title`} className="text-h3 mt-4">
             {t('title')}
           </h2>
-          <p className="mt-2 max-w-[30em] text-[15px]">{t('text')}</p>
+          <p className="mt-2 max-w-[30em] text-[15px]">
+            {hotel ? t('textHotel', { hotel: hotel.name }) : t('text')}
+          </p>
         </div>
         <DropAlertForm
           locale={locale}
           cities={cities}
           defaultCity={typeof defaultCity === 'string' ? defaultCity : (defaultCity?.slug ?? null)}
+          hotel={hotel}
           labels={{
             email: t('email'),
             city: t('city'),
+            scope: t('scope'),
+            ...(hotel && { onlyHotel: t('onlyHotel', { hotel: hotel.name }) }),
             allCities: t('allCities'),
             consent: t('consent'),
             privacy: t('privacy'),

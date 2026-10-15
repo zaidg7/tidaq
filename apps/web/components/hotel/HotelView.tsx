@@ -31,6 +31,8 @@ type Props = {
   now?: Date;
   /** Today's drops at this hotel (C-080i), right under the header. */
   drops?: ReactNode;
+  /** The Preissturz-Alarm for this hotel (C-080k1), after the calendar. */
+  alert?: ReactNode;
 };
 
 /**
@@ -38,7 +40,7 @@ type Props = {
  * midweek stay (C-023b) → price calendar of every night (night grid, D-42) → pick dates → stay
  * page with the history.
  */
-export function HotelView({ data, today, now, drops }: Props) {
+export function HotelView({ data, today, now, drops, alert }: Props) {
   const t = useTranslations('hotel');
   const tv = useTranslations('verdict');
   const locale = useLocale() as Locale;
@@ -207,6 +209,8 @@ export function HotelView({ data, today, now, drops }: Props) {
           )}
         </Card>
       )}
+
+      {hotel.active && alert && <div className="mt-14 lg:mt-[88px]">{alert}</div>}
     </div>
   );
 }

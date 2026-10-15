@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { isLocale, localizedPath } from '@tidaq/core';
-import { dropAlertOff } from '@/lib/watch/dropAlerts';
+import { dropAlertOff, dropHotelAlertOff } from '@/lib/watch/dropAlerts';
 import { newsletterOff } from '@/lib/watch/newsletter';
 import { confirmWatch, removeWatch, unsubscribe, WATCH_PATHS } from '@/lib/watch/watch';
 
@@ -54,5 +54,15 @@ export async function dropAlertOffAction(form: FormData) {
   const ok = await dropAlertOff(token).catch(() => false);
   redirect(
     `${localizedPath(WATCH_PATHS.manage(token), locale)}?${ok ? 'preissturz-aus' : 'fehler'}=1`,
+  );
+}
+
+/** Stops the Preissturz-Alarm for one hotel (C-080k1); the rest stays. */
+export async function dropHotelAlertOffAction(form: FormData) {
+  const locale = localeOf(form);
+  const token = str(form, 'token');
+  const ok = await dropHotelAlertOff(token, str(form, 'hotel')).catch(() => false);
+  redirect(
+    `${localizedPath(WATCH_PATHS.manage(token), locale)}?${ok ? 'preissturz-hotel-aus' : 'fehler'}=1`,
   );
 }

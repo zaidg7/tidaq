@@ -95,6 +95,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-080h | Weekly recap /preissturz/woche + weekly set in the creator kit | CLOUD | M | C-080f | DONE |
 | C-080i | Drops on hotel and stay pages (callout with both prices) | CLOUD | S | C-080f | DONE |
 | C-080j | "Aus unseren Videos": posted drops first on the TikTok/Instagram landing | CLOUD | M | C-080d, C-080c | DONE |
+| C-080k1 | Preissturz-Alarm for one hotel: sign-up on drop and hotel pages, manage page | CLOUD | M | C-080e1 | DONE |
+| C-080k2 | Preissturz-Alarm for one hotel: include followed hotels in the daily send | CLOUD | S | C-080k1, C-080e2 | TODO |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
 | C-030a                                                          | Watch flow backend: double opt-in, confirm/manage pages, mail                | CLOUD | M             | C-022, Z-05                       | DONE           |
@@ -1055,6 +1057,13 @@ Owner: CLOUD · Size: S · Depends on: C-080f · Status: DONE · PR: see `[C-080
 
 Owner: CLOUD · Size: M · Depends on: C-080d, C-080c · Status: DONE · PR: see `[C-080j]`
 **Notes (DONE):** A TikTok viewer saw one hotel in the video, taps the bio link and must find that hotel at once, even if the drop left the radar since. Creator kit: every drop has "Gepostet auf [TikTok] [Instagram]" toggles (plain form posts to `markPostedAction`; the server looks the drop up again in today's radar or the week and saves a snapshot). Migration `20261015094502_posted_drops`: table `posted_drops` (RLS on, no policies, service role only; one row per stay and platform) and `posted_drops_recent(p_today, p_days = 7)` (anon-readable: posts of the last week whose check-in is ahead, newest first, one row per stay with its platforms, max 12). Core `postedDrops.ts`: `postedDropRowSchema`, `postedDrops` (max 6), `postedStatus` (still on today's radar → the current drop), `postedDropInsert`; `PriceDrop` gained `priorLowCents` and `confirmed` for the snapshot. Landing: on `/preissturz?ref=tiktok|instagram` (`/tiktok`, `/instagram`) the section "Aus unseren Videos" sits between the title and the hero: a swipe row on phones, 3 columns on desktop. Each card: photo, hotel, city and dates, "Im Video vom Mi, 14. Okt.: −21 %", then "Läuft noch" with today's prices or "Vorbei · Preis von heute ansehen"; it links to the drop page (which shows "Dieser Preissturz ist vorbei" with today's price when it's gone). Only one extra Supabase call, and only for bio-link visitors. **For Zaid:** after posting, tap the platform under the drop in /admin/preisstuerze. Sample: `/dev/drops?ref=tiktok`.
+
+### C-080k · Preissturz-Alarm for one hotel
+
+Owner: CLOUD · Size: M + S · Depends on: C-080e1, C-080e2 · Status: k1 DONE, k2 TODO
+**Why:** a TikTok viewer often falls for one hotel, not a city. "Sag mir, wenn das Adlon plötzlich günstiger wird" turns that impulse into an email address, for any date.
+**C-080k1 notes (DONE):** Migration `20261015103849_drop_hotel_alerts`: table `drop_hotel_alerts` (watcher × hotel, cascade on delete, RLS on, service role only; max 20 hotels per address), SQL `drop_hotel_alert_request(email, locale, consent, hotel_slug)` (same answer and rules as `drop_alert_request`: double opt-in, 1-minute guard, 7-day cleanup; leaves the city alarm alone), `drop_hotel_alert_off(token, hotel_slug)`, `watch_manage` returns `drop_hotels`. Web: the alarm's select offers "Nur {Hotel}" first (value `hotel:<slug>`, `HOTEL_PREFIX`) and preselects it on drop pages, the "vorbei" page and hotel pages (new `alert` slot after the calendar); the label becomes "Alarm für". The action takes the hotel's name for the email from the catalog, never from the form. Mails: `confirmTextHotel`, `addedTextHotel`. Manage page: "Hotels mit Preissturz-Alarm" with one "Beenden" each. Privacy §6 mentions followed hotels. Nothing is sent for hotels until k2.
+**C-080k2 (TODO):** collector `dropAlertRecipients` also returns addresses with followed hotels (and their hotel ids); core `dropsFor` takes `{ city alarm on, city, hotels }` and adds the followed hotels' drops (one entry per hotel, biggest first). One extra read per run.
 
 ## Checklists
 

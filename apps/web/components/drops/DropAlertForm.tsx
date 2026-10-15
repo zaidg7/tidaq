@@ -6,10 +6,15 @@ import { dropAlertAction, type DropAlertFormState } from '@/app/[locale]/preisst
 import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/Field';
 import { Icon } from '@/components/ui/Icon';
+import { HOTEL_PREFIX } from './alertId';
 
 export type DropAlertFormLabels = {
   email: string;
   city: string;
+  /** The select's label when one hotel is offered: "Alarm für" (C-080k1). */
+  scope: string;
+  /** "Nur Hotel Adlon Kempinski" (C-080k1). */
+  onlyHotel?: string;
   allCities: string;
   consent: string;
   privacy: string;
@@ -27,6 +32,7 @@ export function DropAlertForm({
   locale,
   cities,
   defaultCity,
+  hotel = null,
   labels,
 }: {
   locale: string;
@@ -34,6 +40,8 @@ export function DropAlertForm({
   cities: { slug: string; name: string }[];
   /** Preselected city slug (the city page, the drop's city, the radar's filter). */
   defaultCity: string | null;
+  /** Offer "only this hotel" first and preselect it (drop pages, hotel pages; C-080k1). */
+  hotel?: { slug: string; name: string } | null;
   labels: DropAlertFormLabels;
 }) {
   const id = useId();
@@ -71,14 +79,19 @@ export function DropAlertForm({
               htmlFor={`${id}-city`}
               className="text-[12.5px] leading-tight font-semibold text-muted-ink"
             >
-              {labels.city}
+              {hotel ? labels.scope : labels.city}
             </label>
             <select
               id={`${id}-city`}
               name="city"
-              defaultValue={values?.city ?? defaultCity ?? ''}
+              defaultValue={
+                values?.city ?? (hotel ? `${HOTEL_PREFIX}${hotel.slug}` : (defaultCity ?? ''))
+              }
               className="w-full min-w-0 appearance-none bg-transparent pr-6 text-[16px] leading-snug font-bold text-fg focus:outline-none"
             >
+              {hotel && labels.onlyHotel && (
+                <option value={`${HOTEL_PREFIX}${hotel.slug}`}>{labels.onlyHotel}</option>
+              )}
               <option value="">{labels.allCities}</option>
               {cities.map((c) => (
                 <option key={c.slug} value={c.slug}>
