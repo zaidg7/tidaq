@@ -8,7 +8,10 @@ import { ManageView } from '@/components/watch/ManageView';
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
-/** Sample manage page (C-030): one alert with a target, one without, unconfirmed with `?neu`. */
+/**
+ * Sample manage page (C-030): one alert with a target, one without, the newsletter on (C-054a),
+ * unconfirmed with `?neu`.
+ */
 export default async function DevWatchPage({
   params,
   searchParams,
@@ -28,6 +31,7 @@ export default async function DevWatchPage({
         email: 'gast@example.com',
         locale,
         confirmed: neu === undefined,
+        newsletter: true,
         watches: [
           {
             id: '11111111-1111-4111-8111-111111111111',

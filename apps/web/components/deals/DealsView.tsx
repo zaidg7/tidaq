@@ -9,10 +9,12 @@ import { cn } from '@/lib/cn';
 import type { Deal } from '@/lib/data/deals';
 import { routes } from '@/lib/routes';
 import { DealCard, dealMetaValues } from './DealCard';
+import { NewsletterForm } from './NewsletterForm';
 
 /**
  * `/deals` (C-025): every upcoming stay at least 8 % under its own 30-day average with 14+ days
  * of history, biggest drop first, one per hotel; city chips filter by URL (`?stadt=berlin`).
+ * Below them the weekly deals newsletter sign-up (C-054a).
  */
 export function DealsView({ deals, city }: { deals: Deal[]; city: string | null }) {
   const t = useTranslations('deals');
@@ -79,6 +81,36 @@ export function DealsView({ deals, city }: { deals: Deal[]; city: string | null 
           </ul>
         </>
       )}
+
+      <section aria-labelledby="newsletter-title" className="mt-14">
+        <Card className="grid gap-6 lg:grid-cols-2 lg:gap-10 lg:p-8">
+          <div>
+            <h2 id="newsletter-title" className="text-h3">
+              {t('newsletterTitle')}
+            </h2>
+            <p className="mt-2 max-w-[30em] text-[15px] text-muted-ink">{t('newsletterText')}</p>
+          </div>
+          <NewsletterForm
+            locale={locale}
+            labels={{
+              email: t('newsletterEmail'),
+              consent: t('newsletterConsent'),
+              privacy: t('newsletterPrivacy'),
+              privacyHref: `${localizedPath(routes.privacy, locale)}#${locale === 'de' ? '6-preisalarm-und-deals-per-e-mail' : '6-price-alerts-and-deals-by-email'}`,
+              submit: t('newsletterSubmit'),
+              preview: t('newsletterPreview'),
+              results: {
+                sent: t('newsletterResults.sent'),
+                added: t('newsletterResults.added'),
+                invalid: t('newsletterResults.invalid'),
+                too_soon: t('newsletterResults.too_soon'),
+                rate_limited: t('newsletterResults.rate_limited'),
+                error: t('newsletterResults.error'),
+              },
+            }}
+          />
+        </Card>
+      </section>
     </div>
   );
 }

@@ -1,13 +1,14 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { formatDateRange, formatPrice, localizedPath, stayPath, type Locale } from '@tidaq/core';
-import { removeAction, unsubscribeAction } from '@/app/[locale]/alarm/actions';
+import { newsletterOffAction, removeAction, unsubscribeAction } from '@/app/[locale]/alarm/actions';
 import { buttonClasses } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import type { ManageData } from '@/lib/watch/watch';
 
 /**
- * The visitor's price alerts (C-030): each with its stay link and a "Beenden" button, then a
- * clearly separated "Alle Alarme abbestellen" that deletes the address. Plain forms (server
+ * The visitor's price alerts (C-030): each with its stay link and a "Beenden" button, the weekly
+ * newsletter when it's on (C-054a), then a clearly separated "Alle Alarme abbestellen" that
+ * deletes the address. Plain forms (server
  * actions), so it works without JavaScript.
  */
 export function ManageView({
@@ -91,6 +92,23 @@ export function ManageView({
             );
           })}
         </ul>
+      )}
+
+      {data.newsletter && (
+        <section aria-labelledby="newsletter-title" className="mt-10">
+          <h2 id="newsletter-title" className="text-h3">
+            {t('newsletterTitle')}
+          </h2>
+          <Card className="mt-3 flex flex-wrap items-center justify-between gap-4">
+            <p className="max-w-[30em] text-[15px]">{t('newsletterText')}</p>
+            <form action={newsletterOffAction}>
+              {hidden}
+              <button type="submit" className={buttonClasses({ variant: 'ghost', size: 'sm' })}>
+                {t('newsletterOff')}
+              </button>
+            </form>
+          </Card>
+        </section>
       )}
 
       <section aria-labelledby="unsubscribe-title" className="mt-14 border-t border-line pt-8">

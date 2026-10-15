@@ -147,6 +147,8 @@ const manageResult = z
     email: z.string(),
     locale: z.enum(['de', 'en']),
     confirmed: z.boolean(),
+    /** Weekly deals newsletter on (C-054a). */
+    newsletter: z.boolean().default(false),
     watches: z.array(
       z.object({
         id: z.string().uuid(),

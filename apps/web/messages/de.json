@@ -245,7 +245,22 @@
     "emptyCta": "Alle Hotels ansehen",
     "metaTitle": "Deals: Fünf-Sterne-Hotels unter ihrem Durchschnittspreis | Tidaq",
     "metaDescription": "Luxushotels, deren Preis gerade deutlich unter dem eigenen 30-Tage-Schnitt liegt. Nur echte Rückgänge, täglich aktualisiert.",
-    "unavailable": "Die Deals sind gerade nicht erreichbar. Versuch es gleich noch einmal."
+    "unavailable": "Die Deals sind gerade nicht erreichbar. Versuch es gleich noch einmal.",
+    "newsletterTitle": "Die besten Deals jeden Montag per E-Mail",
+    "newsletterText": "Einmal pro Woche schicken wir dir die Aufenthalte, die gerade am deutlichsten unter ihrem eigenen 30-Tage-Schnitt liegen. Kostenlos, abmelden mit einem Klick.",
+    "newsletterEmail": "Deine E-Mail-Adresse",
+    "newsletterConsent": "Ja, schickt mir jeden Montag die Deals per E-Mail. Abmelden geht jederzeit mit einem Klick.",
+    "newsletterPrivacy": "Datenschutz",
+    "newsletterSubmit": "Deals per E-Mail bekommen",
+    "newsletterPreview": "Testmodus: E-Mail-Link öffnen",
+    "newsletterResults": {
+      "sent": "Fast geschafft: Bitte bestätige deine Adresse über den Link in unserer E-Mail.",
+      "added": "Erledigt: Du bekommst die Deals ab dem nächsten Montag.",
+      "invalid": "Bitte gib eine gültige E-Mail-Adresse ein und setz den Haken.",
+      "too_soon": "Wir haben dir gerade schon eine E-Mail geschickt. Schau in dein Postfach oder versuch es in einer Minute noch einmal.",
+      "rate_limited": "Zu viele Versuche in kurzer Zeit. Warte bitte ein paar Minuten.",
+      "error": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
+    }
   },
   "cta": {
     "title": "Finde den richtigen Moment für dein Hotel.",
@@ -420,7 +435,7 @@
       "eyebrow": "Rechtliches",
       "title": "Datenschutzerklärung",
       "intro": "Kurz gesagt: Tidaq setzt keine Cookies, nutzt kein Tracking und keine Werbung, und du brauchst kein Konto. Unser eigener Code speichert keine IP-Adressen.",
-      "updated": "Stand: 14. Oktober 2026",
+      "updated": "Stand: 15. Oktober 2026",
       "sections": [
         {
           "title": "1. Verantwortlicher",
@@ -461,11 +476,13 @@
           ]
         },
         {
-          "title": "6. Preisalarm per E-Mail",
+          "title": "6. Preisalarm und Deals per E-Mail",
           "text": [
             "Diese Funktion startet in Kürze. Sobald es sie gibt, gilt: Wenn du einen Preisalarm einrichtest, speichern wir deine E-Mail-Adresse, den beobachteten Aufenthalt, den Text deiner Einwilligung und den Zeitpunkt. Wir schicken dir zuerst eine E-Mail mit einem Bestätigungslink (Double-Opt-in). Erst danach bekommst du Alarme, und nur für das, was du beobachten wolltest.",
+            "Für die Deals per E-Mail (einmal pro Woche, nur wenn du sie bestellst) speichern wir deine E-Mail-Adresse, deine Sprache, den Text deiner Einwilligung und den Zeitpunkt. Auch hier gilt Double-Opt-in. Du kannst nur die Deals abbestellen (auf der Verwaltungsseite, Link in jeder E-Mail); deine Preisalarme bleiben dann bestehen.",
             "Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst sie jederzeit widerrufen: über den Abmeldelink in jeder E-Mail oder per E-Mail an uns. Dann löschen wir deine E-Mail-Adresse, alle deine Alarme und den Nachweis deiner Einwilligung. Bestätigst du eine Adresse nicht, löschen wir sie nach 7 Tagen.",
-            "Die E-Mails verschickt der Dienst Resend (USA). Resend verarbeitet dafür deine E-Mail-Adresse und den Inhalt der E-Mail."
+            "Die E-Mails verschickt der Dienst Resend (USA). Resend verarbeitet dafür deine E-Mail-Adresse und den Inhalt der E-Mail.",
+            "Wir messen nicht, ob du unsere E-Mails öffnest oder auf Links darin klickst."
           ]
         },
         {
@@ -710,7 +727,12 @@
     "unsubscribedText": "Wir haben deine E-Mail-Adresse und alle deine Alarme gelöscht. Du bekommst keine E-Mails mehr von uns.",
     "notFoundTitle": "Diese Alarme gibt es nicht mehr",
     "notFoundText": "Vielleicht hast du dich schon abgemeldet. Neue Alarme legst du auf der Seite eines Aufenthalts an.",
-    "error": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
+    "error": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal.",
+    "confirmedNewsletter": "Danke, deine Anmeldung ist bestätigt. Die Deals kommen ab dem nächsten Montag.",
+    "newsletterTitle": "Deals per E-Mail",
+    "newsletterText": "Du bekommst jeden Montag die besten Deals.",
+    "newsletterOff": "Deals abbestellen",
+    "newsletterOffDone": "Du bekommst keine Deals mehr per E-Mail. Deine Preisalarme bleiben aktiv."
   },
   "provider": {
     "metaTitle": "{name}: Preistreue und Preise im Vergleich | Tidaq",
@@ -774,5 +796,21 @@
     "providersTitle": "Die Anbieter in unseren Daten",
     "providersText": "Für jeden Anbieter: wie oft er am günstigsten war und was unsere Kassen-Tests zeigen.",
     "unavailable": "Die aktuellen Zahlen sind gerade nicht erreichbar. Lade die Seite später neu."
+  },
+  "newsletterMail": {
+    "confirmSubject": "Bitte bestätige deine Anmeldung für die Deals",
+    "confirmPreheader": "Ein Klick fehlt noch, dann bekommst du jeden Montag die Deals.",
+    "confirmHeading": "Bitte bestätige deine Anmeldung",
+    "confirmText": "Du möchtest jeden Montag die besten Deals von Tidaq per E-Mail bekommen.",
+    "what": "Darin stehen die Aufenthalte in Luxushotels, die gerade am deutlichsten unter ihrem eigenen 30-Tage-Schnitt liegen, mit Link zum Preisverlauf. Mehr nicht.",
+    "confirmIgnore": "Warst du das nicht? Dann ignorier diese E-Mail einfach. Ohne Bestätigung schreiben wir dir nie wieder, und nach 7 Tagen löschen wir deine Adresse.",
+    "confirmButton": "Anmeldung bestätigen",
+    "addedSubject": "Du bekommst jetzt die Deals jeden Montag",
+    "addedPreheader": "Deine Anmeldung ist aktiv.",
+    "addedHeading": "Du bist angemeldet",
+    "addedText": "Ab dem nächsten Montag schicken wir dir die besten Deals.",
+    "manageButton": "Anmeldung verwalten",
+    "footerWhy": "Du bekommst diese E-Mail, weil auf tidaq.com die Deals per E-Mail für diese Adresse bestellt wurden.",
+    "footerManage": "Abbestellen oder Alarme ändern: {url}"
   }
 }
