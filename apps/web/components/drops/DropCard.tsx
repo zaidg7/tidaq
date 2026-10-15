@@ -13,6 +13,7 @@ import {
   type PriceDrop,
 } from '@tidaq/core';
 import { Card } from '@/components/ui/Card';
+import { CityPhotoTag } from '@/components/ui/CityPhotoTag';
 import { Icon } from '@/components/ui/Icon';
 import { Price } from '@/components/ui/Price';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
@@ -63,6 +64,7 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
         ) : (
           <div aria-hidden="true" className="bg-placeholder aspect-[16/10] w-full" />
         )}
+        <CityPhotoTag image={g.image} />
         <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-drop px-3 py-1.5 text-[17px] leading-none font-extrabold text-white tabular-nums shadow-float">
           <Icon icon={TrendingDown} size={16} />
           <span aria-hidden="true">{pct}</span>

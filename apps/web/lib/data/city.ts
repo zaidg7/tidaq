@@ -1,5 +1,6 @@
 import 'server-only';
-import { hotelPhoto, type PhotoSize } from '@/lib/hotelPhotos';
+import { hotelPhoto } from '@/lib/hotelPhotos';
+import { cityImage, type ImageRef } from '@/lib/photos';
 import { addDays, z } from '@tidaq/core';
 import { hasSupabase, rest, rpc } from './supabase';
 import { reportError } from '@/lib/errors';
@@ -49,8 +50,8 @@ export interface City {
 export interface CityHotel {
   slug: string;
   name: string;
-  /** Self-hosted 960 px photo (C-011c), when licensed. */
-  image: PhotoSize | null;
+  /** Self-hosted 960 px photo (C-011c), when licensed; else the city's photo (`city: true`, C-105). */
+  image: ImageRef | null;
   /**
    * Cheapest upcoming Fri → Sun stay on one reviewed site (SQL `city_best_weekends`), or null:
    * no prices yet, or single nights mislead at this hotel (C-070d).
@@ -111,7 +112,7 @@ export async function getCityPage(slug: string, today: string): Promise<CityLoad
         return {
           slug: h.slug,
           name: h.name,
-          image: photo && h.image_credit ? photo[960] : null,
+          image: photo && h.image_credit ? photo[960] : cityImage(city.slug),
           weekend:
             w?.check_in && w.total_cents && p && reliability && !unreliable.has(h.id)
               ? {

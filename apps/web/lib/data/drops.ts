@@ -20,11 +20,12 @@ import {
 } from '@tidaq/core';
 import { getCatalog, type CatalogHotel } from './catalog';
 import { reportError } from '@/lib/errors';
-import { hotelPhoto, type PhotoSize } from '@/lib/hotelPhotos';
+import { hotelImage, type ImageRef } from '@/lib/photos';
 import { isAffiliate } from './stay';
 import { hasSupabase, rest, rpc } from './supabase';
 
-export type HotelDropsWithPhoto = HotelDrops & { image: PhotoSize | null };
+/** `image.city`: the city's photo stands in for the hotel's own (shown as "Stadtbild", C-105). */
+export type HotelDropsWithPhoto = HotelDrops & { image: ImageRef | null };
 
 export type DropsLoad =
   | { kind: 'ok'; drops: HotelDropsWithPhoto[]; seenAt: string | null }
@@ -53,7 +54,7 @@ export const getDrops = cache(async (today: string): Promise<DropsLoad> => {
       seenAt,
       drops: groupDrops(rows).map((g) => ({
         ...g,
-        image: hotelPhoto(g.hotel.slug)?.[960] ?? null,
+        image: hotelImage(g.hotel.slug, g.city.slug, 960),
       })),
     };
   } catch (error) {
@@ -125,7 +126,7 @@ export const getDropPage = cache(
     if (!found) {
       const hotel = (await getCatalog())?.hotels.find((h) => h.slug === slug);
       return hotel
-        ? { kind: 'over', hotel, image: hotelPhoto(slug)?.[960] ?? null }
+        ? { kind: 'over', hotel, image: hotelImage(slug, hotel.city.slug, 960) }
         : { kind: 'missing' };
     }
     let series: DailyPrice[] = [];
@@ -197,7 +198,7 @@ export const getWeek = cache(async (today: string): Promise<WeekLoad> => {
       kind: 'ok',
       groups: groupDrops(rows).map((g) => ({
         ...g,
-        image: hotelPhoto(g.hotel.slug)?.[960] ?? null,
+        image: hotelImage(g.hotel.slug, g.city.slug, 960),
       })),
       summary: weekSummary(rows),
       from: addDays(today, -(WEEK_DAYS - 1)),

@@ -9,6 +9,7 @@ import {
   type Locale,
 } from '@tidaq/core';
 import { buttonClasses } from '@/components/ui/Button';
+import { CityPhotoTag } from '@/components/ui/CityPhotoTag';
 import { Icon } from '@/components/ui/Icon';
 import { Price } from '@/components/ui/Price';
 import { cn } from '@/lib/cn';
@@ -46,6 +47,7 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
         ) : (
           <div aria-hidden="true" className="bg-placeholder aspect-[16/11] h-full w-full" />
         )}
+        <CityPhotoTag image={g.image} />
         <span
           aria-hidden="true"
           className="absolute top-4 left-4 inline-flex items-center gap-2 rounded-full bg-drop px-4 py-2 text-[30px] leading-none font-extrabold text-white tabular-nums shadow-float"
