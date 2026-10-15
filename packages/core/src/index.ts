@@ -290,6 +290,7 @@ export {
   type PostedDrop,
   type PostedDropRow,
 } from './postedDrops';
+export { OG_IMAGE, dropOgImageUrl } from './ogImage';
 export { wrapLines } from './wrapLines';
 export { DROP_ALERTS, dropAlertMail, dropsFor, type DropScope } from './dropAlerts';
 export { CAPTION, cityTag, dropCaption, dropHashtags, topCaption } from './dropCaptions';

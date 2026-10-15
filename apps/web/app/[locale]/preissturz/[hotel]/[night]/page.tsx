@@ -4,6 +4,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import {
   alternatesFor,
   dropKey,
+  dropOgImageUrl,
+  OG_IMAGE,
   dropPath,
   localizedPath,
   parseDropKey,
@@ -37,6 +39,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const alternates = alternatesFor(dropPath(slug, stay), locale);
   if (load.kind === 'ok') {
     const f = await dropFacts(load.group, load.drop, locale, new Date());
+    // The "−31 %" card with both prices (C-028c); the hotel photo when it can't be made.
+    const card = dropOgImageUrl(process.env.SUPABASE_URL, slug, stay, locale);
     return {
       title: f.title,
       description: f.description,
@@ -45,6 +49,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
         title: f.title,
         description: f.description,
         photo: load.group.image,
+        image: card ? { url: card, ...OG_IMAGE } : null,
         alt: load.group.hotel.name,
       }),
     };
