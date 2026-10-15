@@ -19,6 +19,7 @@ import {
 import { PriceChart } from '@/components/chart/PriceChart';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
+import { CityPhotoTag } from '@/components/ui/CityPhotoTag';
 import { Icon } from '@/components/ui/Icon';
 import { Price } from '@/components/ui/Price';
 import { cn } from '@/lib/cn';
@@ -135,6 +136,7 @@ export async function DropPage({
           ) : (
             <div aria-hidden="true" className="aspect-[4/3] w-full" />
           )}
+          <CityPhotoTag image={g.image} />
           <span
             aria-hidden="true"
             className="absolute top-4 left-4 inline-flex items-center gap-2 rounded-full bg-drop px-4 py-2 text-[28px] leading-none font-extrabold text-white tabular-nums shadow-float"
@@ -214,7 +216,7 @@ export async function DropPage({
           <div className="mt-4">
             <DropShare
               path={localizedPath(dropPath(g.hotel.slug, d), locale)}
-              photo={g.image?.src ?? null}
+              photo={g.image && !g.image.city ? g.image.src : null}
               story={f.story}
               title={f.title}
               text={f.shareText}
