@@ -13,7 +13,12 @@ export const KIT_SIZE = 10;
  * The creator kit's data (C-080c): today's biggest drops (one per hotel, its top night) with
  * their story texts and captions, plus the top-5 cover and caption. German only, like /admin.
  */
-export async function creatorKit(drops: HotelDropsWithPhoto[], now: Date) {
+export async function creatorKit(
+  drops: HotelDropsWithPhoto[],
+  now: Date,
+  /** Today's radar, or the week's recap (C-080h). */
+  period: 'day' | 'week' = 'day',
+) {
   const list = drops.slice(0, KIT_SIZE);
   const items: KitItem[] = await Promise.all(
     list.map(async (g) => {
@@ -38,7 +43,7 @@ export async function creatorKit(drops: HotelDropsWithPhoto[], now: Date) {
   const firstDrop = list[0]?.top;
   if (!first || !firstDrop) return { items, top: null };
   const cover: CoverText = {
-    eyebrow: 'Preisstürze seit gestern',
+    eyebrow: period === 'week' ? 'Preisstürze der Woche' : 'Preisstürze seit gestern',
     title: `Top ${Math.min(5, items.length)} in Luxushotels`,
     rows: items.slice(0, 5).map((i) => ({ pct: i.pct, hotel: i.hotel, place: i.place })),
     asOf: first.story.asOf,
@@ -46,6 +51,12 @@ export async function creatorKit(drops: HotelDropsWithPhoto[], now: Date) {
   };
   return {
     items,
-    top: { caption: topCaption(list), cover, date: firstDrop.seenDay },
+    top: {
+      caption: topCaption(list, period),
+      cover,
+      date: firstDrop.seenDay,
+      heading: period === 'week' ? 'Top 5 der Woche' : 'Top 5 des Tages',
+      filePrefix: period === 'week' ? 'tidaq-woche' : 'tidaq-top5',
+    },
   };
 }

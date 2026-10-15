@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  weekSummary,
   heroDrop,
   usualCents,
   dropPath,
@@ -244,5 +245,38 @@ describe('heroDrop (C-080d2)', () => {
   it('falls back to the biggest, and to null without drops', () => {
     expect(heroDrop(g.slice(0, 1))?.hotel.name).toBe('A');
     expect(heroDrop([])).toBeNull();
+  });
+});
+
+describe('weekSummary (C-080h)', () => {
+  it('counts drops, hotels, weekends, average, biggest and ranks cities', () => {
+    const s = weekSummary([
+      row({ hotel_id: 1, city_slug: 'paris', city_name_de: 'Paris', drop_pct: 0.2 }),
+      row({
+        hotel_id: 1,
+        city_slug: 'paris',
+        city_name_de: 'Paris',
+        drop_pct: 0.3,
+        night: '2026-10-23',
+        check_out: '2026-10-25',
+      }),
+      row({ hotel_id: 2, city_slug: 'rom', city_name_de: 'Rom', drop_pct: 0.5 }),
+    ]);
+    expect(s).toMatchObject({ drops: 3, hotels: 2, weekends: 1, biggest: 0.5 });
+    expect(s.average).toBeCloseTo(1 / 3);
+    expect(s.cities.map((c) => [c.slug, c.drops, c.biggest])).toEqual([
+      ['paris', 2, 0.3],
+      ['rom', 1, 0.5],
+    ]);
+  });
+
+  it('is empty without rows', () => {
+    expect(weekSummary([])).toMatchObject({
+      drops: 0,
+      hotels: 0,
+      average: 0,
+      biggest: 0,
+      cities: [],
+    });
   });
 });

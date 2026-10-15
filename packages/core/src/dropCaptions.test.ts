@@ -116,6 +116,12 @@ describe('topCaption', () => {
     expect(text).toContain('#zürich #berlin #luxushotel');
   });
 
+  it('the weekly version says "diese Woche"', () => {
+    expect(plain(topCaption(groups, 'week')).split('\n')[0]).toBe(
+      'Die 2 größten Preisstürze in Luxushotels diese Woche (Stand: 15. Okt., 09:40):',
+    );
+  });
+
   it('handles one hotel and none', () => {
     expect(topCaption(groups.slice(0, 1))).toMatch(/^Der größte Preissturz in Luxushotels/);
     expect(topCaption([])).toBe('');

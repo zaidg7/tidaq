@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { BellRing, Check, TrendingDown } from 'lucide-react';
+import { BellRing, CalendarRange, Check, TrendingDown } from 'lucide-react';
 import {
   DROP_SORTS,
   DROP_WHENS,
@@ -172,8 +172,8 @@ export function DropsView({
         </ul>
       )}
 
-      {alert && (
-        <p className="mt-4">
+      <p className="mt-4 flex flex-wrap gap-x-6">
+        {alert && (
           <a
             href={`#${DROP_ALERT_ID}`}
             className="inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-accent underline-offset-4 hover:underline"
@@ -181,8 +181,15 @@ export function DropsView({
             <Icon icon={BellRing} size={18} />
             {t('alertCta')}
           </a>
-        </p>
-      )}
+        )}
+        <a
+          href={localizedPath(routes.dropsWeek, locale)}
+          className="inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-accent underline-offset-4 hover:underline"
+        >
+          <Icon icon={CalendarRange} size={18} />
+          {t('weekLink')}
+        </a>
+      </p>
 
       {stats.hotels > 0 && (
         <div className="mt-8 grid gap-3">

@@ -19,6 +19,7 @@ const STATIC = [
   routes.home,
   routes.hotels,
   routes.drops,
+  routes.dropsWeek,
   routes.deals,
   routes.method,
   routes.ranking,

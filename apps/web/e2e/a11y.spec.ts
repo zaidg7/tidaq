@@ -23,6 +23,7 @@ const PAGES = [
   '/dev/drops?share',
   '/dev/drops?over',
   '/dev/drops?ref=tiktok',
+  '/dev/drops?week',
   '/en/dev/drops',
   '/preissturz',
   '/dev/provider?p=booking-com',

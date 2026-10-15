@@ -270,6 +270,8 @@ export {
   priceDropRowSchema,
   sortDrops,
   usualCents,
+  weekSummary,
+  type WeekSummary,
   type DropSort,
   type DropWhen,
   type HotelDrops,

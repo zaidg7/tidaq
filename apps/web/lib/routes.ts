@@ -8,6 +8,7 @@ export const routes = {
   hotels: '/hotels',
   deals: '/deals',
   drops: '/preissturz',
+  dropsWeek: '/preissturz/woche',
   checkoutCheck: '/kassen-check',
   method: '/methodik',
   ranking: '/ranking',

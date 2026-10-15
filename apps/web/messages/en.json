@@ -111,7 +111,8 @@
       "affiliate": "Affiliate disclosure",
       "imprint": "Imprint",
       "privacy": "Privacy",
-      "drops": "Price drops"
+      "drops": "Price drops",
+      "dropsWeek": "Weekly recap"
     },
     "copyright": "© {year} Tidaq",
     "source": "Prices every morning from the booking sites. No cookies."
@@ -889,7 +890,8 @@
     },
     "alertCta": "Set up a price drop alert: we'll let you know",
     "stay": "{n, plural, one {# night} other {# nights}}, 2 adults",
-    "weekendBadge": "Weekend"
+    "weekendBadge": "Weekend",
+    "weekLink": "Weekly recap: the biggest drops of the week"
   },
   "drop": {
     "metaTitle": "{hotel}: {pct} for {date} | Tidaq",
@@ -964,5 +966,26 @@
     "manageButton": "Manage alert",
     "footerWhy": "You're getting this email because the price drop alert was requested for this address on tidaq.com.",
     "footerManage": "Unsubscribe or change alerts: {url}"
+  },
+  "dropsWeek": {
+    "metaTitle": "The biggest price drops of the week at luxury hotels | Tidaq",
+    "metaDescription": "Every price drop of the last 7 days at five-star hotels: how many, how big, where. With both prices and a link to the price history.",
+    "eyebrow": "Weekly recap",
+    "title": "The biggest price drops of the week",
+    "range": "{from} to {to}",
+    "statDrops": "{n, plural, one {# price drop} other {# price drops}}",
+    "statHotels": "in {n, plural, one {# hotel} other {# hotels}}",
+    "statAverage": "{pct} on average",
+    "statBiggest": "biggest {pct}",
+    "statWeekends": "{n, plural, one {# weekend} other {# weekends}}",
+    "topTitle": "Top {n}",
+    "topText": "Each hotel's biggest drop of the week. The price may have gone up again since: the price history shows where it is now.",
+    "seen": "seen {date}",
+    "history": "Price history",
+    "citiesTitle": "Where prices fell most this week",
+    "cityDrops": "{n, plural, one {# drop} other {# drops}}, biggest {pct}",
+    "today": "See today's price drops",
+    "empty": "There hasn't been a price drop in the last 7 days yet. We check every day, come back soon.",
+    "unavailable": "The weekly recap can't be loaded right now. Please try again in a moment."
   }
 }

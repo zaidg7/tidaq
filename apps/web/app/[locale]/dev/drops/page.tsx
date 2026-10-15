@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { addDays, type DailyPrice, type Locale } from '@tidaq/core';
+import { addDays, weekSummary, type DailyPrice, type Locale } from '@tidaq/core';
 import { DropAlertSection } from '@/components/drops/DropAlertSection';
 import { DropOver, DropPage } from '@/components/drops/DropPage';
 import { DropsTeaser, dropsHref } from '@/components/drops/DropsTeaser';
 import { applyDropFilters, DROP_SOURCES, DropsView } from '@/components/drops/DropsView';
-import { ADLON, sampleDrops as sample } from '@/lib/dropsSample';
+import { WeekView } from '@/components/drops/WeekView';
+import { ADLON, sampleDrops as sample, sampleRows } from '@/lib/dropsSample';
 import { berlinToday } from '@/lib/today';
 
 // Dev pages exist on staging and locally only; APP_ENV is read per request.
@@ -31,7 +32,7 @@ function history(prevCents: number, nowCents: number, today: string): DailyPrice
 /**
  * `/dev/drops`: the radar with sample data. `?empty`: empty state; `?teaser`: the section;
  * `?share` or `?share=<slug>`: a drop page (C-080b); `?over`: a drop that's gone; `?ref=tiktok`:
- * the welcome for social bio links (C-080d).
+ * the welcome for social bio links (C-080d); `?week`: the weekly recap (C-080h).
  */
 export default async function DevDropsPage({
   params,
@@ -43,6 +44,7 @@ export default async function DevDropsPage({
     teaser?: string;
     share?: string;
     over?: string;
+    week?: string;
     stadt?: string;
     wann?: string;
     sort?: string;
@@ -55,6 +57,12 @@ export default async function DevDropsPage({
   const q = await searchParams;
   const all = q.empty !== undefined ? [] : sample();
   const today = berlinToday();
+  if (q.week !== undefined) {
+    const rows = q.empty !== undefined ? [] : sampleRows();
+    return (
+      <WeekView groups={all} summary={weekSummary(rows)} from={addDays(today, -6)} to={today} />
+    );
+  }
   if (q.over !== undefined) {
     return (
       <DropOver
