@@ -161,7 +161,7 @@ describe('dropPath and findDrop (C-080b)', () => {
     expect(dropPath('hotel-adlon', '2026-10-18')).toBe('/preissturz/hotel-adlon/2026-10-18');
   });
 
-  it('finds a hotel\'s top drop or one of its other nights', () => {
+  it("finds a hotel's top drop or one of its other nights", () => {
     const g = groupDrops(rows);
     const top = g[0];
     expect(top).toBeDefined();

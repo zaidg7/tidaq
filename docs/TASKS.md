@@ -84,7 +84,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-028b                                                          | Share images: hotel photos and a default OG image                            | CLOUD | S             | C-028a                            | DONE           |
 | C-028c                                                          | Dynamic OG images with today's price (own Worker)                            | CLOUD | S             | C-028b, B-017                     | BLOCKED        |
 | C-080a | Preissturz-Radar: daily sudden price drops, /preissturz, home and city teasers | CLOUD | M | C-013g, C-024 | DONE |
-| C-080b | Shareable drop page per hotel and night + in-browser story image (Web Share) | CLOUD | M | C-080a | TODO |
+| C-080b | Shareable drop page per hotel and night + in-browser story image (Web Share) | CLOUD | M | C-080a | DONE |
 | C-080c | Creator kit in /admin: top drops, captions, story images for TikTok/Instagram | CLOUD | S | C-080b | TODO |
 | C-080d | Weekend drops (2 nights, same site) and city drop alerts by email | CLOUD | M | C-080a, C-031a | TODO |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
@@ -987,8 +987,10 @@ The social-media lever: "Das Adlon kostet heute Nacht 31 % weniger als gestern."
 
 ### C-080b · Shareable drop page + story image
 
-Owner: CLOUD · Size: M · Depends on: C-080a · Status: TODO
+Owner: CLOUD · Size: M · Depends on: C-080a · Status: DONE · PR: see `[C-080b]`
 `/preissturz/[hotel]/[night]`: one drop with photo, both prices, the night's price history (chart), the site and "Zum Angebot" (labelled affiliate link where one exists). Open Graph title and description carry the drop ("Hotel Adlon: −26 % für Sa, 18. Okt."); the static photo is the OG image until C-028c. "Als Story teilen": draws a 1080×1920 image in the browser (canvas: photo, hotel, night, −26 %, old/new price, "tidaq.com/preissturz"), shares it with the Web Share API (`navigator.share({ files })`) and falls back to a download. "Link kopieren" with a toast. No server CPU, so it works on the Workers free plan. Old drops (night in the past or price back up) stay reachable with an honest "Dieser Preissturz ist vorbei" state and a link to the radar.
+
+**C-080b notes (DONE):** `/preissturz/[hotel]/[night]` (force-dynamic; core `dropPath`, `findDrop`; `getDropPage` in `lib/data/drops.ts`): photo with the drop, both prices, saved, new low, "Gesehen heute, 08:12 bei …", CTA "Alle Anbieter und Preisverlauf" → the 1-night stay page, the night's 30-day history (existing SQL `stay_history_from_nights`, no migration; the chart is skipped if that read fails), the hotel's other dropped nights, today's other drops. Radar cards now open the drop page. A link whose drop is gone renders `DropOver` ("Dieser Preissturz ist vorbei", noindex) with the current price; unknown hotel or invalid date → 404. Metadata: title "Hotel: −31 % für Di, 27. Okt.", description with both prices, OG image = the hotel photo. Sharing (`DropShare`, client, labels passed from the server): "Als Story teilen" draws a 1080×1920 PNG on a canvas in the browser (`storyImage.ts`; layout keeps the facts out of the platforms' top/bottom UI zones; core `wrapLines` for long names) and opens the share sheet with the file (Web Share Level 2: iOS/Android → Instagram, TikTok, WhatsApp); desktops without file sharing download it. "Link teilen" uses the share sheet or the clipboard. Zero server CPU, so it works on the Workers free plan (B-017 stays "not now": dynamic OG images would only change link previews). Sample: `/dev/drops?share[=slug]`, `/dev/drops?over`.
 
 ### C-080c · Creator kit in /admin
 
