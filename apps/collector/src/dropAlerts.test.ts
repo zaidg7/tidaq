@@ -108,7 +108,7 @@ describe('runDropAlerts (C-080e2)', () => {
     expect(paris?.to).toEqual(['gast1@example.com']);
     expect(paris?.from).toBe('Tidaq <alarm@tidaq.com>');
     expect(paris?.subject.replace(/[\u00a0\u202f]/g, ' ')).toBe(
-      'Preissturz: −30 % im Hotel 1 und 1 weiterer',
+      'Price Drop: −30 % im Hotel 1 und 1 weiterer',
     );
     expect(paris?.text).toContain('https://tidaq.com/price-drops/hotel-1/2026-11-20');
     expect(paris?.text).toContain('https://tidaq.com/price-drops?stadt=paris');
@@ -148,12 +148,12 @@ describe('runDropAlerts (C-080e2)', () => {
     const s = await runDropAlerts({ store: mem.store, env: live, now: NOW, fetchFn: mail.fetchFn });
     expect(s).toMatchObject({ recipients: 3, matched: 2, sent: 2 });
     const [only, both] = mail.calls[0]?.body ?? [];
-    expect(only?.subject.replace(/[\u00a0\u202f]/g, ' ')).toBe('Preissturz: −20 % im Hotel 2');
-    expect(only?.text).toContain('Neue Preisstürze in deinen Hotels');
+    expect(only?.subject.replace(/[\u00a0\u202f]/g, ' ')).toBe('Price Drop: −20 % im Hotel 2');
+    expect(only?.text).toContain('Neue Price Drops in deinen Hotels');
     expect(only?.text).not.toContain('Hotel 1');
     // The radar button isn't filtered to a city without a city alarm.
     expect(only?.text).not.toContain('?stadt=');
-    expect(both?.text).toContain('Neue Preisstürze in Paris und deinen Hotels');
+    expect(both?.text).toContain('Neue Price Drops in Paris und deinen Hotels');
     expect(both?.text).toContain('https://tidaq.com/price-drops/hotel-2/2026-11-20');
     expect(both?.text).toContain('https://tidaq.com/price-drops?stadt=paris');
     expect(mem.dropRecipients.map((r) => r.sentOn)).toEqual([TODAY, TODAY, null]);

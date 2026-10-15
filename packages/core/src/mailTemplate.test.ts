@@ -28,17 +28,17 @@ describe('renderMail', () => {
   it('eyebrow, item cards with badges, a bulletproof button and light colors only (C-083)', () => {
     const { html, text } = renderMail({
       ...content,
-      eyebrow: 'Preissturz-Alarm',
+      eyebrow: 'Price Alert',
       items: [
         { badge: '−31 %', title: 'Baur <au> Lac', meta: 'Zürich', url: 'https://tidaq.com/x' },
       ],
     });
-    expect(html).toContain('Preissturz-Alarm');
+    expect(html).toContain('Price Alert');
     expect(html).toContain('−31 %');
     expect(html).toContain('Baur &lt;au&gt; Lac');
     expect(html).toContain('bgcolor="#6a49e0"');
     expect(html).toContain('content="light only"');
-    expect(text.split('\n')[0]).toBe('PREISSTURZ-ALARM');
+    expect(text.split('\n')[0]).toBe('PRICE ALERT');
     expect(text).toContain('−31 % · Baur <au> Lac');
   });
 
