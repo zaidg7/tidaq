@@ -1,10 +1,10 @@
-import { CityPhotoTag } from '@/components/ui/CityPhotoTag';
 import type { ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import {
   cityIn,
   cityPath,
   formatDateRange,
+  formatPrice,
   hotelPath,
   localizedPath,
   NIGHT_GRID,
@@ -12,30 +12,38 @@ import {
   type Locale,
   type StayParams,
 } from '@tidaq/core';
-import { Card } from '@/components/ui/Card';
-import { PriceText } from '@/components/ui/PriceText';
+import { HotelPhotoCard } from '@/components/hotel/HotelPhotoCard';
+import { PhotoHero } from '@/components/shell/PhotoHero';
+import { cityPhoto, cityPhotoAsHotelPhoto } from '@/lib/cityPhotos';
 import type { City, CityHotel } from '@/lib/data/city';
+import { cardPhoto } from '@/lib/photos';
 import { routes } from '@/lib/routes';
 
 /**
- * City page (C-024): the city's five-star hotels as cards, each with its photo and cheapest
- * upcoming weekend on one site. The card opens the hotel page (calendar of every night); the
- * weekend opens its stay page. `children` follow the list (the city's price drops, C-080a).
- * With `dates` from the search (C-110) every card shows that stay's total and the cheapest come
- * first; hotels without a total for those dates follow, A–Z.
+ * City page (C-024, mockup B language): the city's photo full-bleed with "Fünf-Sterne-Hotels in
+ * Paris" on it, then its hotels as photo cards, each with its cheapest upcoming weekend on one
+ * site. The card opens the hotel page (calendar of every night); the weekend opens its stay page.
+ * `children` follow the hotels (the city's Price Drops, the alert band). With `dates` from the
+ * search (C-110) every card shows that stay's total and the cheapest come first; hotels without
+ * a total for those dates follow, A–Z.
  */
 export function CityView({
   city,
   hotels,
   dates,
+  drops = 0,
   children,
 }: {
   city: City;
   hotels: CityHotel[];
   dates?: StayParams | null;
+  /** Hotels with a Price Drop today, for the line on the photo. */
+  drops?: number;
   children?: ReactNode;
 }) {
   const t = useTranslations('city');
+  const th = useTranslations('home');
+  const tp = useTranslations('photo');
   const locale = useLocale() as Locale;
   const where = cityIn(city.slug, city.name[locale], locale);
   const list = dates
@@ -45,146 +53,157 @@ export function CityView({
           a.name.localeCompare(b.name, 'de'),
       )
     : hotels;
+  const own = cityPhoto(city.slug);
+  // No city photo (Hamburg): the first hotel with its own photo stands in.
+  const stand = own ? null : hotels.map((h) => cardPhoto(h.slug, null)).find(Boolean);
+  const facts = [
+    th('cityHotels', { n: hotels.length }),
+    drops > 0 && th('cityDropsToday', { n: drops }),
+  ]
+    .filter(Boolean)
+    .join(' · ');
 
   return (
-    <div className="mx-auto w-full max-w-[1080px] px-5 pt-8 pb-16 md:px-7 lg:pt-14 lg:pb-[88px]">
-      <header className="max-w-[40em]">
-        <p className="text-eyebrow text-accent">
+    <>
+      <PhotoHero
+        photo={own ? cityPhotoAsHotelPhoto(own) : (stand?.photo ?? null)}
+        alt={own?.alt ?? ''}
+        tag={own ? undefined : tp('cityTag')}
+        eyebrow={
           <a
-            href={localizedPath(routes.hotels, locale)}
-            className="underline-offset-2 hover:underline"
+            href={localizedPath(routes.cities, locale)}
+            className="underline-offset-4 hover:underline"
           >
-            {t('eyebrow')}
+            {t('eyebrowCities')}
           </a>
-        </p>
-        <h1 className="text-h2 mt-2">{t('title', { where })}</h1>
-        {dates ? (
-          <div className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-            <p className="text-lead font-semibold text-ink">
-              {t('datesLine', {
+        }
+        title={t('title', { where })}
+        lead={
+          dates
+            ? t('datesLine', {
                 dates: formatDateRange(dates.checkIn, dates.checkOut, locale),
                 nights: dates.nights,
                 adults: dates.adults,
-              })}
-            </p>
-            <a
-              href={localizedPath(cityPath(city.slug), locale)}
-              className="text-small font-semibold text-accent underline-offset-2 hover:underline"
-            >
-              {t('withoutDates')}
-            </a>
-          </div>
-        ) : (
-          <p className="text-lead mt-4 text-muted-ink">
-            {hotels.length
-              ? t('intro', { n: hotels.length, where, days: NIGHT_GRID.windowDays })
-              : t('empty')}
-          </p>
+              })
+            : hotels.length
+              ? facts
+              : t('empty')
+        }
+      >
+        {dates && (
+          <a
+            href={localizedPath(cityPath(city.slug), locale)}
+            className="inline-flex h-10 items-center rounded-full border border-white/40 bg-white/16 px-4 text-[14px] font-semibold text-white backdrop-blur-sm hover:bg-white/26"
+          >
+            {t('withoutDates')}
+          </a>
         )}
-        {dates && hotels.length > 0 && (
-          <p className="text-small mt-2 text-muted-ink">{t('datesSorted')}</p>
+      </PhotoHero>
+
+      <div className="mx-auto w-full max-w-[1240px] px-[18px] pt-10 md:px-10 md:pt-16">
+        {hotels.length > 0 && (
+          <section aria-labelledby="city-hotels">
+            <div className="mb-6 md:mb-9">
+              <h2
+                id="city-hotels"
+                className="text-[28px] leading-[1.1] font-[650] tracking-[-0.03em] md:text-[40px]"
+              >
+                {t('hotelsTitle')}
+              </h2>
+              <p className="mt-1.5 max-w-[46em] text-[15px] text-muted md:mt-2.5 md:text-[17px]">
+                {dates
+                  ? t('datesSorted')
+                  : t('intro', { n: hotels.length, where, days: NIGHT_GRID.windowDays })}
+              </p>
+            </div>
+            <ul className="grid grid-cols-[minmax(0,1fr)] gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-7">
+              {list.map((h) => (
+                <li key={h.slug}>
+                  <HotelCard hotel={h} citySlug={city.slug} locale={locale} dates={dates ?? null} />
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
-      </header>
-      {hotels.length > 0 && (
-        <ul className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((h) => (
-            <li key={h.slug}>
-              <HotelCard hotel={h} locale={locale} dates={dates ?? null} />
-            </li>
-          ))}
-        </ul>
-      )}
-      {children && <div className="mt-14 lg:mt-[88px]">{children}</div>}
-    </div>
+      </div>
+      {children}
+    </>
   );
 }
 
 function HotelCard({
   hotel,
+  citySlug,
   locale,
   dates,
 }: {
   hotel: CityHotel;
+  citySlug: string;
   locale: Locale;
   dates: StayParams | null;
 }) {
   const t = useTranslations('city');
   const w = hotel.weekend;
   const s = hotel.stay;
+  const price = (c: number) => formatPrice(c, locale);
   return (
-    <Card interactive padded={false} className="flex h-full flex-col overflow-hidden">
-      <div className="relative">
-        {hotel.image ? (
-          // eslint-disable-next-line @next/next/no-img-element -- licensed photo, self-hosted 960 px (C-011c)
-          <img
-            src={hotel.image.src}
-            alt=""
-            width={hotel.image.width}
-            height={hotel.image.height}
-            loading="lazy"
-            decoding="async"
-            className="bg-placeholder aspect-[16/10] w-full object-cover"
-          />
-        ) : (
-          <div aria-hidden="true" className="bg-placeholder aspect-[16/10] w-full" />
-        )}
-        <CityPhotoTag image={hotel.image} />
-      </div>
-      <div className="flex flex-1 flex-col p-5">
-        <a
-          href={localizedPath(hotelPath(hotel.slug), locale)}
-          className="text-h3 after:absolute after:inset-0"
-        >
-          {hotel.name}
-        </a>
-        <div className="mt-auto pt-4">
-          {dates ? (
-            s ? (
-              <>
-                <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                  <a
-                    href={localizedPath(
-                      stayPath(hotel.slug, dates.checkIn, dates.checkOut, dates.adults),
-                      locale,
-                    )}
-                    className="relative z-[1] font-semibold text-accent underline-offset-2 hover:underline"
-                  >
-                    {t('stayLink')}
-                  </a>
-                  <PriceText cents={s.totalCents} locale={locale} size="md" />
-                </div>
-                <p className="text-meta mt-0.5 text-muted-ink">
-                  {t('stayFacts', { nights: dates.nights, provider: s.provider })}
-                </p>
-              </>
-            ) : (
-              <p className="text-meta text-muted-ink">{t('noStay')}</p>
-            )
-          ) : w ? (
+    <HotelPhotoCard
+      slug={hotel.slug}
+      name={hotel.name}
+      citySlug={citySlug}
+      href={localizedPath(hotelPath(hotel.slug), locale)}
+    >
+      <div className="mt-3 border-t border-line pt-3">
+        {dates ? (
+          s ? (
             <>
-              <p className="text-meta text-muted-ink">{t('weekend')}</p>
-              <div className="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                {/* Above the card link: the weekend opens its own stay page. */}
+              <div className="flex items-baseline justify-between gap-3">
                 <a
                   href={localizedPath(
-                    stayPath(hotel.slug, w.checkIn, w.checkOut, NIGHT_GRID.adults),
+                    stayPath(hotel.slug, dates.checkIn, dates.checkOut, dates.adults),
                     locale,
                   )}
-                  className="relative z-[1] font-semibold text-accent underline-offset-2 hover:underline"
+                  className="relative z-[1] text-[15px] font-semibold text-accent underline-offset-2 hover:underline"
                 >
-                  {formatDateRange(w.checkIn, w.checkOut, locale)}
+                  {t('stayLink')}
                 </a>
-                <PriceText cents={w.totalCents} locale={locale} size="md" />
+                <strong className="text-[20px] font-bold tracking-[-0.02em] tabular-nums">
+                  {price(s.totalCents)}
+                </strong>
               </div>
-              <p className="text-meta mt-0.5 text-muted-ink">
-                {t('weekendFacts', { provider: w.provider })}
+              <p className="mt-0.5 text-[14px] text-muted">
+                {t('stayFacts', { nights: dates.nights, provider: s.provider })}
               </p>
             </>
           ) : (
-            <p className="text-meta text-muted-ink">{t('noWeekend')}</p>
-          )}
-        </div>
+            <p className="text-[14px] text-muted">{t('noStay')}</p>
+          )
+        ) : w ? (
+          <>
+            <p className="text-[13px] text-muted">{t('weekend')}</p>
+            <div className="mt-0.5 flex items-baseline justify-between gap-3">
+              {/* Above the card link: the weekend opens its own stay page. */}
+              <a
+                href={localizedPath(
+                  stayPath(hotel.slug, w.checkIn, w.checkOut, NIGHT_GRID.adults),
+                  locale,
+                )}
+                className="relative z-[1] text-[16px] font-semibold text-accent underline-offset-2 hover:underline"
+              >
+                {formatDateRange(w.checkIn, w.checkOut, locale)}
+              </a>
+              <strong className="text-[20px] font-bold tracking-[-0.02em] tabular-nums">
+                {price(w.totalCents)}
+              </strong>
+            </div>
+            <p className="mt-0.5 text-[14px] text-muted">
+              {t('weekendFacts', { provider: w.provider })}
+            </p>
+          </>
+        ) : (
+          <p className="text-[14px] text-muted">{t('noWeekend')}</p>
+        )}
       </div>
-    </Card>
+    </HotelPhotoCard>
   );
 }

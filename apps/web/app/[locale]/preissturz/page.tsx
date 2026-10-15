@@ -11,7 +11,7 @@ import {
   type DropSource,
 } from '@/components/drops/DropsView';
 import { PageSkeleton } from '@/components/shell/PageSkeleton';
-import { DropAlertSection } from '@/components/drops/DropAlertSection';
+import { AlertBand, cityOf } from '@/components/drops/AlertBand';
 import { FromVideos, videoItems } from '@/components/drops/FromVideos';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
@@ -85,7 +85,13 @@ async function DropsPageBody({ params, searchParams }: Props) {
       checked={checked}
       source={source}
       videos={source && <FromVideos items={videoItems(posted, load.drops)} />}
-      alert={<DropAlertSection locale={locale} defaultCity={filters.city} />}
+      alert={
+        <AlertBand
+          locale={locale}
+          previews={shown}
+          city={cityOf(load.drops, filters.city, locale)}
+        />
+      }
     />
   );
 }

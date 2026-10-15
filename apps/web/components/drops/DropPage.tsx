@@ -20,21 +20,20 @@ import {
   type PriceDrop,
 } from '@tidaq/core';
 import { SectionHead } from '@/components/home/SectionHead';
+import { PhotoSheet } from '@/components/shell/PhotoSheet';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { Meter } from '@/components/ui/Meter';
-import { Photo } from '@/components/ui/Photo';
 import { cn } from '@/lib/cn';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
 import { cardPhoto } from '@/lib/photos';
 import { routes } from '@/lib/routes';
-import { DROP_ALERT_ID } from './alertId';
 import { DropBadge } from './DropBadge';
 import { dropPercent } from './DropCard';
 import { DropShare } from './DropShare';
-import { DropAlertForm } from './DropAlertForm';
-import { DropAlertSection, dropAlertLabels } from './DropAlertSection';
+import { DropAlertSection } from './DropAlertSection';
+import { HotelAlertBox } from './HotelAlertBox';
 import { DropStoryChart, storyStart } from './DropStoryChart';
 import { DropTile } from './DropTile';
 import { dropsHref } from './DropsTeaser';
@@ -162,36 +161,23 @@ export async function DropPage({
 
   return (
     <>
-      <div data-photo-hero className="relative -mt-16 lg:-mt-[76px]">
-        <Photo
-          photo={pic?.photo ?? null}
-          alt={g.hotel.name}
-          sizes="100vw"
-          priority
-          className="h-[400px] bg-[#2a2620] md:h-[480px] lg:h-[560px]"
-        >
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(14,12,18,0.45)_0%,rgba(14,12,18,0)_32%)]"
-          />
-          {/* Above the sheet's overlap (28 px phones, 48 px wider). */}
-          {(pic?.city || credit) && (
-            <span className="absolute right-3.5 bottom-10 z-10 inline-flex h-5 max-w-[calc(100%-28px)] items-center truncate rounded-tag bg-[rgba(21,19,28,0.55)] px-2 text-[10px] text-white md:right-10 md:bottom-16 md:text-[11px]">
-              {pic?.city ? (
-                tp('cityTag')
-              ) : credit?.href ? (
-                <a href={credit.href} rel="noopener" className="underline-offset-2 hover:underline">
-                  {t('photoCredit')}: {credit.text}
-                </a>
-              ) : (
-                `${t('photoCredit')}: ${credit?.text}`
-              )}
-            </span>
-          )}
-        </Photo>
-      </div>
-
-      <div className="photo-sheet relative -mt-7 bg-bg md:-mt-12">
+      <PhotoSheet
+        photo={pic?.photo ?? null}
+        alt={g.hotel.name}
+        tag={
+          pic?.city ? (
+            tp('cityTag')
+          ) : credit ? (
+            credit.href ? (
+              <a href={credit.href} rel="noopener" className="underline-offset-2 hover:underline">
+                {t('photoCredit')}: {credit.text}
+              </a>
+            ) : (
+              `${t('photoCredit')}: ${credit.text}`
+            )
+          ) : undefined
+        }
+      >
         <div
           className={cn(
             'mx-auto grid max-w-[1240px] gap-y-0 px-[18px] pt-[26px] md:gap-x-12 md:px-10 md:pt-10 lg:gap-x-16',
@@ -431,28 +417,12 @@ export async function DropPage({
             </section>
           )}
 
-          <section
-            id={DROP_ALERT_ID}
-            aria-labelledby="drop-alert"
-            className="mt-9 scroll-mt-24 rounded-[24px] bg-surface-accent px-5 py-6 [grid-area:alert] md:mt-12 md:px-8 md:py-8"
-          >
-            <h2 id="drop-alert" className="text-[22px] font-semibold tracking-[-0.02em]">
-              {t('alertTitle')}
-            </h2>
-            <p className="mt-1.5 mb-4 text-[15px] text-muted">
-              {t('alertText', { hotel: g.hotel.name })}
-            </p>
-            <div className="md:max-w-[440px]">
-              <DropAlertForm
-                locale={locale}
-                cities={[]}
-                defaultCity={g.city.slug}
-                hotel={{ slug: g.hotel.slug, name: g.hotel.name }}
-                labels={await dropAlertLabels(locale, { slug: g.hotel.slug, name: g.hotel.name })}
-                variant="hotel"
-              />
-            </div>
-          </section>
+          <HotelAlertBox
+            locale={locale}
+            hotel={{ slug: g.hotel.slug, name: g.hotel.name }}
+            citySlug={g.city.slug}
+            className="mt-9 [grid-area:alert] md:mt-12 md:block md:px-8 md:py-8"
+          />
 
           <p className="mt-6 px-0.5 text-[13px] text-muted [grid-area:foot]">
             {t('foot')}{' '}
@@ -489,7 +459,7 @@ export async function DropPage({
           </section>
         )}
         <div className="h-16 md:h-24" />
-      </div>
+      </PhotoSheet>
     </>
   );
 }

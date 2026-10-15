@@ -10,7 +10,7 @@ test.describe('Preissturz-Radar (C-080a, sample data on /dev/drops)', () => {
     page,
   }) => {
     await page.goto('/dev/drops');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Preisstürze in Luxushotels');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Price Drops heute');
     const main = page.getByRole('main');
     await expect(main).toContainText('10 Nächte günstiger in 5 Hotels');
     await expect(main).toContainText('5.722 Nächte in 82 Hotels auf 4 Buchungsseiten geprüft');

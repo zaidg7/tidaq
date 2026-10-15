@@ -15,8 +15,10 @@ import {
 } from '@tidaq/core';
 import { PageSkeleton } from '@/components/shell/PageSkeleton';
 import { CityView } from '@/components/city/CityView';
-import { DropAlertSection } from '@/components/drops/DropAlertSection';
-import { DropsTeaser, dropsHref } from '@/components/drops/DropsTeaser';
+import { AlertBand } from '@/components/drops/AlertBand';
+import { DropTile } from '@/components/drops/DropTile';
+import { SectionHead } from '@/components/home/SectionHead';
+import { dropsHref } from '@/components/drops/DropsTeaser';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
 import { logView } from '@/lib/data/events';
@@ -124,20 +126,33 @@ async function CityPageRouteBody(props: Props) {
   // The city's sudden drops (C-080a); the teaser renders nothing without any.
   const cityDrops =
     drops.kind === 'ok' ? filterDrops(drops.drops, { city: slug, when: null, today }) : [];
+  const name = result.city.name[locale];
+  const tc = await getTranslations({ locale, namespace: 'city' });
   return (
-    <CityView city={result.city} hotels={result.hotels} dates={dates}>
+    <CityView city={result.city} hotels={result.hotels} dates={dates} drops={cityDrops.length}>
       {cityDrops.length > 0 && (
-        <div className="mb-14 lg:mb-[88px]">
-          <DropsTeaser
-            drops={cityDrops}
-            locale={locale}
-            title={td('cityTitle', { where: cityIn(slug, result.city.name[locale], locale) })}
-            href={dropsHref(locale, slug)}
+        <section
+          aria-labelledby="city-drops"
+          className="mx-auto w-full max-w-[1240px] px-3.5 pt-14 md:px-10 md:pt-24"
+        >
+          <SectionHead
             id="city-drops"
+            title={tc('dropsTitle', { where: cityIn(slug, name, locale) })}
+            lead={{ short: td('intro'), long: td('intro') }}
+            link={{ href: dropsHref(locale, slug), long: tc('dropsAll'), short: tc('dropsAll') }}
           />
-        </div>
+          <ul className="grid grid-cols-2 gap-x-3 gap-y-[22px] md:grid-cols-4 md:gap-7">
+            {cityDrops.slice(0, 4).map((g) => (
+              <li key={g.hotel.slug}>
+                <DropTile group={g} />
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
-      <DropAlertSection locale={locale} defaultCity={{ slug, name: result.city.name[locale] }} />
+      <div className="mt-16 md:mt-[110px]">
+        <AlertBand locale={locale} previews={cityDrops} city={{ slug, name }} />
+      </div>
     </CityView>
   );
 }

@@ -1,5 +1,4 @@
 import { useLocale, useTranslations } from 'next-intl';
-import { TrendingDown } from 'lucide-react';
 import {
   dropKey,
   dropPath,
@@ -12,111 +11,112 @@ import {
   usualCents,
   type PriceDrop,
 } from '@tidaq/core';
-import { Card } from '@/components/ui/Card';
-import { CityPhotoTag } from '@/components/ui/CityPhotoTag';
-import { Icon } from '@/components/ui/Icon';
-import { Price } from '@/components/ui/Price';
+import { Photo } from '@/components/ui/Photo';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
+import { cardPhoto } from '@/lib/photos';
+import { DropBadge } from './DropBadge';
 
 /** "−28 %" with the typographic minus. */
 export const dropPercent = formatDrop;
-
-/** "Wochenende" on a weekend drop's photo (C-080f): the dates below say which. */
-export function WeekendBadge({ label }: { label: string }) {
-  return (
-    <span className="absolute top-3 right-3 rounded-full bg-surface px-3 py-1.5 text-[13px] leading-none font-bold text-fg shadow-float">
-      {label}
-    </span>
-  );
-}
 
 /** Each night opens its own drop page (C-080b), which links on to the stay. */
 const nightHref = (slug: string, d: PriceDrop, locale: Locale) =>
   localizedPath(dropPath(slug, d), locale);
 
 /**
- * One hotel on the Preissturz-Radar (C-080a): photo with the drop, hotel (→ the drop's own page,
- * C-080b), city and night, today's price against the day before, the site, and
- * whether it's the lowest price we've seen for that night. Its other dropped nights link below.
+ * One hotel on the Preissturz-Radar (C-080a, mockup B language): the photo is the card, with the
+ * drop badge (coloured by size) and "Wochenende"; below it the hotel (→ the drop's own page,
+ * C-080b), city and night, today's price against the day before, the saving at which site, and
+ * whether it's the lowest price we've seen. Its other dropped nights follow as small links.
  * Both prices are real checks (CLAUDE.md rule 8); the old one is labelled, not just struck out.
  */
 export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; max?: number }) {
   const t = useTranslations('drops');
+  const tp = useTranslations('photo');
   const locale = useLocale() as Locale;
   const d = g.top;
   const pct = dropPercent(d.drop, locale);
   const more = g.more.slice(0, max);
   const usual = usualCents(d);
+  const pic = cardPhoto(g.hotel.slug, g.city.slug);
   return (
-    <Card interactive padded={false} className="flex h-full flex-col overflow-hidden">
-      <div className="relative">
-        {g.image ? (
-          // eslint-disable-next-line @next/next/no-img-element -- licensed photo, self-hosted (C-011c), already sized
-          <img
-            src={g.image.src}
-            alt=""
-            width={g.image.width}
-            height={g.image.height}
-            loading="lazy"
-            decoding="async"
-            className="bg-placeholder aspect-[16/10] w-full object-cover"
-          />
-        ) : (
-          <div aria-hidden="true" className="bg-placeholder aspect-[16/10] w-full" />
+    <article className="tile-zoom group relative flex h-full flex-col gap-3 md:gap-4">
+      <Photo
+        photo={pic?.photo ?? null}
+        alt=""
+        sizes="(min-width: 1240px) 390px, (min-width: 768px) 33vw, 100vw"
+        className="aspect-[4/3] rounded-card"
+        tag={pic?.city ? tp('cityTag') : undefined}
+      >
+        <DropBadge
+          drop={d.drop}
+          locale={locale}
+          label={t('dropLabel', { pct })}
+          className="absolute top-3.5 left-3.5 z-10"
+        />
+        {d.nights > 1 && (
+          <span className="absolute top-3.5 right-3.5 z-10 inline-flex h-8 items-center rounded-full bg-white/92 px-3 text-[13px] font-semibold text-ink">
+            {t('weekendBadge')}
+          </span>
         )}
-        <CityPhotoTag image={g.image} />
-        <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-drop px-3 py-1.5 text-[17px] leading-none font-extrabold text-white tabular-nums shadow-float">
-          <Icon icon={TrendingDown} size={16} />
-          <span aria-hidden="true">{pct}</span>
-          <span className="sr-only">{t('dropLabel', { pct })}</span>
-        </span>
-        {d.nights > 1 && <WeekendBadge label={t('weekendBadge')} />}
-      </div>
-      <div className="flex flex-1 flex-col p-5">
-        <a
-          href={nightHref(g.hotel.slug, d, locale)}
-          className="text-h3 after:absolute after:inset-0"
-        >
-          {g.hotel.name}
-        </a>
-        <p className="text-meta mt-1 text-muted-ink">
+      </Photo>
+      <div className="flex flex-1 flex-col px-0.5">
+        <h3 className="text-[18px] leading-[1.3] font-semibold tracking-[-0.01em]">
+          <a
+            href={nightHref(g.hotel.slug, d, locale)}
+            className="after:absolute after:inset-0 group-hover:text-accent"
+          >
+            {g.hotel.name}
+          </a>
+        </h3>
+        <p className="mt-0.5 text-[15px] text-muted">
           {g.city.name[locale]} · {t('night', { date: dropDates(d, locale), n: d.nights })}
         </p>
-        <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <Price cents={d.nowCents} size="lg" />
-          <span className="text-[14px] text-muted-ink tabular-nums">
+        <p className="mt-2.5 flex flex-wrap items-baseline gap-x-2">
+          <strong className="text-[22px] font-bold tracking-[-0.02em] tabular-nums">
+            {formatPrice(d.nowCents, locale)}
+          </strong>
+          <span className="text-[15px] text-muted tabular-nums">
             {t('was', { price: formatPrice(d.prevCents, locale) })}
           </span>
-        </div>
-        <p className="text-meta mt-1 font-semibold text-good-ink">
+        </p>
+        <p className="mt-1 text-[14px] font-semibold text-good">
           {d.provider.direct
             ? t('savedDirect', { amount: formatPrice(d.savedCents, locale) })
             : t('saved', { amount: formatPrice(d.savedCents, locale), provider: d.provider.name })}
         </p>
-        <p className="text-meta mt-0.5 text-muted-ink">
+        <p className="mt-0.5 text-[14px] text-muted">
           {usual !== null && <>{t('usual', { price: formatPrice(usual, locale) })} · </>}
           {d.priorDays >= 2 ? t('newLow', { days: d.priorDays + 1 }) : t('firstLow')}
         </p>
         {more.length > 0 && (
-          // Above the card link: each night opens its own stay page.
-          <p className="text-meta relative z-[1] mt-auto flex flex-wrap gap-x-2 gap-y-1 pt-4 text-muted-ink">
-            <span>{t('more')}</span>
-            {more.map((m: PriceDrop) => (
-              <a
-                key={dropKey(m)}
-                href={nightHref(g.hotel.slug, m, locale)}
-                className="font-semibold text-accent underline-offset-2 hover:underline"
-              >
-                {m.nights > 1 ? `${t('weekendBadge')} ` : ''}
-                {formatWeekdayDayMonth(m.night, locale)} {dropPercent(m.drop, locale)}
-              </a>
-            ))}
-            {g.more.length > more.length && (
-              <span>{t('moreCount', { n: g.more.length - more.length })}</span>
-            )}
-          </p>
+          // Above the card link: each night opens its own drop page.
+          <div className="relative z-[1] pt-3.5">
+            <p className="text-[13px] text-muted">{t('more')}</p>
+            <ul className="mt-1.5 flex flex-wrap gap-1.5">
+              {more.map((m: PriceDrop) => (
+                <li key={dropKey(m)}>
+                  <a
+                    href={nightHref(g.hotel.slug, m, locale)}
+                    className="inline-flex h-8 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-[13px] font-medium transition-colors hover:border-ink/40"
+                  >
+                    {m.nights > 1 ? `${t('weekendBadge')} ` : ''}
+                    {formatWeekdayDayMonth(m.night, locale)}
+                    <span className="font-bold text-good tabular-nums">
+                      {dropPercent(m.drop, locale)}
+                    </span>
+                  </a>
+                </li>
+              ))}
+              {g.more.length > more.length && (
+                <li className="inline-flex h-8 items-center px-1 text-[13px] text-muted">
+                  {t('moreCount', { n: g.more.length - more.length })}
+                </li>
+              )}
+            </ul>
+          </div>
         )}
       </div>
-    </Card>
+    </article>
   );
 }

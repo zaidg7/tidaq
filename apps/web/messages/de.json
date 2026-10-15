@@ -459,7 +459,8 @@
     "emptyText": "Wir fragen jeden Tag die Preise jeder Nacht für die nächsten {days} Tage ab. Für dieses Hotel ist die erste Runde noch nicht durch. Schau morgen wieder vorbei.",
     "inactiveTitle": "Dieses Hotel beobachten wir gerade nicht",
     "inactiveText": "Wir sammeln für dieses Hotel keine neuen Preise. Such dir ein anderes Hotel aus.",
-    "home": "Zur Startseite"
+    "home": "Zur Startseite",
+    "fiveStars": "Fünf Sterne"
   },
   "legal": {
     "bindingNote": "",
@@ -748,7 +749,11 @@
     "datesSorted": "Günstigste zuerst. Gesamtpreis auf einer Buchungsseite, Preise für 2 Erwachsene.",
     "stayLink": "Preisverlauf ansehen",
     "stayFacts": "{nights, plural, one {# Nacht} other {# Nächte}} bei {provider}",
-    "noStay": "Für diese Daten noch kein Preis. Im Kalender siehst du jede Nacht."
+    "noStay": "Für diese Daten noch kein Preis. Im Kalender siehst du jede Nacht.",
+    "eyebrowCities": "Alle Städte",
+    "hotelsTitle": "Die Hotels",
+    "dropsTitle": "Price Drops {where}",
+    "dropsAll": "Alle ansehen"
   },
   "hotels": {
     "metaTitle": "Alle Hotels: Luxushotels mit Preisverlauf | Tidaq",
@@ -914,7 +919,7 @@
     "metaTitle": "Preisstürze in Luxushotels, live | Tidaq",
     "metaDescription": "Wo der Preis für eine Nacht in einem Fünf-Sterne-Hotel seit gestern am stärksten gefallen ist, auf einen neuen Tiefpunkt. Jeden Tag neu, mit beiden Preisen.",
     "eyebrow": "Preisstürze · live",
-    "title": "Preisstürze in Luxushotels",
+    "title": "Price Drops heute",
     "intro": "Fünf-Sterne-Hotels, deren Preis für eine Nacht seit gestern stark gefallen ist, auf einen neuen Tiefpunkt. Echte Preise, jeden Tag neu.",
     "asOf": "Stand: {when}",
     "today": "heute, {time}",
@@ -981,7 +986,14 @@
     "stay": "{n, plural, one {# Nacht} other {# Nächte}}, 2 Erwachsene",
     "weekendBadge": "Wochenende",
     "weekLink": "Wochenrückblick: die größten Preisstürze der Woche",
-    "instead": "statt {price}"
+    "instead": "statt {price}",
+    "statNightsLabel": "Nächte, die günstiger wurden",
+    "statNightsShort": "{n, plural, one {Nacht} other {Nächte}} günstiger",
+    "statHotelsLabel": "Hotels mit Price Drop",
+    "statHotelsShort": "{n, plural, one {Hotel} other {Hotels}}",
+    "statMaxLabel": "Größter Price Drop",
+    "statMaxShort": "größter Sturz",
+    "weekTitleShort": "Wochenrückblick"
   },
   "drop": {
     "metaTitle": "{hotel}: {pct} für {date} | Tidaq",

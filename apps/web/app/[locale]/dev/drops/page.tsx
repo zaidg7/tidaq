@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { addDays, weekSummary, type DailyPrice, type Locale } from '@tidaq/core';
-import { DropAlertSection } from '@/components/drops/DropAlertSection';
+import { AlertBand, cityOf } from '@/components/drops/AlertBand';
 import { DropOver, DropPage } from '@/components/drops/DropPage';
 import { DropsTeaser, dropsHref } from '@/components/drops/DropsTeaser';
 import { applyDropFilters, DROP_SOURCES, DropsView } from '@/components/drops/DropsView';
@@ -121,13 +121,7 @@ export default async function DevDropsPage({
       source={source}
       videos={source && <FromVideos items={videoItems(samplePosted(), all)} />}
       alert={
-        <DropAlertSection
-          locale={locale}
-          defaultCity={filters.city}
-          cities={[...new Map(all.map((g) => [g.city.slug, g.city.name[locale]]))].map(
-            ([slug, name]) => ({ slug, name }),
-          )}
-        />
+        <AlertBand locale={locale} previews={shown} city={cityOf(all, filters.city, locale)} />
       }
     />
   );

@@ -15,7 +15,7 @@ export function PillLink({
     <a
       href={href}
       className={cn(
-        'group inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-line-strong bg-surface px-5 text-[15px] font-semibold text-ink',
+        'group inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-line-strong bg-surface px-5 text-[15px] font-semibold whitespace-nowrap text-ink',
         'transition-[border-color,box-shadow] duration-[var(--t-base)] ease-out hover:border-ink hover:shadow-1',
         className,
       )}
