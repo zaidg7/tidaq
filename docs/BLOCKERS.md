@@ -16,6 +16,18 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-018 · Paste the new login email into Supabase (3 min)
+
+Status: OPEN · Opened: 2026-10-15 by CLOUD · Blocks: nothing (only the look of your admin login email)
+What I need: the new design for the login email you get for /admin. Supabase sends it, so the template has to be pasted in its dashboard (I can't reach that setting).
+Steps for Zaid (≈ 3 min, after the C-083 PR is merged):
+
+1. Open github.com/zaidg7/tidaq/blob/main/docs/email/supabase-login.html → click **Raw** → select all (Ctrl+A) → copy (Ctrl+C).
+2. supabase.com/dashboard → project **tidaq** → **Authentication** → **Emails** → **Templates** → **Magic Link**.
+3. **Subject:** `Dein Login-Link für Tidaq`. **Message body:** delete everything, paste (Ctrl+V) → **Save**.
+4. Test: open tidaq.com/admin and ask for a login link. The email should look like the price-drop emails.
+   Where to put the result: nothing. Change this Status to DONE.
+
 ## B-017 · Decision: Cloudflare Workers Paid ($5/month) for share images with today's price
 
 Status: DONE – not needed (15 Oct): Zaid would pay only if there's no free way. There is one: a Supabase Edge Function on the Pro plan we already pay for (2 s CPU per call, 2 M calls a month included) draws the images, so the web Worker stays on the free plan. C-028c is built that way. · Opened: 2026-10-14 by CLOUD · Blocks: nothing now

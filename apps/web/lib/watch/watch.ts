@@ -89,6 +89,7 @@ export async function requestWatch(req: WatchRequest, origin: string): Promise<W
       confirm
         ? {
             preheader: t('confirmPreheader'),
+            eyebrow: t('eyebrow'),
             heading: t('confirmHeading'),
             paragraphs: [
               t('confirmText', { stay }),
@@ -100,6 +101,7 @@ export async function requestWatch(req: WatchRequest, origin: string): Promise<W
           }
         : {
             preheader: t('addedPreheader'),
+            eyebrow: t('eyebrow'),
             heading: t('addedHeading'),
             paragraphs: [
               t('addedText', { stay }),
