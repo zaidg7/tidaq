@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { DEALS, z, type Database } from '@tidaq/core';
+import { DEALS, priceDropRowSchema, z, type Database } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from './ingest';
 import type {
   CatalogHotel,
@@ -38,6 +38,17 @@ const recipientRows = z.array(
     email: z.string().email(),
     locale: z.enum(['de', 'en']),
     manage_token: z.string().uuid(),
+  }),
+);
+
+/** Preissturz-Alarm recipients (C-080e2). */
+const dropRecipientRows = z.array(
+  z.object({
+    id: z.string().uuid(),
+    email: z.string().email(),
+    locale: z.enum(['de', 'en']),
+    manage_token: z.string().uuid(),
+    drop_city: z.string().nullable(),
   }),
 );
 
@@ -504,6 +515,40 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
       return recipientRows
         .parse(rows)
         .map((r) => ({ email: r.email, locale: r.locale, manageToken: r.manage_token }));
+    },
+
+    async dropAlertRecipients(today) {
+      const rows = check(
+        await db
+          .from('watchers')
+          .select('id, email, locale, manage_token, drop_city')
+          .eq('drop_alerts', true)
+          .not('confirmed_at', 'is', null)
+          .is('unsubscribed_at', null)
+          .or(`drop_sent_on.is.null,drop_sent_on.lt.${today}`)
+          .limit(5000),
+        'load drop alert recipients',
+      );
+      return dropRecipientRows.parse(rows).map((r) => ({
+        id: r.id,
+        email: r.email,
+        locale: r.locale,
+        manageToken: r.manage_token,
+        city: r.drop_city,
+      }));
+    },
+
+    async todayDrops(today) {
+      const rows = check(await db.rpc('radar_drops', { p_today: today }), 'load drops');
+      return z.array(priceDropRowSchema).parse(rows);
+    },
+
+    async markDropAlertsSent(ids, today) {
+      if (ids.length === 0) return;
+      checkOk(
+        await db.from('watchers').update({ drop_sent_on: today }).in('id', ids),
+        'mark drop alerts sent',
+      );
     },
 
     async dealCandidates(today) {

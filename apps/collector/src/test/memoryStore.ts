@@ -1,9 +1,10 @@
-import type { GridStay } from '@tidaq/core';
+import type { GridStay, PriceDropRow } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from '../ingest';
 import type {
   AlertOffer,
   AlertWatch,
   DealRow,
+  DropAlertRecipient,
   NewsletterRecipient,
   WebErrorRow,
   CatalogHotel,
@@ -67,6 +68,9 @@ export function memoryStore(
   /** Newsletter recipients and deal candidates (C-054b); tests push into them. */
   const newsletterRecipients: NewsletterRecipient[] = [];
   const dealCandidates: DealRow[] = [];
+  /** Preissturz-Alarm (C-080e2): subscribers with the day of their last email, and drops. */
+  const dropRecipients: (DropAlertRecipient & { sentOn: string | null })[] = [];
+  const drops: PriceDropRow[] = [];
   /** Website errors for the daily check (C-041c); tests push into it. */
   const webErrors: (WebErrorRow & { env: string })[] = [];
   /** Today's offers per watch id (C-031b). */
@@ -323,6 +327,23 @@ export function memoryStore(
     async dealCandidates(today) {
       return dealCandidates.filter((d) => d.checkIn > today);
     },
+    async dropAlertRecipients(today) {
+      return dropRecipients
+        .filter((r) => r.sentOn === null || r.sentOn < today)
+        .map((r) => ({
+          id: r.id,
+          email: r.email,
+          locale: r.locale,
+          manageToken: r.manageToken,
+          city: r.city,
+        }));
+    },
+    async todayDrops(today) {
+      return drops.filter((d) => d.seen_day <= today);
+    },
+    async markDropAlertsSent(ids, today) {
+      for (const r of dropRecipients) if (ids.includes(r.id)) r.sentOn = today;
+    },
     async webErrors(env, since) {
       return webErrors
         .filter((e) => e.env === env && e.lastAt >= since)
@@ -392,6 +413,8 @@ export function memoryStore(
     webErrors,
     newsletterRecipients,
     dealCandidates,
+    dropRecipients,
+    drops,
     alertOffers,
     recordedAlerts,
     /** Sets the `posted_at` time for tasks recorded from now on. */
