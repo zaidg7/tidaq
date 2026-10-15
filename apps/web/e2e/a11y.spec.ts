@@ -28,6 +28,7 @@ const PAGES = [
   '/dev/provider?p=method',
   '/dev/watch',
   '/dev/admin',
+  '/dev/admin/drops',
   '/dev/ui',
   '/methodik',
   '/impressum',

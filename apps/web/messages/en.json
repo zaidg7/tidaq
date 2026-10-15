@@ -873,7 +873,7 @@
   },
   "drop": {
     "metaTitle": "{hotel}: {pct} for {date} | Tidaq",
-    "metaDescription": "The night of {date} at {hotel} ({city}) costs {now} {site} instead of {was} the day before. {low}",
+    "metaDescription": "The night of {date} at {hotel} ({city}) costs {now} {site} instead of {was} the day before. {low}.",
     "eyebrow": "Sudden drop · {city}",
     "atSite": "on {provider}",
     "atDirect": "on the hotel's own site",

@@ -875,7 +875,7 @@
   },
   "drop": {
     "metaTitle": "{hotel}: {pct} für {date} | Tidaq",
-    "metaDescription": "Die Nacht vom {date} im {hotel} ({city}) kostet {site} {now} statt {was} am Vortag. {low}",
+    "metaDescription": "Die Nacht vom {date} im {hotel} ({city}) kostet {site} {now} statt {was} am Vortag. {low}.",
     "eyebrow": "Preissturz · {city}",
     "atSite": "bei {provider}",
     "atDirect": "direkt beim Hotel",

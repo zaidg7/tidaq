@@ -75,6 +75,47 @@ function pill(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h:
   ctx.fill();
 }
 
+type Font = (weight: number, size: number) => string;
+
+/** Wordmark, where to find it, when it was seen: the same on every image. */
+function footer(ctx: CanvasRenderingContext2D, f: Font, url: string, asOf: string) {
+  const fy = STORY.height - 270;
+  ctx.font = f(800, 72);
+  ctx.fillStyle = C.white;
+  ctx.fillText('tidaq', X, fy);
+  const wordW = ctx.measureText('tidaq').width;
+  ctx.fillStyle = C.accent;
+  ctx.beginPath();
+  ctx.arc(X + wordW + 14, fy - 6, 10, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.font = f(700, 42);
+  ctx.fillStyle = C.white;
+  ctx.textAlign = 'right';
+  ctx.fillText(url, STORY.width - X, fy - 6);
+  ctx.textAlign = 'left';
+  ctx.font = f(500, 32);
+  ctx.fillStyle = C.muted;
+  ctx.fillText(asOf, X, fy + 64, MAX_W);
+}
+
+/** Sizes the canvas, loads the font weights and paints the background. */
+async function setup(canvas: HTMLCanvasElement, font: string) {
+  canvas.width = STORY.width;
+  canvas.height = STORY.height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('canvas 2d unavailable');
+  await Promise.all(
+    ['500', '600', '700', '800'].map((w) =>
+      document.fonts?.load(`${w} 48px ${font}`).catch(() => []),
+    ),
+  );
+  const f: Font = (weight, size) => `${weight} ${size}px ${font}`;
+  ctx.fillStyle = C.bg;
+  ctx.fillRect(0, 0, STORY.width, STORY.height);
+  ctx.textBaseline = 'alphabetic';
+  return { ctx, f };
+}
+
 /** Draws the story onto `canvas` (resized to 1080 × 1920). `font` is the page's font family. */
 export async function drawStory(
   canvas: HTMLCanvasElement,
@@ -82,17 +123,7 @@ export async function drawStory(
   text: StoryText,
   font: string,
 ): Promise<void> {
-  canvas.width = STORY.width;
-  canvas.height = STORY.height;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('canvas 2d unavailable');
-  await Promise.all(
-    ['500', '700', '800'].map((w) => document.fonts?.load(`${w} 48px ${font}`).catch(() => [])),
-  );
-  const f = (weight: number, size: number) => `${weight} ${size}px ${font}`;
-
-  ctx.fillStyle = C.bg;
-  ctx.fillRect(0, 0, STORY.width, STORY.height);
+  const { ctx, f } = await setup(canvas, font);
 
   const img = photo ? await loadImage(photo) : null;
   if (img) cover(ctx, img, STORY.width, PHOTO_H);
@@ -107,8 +138,6 @@ export async function drawStory(
   top.addColorStop(1, 'rgba(34,28,59,0)');
   ctx.fillStyle = top;
   ctx.fillRect(0, 0, STORY.width, 300);
-
-  ctx.textBaseline = 'alphabetic';
 
   // The drop, as big as it gets.
   ctx.font = f(800, 120);
@@ -148,24 +177,58 @@ export async function drawStory(
   ctx.fillStyle = C.muted;
   ctx.fillText(text.low, X, y, MAX_W);
 
-  // Footer: wordmark, where to find it, when it was seen.
-  const fy = STORY.height - 270;
-  ctx.font = f(800, 72);
+  footer(ctx, f, text.url, text.asOf);
+}
+
+export interface CoverText {
+  /** "Preisstürze seit gestern" */
+  eyebrow: string;
+  /** "Top 5 in Luxushotels" */
+  title: string;
+  rows: { pct: string; hotel: string; place: string }[];
+  asOf: string;
+  url: string;
+}
+
+/** The first slide of a top-list carousel (C-080c): the day's biggest drops as a ranked list. */
+export async function drawCover(
+  canvas: HTMLCanvasElement,
+  text: CoverText,
+  font: string,
+): Promise<void> {
+  const { ctx, f } = await setup(canvas, font);
+  ctx.font = f(700, 40);
+  ctx.fillStyle = C.good;
+  ctx.fillText(text.eyebrow.toLocaleUpperCase('de'), X, 330, MAX_W);
+  ctx.font = f(800, 96);
   ctx.fillStyle = C.white;
-  ctx.fillText('tidaq', X, fy);
-  const wordW = ctx.measureText('tidaq').width;
-  ctx.fillStyle = C.accent;
-  ctx.beginPath();
-  ctx.arc(X + wordW + 14, fy - 6, 10, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.font = f(700, 42);
-  ctx.fillStyle = C.white;
-  ctx.textAlign = 'right';
-  ctx.fillText(text.url, STORY.width - X, fy - 6);
-  ctx.textAlign = 'left';
-  ctx.font = f(500, 32);
-  ctx.fillStyle = C.muted;
-  ctx.fillText(text.asOf, X, fy + 64, MAX_W);
+  let y = 440;
+  for (const line of wrapLines((s) => ctx.measureText(s).width, text.title, MAX_W, 2)) {
+    ctx.fillText(line, X, y);
+    y += 108;
+  }
+  y += 40;
+  for (const [i, row] of text.rows.slice(0, 5).entries()) {
+    const top = y + i * 200;
+    ctx.font = f(800, 56);
+    const w = ctx.measureText(row.pct).width;
+    ctx.fillStyle = C.drop;
+    pill(ctx, X - 4, top, w + 56, 84);
+    ctx.fillStyle = C.white;
+    ctx.fillText(row.pct, X + 24, top + 62);
+    const tx = X + Math.max(w + 56, 250) + 28;
+    const tw = STORY.width - X - tx;
+    ctx.font = f(800, 46);
+    ctx.fillText(
+      wrapLines((s) => ctx.measureText(s).width, row.hotel, tw, 1)[0] ?? '',
+      tx,
+      top + 40,
+    );
+    ctx.font = f(600, 34);
+    ctx.fillStyle = C.muted;
+    ctx.fillText(row.place, tx, top + 88, tw);
+  }
+  footer(ctx, f, text.url, text.asOf);
 }
 
 /** The finished image as a PNG file. */

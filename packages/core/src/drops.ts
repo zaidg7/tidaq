@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { addDays, daysBetween } from './dates';
+import { formatPercent, type Locale } from './format';
 
 /**
  * Sudden price drops (C-080a, Preissturz-Radar): nights whose cheapest reviewed price fell sharply
@@ -179,6 +180,11 @@ export function dropStats(groups: readonly HotelDrops[]) {
 }
 
 /** The 1-night stay a drop belongs to (check-in = the night). */
+/** A drop as text with the typographic minus: `−28 %` (DE), `−28%` (EN). */
+export function formatDrop(drop: number, locale: Locale): string {
+  return formatPercent(-drop, locale, { signed: true }).replace('-', '−');
+}
+
 /** The shareable page of one drop, without locale prefix: `/preissturz/adlon/2026-10-18` (C-080b). */
 export function dropPath(slug: string, night: string): string {
   return `/preissturz/${slug}/${night}`;

@@ -6,6 +6,7 @@ import { buttonClasses } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { Toast } from '@/components/ui/Toast';
 import { cn } from '@/lib/cn';
+import { shareOrDownload } from './shareFiles';
 import { canvasFile, drawStory, type StoryText } from './storyImage';
 
 type Props = {
@@ -53,23 +54,8 @@ export function DropShare({ path, photo, story, title, text, fileName, labels: l
       const font = getComputedStyle(document.body).fontFamily;
       await drawStory(canvas, photo, story, font);
       const file = await canvasFile(canvas, `${fileName}.png`);
-      if (navigator.canShare?.({ files: [file] })) {
-        try {
-          await navigator.share({ files: [file], title, text });
-        } catch (e) {
-          if (!aborted(e)) throw e;
-        }
-        return;
-      }
-      const url = URL.createObjectURL(file);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = file.name;
-      document.body.append(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 10_000);
-      setToast(l.imageSaved);
+      const done = await shareOrDownload([file], { title, text });
+      if (done === 'downloaded') setToast(l.imageSaved);
     } catch {
       setToast(l.shareFailed);
     } finally {
