@@ -12,10 +12,12 @@ import {
   localizedPath,
   type Locale,
 } from '@tidaq/core';
+import { DropCallout } from '@/components/drops/DropCallout';
 import { HotelView } from '@/components/hotel/HotelView';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
 import { logView } from '@/lib/data/events';
+import { getDrops } from '@/lib/data/drops';
 import { getHotelPage } from '@/lib/data/hotel';
 import { openGraphFor } from '@/lib/og';
 import { berlinToday } from '@/lib/today';
@@ -58,11 +60,15 @@ export default async function HotelPageRoute(props: Props) {
   const { locale, slug } = await resolve(props);
   setRequestLocale(locale);
   const today = berlinToday();
-  const [result, t, th] = await Promise.all([
+  const [result, t, th, drops] = await Promise.all([
     load(slug, today),
     getTranslations({ locale, namespace: 'stay' }),
     getTranslations({ locale, namespace: 'hotel' }),
+    getDrops(today),
   ]);
+  // Today's drops at this hotel (C-080i), if any.
+  const dropGroup =
+    drops.kind === 'ok' ? drops.drops.find((g) => g.hotel.slug === slug) : undefined;
   if (result.kind === 'missing') notFound();
   if (result.kind === 'unavailable') {
     return (
@@ -98,7 +104,11 @@ export default async function HotelPageRoute(props: Props) {
         // Escaped by jsonLdString: no `<` can end the script early.
         dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
       />
-      <HotelView data={result.data} today={today} />
+      <HotelView
+        data={result.data}
+        today={today}
+        drops={dropGroup && <DropCallout group={dropGroup} />}
+      />
     </>
   );
 }

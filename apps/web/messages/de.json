@@ -989,5 +989,13 @@
     "today": "Preisstürze von heute ansehen",
     "empty": "In den letzten 7 Tagen gab es noch keinen Preissturz. Wir prüfen jeden Tag, schau bald wieder rein.",
     "unavailable": "Der Wochenrückblick lässt sich gerade nicht laden. Versuch es gleich noch einmal."
+  },
+  "dropCallout": {
+    "hotelTitle": "Preissturz bei diesem Hotel",
+    "hotelText": "{dates} ({n, plural, one {# Nacht} other {# Nächte}}): {now} statt {was} am Vortag, {pct} {site}.",
+    "stayTitle": "Preissturz seit gestern",
+    "stayText": "Dieser Aufenthalt kostet heute {now} statt {was} am Vortag, {pct} {site}.",
+    "open": "Zum Preissturz",
+    "more": "Auch günstiger"
   }
 }

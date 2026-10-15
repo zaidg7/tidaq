@@ -9,6 +9,8 @@ import type { OtherStay, StayHotel } from '@/lib/data/stay';
 import { hotelPhoto } from '@/lib/hotelPhotos';
 import { sampleSeries } from '@/lib/sampleStay';
 import { searchCardProps } from '@/lib/searchCardProps';
+import { DropCallout } from '@/components/drops/DropCallout';
+import { sampleDrops } from '@/lib/dropsSample';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { robots: { index: false, follow: false } };
@@ -190,8 +192,10 @@ const VARIANTS: Record<
  */
 export default async function DevStayPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: Locale; variant: string }>;
+  searchParams: Promise<{ drop?: string }>;
 }) {
   await connection();
   if (process.env.APP_ENV === 'production') notFound();
@@ -205,8 +209,11 @@ export default async function DevStayPage({
     getTranslations({ locale, namespace: 'stay' }),
   ]);
 
+  // `?drop`: the drop callout (C-080i) with a sample drop.
+  const drop = (await searchParams).drop !== undefined ? sampleDrops()[0] : undefined;
   return (
     <StayView
+      drop={drop && <DropCallout group={drop} drop={drop.top} />}
       hotel={{ ...HOTEL, active: v.active ?? true }}
       params={{ checkIn: v.checkIn, checkOut, nights: 2, adults: v.adults ?? 2 }}
       status={v.status}

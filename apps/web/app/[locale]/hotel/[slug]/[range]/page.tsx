@@ -7,6 +7,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import {
   alternatesFor,
   daysBetween,
+  findDrop,
   formatDateRange,
   localizedPath,
   parseStayParams,
@@ -16,9 +17,11 @@ import {
 } from '@tidaq/core';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { EditStay } from '@/components/stay/EditStay';
+import { DropCallout } from '@/components/drops/DropCallout';
 import { StayView, stayStatus } from '@/components/stay/StayView';
 import { buttonClasses } from '@/components/ui/Button';
 import { getCatalog } from '@/lib/data/catalog';
+import { getDrops } from '@/lib/data/drops';
 import { logView } from '@/lib/data/events';
 import { requestStayOnView } from '@/lib/data/requestStay';
 import { getStay, type StayLoad } from '@/lib/data/stay';
@@ -90,9 +93,10 @@ export default async function StayPage(props: Props) {
   const { locale, slug, p } = await resolve(props);
   setRequestLocale(locale);
   const today = berlinToday();
-  const [result, t] = await Promise.all([
+  const [result, t, drops] = await Promise.all([
     loadFor(slug, p, today),
     getTranslations({ locale, namespace: 'stay' }),
+    getDrops(today),
   ]);
 
   if (result.kind === 'missing') notFound();
@@ -152,8 +156,14 @@ export default async function StayPage(props: Props) {
     hotels.push({ slug: hotel.slug, name: hotel.name, city: hotel.city.name[locale] });
   }
 
+  // This exact stay dropped since yesterday (C-080i): night or weekend, 2 adults like the grid.
+  const dropped =
+    drops.kind === 'ok' && p.adults === 2
+      ? findDrop(drops.drops, slug, { night: p.checkIn, checkOut: p.checkOut })
+      : null;
   return (
     <StayView
+      drop={dropped && <DropCallout group={dropped.group} drop={dropped.drop} />}
       hotel={hotel}
       params={p}
       status={stayStatus(
