@@ -2,7 +2,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TrendingDown } from 'lucide-react';
 import {
   dropPath,
-  formatPercent,
+  formatDrop,
   formatPrice,
   formatWeekdayDayMonth,
   localizedPath,
@@ -15,9 +15,7 @@ import { Price } from '@/components/ui/Price';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
 
 /** "−28 %" with the typographic minus. */
-export function dropPercent(drop: number, locale: Locale): string {
-  return formatPercent(-drop, locale, { signed: true }).replace('-', '−');
-}
+export const dropPercent = formatDrop;
 
 /** Each night opens its own drop page (C-080b), which links on to the stay. */
 const nightHref = (slug: string, night: string, locale: Locale) =>

@@ -258,6 +258,7 @@ export {
   DROPS,
   dropPath,
   dropStats,
+  formatDrop,
   dropStay,
   dropWhen,
   filterDrops,
@@ -272,4 +273,5 @@ export {
   type PriceDropRow,
 } from './drops';
 export { wrapLines } from './wrapLines';
+export { CAPTION, cityTag, dropCaption, dropHashtags, topCaption } from './dropCaptions';
 export { NEWSLETTER, newsletterMail, type NewsletterDeal } from './newsletter';

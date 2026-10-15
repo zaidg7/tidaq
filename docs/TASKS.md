@@ -85,7 +85,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-028c                                                          | Dynamic OG images with today's price (own Worker)                            | CLOUD | S             | C-028b, B-017                     | BLOCKED        |
 | C-080a | Preissturz-Radar: daily sudden price drops, /preissturz, home and city teasers | CLOUD | M | C-013g, C-024 | DONE |
 | C-080b | Shareable drop page per hotel and night + in-browser story image (Web Share) | CLOUD | M | C-080a | DONE |
-| C-080c | Creator kit in /admin: top drops, captions, story images for TikTok/Instagram | CLOUD | S | C-080b | TODO |
+| C-080c | Creator kit in /admin: top drops, captions, story images for TikTok/Instagram | CLOUD | S | C-080b | DONE |
 | C-080d | Weekend drops (2 nights, same site) and city drop alerts by email | CLOUD | M | C-080a, C-031a | TODO |
 | C-029                                                           | Analytics events (cookieless)                                                | CLOUD | S             | C-020a                            | DONE           |
 | **Phase 3: Alerts and trust** (week 48, target Sun 29 Nov)      |                                                                              |       |               |                                   |
@@ -994,8 +994,10 @@ Owner: CLOUD · Size: M · Depends on: C-080a · Status: DONE · PR: see `[C-080
 
 ### C-080c · Creator kit in /admin
 
-Owner: CLOUD · Size: S · Depends on: C-080b · Status: TODO
+Owner: CLOUD · Size: S · Depends on: C-080b · Status: DONE · PR: see `[C-080c]`
 `/admin/preisstuerze`: today's top 10 drops with one-click story image download, a ready German caption per drop (facts only: hotel, city, night, both prices, site, "Stand: heute 08:12") and hashtags, plus a "Top 5 des Tages" carousel set (5 story images + caption). Lets Zaid post daily in 5 minutes.
+
+**C-080c notes (DONE):** `/admin/preisstuerze` (linked from the admin overview as "Preisstürze für Social Media"; preview `/dev/admin/drops`): today's top 10 drops (one per hotel) with thumbnail, prices, a ready German caption (core `dropCaption`: both prices, site, night, new low, "Stand", the check-before-booking line, `tidaq.com/preissturz`, city hashtag first) and buttons "Story-Bild" (same 1080×1920 image as the drop page), "Text kopieren", "Seite öffnen". "Top 5 des Tages": a cover slide (`drawCover`: ranked list) plus the five story images in one share (phone share sheet takes all files at once; desktop downloads them) and the list caption (core `topCaption`). Shared helper `components/drops/shareFiles.ts`. Captions have no urgency words (tested).
 
 ### C-080d · Weekend drops and city drop alerts
 
