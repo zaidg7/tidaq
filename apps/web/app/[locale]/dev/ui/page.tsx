@@ -16,6 +16,8 @@ import {
   X,
 } from 'lucide-react';
 import { addDays, computeStayStats, stayStates, verdictFacts, type Locale } from '@tidaq/core';
+import { PrimitivesDemo } from '@/components/dev/PrimitivesDemo';
+import { Accordion } from '@/components/ui/Accordion';
 import { ToastDemo } from '@/components/dev/ToastDemo';
 import { SearchCard } from '@/components/home/SearchCard';
 import { searchCardProps, searchHotels } from '@/lib/searchCardProps';
@@ -208,27 +210,28 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
 
       <Section title="Buttons">
         <div className="flex w-full flex-wrap items-center gap-3">
-          <Button size="sm">Preise ansehen</Button>
-          <Button>Preise ansehen</Button>
+          <Button size="sm">Preis prüfen</Button>
+          <Button>Preis prüfen</Button>
           <Button size="lg" leading={<Icon icon={Bell} size={18} />}>
-            Preis beobachten
+            Price Alert aktivieren
           </Button>
           <Button size="lg" loading>
-            Preis beobachten
+            Price Alert aktivieren
           </Button>
           <Button size="lg" disabled>
-            Preis beobachten
+            Price Alert aktivieren
           </Button>
         </div>
         <div className="flex w-full flex-wrap items-center gap-3">
-          <Button variant="ghost" size="sm">
+          <Button variant="secondary" size="sm">
+            Alle 24 ansehen
+          </Button>
+          <Button variant="secondary">
             Zum Angebot <Icon icon={ArrowUpRight} size={16} />
           </Button>
-          <Button variant="ghost">
-            Zum Angebot <Icon icon={ArrowUpRight} size={16} />
-          </Button>
-          <Button variant="subtle">So sortieren wir</Button>
-          <a href="#buttons" className={buttonClasses({ variant: 'ghost' })}>
+          <Button variant="subtle">So messen wir</Button>
+          <Button variant="dark">Price Alert aktivieren</Button>
+          <a href="#buttons" className={buttonClasses({ variant: 'secondary' })}>
             Link als Button
           </a>
           <IconButton label="Suche öffnen">
@@ -238,11 +241,43 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
             <Icon icon={Menu} />
           </IconButton>
         </div>
-        <div className="w-full max-w-[560px]">
-          <Button block size="lg">
-            Preise ansehen
+        <div className="flex w-full flex-wrap items-center gap-3 rounded-card bg-[linear-gradient(135deg,#6b5a4a,#2a2620)] p-5">
+          <Button variant="onPhoto" size="sm">
+            Alle Fotos
+          </Button>
+          <IconButton label="Teilen" variant="onPhoto">
+            <Icon icon={Search} />
+          </IconButton>
+          <Badge tone="drop">−54 %</Badge>
+          <Badge tone="onPhoto">Stadtbild</Badge>
+        </div>
+        <div className="w-full max-w-[390px]">
+          <Button block size="lg" trailing={<>1.139 € →</>}>
+            Bei Trip.com ansehen
           </Button>
         </div>
+      </Section>
+
+      <Section title="Segmente und Sheet">
+        <PrimitivesDemo />
+      </Section>
+
+      <Section title="Akkordeon">
+        <Accordion
+          className="w-full max-w-[640px]"
+          items={[
+            {
+              id: 'what',
+              title: 'Was ist ein Price Drop?',
+              content: 'Ein Aufenthalt, der seit gestern deutlich billiger geworden ist.',
+            },
+            {
+              id: 'when',
+              title: 'Wann prüft ihr die Preise?',
+              content: 'Jeden Morgen ab 7 Uhr, auf vier Buchungsseiten.',
+            },
+          ]}
+        />
       </Section>
 
       <Section title="Felder">
@@ -298,10 +333,10 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
       </Section>
 
       <Section title="Chips">
-        <Chip pressed={false}>Nur kostenlos stornierbar</Chip>
-        <Chip pressed>Nur kostenlos stornierbar</Chip>
+        <Chip pressed>Alle Städte</Chip>
+        <Chip pressed={false}>Paris</Chip>
         <Chip pressed={false}>Wochenende</Chip>
-        <Chip pressed>Unter der Woche</Chip>
+        <Chip pressed>Nächste 30 Tage</Chip>
       </Section>
 
       <Section title="Badges">
@@ -310,6 +345,7 @@ export default async function DevUiPage({ params }: { params: Promise<{ locale: 
         <Badge tone="good">Günstigster</Badge>
         <Badge tone="bad">Aufschlag an der Kasse</Badge>
         <Badge tone="warn">Wenig Daten</Badge>
+        <Badge tone="drop">−54 %</Badge>
       </Section>
 
       <Section title="StateChip">

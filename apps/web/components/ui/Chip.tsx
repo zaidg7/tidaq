@@ -1,14 +1,12 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
-import { Check } from 'lucide-react';
 import { cn } from '@/lib/cn';
-import { Icon } from './Icon';
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & { pressed: boolean };
 
 /**
- * Toggle chip (CRAFT.md §3 Chip): 36 px tall with a 44 px hit area; selection shown by colour
- * and a check icon. On and off have the same width (icon + gap = the extra padding), so a row
- * never reflows on tap. State is owned by the parent and exposed via aria-pressed.
+ * Filter chip (PREMIUM.md §11): 40 px pill with a 44 px hit area. Selected = ink fill with white
+ * text, so it reads at a glance; on and off have the same width, so a row never reflows on tap.
+ * State is owned by the parent and exposed via aria-pressed.
  */
 export function Chip({ pressed, className, children, type = 'button', ...rest }: Props) {
   return (
@@ -18,27 +16,26 @@ export function Chip({ pressed, className, children, type = 'button', ...rest }:
       className={chipClasses(pressed, className)}
       {...rest}
     >
-      {pressed && <Icon icon={Check} size={14} className="text-accent" />}
       {children}
     </button>
   );
 }
 
-function chipClasses(selected: boolean, className?: string) {
+export function chipClasses(selected: boolean, className?: string) {
   return cn(
-    'relative inline-flex h-9 items-center gap-1 rounded-full border text-[13.5px] font-semibold whitespace-nowrap',
-    'before:absolute before:-inset-y-1 before:inset-x-0 before:content-[""]',
-    'transition-[background-color,border-color,color] duration-[180ms] ease-soft',
+    'relative inline-flex h-10 items-center gap-1.5 rounded-full border px-4 text-[14px] font-semibold whitespace-nowrap',
+    'before:absolute before:-inset-y-0.5 before:inset-x-0 before:content-[""]',
+    'transition-[background-color,border-color,color,transform] duration-[var(--t-fast)] ease-out active:scale-[0.97]',
     selected
-      ? 'border-accent bg-accent-soft pr-3.5 pl-2 text-fg'
-      : 'border-line bg-surface px-5 text-muted-ink hover:border-line-strong hover:text-fg',
+      ? 'border-ink bg-ink text-white'
+      : 'border-line-strong bg-surface text-ink-2 hover:border-ink/40 hover:text-ink',
     className,
   );
 }
 
 /**
- * The same chip as a link, for filters that are URLs (C-025 city filter): works without
- * JavaScript, the selected one carries aria-current.
+ * The same chip as a link, for filters that are URLs: works without JavaScript, the selected
+ * one carries aria-current.
  */
 export function ChipLink({
   selected,
@@ -52,7 +49,6 @@ export function ChipLink({
       className={chipClasses(selected, className)}
       {...rest}
     >
-      {selected && <Icon icon={Check} size={14} className="text-accent" />}
       {children}
     </a>
   );
