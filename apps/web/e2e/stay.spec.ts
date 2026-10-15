@@ -195,6 +195,14 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
       page.getByText(/einzelne Nächte oft anders als der ganze Aufenthalt/),
     ).toBeVisible();
     await expect(page.getByRole('region', { name: 'Preise heute' })).toHaveCount(0);
+    // C-132a: the request went through, so the page says when prices come and offers a reload.
+    await expect(
+      page.getByText(/Die ersten Preise kommen meist nach ein paar Minuten/),
+    ).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Neu laden' })).toHaveAttribute(
+      'href',
+      /^\/hotel\/.+\/2026-12-04--2026-12-06\?adults=2$/,
+    );
 
     await page.goto('/dev/stay/real-only-history');
     await expect(
@@ -213,6 +221,9 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
   test('dates beyond the night grid say how far ahead we collect', async ({ page }) => {
     await page.goto('/dev/stay/untracked');
     await expect(page.getByText(/die Preise jeder Nacht für die nächsten 270 Tage/)).toBeVisible();
+    // No room for new dates today: said plainly, no promise of prices (C-132a).
+    await expect(page.getByText(/Heute nehmen wir keine neuen Daten mehr an/)).toBeVisible();
+    await expect(page.getByText(/ersten Preise kommen/)).toHaveCount(0);
     await page.goto('/en/dev/stay/untracked-guests');
     await expect(
       page.getByRole('heading', { level: 2, name: 'No history for 3 people yet' }),

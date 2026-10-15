@@ -30,6 +30,7 @@ import { Icon } from '@/components/ui/Icon';
 import { PriceText } from '@/components/ui/PriceText';
 import { StateChip } from '@/components/ui/StateChip';
 import type { OtherStay, StayHotel } from '@/lib/data/stay';
+import { cn } from '@/lib/cn';
 import { cardPhoto } from '@/lib/photos';
 import { routes } from '@/lib/routes';
 import { CollectingState } from './CollectingState';
@@ -84,6 +85,11 @@ type Props = {
   now?: Date;
   /** This stay dropped since yesterday (C-080i): the callout under the header. */
   drop?: ReactNode;
+  /**
+   * What `request_stay` answered for these dates (C-132a), so an untracked stay says what really
+   * happens: checked from now on, no room today, or nothing (bots, past the 365-day limit).
+   */
+  request?: 'created' | 'tracked' | 'full' | 'invalid' | null;
 };
 
 /**
@@ -107,6 +113,7 @@ export function StayView({
   edit,
   now,
   drop = null,
+  request = null,
 }: Props) {
   const t = useTranslations('stay');
   const tp = useTranslations('photo');
@@ -193,23 +200,46 @@ export function StayView({
           </Card>
         ) : (
           <Card variant="float" radius="search" className="mt-6 lg:mt-8 lg:p-8">
-            {status === 'untracked' && nightsUnreliable && (
-              <Notice icon={CalendarClock} title={t('realOnlyTitle')} text={t('realOnlyText')} />
-            )}
-            {status === 'untracked' && !nightsUnreliable && (
+            {status === 'untracked' && (
               <Notice
                 icon={CalendarClock}
                 title={
-                  params.adults === NIGHT_GRID.adults
-                    ? t('untrackedTitle')
-                    : t('untrackedGuestsTitle', { adults: params.adults })
+                  nightsUnreliable
+                    ? t('realOnlyTitle')
+                    : params.adults === NIGHT_GRID.adults
+                      ? t('untrackedTitle')
+                      : t('untrackedGuestsTitle', { adults: params.adults })
                 }
                 text={
-                  params.adults === NIGHT_GRID.adults
-                    ? t('untrackedText', { days: NIGHT_GRID.windowDays })
-                    : t('untrackedGuestsText', { adults: NIGHT_GRID.adults })
+                  nightsUnreliable
+                    ? t('realOnlyText')
+                    : params.adults === NIGHT_GRID.adults
+                      ? t('untrackedText', { days: NIGHT_GRID.windowDays })
+                      : t('untrackedGuestsText', { adults: NIGHT_GRID.adults })
                 }
-              />
+              >
+                {(request === 'created' || request === 'tracked') && (
+                  <>
+                    <p className="max-w-[34em] text-[15px] font-semibold text-ink">
+                      {t('requestCreated')}
+                    </p>
+                    <a
+                      href={localizedPath(
+                        stayPath(hotel.slug, params.checkIn, params.checkOut, params.adults),
+                        locale,
+                      )}
+                      className={cn(buttonClasses({ variant: 'ghost' }), 'mt-4')}
+                    >
+                      {t('retry')}
+                    </a>
+                  </>
+                )}
+                {request === 'full' && (
+                  <p className="max-w-[34em] text-[15px] font-semibold text-ink">
+                    {t('requestFull')}
+                  </p>
+                )}
+              </Notice>
             )}
             {status === 'past' && (
               <Notice icon={CalendarX2} title={t('pastTitle')} text={t('pastText')} />

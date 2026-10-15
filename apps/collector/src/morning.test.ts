@@ -89,11 +89,12 @@ describe('runPosting', () => {
   });
 
   it('respects the daily cap across runs and posts watched stays first', async () => {
+    // Scheduled runs keep REQUEST_RESERVE (30) of the cap for visitor requests: 35 − 30 = 5.
     const { store, stays } = memoryStore(hotels, { watchedStayIds: [16] });
     const dfs = fakeDataForSeo();
     const first = await runPosting({
       store,
-      env: testEnv({ DAILY_TASK_CAP: '5' }),
+      env: testEnv({ DAILY_TASK_CAP: '35' }),
       now: NOW,
       kind: 'manual',
       fetchFn: dfs.fetchFn,
@@ -105,7 +106,7 @@ describe('runPosting', () => {
     // Same day, cap already used up: nothing more is posted.
     const second = await runPosting({
       store,
-      env: testEnv({ DAILY_TASK_CAP: '5' }),
+      env: testEnv({ DAILY_TASK_CAP: '35' }),
       now: NOW,
       kind: 'manual',
       fetchFn: dfs.fetchFn,
@@ -263,6 +264,28 @@ describe('runRequests (C-022c1)', () => {
       fetchFn: fakeDataForSeo().fetchFn,
     });
     expect(summary).toMatchObject({ posted: 1, skipped: 1, budgetReason: 'daily_cap' });
+  });
+
+  it('gets the room the scheduled runs left free (C-132a)', async () => {
+    const mem = memoryStore(hotels);
+    const dfs = fakeDataForSeo();
+    const morning = await runPosting({
+      store: mem.store,
+      env: testEnv({ DAILY_TASK_CAP: '32' }),
+      now: NOW,
+      kind: 'morning',
+      fetchFn: dfs.fetchFn,
+    });
+    expect(morning).toMatchObject({ posted: 2, budgetReason: 'daily_cap' });
+    requested(mem, 101);
+    requested(mem, 102);
+    const summary = await runRequests({
+      store: mem.store,
+      env: testEnv({ DAILY_TASK_CAP: '32' }),
+      now: NOW,
+      fetchFn: dfs.fetchFn,
+    });
+    expect(summary).toMatchObject({ posted: 2, skipped: 0, budgetReason: 'ok' });
   });
 
   it('skips stays whose hotel has no id at the active source', async () => {

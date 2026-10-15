@@ -12,16 +12,16 @@ export function isBot(userAgent: string | null): boolean {
 
 /**
  * C-070b: a visitor opened dates we don't check as a real stay yet. Ask `request_stay` (C-022c1)
- * to track them: inside the 120-day night grid the page already has a history from the nights,
+ * to track them: inside the 270-day night grid the page already has a history from the nights,
  * and the real check adds today's exact total; further out it is the only way to get prices.
- * The function caps requests per day and refuses when the collector is full. Best effort: runs
- * after the response, never throws, ignores bots.
+ * The function caps new requests per day ('full'); the collector keeps room in its daily cap for
+ * them (C-132a). Best effort: never throws, ignores bots.
  */
 export async function requestStayOnView(
   slug: string,
   p: StayParams,
   userAgent: string | null,
-): Promise<string | null> {
+): Promise<'tracked' | 'created' | 'full' | 'invalid' | null> {
   if (!hasSupabase() || isBot(userAgent)) return null;
   try {
     return await rpc(

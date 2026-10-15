@@ -183,6 +183,7 @@ export {
   EVENING_WINDOW_DAYS,
   MONTHLY_ALERT_SHARE,
   prioritizeJobs,
+  REQUEST_RESERVE,
   type BudgetLimits,
   type BudgetReason,
   type BudgetResult,

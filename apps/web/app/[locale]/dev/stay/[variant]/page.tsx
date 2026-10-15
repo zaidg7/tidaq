@@ -125,6 +125,8 @@ const VARIANTS: Record<
     /** Single nights mislead at this hotel (C-070d). */
     nightsUnreliable?: boolean;
     adults?: number;
+    /** What request_stay answered (C-132a). */
+    request?: 'created' | 'full';
   }
 > = {
   tracked: {
@@ -158,7 +160,13 @@ const VARIANTS: Record<
     realVsNights: { realCents: 154_400, nightsCents: 224_400 },
   },
   // Beyond the 270-day night grid.
-  untracked: { status: 'untracked', checkIn: '2027-08-06', series: [], others: OTHERS },
+  untracked: {
+    status: 'untracked',
+    checkIn: '2027-08-06',
+    series: [],
+    others: OTHERS,
+    request: 'full',
+  },
   // 3 adults: the night grid collects 2.
   'untracked-guests': {
     status: 'untracked',
@@ -174,6 +182,7 @@ const VARIANTS: Record<
     series: [],
     others: OTHERS,
     nightsUnreliable: true,
+    request: 'created',
   },
   'real-only-history': {
     status: 'tracked',
@@ -225,6 +234,7 @@ export default async function DevStayPage({
       history={v.series.length ? (v.history ?? 'stay') : null}
       realVsNights={v.realVsNights ?? null}
       nightsUnreliable={v.nightsUnreliable ?? false}
+      request={v.request ?? null}
       others={v.others}
       offers={{
         day: v.series.length ? (v.offersDay ?? TODAY) : null,

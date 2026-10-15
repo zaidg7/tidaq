@@ -6,6 +6,7 @@ import {
   eveningJobs,
   gridConfigFromEnv,
   MONTHLY_ALERT_SHARE,
+  REQUEST_RESERVE,
   toIsoDate,
   xoteloTaskId,
   z,
@@ -79,6 +80,8 @@ export async function runPosting(opts: {
       usage,
       limits,
       opts.fetchFn,
+      // Leave room for stays visitors open later today (C-132a).
+      REQUEST_RESERVE,
     );
     errors.push(...result.errors.map((e) => `stay ${e.stayId}: ${e.message}`));
 
@@ -134,7 +137,8 @@ function forSource(jobs: StayJob[], env: Env): StayJob[] {
 /**
  * The budget guard (hard rule 4) plus posting, shared by every run that creates tasks. Xotelo
  * answers right away, so its "tasks" are local queue entries the collect runs work through;
- * DataForSEO tasks are posted and polled (D-39). Recorded under `runId`.
+ * DataForSEO tasks are posted and polled (D-39). Recorded under `runId`. `reserve` tasks of the
+ * daily cap stay unused (the scheduled runs keep them for visitor requests).
  */
 async function postWithinBudget(
   store: CollectorStore,
@@ -145,10 +149,11 @@ async function postWithinBudget(
   usage: { postedToday: number; spentThisMonthUsd: number },
   limits: z.infer<typeof limitsSchema>,
   fetchFn: FetchFn | undefined,
+  reserve: number,
 ) {
   const source = priceSource(env);
   const budget = applyBudget(jobs, today, {
-    dailyCap: limits.DAILY_TASK_CAP,
+    dailyCap: Math.max(0, limits.DAILY_TASK_CAP - reserve),
     postedToday: usage.postedToday,
     monthlyBudgetUsd: limits.MONTHLY_BUDGET_USD,
     spentThisMonthUsd: usage.spentThisMonthUsd,
@@ -222,6 +227,7 @@ export async function runRequests(opts: {
       usage,
       limits,
       opts.fetchFn,
+      0,
     );
     errors.push(...result.errors.map((e) => `stay ${e.stayId}: ${e.message}`));
     const estCostUsd =
