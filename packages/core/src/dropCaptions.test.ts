@@ -63,6 +63,14 @@ describe('dropCaption', () => {
     );
   });
 
+  it('a weekend drop says "Wochenende"', () => {
+    const [g] = groupDrops([row({ night: '2026-10-23', check_out: '2026-10-25' })]);
+    if (!g) throw new Error('no group');
+    expect(plain(dropCaption(g, g.top))).toContain(
+      'Wochenende Fr, 23. Okt. – So, 25. Okt.: 684 € statt 989 € am Vortag',
+    );
+  });
+
   it('says "direkt beim Hotel" and "seit wir messen" when that applies', () => {
     const [g] = groupDrops([row({ provider_direct: true, prior_days: 1 })]);
     if (!g) throw new Error('no group');

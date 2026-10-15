@@ -44,6 +44,8 @@ select
   -- C-080: drops and the radar's proof numbers are public facts.
   has_function_privilege('anon', 'public.radar_drops(date)', 'execute') as anon_can_read_drops,
   has_function_privilege('anon', 'public.radar_stats(date)', 'execute') as anon_can_read_radar_stats,
+  has_function_privilege('anon', 'public.radar_weekend_drops(date)', 'execute')
+    as anon_can_read_weekend_drops,
   -- C-030a/C-031: everything with addresses or alerts is service role only.
   not has_function_privilege('anon', 'public.alert_inputs(date)', 'execute')
     as anon_cannot_read_alert_inputs,

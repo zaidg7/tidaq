@@ -1,7 +1,14 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { alternatesFor, dropPath, localizedPath, isoDateSchema, type Locale } from '@tidaq/core';
+import {
+  alternatesFor,
+  dropKey,
+  dropPath,
+  localizedPath,
+  parseDropKey,
+  type Locale,
+} from '@tidaq/core';
 import { DropOver, DropPage, dropFacts } from '@/components/drops/DropPage';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
@@ -12,20 +19,22 @@ import { berlinToday } from '@/lib/today';
 // A drop lives for a day: render per request.
 export const dynamic = 'force-dynamic';
 
+/** `night`: one night (`2026-10-18`) or a weekend (`2026-10-23--2026-10-25`, C-080f). */
 type Props = { params: Promise<{ locale: Locale; hotel: string; night: string }> };
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 async function resolve({ params }: Props) {
   const { locale, hotel, night } = await params;
-  if (!SLUG.test(hotel) || !isoDateSchema.safeParse(night).success) notFound();
-  return { locale, slug: hotel, night };
+  const stay = parseDropKey(night);
+  if (!SLUG.test(hotel) || !stay) notFound();
+  return { locale, slug: hotel, stay, key: dropKey(stay) };
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { locale, slug, night } = await resolve(props);
-  const load = await getDropPage(slug, night, berlinToday());
+  const { locale, slug, stay, key } = await resolve(props);
+  const load = await getDropPage(slug, key, berlinToday());
   if (load.kind === 'missing') notFound();
-  const alternates = alternatesFor(dropPath(slug, night), locale);
+  const alternates = alternatesFor(dropPath(slug, stay), locale);
   if (load.kind === 'ok') {
     const f = await dropFacts(load.group, load.drop, locale, new Date());
     return {
@@ -46,10 +55,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function DropRoute(props: Props) {
-  const { locale, slug, night } = await resolve(props);
+  const { locale, slug, stay, key } = await resolve(props);
   setRequestLocale(locale);
   const today = berlinToday();
-  const load = await getDropPage(slug, night, today);
+  const load = await getDropPage(slug, key, today);
   if (load.kind === 'missing') notFound();
   if (load.kind === 'ok') {
     return (
@@ -69,7 +78,7 @@ export default async function DropRoute(props: Props) {
     return (
       <StatusPage eyebrow={td('eyebrow')} title={td('title')} text={td('unavailable')}>
         <a
-          href={localizedPath(dropPath(slug, night), locale)}
+          href={localizedPath(dropPath(slug, stay), locale)}
           className={buttonClasses({ size: 'lg' })}
         >
           {td('retry')}
@@ -77,5 +86,5 @@ export default async function DropRoute(props: Props) {
       </StatusPage>
     );
   }
-  return <DropOver hotel={load.hotel} night={night} locale={locale} today={today} />;
+  return <DropOver hotel={load.hotel} stay={stay} locale={locale} today={today} />;
 }

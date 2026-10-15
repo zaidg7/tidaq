@@ -4,10 +4,12 @@ import {
   usualCents,
   dropPath,
   dropStats,
-  dropStay,
+  dropDates,
+  dropKey,
   dropWhen,
   filterDrops,
   findDrop,
+  parseDropKey,
   groupDrops,
   priceDropRowSchema,
   sortDrops,
@@ -154,14 +156,44 @@ describe('sortDrops and dropStats', () => {
     });
   });
 
-  it('maps a night to its one-night stay', () => {
-    expect(dropStay('2026-12-31')).toEqual({ checkIn: '2026-12-31', checkOut: '2027-01-01' });
+  it('a single night checks out the next day; a weekend counts as two nights', () => {
+    const [single] = groupDrops([row({ night: '2026-12-31' })]);
+    expect(single?.top).toMatchObject({ checkOut: '2027-01-01', nights: 1 });
+    const g = groupDrops([
+      row({ night: '2026-10-23', check_out: '2026-10-25', drop_pct: 0.3 }),
+      row({ night: '2026-10-23', drop_pct: 0.2 }),
+    ]);
+    expect(g[0]?.top).toMatchObject({ night: '2026-10-23', checkOut: '2026-10-25', nights: 2 });
+    expect(dropStats(g).nights).toBe(3);
   });
 });
 
-describe('dropPath and findDrop (C-080b)', () => {
-  it('builds the share path', () => {
-    expect(dropPath('hotel-adlon', '2026-10-18')).toBe('/preissturz/hotel-adlon/2026-10-18');
+describe('dropPath, dropKey and findDrop (C-080b/f)', () => {
+  const night = { night: '2026-10-18', checkOut: '2026-10-19' };
+  const weekend = { night: '2026-10-23', checkOut: '2026-10-25' };
+
+  it('builds the share path for a night and a weekend', () => {
+    expect(dropPath('hotel-adlon', night)).toBe('/preissturz/hotel-adlon/2026-10-18');
+    expect(dropPath('hotel-adlon', weekend)).toBe('/preissturz/hotel-adlon/2026-10-23--2026-10-25');
+  });
+
+  it('reads keys back and rejects anything else', () => {
+    expect(parseDropKey(dropKey(night))).toEqual(night);
+    expect(parseDropKey(dropKey(weekend))).toEqual(weekend);
+    for (const bad of [
+      '2026-02-31',
+      '2026-10-23--2026-10-23',
+      '2026-10-23--2026-10-27',
+      'x',
+      '2026-10-23--',
+    ]) {
+      expect(parseDropKey(bad), bad).toBeNull();
+    }
+  });
+
+  it('formats the dates', () => {
+    expect(dropDates(night, 'de')).toBe('So, 18. Okt.');
+    expect(dropDates(weekend, 'de')).toBe('Fr, 23. Okt. – So, 25. Okt.');
   });
 
   it("finds a hotel's top drop or one of its other nights", () => {
@@ -169,13 +201,17 @@ describe('dropPath and findDrop (C-080b)', () => {
     const top = g[0];
     expect(top).toBeDefined();
     if (!top) return;
-    expect(findDrop(g, top.hotel.slug, top.top.night)?.drop).toBe(top.top);
+    expect(findDrop(g, top.hotel.slug, top.top)?.drop).toBe(top.top);
     const other = g.find((x) => x.more.length > 0);
     expect(other).toBeDefined();
     if (!other?.more[0]) return;
-    expect(findDrop(g, other.hotel.slug, other.more[0].night)?.drop).toBe(other.more[0]);
-    expect(findDrop(g, top.hotel.slug, '2030-01-01')).toBeNull();
-    expect(findDrop(g, 'gibt-es-nicht', top.top.night)).toBeNull();
+    expect(findDrop(g, other.hotel.slug, other.more[0])?.drop).toBe(other.more[0]);
+    expect(findDrop(g, top.hotel.slug, { night: '2030-01-01', checkOut: '2030-01-02' })).toBeNull();
+    // Same check-in, but the weekend isn't on the radar.
+    expect(
+      findDrop(g, top.hotel.slug, { night: top.top.night, checkOut: '2099-01-01' }),
+    ).toBeNull();
+    expect(findDrop(g, 'gibt-es-nicht', top.top)).toBeNull();
   });
 });
 

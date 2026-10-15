@@ -274,7 +274,7 @@ export function DropsView({
           {t('howTitle')}
         </h2>
         <ul className="mt-3 grid list-disc gap-1.5 pl-5 text-[15px] leading-relaxed marker:text-muted-ink">
-          {(['compare', 'threshold', 'confirm', 'check'] as const).map((k) => (
+          {(['compare', 'threshold', 'weekend', 'confirm', 'check'] as const).map((k) => (
             <li key={k}>{t(`how.${k}`)}</li>
           ))}
         </ul>

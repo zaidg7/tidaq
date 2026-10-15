@@ -1,9 +1,11 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { TrendingDown } from 'lucide-react';
 import {
+  dropKey,
   dropPath,
   formatDrop,
   formatPrice,
+  dropDates,
   formatWeekdayDayMonth,
   localizedPath,
   type Locale,
@@ -18,9 +20,18 @@ import type { HotelDropsWithPhoto } from '@/lib/data/drops';
 /** "−28 %" with the typographic minus. */
 export const dropPercent = formatDrop;
 
+/** "Wochenende" on a weekend drop's photo (C-080f): the dates below say which. */
+export function WeekendBadge({ label }: { label: string }) {
+  return (
+    <span className="absolute top-3 right-3 rounded-full bg-surface px-3 py-1.5 text-[13px] leading-none font-bold text-fg shadow-float">
+      {label}
+    </span>
+  );
+}
+
 /** Each night opens its own drop page (C-080b), which links on to the stay. */
-const nightHref = (slug: string, night: string, locale: Locale) =>
-  localizedPath(dropPath(slug, night), locale);
+const nightHref = (slug: string, d: PriceDrop, locale: Locale) =>
+  localizedPath(dropPath(slug, d), locale);
 
 /**
  * One hotel on the Preissturz-Radar (C-080a): photo with the drop, hotel (→ the drop's own page,
@@ -57,16 +68,17 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
           <span aria-hidden="true">{pct}</span>
           <span className="sr-only">{t('dropLabel', { pct })}</span>
         </span>
+        {d.nights > 1 && <WeekendBadge label={t('weekendBadge')} />}
       </div>
       <div className="flex flex-1 flex-col p-5">
         <a
-          href={nightHref(g.hotel.slug, d.night, locale)}
+          href={nightHref(g.hotel.slug, d, locale)}
           className="text-h3 after:absolute after:inset-0"
         >
           {g.hotel.name}
         </a>
         <p className="text-meta mt-1 text-muted-ink">
-          {g.city.name[locale]} · {t('night', { date: formatWeekdayDayMonth(d.night, locale) })}
+          {g.city.name[locale]} · {t('night', { date: dropDates(d, locale), n: d.nights })}
         </p>
         <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <Price cents={d.nowCents} size="lg" />
@@ -89,10 +101,11 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
             <span>{t('more')}</span>
             {more.map((m: PriceDrop) => (
               <a
-                key={m.night}
-                href={nightHref(g.hotel.slug, m.night, locale)}
+                key={dropKey(m)}
+                href={nightHref(g.hotel.slug, m, locale)}
                 className="font-semibold text-accent underline-offset-2 hover:underline"
               >
+                {m.nights > 1 ? `${t('weekendBadge')} ` : ''}
                 {formatWeekdayDayMonth(m.night, locale)} {dropPercent(m.drop, locale)}
               </a>
             ))}

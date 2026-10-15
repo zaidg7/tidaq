@@ -15,6 +15,14 @@ export const ADLON: Hotel = [
 ];
 const BAUR: Hotel = [2, 'baur-au-lac-zuerich', 'Baur au Lac', 'zuerich', 'Zürich', 'Zurich'];
 const CLARIDGES: Hotel = [3, 'claridges-london', "Claridge's", 'london', 'London', 'London'];
+const FAIRMONT: Hotel = [
+  5,
+  'fairmont-hotel-vier-jahreszeiten-hamburg',
+  'Fairmont Hotel Vier Jahreszeiten',
+  'hamburg',
+  'Hamburg',
+  'Hamburg',
+];
 const ARTS: Hotel = [
   4,
   'hotel-arts-barcelona',
@@ -32,6 +40,7 @@ function row(
   prev: number,
   provider: [slug: string, name: string, direct?: boolean],
   priorDays = 9,
+  nights = 1,
 ): PriceDropRow {
   const today = berlinToday();
   return {
@@ -42,6 +51,7 @@ function row(
     city_name_de: h[4],
     city_name_en: h[5],
     night: addDays(today, inDays),
+    ...(nights > 1 && { check_out: addDays(today, inDays + nights) }),
     seen_day: today,
     seen_at: `${today}T06:12:00Z`,
     now_cents: now,
@@ -61,9 +71,19 @@ function row(
 const BOOKING: [string, string] = ['booking-com', 'Booking.com'];
 const EXPEDIA: [string, string] = ['expedia', 'Expedia'];
 
-/** Sample drops (C-080a): four hotels, one with several nights, one a first-ever low. */
+/** Days from today to the second Friday ahead (a weekend at least a week out). */
+function nextFriday(): number {
+  const dow = new Date(`${berlinToday()}T00:00:00Z`).getUTCDay();
+  return ((5 - dow + 7) % 7) + 7;
+}
+
+/**
+ * Sample drops (C-080a/f): five hotels, one with several nights, one a first-ever low, one a
+ * Friday-to-Sunday weekend.
+ */
 export function sampleDrops(): HotelDropsWithPhoto[] {
   return groupDrops([
+    row(FAIRMONT, nextFriday(), 98_000, 124_000, BOOKING, 6, 2),
     row(BAUR, 12, 68_400, 98_900, BOOKING),
     row(BAUR, 13, 71_200, 96_000, BOOKING),
     row(BAUR, 19, 74_800, 92_300, EXPEDIA),
