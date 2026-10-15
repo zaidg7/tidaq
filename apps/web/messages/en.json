@@ -96,7 +96,12 @@
     "menuClose": "Close menu",
     "menuTitle": "Menu",
     "drops": "Price Drops",
-    "menuAlert": "Set up a Price Alert"
+    "menuAlert": "Set up a Price Alert",
+    "pillWhere": "Hotel or city",
+    "pillWhen": "Dates",
+    "pillWho": "Guests",
+    "searchDialog": "Search",
+    "searchClose": "Close search"
   },
   "footer": {
     "tagline": "Prices for five-star hotels. Checked every morning.",

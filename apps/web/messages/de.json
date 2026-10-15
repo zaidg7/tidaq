@@ -96,7 +96,12 @@
     "menuClose": "Menü schließen",
     "menuTitle": "Menü",
     "drops": "Price Drops",
-    "menuAlert": "Price Alert aktivieren"
+    "menuAlert": "Price Alert aktivieren",
+    "pillWhere": "Hotel oder Stadt",
+    "pillWhen": "Daten",
+    "pillWho": "Gäste",
+    "searchDialog": "Suche",
+    "searchClose": "Suche schließen"
   },
   "footer": {
     "tagline": "Preise für Fünf-Sterne-Hotels. Jeden Morgen neu geprüft.",

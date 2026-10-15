@@ -1,29 +1,25 @@
-import { Search } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { localizedPath, type Locale } from '@tidaq/core';
 import { buttonClasses } from '@/components/ui/Button';
-import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
 import { navRoutes, routes } from '@/lib/routes';
-import { cn } from '@/lib/cn';
 import { LocaleLinks } from './LocaleLinks';
 import { MobileMenu } from './MobileMenu';
+import { NavSearch } from '@/components/search/NavSearch';
+import { searchBarProps } from '@/lib/searchCardProps';
+import { berlinToday } from '@/lib/today';
 import { DROP_ALERT_ID } from '@/components/drops/alertId';
 import { NavLinks } from './NavLinks';
-
-const iconLink = cn(
-  'inline-grid size-11 shrink-0 place-items-center rounded-full text-ink',
-  'transition-colors duration-[var(--t-fast)] ease-out hover:bg-surface-2',
-);
 
 /**
  * Sticky navbar (PREMIUM.md §12): transparent at the top, frosted once the page scrolls
  * (`.site-header` in globals.css, pure CSS). Desktop: logo, links, language, search, Price Alert.
- * Mobile: logo, search, menu sheet. The docked search pill comes with the search (C-107).
+ * Mobile: logo, search, menu sheet. `NavSearch` opens the search in place (C-107b).
  */
 export async function Navbar({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'nav' });
   const tl = await getTranslations({ locale, namespace: 'localeSwitch' });
+  const search = await searchBarProps(locale);
   const items = navRoutes.map((key) => ({ href: routes[key], label: t(key) }));
   const localeNames = { de: tl('de'), en: tl('en') };
 
@@ -53,13 +49,18 @@ export async function Navbar({ locale }: { locale: Locale }) {
           fullNames={localeNames}
           className="hidden lg:block"
         />
-        <a
-          href={localizedPath(routes.search, locale)}
-          aria-label={t('search')}
-          className={iconLink}
-        >
-          <Icon icon={Search} />
-        </a>
+        <NavSearch
+          locale={locale}
+          today={berlinToday()}
+          guestOptions={search.guestOptions}
+          labels={{
+            ...search.labels,
+            pill: [t('pillWhere'), t('pillWhen'), t('pillWho')],
+            open: t('search'),
+            close: t('searchClose'),
+            dialog: t('searchDialog'),
+          }}
+        />
         {/* `cn` doesn't merge conflicting classes: the wrapper hides the button on phones. */}
         <div className="ml-1 hidden lg:block">
           <a

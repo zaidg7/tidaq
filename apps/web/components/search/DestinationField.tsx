@@ -42,6 +42,7 @@ type Props = {
   labels: DestinationLabels;
   invalid?: boolean;
   describedBy?: string;
+  autoFocus?: boolean;
 };
 
 const MAX_CITIES = 3;
@@ -111,7 +112,19 @@ function Thumb({
  * marked. ↑/↓ move, Enter picks, Esc closes (then clears). The input keeps focus throughout.
  */
 export const DestinationField = forwardRef<HTMLInputElement, Props>(function DestinationField(
-  { id, index, value, onChange, onPicked, open, onOpenChange, labels, invalid, describedBy },
+  {
+    id,
+    index,
+    value,
+    onChange,
+    onPicked,
+    open,
+    onOpenChange,
+    labels,
+    invalid,
+    describedBy,
+    autoFocus,
+  },
   ref,
 ) {
   const listId = useId();
@@ -267,6 +280,7 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
           autoCapitalize="none"
           spellCheck={false}
           enterKeyHint="search"
+          autoFocus={autoFocus}
           placeholder={labels.placeholder}
           value={query}
           onChange={(e) => {

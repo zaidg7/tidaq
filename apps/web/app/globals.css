@@ -711,3 +711,34 @@
 .seg-divider:has(+ .seg:is(:hover, :focus-within)) {
   opacity: 0;
 }
+
+/* Navbar search (C-107b): the full bar drops from the top over a dimmed page. */
+.search-dialog {
+  position: fixed;
+  inset: 0 0 auto;
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0 0 var(--radius-panel) var(--radius-panel);
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: var(--shadow-3);
+}
+.search-dialog[open] {
+  animation: search-drop var(--t-panel) var(--ease-out) both;
+}
+.search-dialog::backdrop {
+  background: rgb(21 19 28 / 0.32);
+  animation: chart-fade var(--t-panel) var(--ease-out) both;
+}
+@keyframes search-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+}

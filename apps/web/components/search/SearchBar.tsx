@@ -37,6 +37,8 @@ type Props = {
   today: string;
   locale: Locale;
   labels: SearchBarLabels;
+  /** Focus "Hotel oder Stadt" on mount (the navbar search opens with it). */
+  autoFocus?: boolean;
   className?: string;
 };
 
@@ -66,7 +68,15 @@ function dateRange(from: string, to: string, locale: Locale): string {
  * (§9.3): hotel + dates → stay page, hotel only → hotel page, city → city page, nothing → the
  * panel opens and the field shakes. Dates and guests get their own popovers in C-108.
  */
-export function SearchBar({ index, guestOptions, today, locale, labels, className }: Props) {
+export function SearchBar({
+  index,
+  guestOptions,
+  today,
+  locale,
+  labels,
+  autoFocus,
+  className,
+}: Props) {
   const id = useId();
   const whereRef = useRef<HTMLInputElement>(null);
   const datesRef = useRef<HTMLButtonElement>(null);
@@ -172,6 +182,7 @@ export function SearchBar({ index, guestOptions, today, locale, labels, classNam
             labels={labels.destination}
             invalid={error?.field === 'where'}
             describedBy={error?.field === 'where' ? errorId : undefined}
+            autoFocus={autoFocus}
           />
         </Segment>
         <Divider />

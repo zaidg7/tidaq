@@ -88,7 +88,7 @@ test.describe('search bar', () => {
   test('a city goes to the city page', async ({ page }) => {
     await page.goto('/dev/search');
     await where(page).click();
-    await list(page).getByRole('option', { name: 'Wien' }).click();
+    await list(page).getByRole('option', { name: 'Wien', exact: true }).click();
     await expect(where(page)).toHaveValue('Wien');
     await bar(page).getByRole('button', { name: 'Preis prüfen' }).click();
     await expect(page).toHaveURL(/\/stadt\/wien$/);
