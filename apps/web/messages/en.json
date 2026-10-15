@@ -175,7 +175,11 @@
     "updateddate": "As of {date}, {time}",
     "source": "Source: booking site prices",
     "totalPrice": "total · {perNight} per night",
-    "totalStay": "{nights, plural, one {# night} other {# nights}}, {adults, plural, one {# adult} other {# adults}}"
+    "totalStay": "{nights, plural, one {# night} other {# nights}}, {adults, plural, one {# adult} other {# adults}}",
+    "zone_cheap": "Cheap",
+    "zone_normal": "Normal",
+    "zone_dear": "Expensive",
+    "meterLabel": "{zone}: now {now}, between low {low} and high {high} since {since}"
   },
   "collecting": {
     "title": "We're still collecting prices",

@@ -175,7 +175,11 @@
     "updateddate": "Stand: {date}, {time} Uhr",
     "source": "Quelle: Preise der Buchungsseiten",
     "totalPrice": "gesamt · {perNight} pro Nacht",
-    "totalStay": "{nights, plural, one {# Nacht} other {# Nächte}}, {adults, plural, one {# Erwachsener} other {# Erwachsene}}"
+    "totalStay": "{nights, plural, one {# Nacht} other {# Nächte}}, {adults, plural, one {# Erwachsener} other {# Erwachsene}}",
+    "zone_cheap": "Günstig",
+    "zone_normal": "Normal",
+    "zone_dear": "Teuer",
+    "meterLabel": "{zone}: aktuell {now}, zwischen Tief {low} und Hoch {high} seit {since}"
   },
   "collecting": {
     "title": "Wir sammeln noch Preise",
