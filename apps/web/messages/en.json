@@ -767,7 +767,9 @@
     },
     "unavailable": "The hotel list is unavailable right now. Please try again in a moment.",
     "citiesLink": "All cities as photos",
-    "cityCount": "{n, plural, one {# hotel} other {# hotels}}"
+    "regionHotels": "Hotels in {region}",
+    "prev": "Previous",
+    "next": "Next"
   },
   "watchMail": {
     "eyebrow": "Price alert",

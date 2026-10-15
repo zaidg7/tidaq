@@ -67,6 +67,7 @@ export { toCsv } from './csv';
 export {
   foldText,
   highlightRange,
+  hotelWithCity,
   matchCities,
   matchesCity,
   matchHotels,
