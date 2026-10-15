@@ -421,8 +421,8 @@
   -webkit-backdrop-filter: blur(8px);
 }
 /* The search button leaves the bar (no gap) while the page's own search is on screen. */
-.nav-search[data-hero-search='visible'],
-:root:has([data-hero-search]) .nav-search[data-hero-search='unknown'] {
+.nav-search[data-state='visible'],
+:root:has([data-hero-search]) .nav-search[data-state='unknown'] {
   display: none;
 }
 .nav-search {

@@ -106,7 +106,7 @@ export function NavSearch({ locale, today, guestOptions, labels }: Props) {
 
   return (
     <>
-      <div data-hero-search={heroSearch} className="nav-search">
+      <div data-state={heroSearch} className="nav-search">
         {/* `cn` doesn't merge conflicting classes: wrappers own visibility per breakpoint. */}
         <div className="hidden lg:block">
           <button
