@@ -340,7 +340,7 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
         className={cn(
           inline
             ? 'mt-4'
-            : 'search-panel absolute top-[calc(100%+12px)] data-[side=up]:top-auto data-[side=up]:bottom-[calc(100%+12px)] left-0 z-30 w-[480px] max-w-[calc(100vw-32px)] overflow-hidden rounded-panel border border-line bg-surface shadow-3',
+            : 'search-panel absolute top-[calc(100%+12px)] data-[side=up]:top-auto data-[side=up]:bottom-[calc(100%+12px)] left-0 z-30 w-[420px] max-w-[calc(100vw-32px)] overflow-hidden rounded-panel border border-line bg-surface shadow-3',
         )}
       >
         <ul
@@ -348,7 +348,7 @@ export const DestinationField = forwardRef<HTMLInputElement, Props>(function Des
           role="listbox"
           aria-label={labels.listLabel}
           className={cn(
-            !inline && 'max-h-[min(520px,65vh)] overflow-y-auto overscroll-contain p-3',
+            !inline && 'max-h-[min(440px,60vh)] overflow-y-auto overscroll-contain p-2',
           )}
         >
           {sections.length === 0 ? (

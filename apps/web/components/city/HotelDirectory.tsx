@@ -10,13 +10,16 @@ import {
 } from '@tidaq/core';
 import { HotelPhotoCard } from '@/components/hotel/HotelPhotoCard';
 import { PageHead } from '@/components/shell/PageHead';
+import { ArrowRight } from 'lucide-react';
 import { Carousel } from '@/components/ui/Carousel';
+import { Icon } from '@/components/ui/Icon';
+import { SectionNav } from '@/components/ui/SectionNav';
 import type { DirectoryCity } from '@/lib/data/city';
 import { routes } from '@/lib/routes';
 
 /**
  * `/hotels` (C-024, mockup B language): every hotel we track as a photo card, by region. The
- * regions are jump links at the top; each region is one carousel of its hotels (three at a time
+ * regions are a sticky text nav at the top (C-137, no pills); each region is one carousel of its hotels (three at a time
  * on desktop, C-131), city by city, each named "Hotel, Stadt" unless the name says the city. The
  * region's cities link to their city pages above the carousel.
  */
@@ -35,30 +38,25 @@ export function HotelDirectory({ cities }: { cities: DirectoryCity[] }) {
   return (
     <div className="mx-auto w-full max-w-[1240px] px-[18px] pt-6 pb-16 md:px-10 md:pt-12 md:pb-24">
       <PageHead title={t('title')} lead={t('intro', { hotels: hotelCount, cities: cities.length })}>
-        <p className="mt-5 flex flex-wrap gap-2">
-          <a
-            href={localizedPath(routes.cities, locale)}
-            className="inline-flex h-10 items-center rounded-full bg-ink px-4 text-[14px] font-semibold text-white"
-          >
-            {t('citiesLink')}
-          </a>
-          {groups.map((g) => (
-            <a
-              key={g.region}
-              href={`#region-${g.region}`}
-              className="inline-flex h-10 items-center rounded-full border border-line-strong bg-surface px-4 text-[14px] font-semibold text-ink-2 hover:border-ink/40 hover:text-ink"
-            >
-              {t(`regions.${g.region}`)}
-            </a>
-          ))}
-        </p>
+        <a
+          href={localizedPath(routes.cities, locale)}
+          className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-accent underline-offset-4 hover:underline"
+        >
+          {t('citiesLink')}
+          <Icon icon={ArrowRight} size={16} />
+        </a>
       </PageHead>
+      <SectionNav
+        label={t('regionsLabel')}
+        items={groups.map((g) => ({ id: `region-${g.region}`, label: t(`regions.${g.region}`) }))}
+        className="mt-6 md:mt-8"
+      />
       {groups.map((g) => (
         <section
           key={g.region}
           id={`region-${g.region}`}
           aria-labelledby={`region-${g.region}-title`}
-          className="mt-14 scroll-mt-24 md:mt-20"
+          className="mt-12 scroll-mt-32 md:mt-16 lg:scroll-mt-36"
         >
           <h2
             id={`region-${g.region}-title`}

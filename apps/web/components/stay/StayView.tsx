@@ -160,18 +160,12 @@ export function StayView({
             <h1 className="mt-1 text-[30px] leading-[1.12] font-semibold tracking-[-0.03em] md:text-[44px] md:leading-[1.06]">
               {hotel.name}
             </h1>
-            <ul className="mt-3.5 flex flex-wrap gap-2">
-              {[dates, t('stayFacts', { nights: params.nights, adults: params.adults })].map(
-                (c) => (
-                  <li
-                    key={c}
-                    className="inline-flex h-8 items-center rounded-full border border-line bg-surface px-3 text-[14px] font-medium"
-                  >
-                    {c}
-                  </li>
-                ),
-              )}
-            </ul>
+            {/* The stay as one line of text, not pills (C-137). */}
+            <p className="mt-2.5 flex flex-wrap gap-x-2 text-[16px] text-muted-ink md:text-[17px]">
+              <span className="font-semibold text-ink">{dates}</span>
+              <span aria-hidden="true">·</span>
+              <span>{t('stayFacts', { nights: params.nights, adults: params.adults })}</span>
+            </p>
           </div>
           <div className="shrink-0">{edit}</div>
         </header>

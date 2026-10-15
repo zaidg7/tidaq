@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDown, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { chipClasses } from '@/components/ui/Chip';
 import { Icon } from '@/components/ui/Icon';
 import { Segmented } from '@/components/ui/Segmented';
 import { Sheet } from '@/components/ui/Sheet';
@@ -113,12 +112,16 @@ export function DropFilterSheet({
           setV(current);
           setOpen(true);
         }}
-        className={cn(chipClasses(active > 0), 'h-11 gap-2 px-5 text-[15px]')}
+        // A plain control, not a pill (C-137): the count says how many filters are on.
+        className={cn(
+          'inline-flex h-11 items-center gap-2 rounded-input border bg-surface px-4 text-[15px] font-semibold text-ink transition-colors',
+          active > 0 ? 'border-ink' : 'border-line-strong hover:border-ink/40',
+        )}
       >
         <Icon icon={SlidersHorizontal} size={18} />
         {labels.button}
         {active > 0 && (
-          <span className="grid size-5 place-items-center rounded-full bg-white text-[12px] leading-none font-bold text-ink">
+          <span className="grid size-5 place-items-center rounded-[6px] bg-ink text-[12px] leading-none font-bold text-white">
             {active}
           </span>
         )}
@@ -171,22 +174,32 @@ export function DropFilterSheet({
           </div>
 
           {months.length > 1 && (
-            <fieldset className="flex flex-col gap-2">
-              <legend className="mb-2 text-[15px] font-semibold">{labels.month}</legend>
-              <div className="flex flex-wrap gap-2">
-                {[{ value: '', label: labels.monthAll }, ...months].map((m) => (
-                  <button
-                    key={m.value || 'all'}
-                    type="button"
-                    aria-pressed={v.month === m.value}
-                    onClick={() => set({ month: m.value })}
-                    className={chipClasses(v.month === m.value)}
-                  >
-                    {m.label}
-                  </button>
-                ))}
+            // A dropdown like the city, not a row of pills (C-137).
+            <div className="flex flex-col gap-2">
+              <label htmlFor="drop-filter-month" className="text-[15px] font-semibold">
+                {labels.month}
+              </label>
+              <div className="relative">
+                <select
+                  id="drop-filter-month"
+                  value={v.month}
+                  onChange={(e) => set({ month: e.target.value })}
+                  className="h-[52px] w-full appearance-none rounded-input border border-line-strong bg-field px-4 pr-11 text-[16px] text-ink hover:border-ink/30 focus:border-accent focus:shadow-halo focus:outline-none"
+                >
+                  <option value="">{labels.monthAll}</option>
+                  {months.map((m) => (
+                    <option key={m.value} value={m.value}>
+                      {m.label}
+                    </option>
+                  ))}
+                </select>
+                <Icon
+                  icon={ChevronDown}
+                  size={18}
+                  className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-muted"
+                />
               </div>
-            </fieldset>
+            </div>
           )}
 
           <div className="flex flex-col gap-2">

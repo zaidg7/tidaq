@@ -35,6 +35,9 @@ export type SearchBarLabels = {
   phone: PhoneSearchLabels;
 };
 
+/** Popover widths in px, for centring them over their segment (keep in line with the panels). */
+const POPOVER_WIDTH = { dates: 600, guests: 340 } as const;
+
 type Props = {
   index: SearchIndex;
   /** Guest options 1–4, translated ("2 Erwachsene"). */
@@ -74,6 +77,19 @@ export function SearchBar({
   const { dest, checkIn, checkOut, adults, nights, error } = search;
   const [panel, setPanel] = useState(false);
   const [popover, setPopover] = useState<'dates' | 'guests' | null>(null);
+  // Each popover opens centred over its own segment (C-138), kept inside the bar.
+  const [anchorX, setAnchorX] = useState<number | null>(null);
+  const openPopover = (kind: 'dates' | 'guests' | null) => {
+    setPopover(kind);
+    const seg = (kind === 'dates' ? datesRef : guestsRef).current;
+    const form = formRef.current;
+    if (!kind || !seg || !form) return;
+    const width = Math.min(POPOVER_WIDTH[kind], window.innerWidth - 32);
+    const f = form.getBoundingClientRect();
+    const r = seg.getBoundingClientRect();
+    const center = r.left + r.width / 2 - f.left;
+    setAnchorX(Math.min(Math.max(center, width / 2), f.width - width / 2));
+  };
   const [shaking, setShaking] = useState(false);
 
   // A click outside the bar closes an open popover.
@@ -146,7 +162,7 @@ export function SearchBar({
             onPicked={(next) => {
               datesRef.current?.focus();
               // A hotel without dates yet: straight on to the calendar.
-              if (next.kind === 'hotel' && !checkIn) setPopover('dates');
+              if (next.kind === 'hotel' && !checkIn) openPopover('dates');
             }}
             open={panel}
             onOpenChange={(o) => {
@@ -188,7 +204,7 @@ export function SearchBar({
             aria-labelledby={`${id}-dates-label ${id}-dates-value`}
             aria-invalid={error?.field === 'dates' || undefined}
             aria-describedby={error?.field === 'dates' ? errorId : undefined}
-            onClick={() => setPopover(popover === 'dates' ? null : 'dates')}
+            onClick={() => openPopover(popover === 'dates' ? null : 'dates')}
             className="control"
           />
         </Segment>
@@ -224,7 +240,7 @@ export function SearchBar({
             aria-expanded={popover === 'guests'}
             aria-controls={popover === 'guests' ? `${id}-guests-popover` : undefined}
             aria-labelledby={`${id}-guests-label ${id}-guests-value`}
-            onClick={() => setPopover(popover === 'guests' ? null : 'guests')}
+            onClick={() => openPopover(popover === 'guests' ? null : 'guests')}
             className="control"
           />
         </Segment>
@@ -255,12 +271,13 @@ export function SearchBar({
       {popover === 'dates' && (
         <DatePopover
           id={`${id}-dates-popover`}
+          anchorX={anchorX}
           checkIn={checkIn}
           checkOut={checkOut}
           onChange={search.setDates}
           onClose={() => closeTo(datesRef)}
           onNext={() => {
-            setPopover('guests');
+            openPopover('guests');
             guestsRef.current?.focus();
           }}
           hotel={search.hotel}
@@ -272,6 +289,7 @@ export function SearchBar({
       {popover === 'guests' && (
         <GuestsPopover
           id={`${id}-guests-popover`}
+          anchorX={anchorX}
           adults={adults}
           onChange={search.setAdults}
           onClose={() => closeTo(guestsRef)}

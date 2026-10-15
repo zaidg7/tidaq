@@ -73,15 +73,22 @@ export function DropCallout({ group: g, drop }: { group: HotelDrops; drop?: Pric
             <Icon icon={ArrowRight} size={16} />
           </a>
           {others.length > 0 && (
-            <ul className="mt-1 flex flex-wrap gap-2" aria-label={t('more')}>
+            <ul
+              className="mt-2 max-w-[420px] divide-y divide-line border-y border-line"
+              aria-label={t('more')}
+            >
               {others.map((x) => (
                 <li key={dropKey(x)}>
                   <a
                     href={href(x)}
-                    className="inline-flex h-9 items-center gap-2 rounded-full border border-line bg-surface px-3 text-[14px] font-medium hover:border-ink/40"
+                    className="flex min-h-11 items-center justify-between gap-3 text-[15px] font-medium text-ink hover:text-accent"
                   >
-                    {formatWeekdayDayMonth(x.night, locale)}
-                    {x.nights > 1 && ` · ${td('stayBadge', { n: x.nights })}`}
+                    <span>
+                      {formatWeekdayDayMonth(x.night, locale)}
+                      {x.nights > 1 && (
+                        <span className="text-muted"> · {td('stayBadge', { n: x.nights })}</span>
+                      )}
+                    </span>
                     <span className={cn('font-bold tabular-nums', dropTextClass(x.drop))}>
                       {dropPercent(x.drop, locale)}
                     </span>

@@ -111,7 +111,8 @@ test.describe('dates and guests (C-108)', () => {
     await page.keyboard.press('Enter');
     const dates = page.getByRole('dialog', { name: 'Reisedaten' });
     await expect(dates).toBeVisible();
-    await expect(dates.getByText('Preis pro Nacht, 2 Erwachsene')).toBeVisible();
+    // The compact popover (C-136) keeps the cheap → dear legend.
+    await expect(dates.getByText('günstiger')).toBeVisible();
     // Keyboard focus lands on today, which names its price.
     await expect(dates.locator('td:focus')).toHaveAttribute('aria-label', /heute, .+ pro Nacht/);
     await expect(dates.getByRole('gridcell', { name: /pro Nacht/ }).first()).toBeVisible();
@@ -169,8 +170,9 @@ test.describe('dates and guests (C-108)', () => {
     const dates = page.getByRole('dialog', { name: 'Reisedaten' });
     await dates.getByRole('radio', { name: 'Flexibel' }).click();
     await expect(dates.getByText('Ein Wochenende im')).toBeVisible();
-    // Next month always has its weekends in the sample grid (120 nights).
-    await dates.getByRole('button', { pressed: false }).first().click();
+    // Next month always has its weekends in the sample grid (120 nights). A month stepper, not
+    // pills (C-137).
+    await dates.getByRole('button', { name: 'Nächster Monat' }).click();
     const cards = dates.getByRole('listitem');
     await expect(cards).toHaveCount(3);
     await expect(cards.first()).toContainText('Am günstigsten');

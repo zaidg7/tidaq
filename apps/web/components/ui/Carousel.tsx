@@ -2,7 +2,6 @@
 
 import { Children, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { IconButton } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
 
@@ -54,9 +53,14 @@ export function Carousel({
     el.scrollBy({ left: dir * (first.offsetWidth + gap), behavior: reduce ? 'auto' : 'smooth' });
   };
 
-  // Vertically centred on the 4:3 photo of a third-wide card: (width − 2 gaps) / 3 × 3/8.
-  const arrow =
-    'absolute top-[calc((100cqw-48px)*0.125)] z-[2] -translate-y-1/2 border border-line bg-surface shadow-2 hover:bg-surface-2';
+  // Vertically centred on the 4:3 photo of a third-wide card: (width − 2 gaps) / 3 × 3/8. Solid ink
+  // and 56 px, so they read as controls on any photo (Zaid, C-138).
+  const arrow = cn(
+    'absolute top-[calc((100cqw-48px)*0.125)] z-[2] grid size-14 -translate-y-1/2 place-items-center rounded-full',
+    'bg-ink text-white shadow-[0_10px_30px_rgba(14,12,18,0.35)] ring-4 ring-white/80',
+    'transition-transform duration-[var(--t-fast)] ease-out hover:scale-105 active:scale-95',
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+  );
 
   return (
     <div className={cn('relative @container', className)}>
@@ -73,22 +77,24 @@ export function Carousel({
       {/* Phones swipe: no arrows (a wrapper, since `cn` doesn't merge the button's display). */}
       <div className="hidden md:block">
         {!edges.start && (
-          <IconButton
-            label={prevLabel}
+          <button
+            type="button"
+            aria-label={prevLabel}
             onClick={() => move(-1)}
-            className={cn(arrow, '-left-[22px]')}
+            className={cn(arrow, '-left-7')}
           >
-            <Icon icon={ChevronLeft} size={20} />
-          </IconButton>
+            <Icon icon={ChevronLeft} size={24} />
+          </button>
         )}
         {!edges.end && (
-          <IconButton
-            label={nextLabel}
+          <button
+            type="button"
+            aria-label={nextLabel}
             onClick={() => move(1)}
-            className={cn(arrow, '-right-[22px]')}
+            className={cn(arrow, '-right-7')}
           >
-            <Icon icon={ChevronRight} size={20} />
-          </IconButton>
+            <Icon icon={ChevronRight} size={24} />
+          </button>
         )}
       </div>
     </div>

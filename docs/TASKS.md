@@ -151,6 +151,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-133 | Partner links open the hotel with dates filled in on Agoda, Trip.com, Expedia & co. (Booking.com already does) | CLOUD | S | – | DONE (PR pending; `hotel_provider_pages`: Trip.com 79/83, Agoda 41/83 hotels; the rest keep the search link. More via web search in a later session) |
 | C-134 | Cities page: premium pass (bigger photos, more feel, same data) | CLOUD | S | – | DONE (PR pending; `CityDirectory`: photo hero, region bentos, /dev/cities) |
 | C-135 | Children in the guest picker: needs prices per child age (LiteAPI occupancies, D-43); until then adults only | CLOUD | S | C-075 | TODO |
+| C-136 | Search popovers compact: dates 600 px with smaller cells, destination 420 px, guests 340 px (Zaid: "not so HUGE") | CLOUD | S | – | DONE (PR pending) |
+| C-137 | No pill selections anywhere (D-49): section nav, text tabs, selects/steppers, text lines | CLOUD | M | – | DONE (PR pending) |
+| C-138 | Hero "Fünf Sterne, wenn sie günstig sind." with gold stars; popovers centred over their field; stronger carousel arrows; cities hero in two lines on a Maldives photo | CLOUD | S | – | DONE (PR pending) |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034, C-123               | TODO           |
 | C-041a                                                          | Launch hardening: axe checks, security headers                               | CLOUD | S             | C-031a                            | DONE           |

@@ -14,7 +14,7 @@ import { berlinToday } from '@/lib/today';
 const SITES = 4;
 /**
  * Homepage hero (PREMIUM.md §10.1, mockup B): full-bleed rooftop photo with top and bottom
- * scrims, the navbar white on top of it, bottom-left "Ist dein Hotel gerade günstig?" and one
+ * scrims, the navbar white on top of it, bottom-left five gold stars, "Fünf Sterne, wenn sie günstig sind." and one
  * sentence. Desktop: the search bar overlaps the photo's bottom edge by 46 px,
  * the proof row sits under it. Phones: the "Wohin?" pill sits in the photo.
  */
@@ -45,8 +45,16 @@ export async function Hero({ locale }: { locale: Locale }) {
         <div aria-hidden="true" className="hero-scrim absolute inset-0" />
         <div className="absolute inset-x-0 bottom-[104px] md:bottom-[120px]">
           <div className="photo-text mx-auto max-w-[1240px] px-[18px] text-white md:px-10">
+            {/* Five stars in warm gold above the headline: the category at a glance (C-138). */}
+            <p
+              aria-hidden="true"
+              className="hero-rise mb-3 text-[17px] tracking-[0.28em] text-[#f6cf7a] md:mb-4 md:text-[20px]"
+            >
+              ★★★★★
+            </p>
             <h1 className="hero-rise max-w-[820px] text-[44px] leading-[1.04] font-[650] tracking-[-0.04em] md:text-[64px] lg:text-[76px] lg:leading-[1.02]">
-              {t('heroTitle')}
+              <span className="block">{t('heroTitleA')}</span>{' '}
+              <span className="block">{t('heroTitleB')}</span>
             </h1>
             <p className="hero-rise-2 mt-3.5 max-w-[540px] text-[17px] leading-[1.45] text-white/92 md:mt-[22px] md:text-[20px] md:leading-[1.5]">
               <span className="md:hidden">

@@ -104,7 +104,6 @@ export async function searchBarProps(locale: Locale) {
         next: tb('next'),
         legendCheap: tb('legendCheap'),
         legendDear: tb('legendDear'),
-        pricesNote: tb('pricesNote'),
         perNight: tb('perNight', { price: '{price}' }),
         levels: tb('levels').split('|'),
         tabs: tb('tabs'),

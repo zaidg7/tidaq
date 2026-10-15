@@ -28,7 +28,6 @@
     "firstDays": "The first 7 days · best price in €",
     "same": "{price} each",
     "sampleEyebrow": "Example",
-    "heroTitle": "Is your hotel cheap right now?",
     "heroLead": "Every morning we check {hotels} five-star hotels. You see at a glance whether now is a good time to book.",
     "heroLeadShort": "Every morning we check {hotels} five-star hotels.",
     "heroLeadNoData": "Every morning we check the prices of five-star hotels. You see at a glance whether now is a good time to book.",
@@ -74,7 +73,9 @@
     "alertSub": "{now} instead of {prev} · {date}",
     "alertWhenYesterday": "yesterday",
     "resultChipGood": "Cheap right now",
-    "resultChipLow": "Close to the low"
+    "resultChipLow": "Close to the low",
+    "heroTitleA": "Five stars,",
+    "heroTitleB": "when they’re a bargain."
   },
   "localeSwitch": {
     "label": "Language",
@@ -773,10 +774,11 @@
       "americas": "Americas"
     },
     "unavailable": "The hotel list is unavailable right now. Please try again in a moment.",
-    "citiesLink": "All cities as photos",
+    "citiesLink": "See all cities",
     "regionHotels": "Hotels in {region}",
     "prev": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "regionsLabel": "Regions"
   },
   "watchMail": {
     "eyebrow": "Price alert",
@@ -1006,7 +1008,6 @@
     "filterShowOne": "Show 1 hotel",
     "filterShowMany": "Show {n} hotels",
     "filterShowNone": "No matches",
-    "filterRemove": "Remove filter “{name}”",
     "resultCount": "{n, plural, one {# hotel} other {# hotels}}"
   },
   "drop": {
@@ -1194,7 +1195,6 @@
     "next": "Next",
     "legendCheap": "cheaper",
     "legendDear": "dearer",
-    "pricesNote": "Price per night, 2 adults",
     "perNight": "{price} per night",
     "levels": "very cheap|cheap|average|expensive|very expensive",
     "adults": "Adults",
@@ -1231,7 +1231,8 @@
     "lead": "{cities} cities, {hotels} five-star hotels. Checked every morning.",
     "unavailable": "We can't load the cities right now. Please try again in a moment.",
     "eyebrow": "Cities",
-    "heroTitle": "{cities} cities. One look at the prices.",
-    "regionFacts": "{cities, plural, one {# city} other {# cities}} · {hotels} hotels"
+    "regionFacts": "{cities, plural, one {# city} other {# cities}} · {hotels} hotels",
+    "heroTitleA": "{cities} cities.",
+    "heroTitleB": "One look at the prices."
   }
 }

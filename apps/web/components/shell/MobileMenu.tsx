@@ -68,7 +68,7 @@ export function MobileMenu({ items, locale, labels, localeNames, alertHref }: Pr
           >
             {labels.alert}
           </a>
-          <nav aria-label={labels.language} className="mt-auto flex gap-2 pt-10">
+          <nav aria-label={labels.language} className="mt-auto flex gap-6 pt-10">
             {locales.map((l) => (
               <a
                 key={l}
@@ -77,8 +77,8 @@ export function MobileMenu({ items, locale, labels, localeNames, alertHref }: Pr
                 lang={l}
                 aria-current={l === locale ? 'true' : undefined}
                 className={cn(
-                  'inline-flex h-11 items-center rounded-full border px-4 text-[15px] font-semibold',
-                  l === locale ? 'border-ink bg-ink text-white' : 'border-line-strong text-ink-2',
+                  'inline-flex h-11 items-center text-[16px] font-semibold underline-offset-[6px]',
+                  l === locale ? 'text-ink underline decoration-2' : 'text-muted hover:text-ink',
                 )}
               >
                 {localeNames[l]}

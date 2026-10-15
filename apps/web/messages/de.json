@@ -28,7 +28,6 @@
     "firstDays": "Die ersten 7 Tage · bester Preis in €",
     "same": "je {price}",
     "sampleEyebrow": "Beispiel",
-    "heroTitle": "Ist dein Hotel gerade günstig?",
     "heroLead": "Wir prüfen jeden Morgen {hotels} Fünf-Sterne-Hotels. Du siehst sofort, ob sich Buchen gerade lohnt.",
     "heroLeadShort": "Wir prüfen jeden Morgen {hotels} Fünf-Sterne-Hotels.",
     "heroLeadNoData": "Wir prüfen jeden Morgen die Preise von Fünf-Sterne-Hotels. Du siehst sofort, ob sich Buchen gerade lohnt.",
@@ -74,7 +73,9 @@
     "alertSub": "{now} statt {prev} · {date}",
     "alertWhenYesterday": "gestern",
     "resultChipGood": "Gerade günstig",
-    "resultChipLow": "Fast am Tiefpunkt"
+    "resultChipLow": "Fast am Tiefpunkt",
+    "heroTitleA": "Fünf Sterne,",
+    "heroTitleB": "wenn sie günstig sind."
   },
   "localeSwitch": {
     "label": "Sprache",
@@ -775,10 +776,11 @@
       "americas": "Amerika"
     },
     "unavailable": "Die Hotelliste ist gerade nicht erreichbar. Versuch es gleich noch einmal.",
-    "citiesLink": "Alle Städte als Bilder",
+    "citiesLink": "Alle Städte ansehen",
     "regionHotels": "Hotels in {region}",
     "prev": "Zurück",
-    "next": "Weiter"
+    "next": "Weiter",
+    "regionsLabel": "Regionen"
   },
   "watchMail": {
     "eyebrow": "Preisalarm",
@@ -1008,7 +1010,6 @@
     "filterShowOne": "1 Hotel anzeigen",
     "filterShowMany": "{n} Hotels anzeigen",
     "filterShowNone": "Keine Treffer",
-    "filterRemove": "Filter „{name}“ entfernen",
     "resultCount": "{n, plural, one {# Hotel} other {# Hotels}}"
   },
   "drop": {
@@ -1196,7 +1197,6 @@
     "next": "Weiter",
     "legendCheap": "günstiger",
     "legendDear": "teurer",
-    "pricesNote": "Preis pro Nacht, 2 Erwachsene",
     "perNight": "{price} pro Nacht",
     "levels": "sehr günstig|günstig|mittel|teuer|sehr teuer",
     "adults": "Erwachsene",
@@ -1233,7 +1233,8 @@
     "lead": "{cities} Städte, {hotels} Fünf-Sterne-Hotels. Jeden Morgen neu geprüft.",
     "unavailable": "Die Städte können wir gerade nicht laden. Versuch es gleich noch einmal.",
     "eyebrow": "Städte",
-    "heroTitle": "{cities} Städte. Ein Blick auf die Preise.",
-    "regionFacts": "{cities, plural, one {# Stadt} other {# Städte}} · {hotels} Hotels"
+    "regionFacts": "{cities, plural, one {# Stadt} other {# Städte}} · {hotels} Hotels",
+    "heroTitleA": "{cities} Städte.",
+    "heroTitleB": "Ein Blick auf die Preise."
   }
 }

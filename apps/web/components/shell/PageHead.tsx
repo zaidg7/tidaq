@@ -23,7 +23,7 @@ export function PageHead({
   return (
     <header className={cn('max-w-[820px]', className)}>
       {pill && (
-        <p className="mb-4 inline-flex h-8 items-center gap-2 rounded-full border border-line bg-surface px-3 text-[13px] font-medium text-ink md:text-[14px]">
+        <p className="mb-3 flex items-center gap-2 text-[14px] font-semibold text-accent md:text-[15px]">
           {pill}
         </p>
       )}

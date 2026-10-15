@@ -57,6 +57,8 @@ type Props = {
   price?: (day: string) => CellPrice | null;
   /** Put keyboard focus on the start day when the calendar mounts (popovers, sheets). */
   autoFocus?: boolean;
+  /** Smaller cells and gaps (the desktop search popover, C-136). */
+  compact?: boolean;
   className?: string;
 };
 
@@ -92,6 +94,7 @@ export function RangeCalendar({
   stacked,
   price,
   autoFocus,
+  compact = false,
   className,
 }: Props) {
   // Stacked: today's month through the last bookable day's month.
@@ -239,7 +242,13 @@ export function RangeCalendar({
           <Icon icon={ChevronRight} />
         </IconButton>
       </div>
-      <div className={cn('grid gap-8', !stacked && months === 2 && 'grid-cols-2')}>
+      <div
+        className={cn(
+          'grid',
+          compact ? 'gap-6' : 'gap-8',
+          !stacked && months === 2 && 'grid-cols-2',
+        )}
+      >
         {shown.map((month) => (
           <MonthGrid
             key={month}
@@ -252,6 +261,7 @@ export function RangeCalendar({
             today={today}
             price={price}
             stacked={stacked}
+            compact={compact}
             label={label}
             onPick={pick}
             onKey={onGridKey}
@@ -274,6 +284,7 @@ type GridProps = {
   today: string;
   price?: (day: string) => CellPrice | null;
   stacked?: boolean;
+  compact?: boolean;
   label: (day: string, role: ReturnType<typeof dayRole>) => string;
   onPick: (day: string) => void;
   onKey: (e: KeyboardEvent<HTMLElement>, day: string) => void;
@@ -296,6 +307,7 @@ function MonthGrid({
   today,
   price,
   stacked,
+  compact,
   label,
   onPick,
   onKey,
@@ -308,7 +320,8 @@ function MonthGrid({
       <h3
         id={headingId}
         className={cn(
-          'flex h-11 items-center text-[15px] font-semibold',
+          'flex items-center font-semibold',
+          compact ? 'h-9 text-[14px]' : 'h-11 text-[15px]',
           // Phones: the month name stays on top while its days scroll by.
           stacked ? 'sticky top-0 z-10 bg-surface' : 'justify-center',
         )}
@@ -318,7 +331,10 @@ function MonthGrid({
       <table
         role="grid"
         aria-labelledby={headingId}
-        className="mt-1 w-full table-fixed border-separate border-spacing-[3px]"
+        className={cn(
+          'mt-1 w-full table-fixed border-separate',
+          compact ? 'border-spacing-[2px]' : 'border-spacing-[3px]',
+        )}
         onMouseLeave={() => onPointer(undefined)}
       >
         <thead>
@@ -328,7 +344,10 @@ function MonthGrid({
                 key={w.long}
                 scope="col"
                 abbr={w.long}
-                className="h-8 text-[12px] font-medium text-muted-ink"
+                className={cn(
+                  'font-medium text-muted-ink',
+                  compact ? 'h-7 text-[11.5px]' : 'h-8 text-[12px]',
+                )}
               >
                 {w.short}
               </th>
@@ -363,7 +382,7 @@ function MonthGrid({
                     onMouseEnter={() => onPointer(day)}
                     className={cn(
                       'rounded-cell p-0 text-center align-middle tabular-nums outline-none',
-                      price ? 'h-[52px]' : 'h-11',
+                      compact ? (price ? 'h-[42px]' : 'h-9') : price ? 'h-[52px]' : 'h-11',
                       'transition-[background-color,box-shadow,color] duration-[var(--t-fast)] ease-out',
                       'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',
                       selectable ? 'cursor-pointer' : 'cursor-default',
@@ -383,7 +402,8 @@ function MonthGrid({
                     <span
                       aria-hidden="true"
                       className={cn(
-                        'block text-[14px] leading-tight font-semibold',
+                        'block leading-tight font-semibold',
+                        compact ? 'text-[13px]' : 'text-[14px]',
                         !selectable && !end && 'font-normal text-disabled-ink',
                       )}
                     >
@@ -393,7 +413,8 @@ function MonthGrid({
                       <span
                         aria-hidden="true"
                         className={cn(
-                          'mt-0.5 block text-[11px] leading-tight font-medium',
+                          'block leading-tight font-medium',
+                          compact ? 'text-[10.5px]' : 'mt-0.5 text-[11px]',
                           end ? 'text-white/80' : 'text-muted-ink',
                         )}
                       >

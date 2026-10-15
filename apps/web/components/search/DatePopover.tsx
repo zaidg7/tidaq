@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState, type KeyboardEvent } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   cheapestInMonth,
   dayDiff,
@@ -17,8 +18,8 @@ import {
   type CellPrice,
   type RangeCalendarLabels,
 } from '@/components/calendar/RangeCalendar';
-import { Button } from '@/components/ui/Button';
-import { Chip } from '@/components/ui/Chip';
+import { Button, IconButton } from '@/components/ui/Button';
+import { Icon } from '@/components/ui/Icon';
 import { Segmented } from '@/components/ui/Segmented';
 import { cn } from '@/lib/cn';
 import type { HotelNights } from './types';
@@ -36,7 +37,6 @@ export type DatePopoverLabels = RangeCalendarLabels & {
   legendCheap: string;
   legendDear: string;
   /** Shown above the calendar when it carries a hotel's prices. */
-  pricesNote: string;
   tabs: string;
   tabExact: string;
   tabFlex: string;
@@ -52,6 +52,8 @@ export type DatePopoverLabels = RangeCalendarLabels & {
 
 type Props = {
   id: string;
+  /** Centre of the panel from the bar's left edge (its segment's centre), px; null: the middle. */
+  anchorX: number | null;
   checkIn: string;
   checkOut: string;
   onChange: (checkIn: string, checkOut: string) => void;
@@ -75,6 +77,7 @@ const utc = (day: string) => new Date(`${day}T00:00:00Z`);
  */
 export function DatePopover({
   id,
+  anchorX,
   checkIn,
   checkOut,
   onChange,
@@ -150,7 +153,8 @@ export function DatePopover({
       aria-label={labels.title}
       onKeyDown={onKeyDown}
       data-side={side.up ? 'up' : 'down'}
-      className="search-panel absolute top-[calc(100%+12px)] data-[side=up]:top-auto data-[side=up]:bottom-[calc(100%+12px)] left-1/2 z-30 w-[760px] max-w-[calc(100vw-32px)] -translate-x-1/2 rounded-panel border border-line bg-surface p-6 shadow-3"
+      style={{ left: anchorX ?? '50%' }}
+      className="search-panel absolute top-[calc(100%+12px)] data-[side=up]:top-auto data-[side=up]:bottom-[calc(100%+12px)] z-30 w-[600px] max-w-[calc(100vw-32px)] -translate-x-1/2 rounded-panel border border-line bg-surface p-5 shadow-3"
     >
       <Segmented
         label={labels.tabs}
@@ -160,20 +164,15 @@ export function DatePopover({
         ]}
         value={tab}
         onChange={setTab}
-        className="mx-auto mb-5 w-[280px]"
+        className="mx-auto mb-4 w-[240px]"
       />
       {tab === 'exact' ? (
         <>
-          <div className="mb-3 flex min-h-6 items-center justify-between gap-4">
-            <p aria-live="polite" className="text-[15px] font-semibold text-ink">
+          <div className="mb-2 flex min-h-6 items-center justify-between gap-4">
+            <p aria-live="polite" className="text-[14px] font-semibold text-ink">
               {summary}
             </p>
-            {hasPrices && (
-              <div className="flex items-center gap-4">
-                <span className="text-small text-muted-ink">{labels.pricesNote}</span>
-                <PriceLegend cheap={labels.legendCheap} dear={labels.legendDear} />
-              </div>
-            )}
+            {hasPrices && <PriceLegend cheap={labels.legendCheap} dear={labels.legendDear} />}
           </div>
           <RangeCalendar
             draft={draft}
@@ -184,6 +183,7 @@ export function DatePopover({
             months={2}
             price={hasPrices ? price : undefined}
             autoFocus
+            compact
           />
         </>
       ) : (
@@ -200,7 +200,7 @@ export function DatePopover({
           }}
         />
       )}
-      <div className="mt-4 flex items-center justify-between border-t border-line pt-4">
+      <div className="mt-3 flex items-center justify-between border-t border-line pt-3">
         <Button
           variant="subtle"
           size="sm"
@@ -240,32 +240,51 @@ const FLEX_MONTHS = 4;
  */
 function Flexible({ month, onMonth, hotel, today, fmt, labels, onPick }: FlexProps) {
   const months = Array.from({ length: FLEX_MONTHS }, (_, i) => shiftMonths(monthOf(today), i));
+  const at = months.indexOf(month);
   const priced = hotel !== null && hotel.nights.length > 0;
   const cards: { checkIn: string; checkOut: string; totalCents?: number }[] = priced
     ? cheapestInMonth(hotel.weekends, month, 3)
     : fridays(month, today).map((f) => ({ checkIn: f, checkOut: shiftDays(f, 2) }));
 
   return (
-    <div className="min-h-[240px]">
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        <span className="mr-1 text-[15px] font-semibold text-ink">{labels.flexTitle}</span>
-        {months.map((m) => (
-          <Chip key={m} pressed={m === month} onClick={() => onMonth(m)}>
-            {fmt.monthName.format(utc(m))}
-          </Chip>
-        ))}
+    <div className="min-h-[200px]">
+      {/* A month stepper instead of a row of pills (C-137). */}
+      <div className="flex items-center justify-center gap-2">
+        <span className="text-[14px] font-semibold text-muted-ink">{labels.flexTitle}</span>
+        <IconButton
+          label={labels.prevMonth}
+          onClick={() => onMonth(months[at - 1] ?? month)}
+          disabled={at <= 0}
+          className="size-9 disabled:opacity-30"
+        >
+          <Icon icon={ChevronLeft} size={18} />
+        </IconButton>
+        <span
+          aria-live="polite"
+          className="w-[110px] text-center text-[15px] font-semibold text-ink"
+        >
+          {fmt.monthName.format(utc(month))}
+        </span>
+        <IconButton
+          label={labels.nextMonth}
+          onClick={() => onMonth(months[at + 1] ?? month)}
+          disabled={at >= months.length - 1}
+          className="size-9 disabled:opacity-30"
+        >
+          <Icon icon={ChevronRight} size={18} />
+        </IconButton>
       </div>
       {cards.length === 0 ? (
-        <p className="mt-10 text-center text-small text-muted-ink">{labels.flexNone}</p>
+        <p className="mt-8 text-center text-small text-muted-ink">{labels.flexNone}</p>
       ) : (
-        <ul className={cn('mt-6 grid gap-3', priced ? 'grid-cols-3' : 'grid-cols-4')}>
+        <ul className={cn('mt-4 grid gap-2.5', priced ? 'grid-cols-3' : 'grid-cols-4')}>
           {cards.map((c, i) => (
             <li key={c.checkIn}>
               <button
                 type="button"
                 onClick={() => onPick(c.checkIn, c.checkOut)}
                 className={cn(
-                  'flex h-full w-full flex-col items-start gap-1 rounded-card border border-line bg-surface p-4 text-left',
+                  'flex h-full w-full flex-col items-start gap-1 rounded-card border border-line bg-surface p-3 text-left',
                   'transition-[box-shadow,border-color] duration-[var(--t-fast)] ease-out hover:border-line-strong hover:shadow-2',
                 )}
               >
@@ -290,7 +309,7 @@ function Flexible({ month, onMonth, hotel, today, fmt, labels, onPick }: FlexPro
           ))}
         </ul>
       )}
-      {!priced && <p className="mt-6 text-center text-small text-muted-ink">{labels.flexHint}</p>}
+      {!priced && <p className="mt-4 text-center text-small text-muted-ink">{labels.flexHint}</p>}
     </div>
   );
 }

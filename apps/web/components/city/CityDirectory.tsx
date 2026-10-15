@@ -1,6 +1,7 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { cityPath, groupByRegion, localizedPath, type Locale } from '@tidaq/core';
 import { PhotoHero } from '@/components/shell/PhotoHero';
+import { SectionNav } from '@/components/ui/SectionNav';
 import type { CityCard } from '@/lib/data/cityCards';
 import { cn } from '@/lib/cn';
 import { CityTile } from './CityTile';
@@ -35,7 +36,8 @@ export function bentoSpans(n: number): string[] {
 }
 
 /**
- * `/staedte` (C-134): a photo hero, then every region as an editorial bento of its cities (the
+ * `/staedte` (C-134): a photo hero, a sticky text nav of the regions (C-137), then every region as an
+ * editorial bento of its cities (the
  * one with most Price Drops today large, the rest around it), country above each name. Same
  * tiles and links as the homepage's "Beliebte Ziele".
  */
@@ -55,7 +57,8 @@ export function CityDirectory({ cards }: { cards: CityCard[] }) {
     // Lead: most drops today, then the most hotels, then A–Z (the group's order).
     items: [...g.items].sort((a, b) => b.drops - a.drops || b.hotels - a.hotels),
   }));
-  const cover = cards.find((c) => c.slug === 'paris' && c.photo) ?? cards.find((c) => c.photo);
+  // The Maldives: the most "five-star" picture we have (Zaid wanted a more premium destination).
+  const cover = cards.find((c) => c.slug === 'malediven' && c.photo) ?? cards.find((c) => c.photo);
 
   return (
     <>
@@ -63,23 +66,23 @@ export function CityDirectory({ cards }: { cards: CityCard[] }) {
         photo={cover?.photo ?? null}
         alt={cover?.alt ?? ''}
         eyebrow={t('eyebrow')}
-        title={t('heroTitle', { cities: cards.length })}
+        title={
+          // Two lines on purpose: the count, then the promise (Zaid, C-138).
+          <>
+            <span className="block">{t('heroTitleA', { cities: cards.length })}</span>{' '}
+            <span className="block">{t('heroTitleB')}</span>
+          </>
+        }
         lead={t('lead', { cities: cards.length, hotels })}
-      >
-        <ul className="flex flex-wrap gap-2">
-          {groups.map((g) => (
-            <li key={g.region}>
-              <a
-                href={`#region-${g.region}`}
-                className="inline-flex h-10 items-center rounded-full border border-white/35 bg-white/12 px-4 text-[14px] font-semibold text-white backdrop-blur-md hover:bg-white/22"
-              >
-                {th(`regions.${g.region}`)}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </PhotoHero>
-      <div className="mx-auto w-full max-w-[1240px] px-3.5 pb-20 md:px-10 md:pb-32">
+      />
+      <div className="mx-auto w-full max-w-[1240px] px-[18px] pb-20 md:px-10 md:pb-32">
+        <SectionNav
+          label={th('regionsLabel')}
+          items={groups.map((g) => ({
+            id: `region-${g.region}`,
+            label: th(`regions.${g.region}`),
+          }))}
+        />
         {groups.map((g) => {
           const spans = bentoSpans(g.items.length);
           const regionHotels = g.items.reduce((n, c) => n + c.hotels, 0);
@@ -88,7 +91,7 @@ export function CityDirectory({ cards }: { cards: CityCard[] }) {
               key={g.region}
               id={`region-${g.region}`}
               aria-labelledby={`cities-${g.region}`}
-              className="mt-14 scroll-mt-24 md:mt-24"
+              className="mt-12 scroll-mt-32 md:mt-20 lg:scroll-mt-36"
             >
               <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-1 px-1 md:px-0">
                 <h2

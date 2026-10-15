@@ -93,7 +93,7 @@ export function CityView({
         {dates && (
           <a
             href={localizedPath(cityPath(city.slug), locale)}
-            className="inline-flex h-10 items-center rounded-full border border-white/40 bg-white/16 px-4 text-[14px] font-semibold text-white backdrop-blur-sm hover:bg-white/26"
+            className="inline-flex min-h-11 items-center text-[16px] font-semibold text-white underline decoration-white/50 underline-offset-[6px] hover:decoration-white"
           >
             {t('withoutDates')}
           </a>
