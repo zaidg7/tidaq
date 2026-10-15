@@ -34,8 +34,9 @@ const C = {
   bg: '#221c3b',
   white: '#ffffff',
   muted: '#c9bef5',
-  good: '#4fd1a0',
-  drop: '#0f6b4a',
+  /** Sale red on the dark story background (D-46), and the solid red pill behind the drop. */
+  good: '#ff6b5e',
+  drop: '#d91f1a',
   accent: '#8b6cf0',
 };
 

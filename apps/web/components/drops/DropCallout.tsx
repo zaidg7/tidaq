@@ -13,7 +13,8 @@ import {
   type PriceDrop,
 } from '@tidaq/core';
 import { Icon } from '@/components/ui/Icon';
-import { DropBadge } from './DropBadge';
+import { cn } from '@/lib/cn';
+import { DropBadge, dropTextClass } from './DropBadge';
 import { dropPercent } from './DropCard';
 
 /** Other dropped nights shown as chips on the hotel page. */
@@ -81,7 +82,7 @@ export function DropCallout({ group: g, drop }: { group: HotelDrops; drop?: Pric
                   >
                     {formatWeekdayDayMonth(x.night, locale)}
                     {x.nights > 1 && ` · ${td('stayBadge', { n: x.nights })}`}
-                    <span className="font-bold text-good tabular-nums">
+                    <span className={cn('font-bold tabular-nums', dropTextClass(x.drop))}>
                       {dropPercent(x.drop, locale)}
                     </span>
                   </a>

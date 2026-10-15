@@ -14,8 +14,9 @@ import {
 } from '@tidaq/core';
 import { Photo } from '@/components/ui/Photo';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
+import { cn } from '@/lib/cn';
 import { cardPhoto } from '@/lib/photos';
-import { DropBadge } from './DropBadge';
+import { DropBadge, dropTextClass } from './DropBadge';
 
 /** "−28 %" with the typographic minus. */
 export const dropPercent = formatDrop;
@@ -26,7 +27,7 @@ const nightHref = (slug: string, d: PriceDrop, locale: Locale) =>
 
 /**
  * One hotel on the Preissturz-Radar (C-080a, mockup B language): the photo is the card, with the
- * drop badge (coloured by size) and the trip length ("5 Nächte"); below it the hotel (→ the drop's own page,
+ * drop badge (stronger red for bigger drops) and the trip length ("5 Nächte"); below it the hotel (→ the drop's own page,
  * C-080b), city and night, today's price against the day before, the saving at which site, and
  * whether it's the lowest price we've seen. Its other dropped nights follow as small links.
  * Both prices are real checks (CLAUDE.md rule 8); the old one is labelled, not just struck out.
@@ -83,7 +84,7 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
             {t('was', { price: formatPrice(d.prevCents, locale) })}
           </span>
         </p>
-        <p className="mt-1 text-[14px] font-semibold text-good">
+        <p className={cn('mt-1 text-[14px] font-semibold', dropTextClass(d.drop))}>
           {d.provider.direct
             ? t('savedDirect', { amount: formatPrice(d.savedCents, locale) })
             : t('saved', { amount: formatPrice(d.savedCents, locale), provider: d.provider.name })}
@@ -105,7 +106,7 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
                 >
                   {formatWeekdayDayMonth(m.night, locale)}
                   {m.nights > 1 && ` · ${t('stayBadge', { n: m.nights })}`}
-                  <span className="font-bold text-good tabular-nums">
+                  <span className={cn('font-bold tabular-nums', dropTextClass(m.drop))}>
                     {dropPercent(m.drop, locale)}
                   </span>
                 </a>

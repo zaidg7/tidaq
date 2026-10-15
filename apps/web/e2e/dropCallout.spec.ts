@@ -16,9 +16,10 @@ test.describe('drops on hotel and stay pages (C-080i)', () => {
       'href',
       /^\/preissturz\/baur-au-lac-zuerich\/\d{4}-\d{2}-\d{2}--\d{4}-\d{2}-\d{2}$/,
     );
+    // Only dates that don't overlap the top trip or each other (C-125): 3 of Baur's 4 others.
     await expect(
       callout.getByRole('list', { name: 'Auch günstiger' }).getByRole('link'),
-    ).toHaveCount(4);
+    ).toHaveCount(3);
   });
 
   test('stay page: only when this stay dropped', async ({ page }) => {

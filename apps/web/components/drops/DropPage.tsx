@@ -31,7 +31,7 @@ import { cn } from '@/lib/cn';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
 import { cardPhoto } from '@/lib/photos';
 import { routes } from '@/lib/routes';
-import { DropBadge } from './DropBadge';
+import { DropBadge, dropTextClass } from './DropBadge';
 import { dropPercent } from './DropCard';
 import { DropShare } from './DropShare';
 import { DropAlertSection } from './DropAlertSection';
@@ -168,7 +168,8 @@ export async function DropPage({
   const m = meterFacts(series, d, today);
   const newLow = d.priorDays >= 2 ? td('newLow', { days: d.priorDays + 1 }) : td('firstLow');
   const b = (c: ReactNode) => <strong className="font-semibold text-ink">{c}</strong>;
-  const green = (c: ReactNode) => <strong className="font-semibold text-good">{c}</strong>;
+  const sale = dropTextClass(d.drop);
+  const green = (c: ReactNode) => <strong className={cn('font-semibold', sale)}>{c}</strong>;
   const offerLabel = d.provider.direct
     ? t('ctaGoDirect')
     : t('ctaGo', { provider: d.provider.name });
@@ -233,11 +234,21 @@ export async function DropPage({
               aria-label={td('dropLabel', { pct: f.pct })}
               className="rounded-[26px] border border-[#ece9f1] bg-surface px-[22px] py-6 shadow-[0_16px_40px_rgba(21,19,28,0.06)] md:px-7 md:py-7"
             >
-              <span className="inline-flex h-8 items-center gap-2 rounded-full bg-good-soft px-3 text-[14px] font-bold text-good">
+              <span
+                className={cn(
+                  'inline-flex h-8 items-center gap-2 rounded-full bg-sale-soft px-3 text-[14px] font-bold',
+                  sale,
+                )}
+              >
                 <Icon icon={TrendingDown} size={14} />
                 {t('chipSince')}
               </span>
-              <p className="mt-3.5 text-[76px] leading-[0.95] font-bold tracking-[-0.05em] text-good tabular-nums">
+              <p
+                className={cn(
+                  'mt-3.5 text-[76px] leading-[0.95] font-bold tracking-[-0.05em] tabular-nums',
+                  sale,
+                )}
+              >
                 {f.pct}
               </p>
               <p className="mt-3.5 text-[16px] text-muted">
@@ -247,7 +258,7 @@ export async function DropPage({
                 {t('insteadYesterday', { price: price(d.prevCents) })}
               </p>
               <p className="mt-4 flex items-start gap-2.5 border-t border-[#ece9f1] pt-4 text-[15px]">
-                <Icon icon={Check} size={20} className="mt-0.5 shrink-0 text-good" />
+                <Icon icon={Check} size={20} className={cn('mt-0.5 shrink-0', sale)} />
                 <span>
                   {newLow}.
                   <span className="mt-0.5 block text-[13.5px] text-muted">

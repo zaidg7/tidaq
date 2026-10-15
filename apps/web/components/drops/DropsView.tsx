@@ -22,6 +22,7 @@ import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
 import type { HotelDropsWithPhoto, RadarStats } from '@/lib/data/drops';
 import { routes } from '@/lib/routes';
+import { dropTextClass } from './DropBadge';
 import { DropCard } from './DropCard';
 import { DropHero } from './DropHero';
 
@@ -174,7 +175,12 @@ export function DropsView({
             </div>
             <div>
               <dt className="sr-only">{t('statMaxLabel')}</dt>
-              <dd className="text-[26px] leading-none font-bold tracking-[-0.03em] text-good tabular-nums md:text-[36px]">
+              <dd
+                className={cn(
+                  'text-[26px] leading-none font-bold tracking-[-0.03em] tabular-nums md:text-[36px]',
+                  dropTextClass(stats.biggest),
+                )}
+              >
                 {formatDrop(stats.biggest, locale)}
               </dd>
               <dd className="mt-1.5 text-[13px] text-muted md:text-[15px]">{t('statMaxShort')}</dd>
@@ -308,7 +314,7 @@ export function DropsView({
           )
         ) : (
           <div className="mt-10 flex flex-col items-start gap-4 rounded-panel border border-line bg-surface p-6 md:p-10">
-            <span className="grid size-12 place-items-center rounded-full bg-good-soft text-good">
+            <span className="grid size-12 place-items-center rounded-full bg-sale-soft text-sale">
               <Icon icon={TrendingDown} size={24} />
             </span>
             <div>

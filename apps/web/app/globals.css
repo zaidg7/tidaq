@@ -30,6 +30,13 @@
   --good: #0e6b47;
   --good-soft: #e1f2e9;
   --good-bright: #3ddc97;
+  /* Sale (D-46, Zaid 15 Oct): price drops are red, the bigger the drop the stronger the red. Each
+     is AA as text on white and as a fill under white text; the verdict keeps green for "günstig". */
+  --sale-1: #c4302b;
+  --sale-2: #b3201c;
+  --sale-2-soft: #fde4e2;
+  --sale-3: #c01c17;
+  --sale-4: #e3120b;
   --high: #b42318;
   --high-soft: #fdebe7;
   --high-fill: #e8a87c;
@@ -104,7 +111,9 @@
   --color-warn-soft: var(--warn-soft);
   --color-neutral-soft: var(--neutral-soft);
   /* The drop badge on photos: white text on it is AA. */
-  --color-drop: var(--good);
+  --color-drop: var(--sale-3);
+  --color-sale: var(--sale-3);
+  --color-sale-soft: var(--sale-2-soft);
   --color-disabled-ink: var(--disabled-ink);
   --color-night: var(--night);
   --color-night-ink: var(--night-ink);
@@ -907,28 +916,56 @@
   }
 }
 
-/* Drop badges by size (core dropTier): huge = bright mint on ink, big = deep green, small = white
-   with green text. Every pair is AA. */
+/* Drop badges by size (core dropTier, D-46): the bigger the drop, the stronger the red. small =
+   white with red text, medium = light red with deep red text, big = solid red, huge = bright red
+   with a red glow. Every pair is AA. */
 .drop-badge-huge {
-  background: var(--good-bright);
-  color: var(--ink);
+  background: var(--sale-4);
+  color: #ffffff;
+  box-shadow:
+    0 0 0 3px rgba(227, 18, 11, 0.22),
+    0 4px 14px rgba(227, 18, 11, 0.35);
 }
 .drop-badge-big {
-  background: var(--good);
+  background: var(--sale-3);
   color: #ffffff;
+}
+.drop-badge-medium {
+  background: var(--sale-2-soft);
+  color: var(--sale-2);
 }
 .drop-badge-small {
   background: rgba(255, 255, 255, 0.94);
-  color: var(--good);
-  /* A hairline and a soft shadow keep it visible on bright photos. */
+  color: var(--sale-1);
+}
+/* A hairline and a soft shadow keep the light badges visible on bright photos. */
+.drop-badge-small,
+.drop-badge-medium {
   box-shadow:
     0 0 0 1px rgba(21, 19, 28, 0.06),
     0 1px 3px rgba(21, 19, 28, 0.14);
 }
-/* On white rows the small badge needs its own fill. */
+/* On white rows the light badges need their own fill and no shadow. */
 .drop-badge-outline.drop-badge-small {
-  background: var(--good-soft);
+  background: #fdf0ef;
   box-shadow: none;
+}
+.drop-badge-outline.drop-badge-medium {
+  box-shadow: none;
+}
+
+/* A drop as text ("−31 %", "1.525 € weniger"): the same red steps as the badge. */
+.drop-text-small {
+  color: var(--sale-1);
+}
+.drop-text-medium {
+  color: var(--sale-2);
+}
+.drop-text-big {
+  color: var(--sale-3);
+}
+.drop-text-huge {
+  color: var(--sale-4);
 }
 
 /* The trip length on a photo ("5 Nächte"): white chip that holds up on bright photos too. */

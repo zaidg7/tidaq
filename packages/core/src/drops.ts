@@ -253,17 +253,21 @@ export function formatDrop(drop: number, locale: Locale): string {
   return formatPercent(-drop, locale, { signed: true }).replace('-', '−');
 }
 
-/** How a drop's badge looks (PREMIUM.md §11): the bigger the drop, the louder the badge. */
-export type DropTier = 'huge' | 'big' | 'small';
+/**
+ * How a drop looks (PREMIUM.md §11, D-46): red, and the bigger the drop, the stronger the red
+ * (Zaid, 15 Oct: "stronger red the more sale it is").
+ */
+export type DropTier = 'huge' | 'big' | 'medium' | 'small';
 
-/** Lower bounds of the tiers: 60 % and more is `huge`, 40 % to 59 % `big`, below that `small`. */
-export const DROP_TIERS = { huge: 0.6, big: 0.4 } as const;
+/** Lower bounds: 60 % and more `huge`, 40–59 % `big`, 20–39 % `medium`, below that `small`. */
+export const DROP_TIERS = { huge: 0.6, big: 0.4, medium: 0.2 } as const;
 
-/** The badge tier of a drop share (0.53 = 53 % less). Rounded like the label, so "−60 %" is huge. */
+/** The tier of a drop share (0.53 = 53 % less). Rounded like the label, so "−60 %" is huge. */
 export function dropTier(drop: number): DropTier {
   const pct = Math.round(drop * 100) / 100;
   if (pct >= DROP_TIERS.huge) return 'huge';
   if (pct >= DROP_TIERS.big) return 'big';
+  if (pct >= DROP_TIERS.medium) return 'medium';
   return 'small';
 }
 

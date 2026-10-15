@@ -76,7 +76,7 @@ test.describe('hotel page (C-023a, sample data on /dev/hotel)', () => {
       expect(m, href ?? '').not.toBeNull();
       expect((Date.parse(m?.[2] ?? '') - Date.parse(m?.[1] ?? '')) / 86_400_000).toBe(n);
       await expect(card).toContainText(`${n} Nächte für 2 Erwachsene bei`);
-      await expect(card).toContainText(/\d € pro Nacht/);
+      await expect(card).toContainText(/\d\s€ pro Nacht/);
     }
   });
 

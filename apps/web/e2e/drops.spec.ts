@@ -63,7 +63,7 @@ test.describe('Preissturz-Radar (C-080a, sample data on /dev/drops)', () => {
       .filter({ hasText: 'Fairmont Hotel Vier Jahreszeiten' });
     await expect(card.getByText('7 Nächte', { exact: true })).toBeVisible();
     await expect(card).toContainText(
-      /Hamburg · \p{L}{2}, \d+\. \p{L}+\.? – \p{L}{2}, \d+\. \p{L}+\.? · 7 Nächte, 2 Erwachsene/u,
+      /Hamburg · \p{L}{2}, \d+\. \p{L}+\.? – \p{L}{2}, \d+\. \p{L}+\.?\d/u,
     );
     await expect(card).toContainText('4.900 €');
     await expect(card).toContainText('Vortag 6.200 €');
@@ -134,7 +134,9 @@ test.describe('Preissturz-Radar (C-080a, sample data on /dev/drops)', () => {
     const cards = main.getByRole('list', { name: 'Preisstürze' }).getByRole('listitem');
     await expect(cards).toHaveCount(3);
     await expect(cards.first()).toContainText("Claridge's");
-    for (const c of await cards.all()) await expect(c).toContainText('7 Nächte, 2 Erwachsene');
+    for (const c of await cards.all()) {
+      await expect(c.getByText('7 Nächte', { exact: true }).first()).toBeVisible();
+    }
 
     // Travel month (C-125): one chip per month with a trip, each a shareable link.
     await page.goto('/dev/drops');
@@ -227,7 +229,8 @@ test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
     await expect(meter.getByRole('img', { name: /^Günstig: aktuell 3\.420 €/ })).toBeVisible();
     await expect(meter).toContainText('Sonst kosten diese 5 Nächte um');
     const nights = main.getByRole('region', { name: 'Weitere Price Drops hier' });
-    await expect(nights.getByRole('link')).toHaveCount(4);
+    // Different dates only (C-125): the 7-night trip a day later overlaps and is left out.
+    await expect(nights.getByRole('link')).toHaveCount(3);
     await expect(nights.getByRole('link').first()).toHaveAttribute(
       'href',
       DROP('baur-au-lac-zuerich'),

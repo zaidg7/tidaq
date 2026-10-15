@@ -71,9 +71,10 @@ All tokens live in `apps/web/app/globals.css` as CSS variables and Tailwind them
 | `--accent` | `#4B33C9` | primary buttons, links, focus ring, selected states |
 | `--accent-hover` | `#3D28A8` | hover/pressed accent |
 | `--accent-soft` | `#EEEAFE` | selected chip fill, icon tiles |
-| `--good` | `#0E6B47` | price down, "günstig", drop badges (white text on it passes AA) |
+| `--good` | `#0E6B47` | "günstig" verdict, price down in charts (white text on it passes AA) |
 | `--good-soft` | `#E1F2E9` | good chips |
 | `--good-bright` | `#3DDC97` | accents on dark or photo only |
+| `--sale-1` … `--sale-4` | `#C4302B` `#B3201C` `#C01C17` `#E3120B` | Price Drops (D-46): red, stronger the bigger the drop. Badge under 20 % white with `--sale-1` text, 20–39 % `--sale-2-soft` (`#FDE4E2`) with `--sale-2` text, 40–59 % solid `--sale-3`, 60 %+ solid `--sale-4` with a red glow; the same step colours the drop as text ("−31 %", "1.525 € weniger") |
 | `--high` | `#B42318` | price up, "teuer" text (D-22) |
 | `--high-soft` | `#FDEBE7` | high chips |
 | `--high-fill` | `#E8A87C` | "teuer" zone in meters and heat cells (fill only, never text) |
@@ -450,9 +451,9 @@ Each lives in `apps/web/components/ui` (primitives) or its feature folder and is
 | **Button** [Button] | Variants: `primary` (accent fill, white, radius 16, 52 px; 60 px `lg`; 44 px `sm`), `secondary` (white, 1 px `--line-strong`, ink text), `ghost` (no border, ink text, hover `--surface-2`), `on-photo` (white 92 % + blur 12 px, ink), `dark` (ink fill, white). States: hover (accent → `--accent-hover`), pressed (scale .98), focus ring, disabled (40 % opacity, no pointer), loading (spinner + "Lädt…", width locked). Optional trailing slot for a price ("1.139 € →"). No gradients. |
 | **IconButton** | 44 px circle, variants as Button; always `aria-label`. |
 | **Chip / FilterChip** [Chip] | 36 px pill; default white + border; selected `--ink` fill white text; with ▾ for menus; scrollable chip rows fade at the edges (mask). |
-| **Badge** [Badge] | Drop badge (green fill, white, 700, `−54 %`), status chips (good/normal/high soft fills with a dot), "Stadtbild"/credit tag (6 px radius, dark 50 %). |
+| **Badge** [Badge] | Drop badge (red, stronger with the drop: D-46 and the `--sale` tokens; 700, `−54 %`), status chips (good/normal/high soft fills with a dot), "Stadtbild"/credit tag (6 px radius, dark 50 %). |
 | **Photo** (new) | Wraps every hotel/city image: `slug` + `variant` (card/hero/thumb), picks the right width/format, blur-up LQIP, focal point, optional credit tag or "Stadtbild" tag, fallback to the city photo; rounded per context; `alt` required. |
-| **DropCard** [DropCard] | Photo 4:5 (radius 22/18), drop badge top-left, "Wochenende" white badge top-right, then title (`h3`, 1 line, ellipsis), meta "Los Angeles · Fr, 6. Nov", price line "**1.139 €** statt 2.500 €". Whole card one link. Hover per §6. Compact variant for 2-column phones (title 15 px). |
+| **DropCard** [DropCard] | Photo 4:5 (radius 22/18), drop badge top-left, trip length ("5 Nächte") white badge top-right, then title (`h3`, 1 line, ellipsis), meta "Los Angeles · Fr, 6. Nov", price line "**1.139 €** statt 2.500 €". Whole card one link. Hover per §6. Compact variant for 2-column phones (title 15 px). |
 | **CityTile** (new) | Photo tile with scrim, name, counts; sizes `l` (bento hero), `m`, `chip` (40 px round photo + name, for search panels). |
 | **VerdictCard** [VerdictBlock] | Hotel line (thumb, name, dates), state chip, price-xl + context, meter, sentence, CTA + Partnerlink. Variants: `full` (stay page), `teaser` (home). |
 | **Meter** [RangeBar] | §8. |

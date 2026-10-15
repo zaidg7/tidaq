@@ -11,8 +11,9 @@ import {
 import { Icon } from '@/components/ui/Icon';
 import { Photo } from '@/components/ui/Photo';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
+import { cn } from '@/lib/cn';
 import { cardPhoto } from '@/lib/photos';
-import { DropBadge } from './DropBadge';
+import { DropBadge, dropTextClass } from './DropBadge';
 import { dropPercent } from './DropCard';
 
 /**
@@ -57,7 +58,9 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
         )}
       </Photo>
       <div className="px-1 md:px-0">
-        <p className="text-[14px] font-semibold text-good md:text-[15px]">{t('heroEyebrow')}</p>
+        <p className={cn('text-[14px] font-semibold md:text-[15px]', dropTextClass(d.drop))}>
+          {t('heroEyebrow')}
+        </p>
         <h2
           id="drop-hero"
           className="mt-2 text-[28px] leading-[1.08] font-[650] tracking-[-0.03em] md:text-[44px]"
@@ -77,7 +80,7 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
             {t('was', { price: formatPrice(d.prevCents, locale) })}
           </span>
         </p>
-        <p className="mt-2.5 text-[16px] font-semibold text-good">
+        <p className={cn('mt-2.5 text-[16px] font-semibold', dropTextClass(d.drop))}>
           {d.provider.direct
             ? t('savedDirect', { amount: formatPrice(d.savedCents, locale) })
             : t('saved', { amount: formatPrice(d.savedCents, locale), provider: d.provider.name })}
