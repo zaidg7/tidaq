@@ -5,6 +5,12 @@ import { useLayoutEffect, useRef, useState } from 'react';
 /** Room the sticky navbar takes at the top of the viewport (76 px on desktop, 64 on phones). */
 const NAV = 80;
 const GAP = 12;
+/**
+ * The tallest panel: the date popover with two months (C-136 compact, ~500 px). Every panel
+ * decides as if it were this tall, so destination, dates and guests always open on the same side
+ * (C-145, Zaid: the small guests panel opened above while the others opened below).
+ */
+const TALLEST = 500;
 
 /**
  * Which side of the search bar a panel opens on (C-130). Below when it fits, else above when
@@ -22,7 +28,7 @@ export function usePanelSide<T extends HTMLElement>(open: boolean) {
     if (!open || !el) return;
     const anchor = (el.offsetParent ?? el.parentElement)?.getBoundingClientRect();
     if (!anchor) return;
-    const height = el.offsetHeight;
+    const height = Math.max(el.offsetHeight, TALLEST);
     const below = window.innerHeight - anchor.bottom - GAP;
     const above = anchor.top - GAP - NAV;
     const preferUp = el.closest('[data-panels="up"]') !== null;
