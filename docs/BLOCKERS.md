@@ -19,7 +19,7 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 ## B-025 · Top up DataForSEO with $50: exact prices for every Price Drop (3 min, urgent)
 
 Status: OPEN · Opened: 2026-10-16 by CLOUD · Blocks: Price Drops on the site from about Saturday morning (17 Oct)
-What I need: the $50 minimum top-up at DataForSEO. Since 16 Oct every Price Drop shows the exact price the booking site charges, taxes and fees included (D-52), asked from Google Hotels via DataForSEO: $0.0008 per drop and check, ~600 checks a day, about **$15 a month**. $0.45 is left: that's about one day. Without it, drops can't be confirmed and the drops page stays empty. The budget guard caps spending at $15 a month (`DROP_QUOTE_MONTHLY_USD`).
+What I need: the $50 minimum top-up at DataForSEO. Since 16 Oct every Price Drop shows the exact price the booking site charges, taxes and fees included (D-52), asked from Google Hotels via DataForSEO: $0.0008 per drop and check, ~600 checks a day, since 16 Oct capped at **~$2–3 a month** (80 checks a day, only the biggest drops). $0.45 is left: about a week; $50 then lasts well over a year. Without it, drops can't be confirmed and the drops page stays empty. The budget guard caps spending at $15 a month (`DROP_QUOTE_MONTHLY_USD`).
 Steps for Zaid (≈ 3 min):
 
 1. Open **app.dataforseo.com** and log in.
