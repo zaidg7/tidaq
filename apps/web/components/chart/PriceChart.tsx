@@ -5,10 +5,8 @@ import {
   CHART,
   chartGeometry,
   formatDayMonth,
-  formatPercent,
   formatPrice,
   linePath,
-  vsTypical,
   type ChartGeometry,
   type DailyPrice,
   type Locale,
@@ -23,11 +21,6 @@ type Props = {
   to: string;
   /** Dashed average line, usually the 30-day average. */
   avgCents?: number | null;
-  /**
-   * Show every value against this one in percent ("−18 %") instead of euros (C-149): base rates
-   * lack taxes and fees, so public pages never show them as amounts (D-52).
-   */
-  base?: number | null;
   /** Best provider per day for the readout and the table, if known. */
   providerByDay?: Readonly<Record<string, string>>;
   /** Colour of today's dot: the verdict (PREMIUM.md §8). Default ink. */
@@ -54,7 +47,6 @@ export function PriceChart({
   from,
   to,
   avgCents = null,
-  base = null,
   providerByDay,
   todayTone = 'normal',
   className,
@@ -62,7 +54,7 @@ export function PriceChart({
   const t = useTranslations('chart');
   const locale = useLocale() as Locale;
   const g = chartGeometry(series, { from, to, avgCents });
-  const price = valueFormat(base, locale);
+  const price = (cents: number) => formatPrice(cents, locale);
   const day = (d: string) => formatDayMonth(d, locale);
 
   const tickLabels = g.yTicks.map((tk) => price(tk.cents));
@@ -129,14 +121,7 @@ export function PriceChart({
             ))}
           </div>
           <div className="absolute inset-y-0 right-2 left-[var(--gutter)]">
-            <Plot
-              g={g}
-              summary={summary}
-              locale={locale}
-              base={base}
-              t={t}
-              todayColor={TONE[todayTone]}
-            />
+            <Plot g={g} summary={summary} locale={locale} t={t} todayColor={TONE[todayTone]} />
             {g.points.length > 0 && (
               <ChartScrub
                 days={scrubDays}
@@ -172,7 +157,7 @@ export function PriceChart({
                 strokeDasharray="4 3"
               />
             </svg>
-            {base === null ? t('avgLegend', { price: price(g.avg.cents) }) : t('avgLegendVs')}
+            {t('avgLegend', { price: price(g.avg.cents) })}
           </p>
         )}
 
@@ -204,7 +189,7 @@ export function PriceChart({
                       {t('date')}
                     </th>
                     <th scope="col" className="px-3 py-2 text-right font-semibold">
-                      {base === null ? t('price') : t('priceVs')}
+                      {t('price')}
                     </th>
                     {providerByDay && (
                       <th scope="col" className="px-3 py-2 font-semibold">
@@ -240,25 +225,17 @@ export function PriceChart({
   );
 }
 
-/** Euros, or with a `base` the percent against it. */
-function valueFormat(base: number | null, locale: Locale) {
-  return base === null
-    ? (cents: number) => formatPrice(cents, locale)
-    : (cents: number) => formatPercent(vsTypical(cents, 1, base) ?? 0, locale, { signed: true });
-}
-
 type PlotProps = {
   g: ChartGeometry;
   summary: string;
   locale: Locale;
-  base: number | null;
   t: ReturnType<typeof useTranslations<'chart'>>;
   todayColor: string;
 };
 
-function Plot({ g, summary, locale, base, t, todayColor }: PlotProps) {
+function Plot({ g, summary, locale, t, todayColor }: PlotProps) {
   const gradientId = useId();
-  const price = valueFormat(base, locale);
+  const price = (cents: number) => formatPrice(cents, locale);
   const lowAlign = g.low && g.low.x > 0.8 ? '-100%' : g.low && g.low.x < 0.15 ? '0%' : '-50%';
   const singles = g.sparse
     ? g.points.filter((p) => !p.outlier)

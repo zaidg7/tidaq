@@ -1,5 +1,4 @@
 import { dayDiff, shiftDays, weekdayMonFirst } from './calendar';
-import { formatPercent, type Locale } from './format';
 
 /**
  * Hotel page price calendar (C-023a): today's price of every night from the night grid (D-42).
@@ -180,48 +179,4 @@ export function cheapestInMonth<S extends { checkIn: string; totalCents: number 
     .filter((s) => s.checkIn.startsWith(prefix))
     .sort((a, b) => a.totalCents - b.totalCents || a.checkIn.localeCompare(b.checkIn))
     .slice(0, n);
-}
-
-/**
- * A usual night at the hotel (C-149): the median of today's priced nights, null without any.
- * Base rates are never shown as amounts (D-52); pages compare against this instead.
- */
-export function typicalNightCents(cents: readonly (number | null)[]): number | null {
-  const sorted = cents.filter((c): c is number => c !== null && c > 0).sort((a, b) => a - b);
-  const n = sorted.length;
-  if (n === 0) return null;
-  const mid = Math.floor(n / 2);
-  const upper = sorted[mid] ?? 0;
-  return n % 2 ? upper : Math.round(((sorted[mid - 1] ?? upper) + upper) / 2);
-}
-
-/**
- * A stay (or a single night) against as many usual nights: −0.18 = 18 % cheaper, rounded to
- * whole percent so pages never show "−0 %". Null without a usual night.
- */
-export function vsTypical(
-  totalCents: number,
-  nights: number,
-  typical: number | null,
-): number | null {
-  if (typical === null || !(typical > 0) || !Number.isFinite(typical)) return null;
-  if (nights < 1 || !Number.isFinite(totalCents)) return null;
-  const r = Math.round(((totalCents / nights - typical) / typical) * 100) / 100;
-  return r === 0 ? 0 : r; // −0 → 0
-}
-
-/** Within ±3 % a stay costs "about the usual price" (C-149). */
-export const VS_USUAL_BAND = 0.03;
-
-/**
- * How to say a `vsTypical` ratio: cheaper or dearer by `pct` (unsigned, "18 %"), or about usual.
- * Pages pick the sentence for `kind` from their messages.
- */
-export function describeVs(
-  ratio: number,
-  locale: Locale,
-): { kind: 'cheaper' | 'dearer' | 'usual'; pct: string } {
-  const pct = formatPercent(Math.abs(ratio), locale);
-  if (Math.abs(ratio) < VS_USUAL_BAND) return { kind: 'usual', pct };
-  return { kind: ratio < 0 ? 'cheaper' : 'dearer', pct };
 }

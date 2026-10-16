@@ -1,6 +1,6 @@
 import { PageHead } from '@/components/shell/PageHead';
 import { useLocale, useTranslations } from 'next-intl';
-import { formatDateRange, localizedPath, stayPath, type Locale } from '@tidaq/core';
+import { formatDateRange, formatPrice, localizedPath, stayPath, type Locale } from '@tidaq/core';
 import {
   dropAlertOffAction,
   dropHotelAlertOffAction,
@@ -78,6 +78,11 @@ export function ManageView({
                     </a>
                     <p className="text-meta mt-0.5 text-muted-ink">
                       {t('stay', { dates, adults: w.adults })}
+                    </p>
+                    <p className="text-meta text-muted-ink">
+                      {w.target_cents
+                        ? t('target', { price: formatPrice(w.target_cents, locale) })
+                        : t('noTarget')}
                     </p>
                   </div>
                   <form action={removeAction}>

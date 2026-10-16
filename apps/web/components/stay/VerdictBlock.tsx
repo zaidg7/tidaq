@@ -1,6 +1,8 @@
 import { useLocale, useTranslations } from 'next-intl';
 import {
   formatDayMonth,
+  formatPrice,
+  relativeChange,
   STATS,
   updatedAtParts,
   verdictFacts,
@@ -8,6 +10,7 @@ import {
   type Locale,
   type StayStatsResult,
 } from '@tidaq/core';
+import { PriceDelta } from '@/components/ui/PriceDelta';
 import { Meter } from '@/components/ui/Meter';
 import { StateChip } from '@/components/ui/StateChip';
 import { cn } from '@/lib/cn';
@@ -29,8 +32,7 @@ type Props = {
 
 /**
  * The verdict block of the stay panel and the homepage example (CRAFT.md §3), in this order:
- * state chip, today's price against the stay's average in percent (no euros: base rates lack
- * taxes and fees, D-52, C-149), meter (C-112), one fact sentence, "Stand".
+ * state chip, XL price with the totals line, delta, meter (C-112), one fact sentence, "Stand".
  * Every sentence is about the past, never a forecast.
  */
 export function VerdictBlock({
@@ -47,13 +49,13 @@ export function VerdictBlock({
   const locale = useLocale() as Locale;
   if (stats.nowCents === null) return null;
 
+  const price = (c: number) => formatPrice(c, locale);
   const facts = verdictFacts(series, today, stats.nowCents);
   const collecting = stats.state === 'collecting';
-  // Base rates lack taxes and fees (D-52): today against the stay's own average, no euros.
-  const base =
-    stats.avg30Cents !== null && stats.avg30Cents > 0 ? stats.avg30Cents : stats.nowCents;
+  const delta = relativeChange(stats.nowCents, stats.avg30Cents);
   // Every fact names its window ("seit 15. Aug."): days with a price, not calendar days.
   const sinceDay = facts.firstDay ? formatDayMonth(facts.firstDay, locale) : '';
+  const since = stats.daysTracked < 30 && sinceDay ? sinceDay : undefined;
   const fact =
     stats.state === 'good'
       ? t('good', { k: facts.pricierDays, n: facts.n, since: sinceDay })
@@ -76,16 +78,16 @@ export function VerdictBlock({
         <VerdictPrice
           cents={stats.nowCents}
           locale={locale}
-          base={base}
           restLine={[
-            stats.daysTracked < 30 && sinceDay
-              ? t('vsAvgSince', { since: sinceDay })
-              : t('vsAvg30'),
+            t('totalPrice', { perNight: price(Math.round(stats.nowCents / nights)) }),
             t('totalStay', { nights, adults }),
           ]}
           scrubbedLine={t('scrubbed', { date: '{date}' })}
           noPriceLine={t('noPrice', { date: '{date}' })}
         />
+        {!collecting && delta !== null && (
+          <PriceDelta ratio={delta} since={since} className="scrub-fade" />
+        )}
       </div>
       {!collecting &&
         stats.lowCents !== null &&
@@ -97,7 +99,6 @@ export function VerdictBlock({
             highCents={stats.highCents}
             nowCents={stats.nowCents}
             since={sinceDay}
-            base={base}
             className="scrub-fade"
           />
         )}

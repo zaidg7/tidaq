@@ -1,12 +1,5 @@
 import { useLocale, useTranslations } from 'next-intl';
-import {
-  formatPercent,
-  formatPrice,
-  meter,
-  vsTypical,
-  type Locale,
-  type MeterZone,
-} from '@tidaq/core';
+import { formatPrice, meter, type Locale, type MeterZone } from '@tidaq/core';
 import { cn } from '@/lib/cn';
 
 type Props = {
@@ -17,8 +10,6 @@ type Props = {
   nowCents: number;
   /** First day of the window ("15. Aug."), already formatted. */
   since: string;
-  /** Say prices against this one in percent, no euros (C-149, D-52). */
-  base?: number | null;
   /** `lg` for result cards on wide screens (14 px track, 24 px knob). */
   size?: 'md' | 'lg';
   className?: string;
@@ -48,7 +39,6 @@ export function Meter({
   highCents,
   nowCents,
   since,
-  base = null,
   size = 'md',
   className,
 }: Props) {
@@ -56,10 +46,7 @@ export function Meter({
   const locale = useLocale() as Locale;
   const m = meter(percentile);
   if (!m) return null;
-  const price = (c: number) =>
-    base === null
-      ? formatPrice(c, locale)
-      : formatPercent(vsTypical(c, 1, base) ?? 0, locale, { signed: true });
+  const price = (c: number) => formatPrice(c, locale);
   const lg = size === 'lg';
 
   return (

@@ -1,13 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import {
-  priceLevels,
-  typicalNightCents,
-  vsTypical,
-  weekendStays,
-  WEEKEND_STAY,
-  type NightPrice,
-  type WeekendStay,
-} from '@tidaq/core';
+import { priceLevels, weekendStays, type NightPrice, type WeekendStay } from '@tidaq/core';
 import { getHotelPage } from '@/lib/data/hotel';
 import { hasSupabase } from '@/lib/data/supabase';
 import { SEARCH_SAMPLE, sampleNights } from '@/lib/searchSample';
@@ -19,11 +11,9 @@ export const dynamic = 'force-dynamic';
 const SLUG = /^[a-z0-9-]{1,120}$/;
 
 /**
- * Every night at one hotel against a usual night there, with its level (C-108, C-149): the search
- * calendar tints the nights once a hotel is picked, and its "Flexibel" tab lists the cheapest
- * weekends. Only relative figures leave the server: base rates lack taxes and fees (D-52).
- * Public data (the hotel page shows the same), cached at the edge for 30 minutes. Without a
- * database outside production: sample nights for sample hotels.
+ * Today's price of every night at one hotel, with its level (C-108): the search calendar tints
+ * the nights once a hotel is picked, and its "Flexibel" tab lists the cheapest weekends. Public data (the hotel page shows the same), cached at the
+ * edge for 30 minutes. Without a database outside production: sample nights for sample hotels.
  */
 export async function GET(request: NextRequest) {
   const slug = request.nextUrl.searchParams.get('slug') ?? '';
@@ -56,19 +46,10 @@ export async function GET(request: NextRequest) {
       cache = 'public, max-age=600, s-maxage=1800, stale-while-revalidate=3600';
     }
   }
-  const cents = rows.map((r) => r.cents);
-  const levels = priceLevels(cents);
-  const typical = typicalNightCents(cents);
+  const levels = priceLevels(rows.map((r) => r.cents));
   const body: HotelNights = {
-    nights: rows.map((r, i) => ({
-      night: r.night,
-      vs: r.cents === null ? null : vsTypical(r.cents, 1, typical),
-      level: levels[i] ?? null,
-    })),
-    weekends: weekends.flatMap((w) => {
-      const vs = vsTypical(w.totalCents, WEEKEND_STAY.nights, typical);
-      return vs === null ? [] : [{ checkIn: w.checkIn, checkOut: w.checkOut, vs }];
-    }),
+    nights: rows.map((r, i) => ({ ...r, level: levels[i] ?? null })),
+    weekends,
   };
   return NextResponse.json(body, { headers: { 'cache-control': cache } });
 }

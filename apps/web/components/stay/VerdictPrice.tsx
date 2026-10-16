@@ -2,15 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { CHART_SCRUB_EVENT, type ChartScrubDetail } from '@/components/chart/ChartScrub';
-import { formatPercent, vsTypical, type Locale } from '@tidaq/core';
+import type { Locale } from '@tidaq/core';
 import { PriceText } from '@/components/ui/PriceText';
-import { cn } from '@/lib/cn';
 
 type Props = {
   cents: number;
   locale: Locale;
-  /** Show the price against this one in percent, no euros (C-149, D-52). */
-  base?: number | null;
   /** ["gesamt · 592 € pro Nacht", "2 Nächte, 2 Erwachsene"]: breaks only between the parts. */
   restLine: [string, string];
   /** Templates with `{date}`, already translated on the server. */
@@ -21,16 +18,8 @@ type Props = {
 /**
  * The XL price of the verdict block. While the chart in the same `[data-scrub-scope]` is
  * scrubbed it shows that day's price, and snaps back on release (CRAFT.md §3 Interaction).
- * With a `base` it shows the percent against it instead of euros.
  */
-export function VerdictPrice({
-  cents,
-  locale,
-  base = null,
-  restLine,
-  scrubbedLine,
-  noPriceLine,
-}: Props) {
+export function VerdictPrice({ cents, locale, restLine, scrubbedLine, noPriceLine }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const [scrub, setScrub] = useState<ChartScrubDetail>(null);
 
@@ -52,10 +41,6 @@ export function VerdictPrice({
       {scrub && scrub.cents === null ? (
         // A day without a price never borrows today's price.
         <span className="text-price-xl text-muted-ink">–</span>
-      ) : base !== null ? (
-        <span className={cn('text-price-xl whitespace-nowrap', scrub && 'text-accent')}>
-          {formatPercent(vsTypical(scrub?.cents ?? cents, 1, base) ?? 0, locale, { signed: true })}
-        </span>
       ) : (
         <PriceText
           locale={locale}

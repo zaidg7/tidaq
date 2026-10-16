@@ -8,6 +8,8 @@ import { Turnstile } from '@/components/ui/Turnstile';
 
 export type WatchFormLabels = {
   email: string;
+  target: string;
+  targetHint: string;
   consent: string;
   privacy: string;
   privacyHref: string;
@@ -27,9 +29,8 @@ type Props = {
 };
 
 /**
- * Price-alert form (C-030b): email and consent (never pre-ticked). No target price in euros:
- * our prices are base rates without taxes (D-52, C-149). Works without JavaScript as a plain form
- * post; with it, the result shows in place.
+ * Price-alert form (C-030b): email, optional target price, consent (never pre-ticked). Works
+ * without JavaScript as a plain form post; with it, the result shows in place.
  */
 export function WatchForm({ hotel, checkIn, checkOut, adults, locale, labels }: Props) {
   const id = useId();
@@ -75,6 +76,16 @@ export function WatchForm({ hotel, checkIn, checkOut, adults, locale, labels }: 
         inputMode="email"
         required
         defaultValue={values?.email}
+      />
+      <TextField
+        id={`${id}-target`}
+        name="target"
+        label={labels.target}
+        hint={labels.targetHint}
+        inputMode="decimal"
+        autoComplete="off"
+        defaultValue={values?.target}
+        error={state.status === 'bad_price' ? labels.results.bad_price : undefined}
       />
       <label className="flex items-start gap-2.5 text-[13.5px] leading-snug text-muted-ink">
         <input
