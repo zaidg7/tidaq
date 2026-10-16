@@ -9,7 +9,7 @@ import {
 } from '@tidaq/core';
 import type { FetchFn } from './dataforseo';
 import { priceSource, type Env } from './env';
-import type { CollectorStore, NightIngestPayload } from './store';
+import type { CollectorStore, NightIngestPayload, NightPart } from './store';
 import { fetchXoteloTask } from './xotelo';
 
 /** Night grid settings (C-070a, D-42, PLAN §7.0). */
@@ -28,6 +28,8 @@ export const NIGHTS = {
    * started stay for the next run.
    */
   runBudgetMs: 90_000,
+  /** Nights runs at the same time on disjoint shares of the hotels (C-154, CRON_NIGHTS). */
+  parts: 2,
   /** Xotelo calls in flight at once (spike: 8 in parallel, 0 errors, ~3 s each). */
   concurrency: 8,
 } as const;
@@ -113,6 +115,8 @@ export async function runNights(opts: {
   reserve?: number;
   /** Epoch ms after which no new call starts; default `runBudgetMs` from now. */
   deadline?: number;
+  /** Only this share of the hotels (C-154); all hotels without. */
+  part?: NightPart;
 }): Promise<NightRunSummary> {
   const { store, env, now } = opts;
   if (priceSource(env) !== 'xotelo') return nothing();
@@ -125,7 +129,7 @@ export async function runNights(opts: {
   if (batch < 1) return nothing();
 
   const today = toIsoDate(now.getTime());
-  const jobs = await store.nightJobs(today, settings.window, batch);
+  const jobs = await store.nightJobs(today, settings.window, batch, opts.part);
   if (jobs.length === 0) return nothing();
 
   const runId = await store.startRun('nights', env.APP_ENV, now.toISOString());

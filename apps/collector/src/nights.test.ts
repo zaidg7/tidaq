@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
-import { createWorker, CRON_COLLECT } from './index';
+import { createWorker, CRON_COLLECT, CRON_NIGHTS } from './index';
 import { runNights } from './nights';
 import { testEnv } from './test/env';
 import { memoryStore } from './test/memoryStore';
@@ -182,7 +182,32 @@ describe('collect cron and the night grid', () => {
     await worker.scheduled(controller(CRON_COLLECT), collectEnv);
     log.mockRestore();
     expect(mem.runs.map((r) => r.kind)).toEqual(['request', 'collect', 'nights']);
-    // NIGHT_BATCH minus the drop-check query (C-142) and the idle quote step's 3 (C-148).
-    expect(mem.nights.size).toBe(4);
+    // Half 0 of the hotels only (C-154): hotel 2's 3 nights; hotel 1 is the odd-minute run's.
+    expect([...mem.nights.keys()].every((k) => k.startsWith('2|'))).toBe(true);
+    expect(mem.nights.size).toBe(3);
+  });
+
+  it('the odd-minute run prices the other half of the hotels at the same time (C-154)', async () => {
+    const mem = memoryStore(hotels, { aliases: ALIASES });
+    const x = fakeXotelo();
+    const worker = createWorker({
+      store: mem.store,
+      fetchFn: x.fetchFn,
+      now: () => new Date('2026-10-15T05:01:00Z'),
+    });
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const env = testEnv({ PRICE_SOURCE: 'xotelo', NIGHT_WINDOW_DAYS: '3', NIGHT_BATCH: '8' });
+    await worker.scheduled(controller(CRON_NIGHTS), env);
+    expect(mem.runs.map((r) => r.kind)).toEqual(['nights']);
+    expect([...mem.nights.keys()].sort()).toEqual([
+      '1|2026-10-15|2026-10-15',
+      '1|2026-10-16|2026-10-15',
+      '1|2026-10-17|2026-10-15',
+    ]);
+    // Both halves together cover every hotel with a Xotelo key, and no night twice.
+    await worker.scheduled(controller(CRON_COLLECT), env);
+    log.mockRestore();
+    expect(mem.nights.size).toBe(6);
+    expect(x.calls).toHaveLength(6);
   });
 });

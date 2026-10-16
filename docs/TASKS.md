@@ -172,6 +172,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-149 | Hotel, stay and city pages: exact quoted prices or no amounts (they still show Xotelo base rates without taxes) | CLOUD | M | C-148b | TODO |
 | C-150 | Lean quote budget: 80 exact quotes a day, $3 a month | CLOUD | S | C-148b | DONE ([#129](https://github.com/zaidg7/tidaq/pull/129)) |
 | C-151 | Workers Paid: 200 nights per collect run, no new call after 90 s (room for ~400 hotels × 270 nights a day) | CLOUD | S | B-023 | DONE (check /admin the next day: nights priced vs due) |
+| C-154 | Second nights run on the odd minutes: two runs price disjoint halves of the hotels (room for ~800 hotels × 270 nights) | CLOUD | S | C-151 | DONE (SQL `night_jobs_part`; collect cron = half 0, `1-59/2` cron = half 1) |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034, C-123               | TODO           |
 | C-041a                                                          | Launch hardening: axe checks, security headers                               | CLOUD | S             | C-031a                            | DONE           |

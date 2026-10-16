@@ -1257,6 +1257,20 @@ export type Database = {
           xotelo_key: string;
         }[];
       };
+      night_jobs_part: {
+        Args: {
+          p_limit: number;
+          p_part: number;
+          p_parts: number;
+          p_today: string;
+          p_window: number;
+        };
+        Returns: {
+          hotel_id: number;
+          night: string;
+          xotelo_key: string;
+        }[];
+      };
       night_reliability: {
         Args: { p_day: string; p_hotel_id?: number };
         Returns: {

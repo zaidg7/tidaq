@@ -400,7 +400,7 @@ export function memoryStore(
     async recordQuoteResults(rows) {
       quoteResults.push(...rows);
     },
-    async nightJobs(today, window, limit) {
+    async nightJobs(today, window, limit, part) {
       const jobs: { hotelId: number; xoteloKey: string; night: string }[] = [];
       for (let i = 0; i < window; i++) {
         const night = new Date(Date.parse(`${today}T00:00:00Z`) + i * 86_400_000)
@@ -408,6 +408,7 @@ export function memoryStore(
           .slice(0, 10);
         for (const h of [...hotels].sort((a, b) => a.id - b.id)) {
           if (!h.xoteloKey || nights.has(`${h.id}|${night}|${today}`)) continue;
+          if (part && h.id % part.of !== part.index) continue;
           jobs.push({ hotelId: h.id, xoteloKey: h.xoteloKey, night });
         }
       }

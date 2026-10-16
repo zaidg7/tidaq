@@ -3,7 +3,14 @@ import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { runToken } from '@tidaq/core';
 import type { FetchFn } from './dataforseo';
-import { createWorker, CRON_COLLECT, CRON_DAILY, CRON_EVENING, CRON_MORNING } from './index';
+import {
+  createWorker,
+  CRON_COLLECT,
+  CRON_DAILY,
+  CRON_EVENING,
+  CRON_MORNING,
+  CRON_NIGHTS,
+} from './index';
 import { testEnv } from './test/env';
 import { fakeDataForSeo, memoryStore } from './test/memoryStore';
 import { fakeMail } from './test/mail';
@@ -142,6 +149,7 @@ describe('collector scheduled', () => {
       CRON_MORNING,
       CRON_EVENING,
       CRON_COLLECT,
+      CRON_NIGHTS,
       CRON_DAILY,
     ]);
   });
