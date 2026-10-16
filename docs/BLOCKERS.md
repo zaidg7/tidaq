@@ -16,6 +16,16 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-025 · Top up DataForSEO with $50: exact prices for every Price Drop (3 min, urgent)
+
+Status: OPEN · Opened: 2026-10-16 by CLOUD · Blocks: Price Drops on the site from about Saturday morning (17 Oct)
+What I need: the $50 minimum top-up at DataForSEO. Since 16 Oct every Price Drop shows the exact price the booking site charges, taxes and fees included (D-52), asked from Google Hotels via DataForSEO: $0.0008 per drop and check, ~600 checks a day, about **$15 a month**. $0.45 is left: that's about one day. Without it, drops can't be confirmed and the drops page stays empty. The budget guard caps spending at $15 a month (`DROP_QUOTE_MONTHLY_USD`).
+Steps for Zaid (≈ 3 min):
+
+1. Open **app.dataforseo.com** and log in.
+2. **Billing** (or "Add funds") → $50 → pay.
+   Where to put the result: change this Status to DONE or tell the session in chat. Nothing else to do; the collector keeps going by itself.
+
 ## B-024 · Store the LiteAPI key as a GitHub secret (3 min)
 
 Status: OPEN · Opened: 2026-10-16 by CLOUD · Blocks: C-147 (second check of every Price Drop against LiteAPI)
@@ -271,7 +281,7 @@ Steps for Zaid (≈ 3 min):
 
 ## B-003 · Top up DataForSEO with $50
 
-Status: NOT NEEDED for now (13 Oct: Zaid chose the free source Xotelo, D-41 / C-013g; keep this as the fallback if Xotelo stops working) · Opened: 2026-10-12 by CLOUD · Blocks: nothing while Xotelo works
+Status: REPLACED by B-025 (16 Oct: exact prices need DataForSEO again, D-52). Earlier: NOT NEEDED (13 Oct: Zaid chose the free source Xotelo, D-41 / C-013g) · Opened: 2026-10-12 by CLOUD · Blocks: nothing while Xotelo works
 What I need: the $50 minimum top-up at DataForSEO. The data works end to end (12 Oct: staging stored 756 prices for 28 hotels). About $0.88 is left: that's **~2 days** of daily collection at 400 tasks/day. When it runs out, the morning run fails and you get an error email.
 Steps for Zaid (≈ 3 min):
 
