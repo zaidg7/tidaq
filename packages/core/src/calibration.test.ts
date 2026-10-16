@@ -62,6 +62,36 @@ describe('calibrationPoints (C-157)', () => {
   });
 });
 
+describe('calibrationPoints: ambiguous pairs (C-157f)', () => {
+  const paris = (name: string, lat: number): CalibrationHotel => ({
+    hotelId: lat,
+    name,
+    lat: 48.87 + lat / 10_000,
+    lng: 2.3,
+    identifier: null,
+    baseNightCents: 110_000,
+  });
+  const results = [
+    { id: 'A', title: 'Hôtel Barrière Paris', lat: 48.8701, lng: 2.3, price: 1662 },
+    { id: 'B', title: 'Hotel Lutetia Paris', lat: 48.8702, lng: 2.3, price: 1500 },
+    { id: 'C', title: 'Pullman Paris', lat: 48.8703, lng: 2.3, price: 300 },
+    { id: 'D', title: 'Le Royal Monceau Raffles', lat: 48.8704, lng: 2.3, price: 1400 },
+  ];
+
+  it("doesn't pair hotels by the city's name alone", () => {
+    const points = calibrationPoints(
+      [paris('Hôtel Fouquet’s Paris', 1), paris('Le Royal Monceau Raffles Paris', 4)],
+      results,
+    );
+    expect(points.map((p) => p.hotelId)).toEqual([4]);
+  });
+
+  it('gives no point when one result pairs with two of our hotels', () => {
+    const twins = [paris('Grand Hotel Lutetia', 2), paris('Lutetia Grand', 3)];
+    expect(calibrationPoints(twins, results)).toEqual([]);
+  });
+});
+
 describe('withTaxes (C-157)', () => {
   it('multiplies by the factor, never lowers a price', () => {
     expect(withTaxes(100_000, 1.113)).toBe(111_300);

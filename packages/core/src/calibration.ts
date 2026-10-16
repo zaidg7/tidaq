@@ -1,4 +1,4 @@
-import { matchHotelSearch, type SearchCandidate } from './hotelMatch';
+import { matchHotelSearch, nameWords, type SearchCandidate } from './hotelMatch';
 
 /**
  * Taxes on our prices (C-157). Xotelo's rates are base rates; Google Hotels searched from Germany
@@ -10,6 +10,8 @@ export const CALIBRATION = {
   /** Outside this band the two prices aren't for the same thing (another room, a wrong match). */
   minRatio: 0.7,
   maxRatio: 1.6,
+  /** A word in this many result titles says where, not which hotel ("Paris"): ignored. */
+  noiseTitles: 3,
 } as const;
 
 export interface CalibrationHotel {
@@ -38,22 +40,37 @@ export interface CalibrationPoint {
   identifier: string | null;
 }
 
-/** The points one search gives for a city's hotels. Pure. */
+/**
+ * The points one search gives for a city's hotels. Pure. Words shared by several results (the
+ * city's name) don't count as a name match, and a result that more than one of our hotels would
+ * pair with is ambiguous: none of them gets a point from it.
+ */
 export function calibrationPoints(
   hotels: readonly CalibrationHotel[],
   items: readonly CalibrationItem[],
 ): CalibrationPoint[] {
   const priced = items.filter((i) => i.price !== null && i.price > 0);
-  return hotels.flatMap((h) => {
+  const titles = new Map<string, number>();
+  for (const i of priced)
+    for (const w of nameWords(i.title)) titles.set(w, (titles.get(w) ?? 0) + 1);
+  const strip = (name: string) =>
+    [...nameWords(name)].filter((w) => (titles.get(w) ?? 0) < CALIBRATION.noiseTitles).join(' ');
+  const candidates = priced.map((i) => ({ ...i, title: strip(i.title) }));
+
+  const pairs = hotels.flatMap((h) => {
     if (!(h.baseNightCents > 0)) return [];
-    const item = h.identifier
-      ? priced.find((i) => i.id === h.identifier)
-      : (() => {
-          const m = matchHotelSearch(h, priced);
-          return m ? priced.find((i) => i.id === m.id) : undefined;
-        })();
-    if (!item || item.price === null) return [];
-    const googleNightCents = Math.round(item.price * 100);
+    const id = h.identifier
+      ? candidates.find((i) => i.id === h.identifier)?.id
+      : matchHotelSearch({ ...h, name: strip(h.name) }, candidates)?.id;
+    const item = id === undefined ? undefined : priced.find((i) => i.id === id);
+    return item && item.price !== null ? [{ h, item, price: item.price }] : [];
+  });
+  const uses = new Map<string, number>();
+  for (const p of pairs) uses.set(p.item.id, (uses.get(p.item.id) ?? 0) + 1);
+
+  return pairs.flatMap(({ h, item, price }) => {
+    if ((uses.get(item.id) ?? 0) > 1) return [];
+    const googleNightCents = Math.round(price * 100);
     const ratio = Math.round((googleNightCents / h.baseNightCents) * 10_000) / 10_000;
     if (ratio < CALIBRATION.minRatio || ratio > CALIBRATION.maxRatio) return [];
     return [
