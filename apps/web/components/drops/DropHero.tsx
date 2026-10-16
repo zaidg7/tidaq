@@ -1,12 +1,6 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { ArrowRight } from 'lucide-react';
-import {
-  dropDates,
-  dropPath,
-  formatPrice,
-  localizedPath,
-  type Locale,
-} from '@tidaq/core';
+import { dropDates, dropPath, formatPrice, localizedPath, type Locale } from '@tidaq/core';
 import { Icon } from '@/components/ui/Icon';
 import { Photo } from '@/components/ui/Photo';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
