@@ -960,7 +960,7 @@
       "soon": "Bald"
     },
     "listLabel": "Price Drops",
-    "dropLabel": "Preis um {pct} gefallen",
+    "dropLabel": "Preis gefallen: {pct}",
     "night": "{date} · {n, plural, one {# Nacht} other {# Nächte}}, 2 Erwachsene",
     "was": "Vortag {price}",
     "saved": "{amount} weniger bei {provider}",

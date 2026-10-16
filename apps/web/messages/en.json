@@ -958,7 +958,7 @@
       "soon": "Soonest"
     },
     "listLabel": "Price drops",
-    "dropLabel": "Price down {pct}",
+    "dropLabel": "Price down: {pct}",
     "night": "{date} · {n, plural, one {# night} other {# nights}}, 2 adults",
     "was": "Day before {price}",
     "saved": "{amount} less at {provider}",
