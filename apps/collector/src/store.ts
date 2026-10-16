@@ -108,6 +108,46 @@ export interface QuotePost {
   costUsd: number;
 }
 
+/** A hotel with a live drop but no Google id (SQL `dfs_lookup_jobs`, C-153). */
+export interface LookupJob {
+  hotelId: number;
+  name: string;
+  cityEn: string;
+  countryCode: string;
+  lat: number;
+  lng: number;
+}
+
+/** A posted Google id lookup without its answer yet (SQL `dfs_lookup_pending`). */
+export interface PendingLookup {
+  taskId: string;
+  hotelId: number;
+  name: string;
+  lat: number;
+  lng: number;
+  postedAt: string;
+}
+
+/** A posted lookup, for `hotel_dfs_lookups` and the budget log (its search dates). */
+export interface LookupPost {
+  taskId: string;
+  hotelId: number;
+  postedAt: string;
+  costUsd: number;
+  checkIn: string;
+  checkOut: string;
+}
+
+/** A lookup's answer; `found` also stores the id on the hotel. */
+export interface LookupResult {
+  hotelId: number;
+  status: 'found' | 'not_found' | 'failed';
+  identifier: string | null;
+  finishedAt: string;
+  /** The first few results (title, id, metres), for checking a miss by hand. */
+  candidates: { title: string; id: string; meters: number | null }[];
+}
+
 /** A (hotel, night) pair still to price today (SQL `night_jobs`, C-070a). */
 /** One of `of` disjoint shares of the hotels (by id). */
 export interface NightPart {
@@ -243,6 +283,14 @@ export interface CollectorStore {
   recordQuotePosts(rows: readonly QuotePost[]): Promise<void>;
   /** Stores answers: offers for `done`; `failed` keeps the last offers. */
   recordQuoteResults(rows: readonly QuoteResult[]): Promise<void>;
+  /** Hotels with a live drop and no Google id, biggest drop first (C-153). */
+  dfsLookupJobs(today: string, limit: number): Promise<LookupJob[]>;
+  /** Posted lookups still without an answer, oldest first. */
+  dfsLookupPending(limit: number): Promise<PendingLookup[]>;
+  /** Marks hotels as looked up and logs each paid task in the quote budget log. */
+  recordLookupPosts(rows: readonly LookupPost[]): Promise<void>;
+  /** Stores answers; `found` sets the hotel's Google id (only where it has none). */
+  recordLookupResults(rows: readonly LookupResult[]): Promise<void>;
   /** Stores a batch of nights (SQL `night_ingest`). Returns the rows written. */
   ingestNights(payload: NightIngestPayload): Promise<number>;
   /** Compares `day`'s night sums with its real stay prices and stores the result (C-070c). */
