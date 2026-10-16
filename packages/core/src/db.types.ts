@@ -561,6 +561,89 @@ export type Database = {
           },
         ];
       };
+      price_calibrations: {
+        Row: {
+          check_in: string;
+          check_out: string;
+          city_id: number;
+          finished_at: string | null;
+          id: number;
+          posted_at: string;
+          status: string;
+          task_id: string;
+        };
+        Insert: {
+          check_in: string;
+          check_out: string;
+          city_id: number;
+          finished_at?: string | null;
+          id?: number;
+          posted_at?: string;
+          status?: string;
+          task_id: string;
+        };
+        Update: {
+          check_in?: string;
+          check_out?: string;
+          city_id?: number;
+          finished_at?: string | null;
+          id?: number;
+          posted_at?: string;
+          status?: string;
+          task_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'price_calibrations_city_id_fkey';
+            columns: ['city_id'];
+            isOneToOne: false;
+            referencedRelation: 'cities';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      price_calibration_points: {
+        Row: {
+          base_night_cents: number;
+          calibration_id: number;
+          google_night_cents: number;
+          hotel_id: number;
+          measured_at: string;
+          ratio: number;
+        };
+        Insert: {
+          base_night_cents: number;
+          calibration_id: number;
+          google_night_cents: number;
+          hotel_id: number;
+          measured_at?: string;
+          ratio: number;
+        };
+        Update: {
+          base_night_cents?: number;
+          calibration_id?: number;
+          google_night_cents?: number;
+          hotel_id?: number;
+          measured_at?: string;
+          ratio?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'price_calibration_points_calibration_id_fkey';
+            columns: ['calibration_id'];
+            isOneToOne: false;
+            referencedRelation: 'price_calibrations';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'price_calibration_points_hotel_id_fkey';
+            columns: ['hotel_id'];
+            isOneToOne: false;
+            referencedRelation: 'hotels';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       price_snapshots: {
         Row: {
           board: string | null;
@@ -1207,6 +1290,43 @@ export type Database = {
           lng: number;
           name: string;
         }[];
+      };
+      calibration_due: {
+        Args: { p_limit: number; p_today: string };
+        Returns: {
+          anchor_hotel_id: number;
+          check_in: string;
+          check_out: string;
+          city_en: string;
+          city_id: number;
+        }[];
+      };
+      calibration_hotels: {
+        Args: { p_check_in: string; p_check_out: string; p_city: number };
+        Returns: {
+          base_night_cents: number;
+          dfs_hotel_identifier: string | null;
+          hotel_id: number;
+          lat: number;
+          lng: number;
+          name: string;
+        }[];
+      };
+      calibration_pending: {
+        Args: { p_limit: number };
+        Returns: {
+          check_in: string;
+          check_out: string;
+          city_id: number;
+          id: number;
+          posted_at: string;
+          task_id: string;
+        }[];
+      };
+      calibration_posted_today: { Args: { p_today: string }; Returns: number };
+      hotel_price_factors: {
+        Args: never;
+        Returns: { factor: number; hotel_id: number; source: string }[];
       };
       dfs_lookup_pending: {
         Args: { p_limit: number };

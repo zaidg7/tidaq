@@ -1,4 +1,4 @@
-import type { GridStay, PriceDropRow } from '@tidaq/core';
+import type { CalibrationHotel, GridStay, PriceDropRow } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from '../ingest';
 import type {
   AlertOffer,
@@ -14,6 +14,10 @@ import type {
   LookupJob,
   LookupPost,
   LookupResult,
+  CalibrationJob,
+  CalibrationPost,
+  CalibrationResult,
+  PendingCalibration,
   PendingLookup,
   PendingQuote,
   QuoteJob,
@@ -92,6 +96,12 @@ export function memoryStore(
   const lookupPending: PendingLookup[] = [];
   const lookupPosts: LookupPost[] = [];
   const lookupResults: LookupResult[] = [];
+  const calibrationJobs: CalibrationJob[] = [];
+  const calibrationPending: PendingCalibration[] = [];
+  const calibrationHotels = new Map<number, CalibrationHotel[]>();
+  const calibrationPosts: CalibrationPost[] = [];
+  const calibrationResults: CalibrationResult[] = [];
+  const calibrationUsage = { postedToday: 0 };
   const dropChecks: DropCheckRow[] = [];
   /** Website errors for the daily check (C-041c); tests push into it. */
   const webErrors: (WebErrorRow & { env: string })[] = [];
@@ -417,6 +427,24 @@ export function memoryStore(
     async recordLookupPosts(rows) {
       lookupPosts.push(...rows);
     },
+    async calibrationDue(_today, limit) {
+      return calibrationJobs.slice(0, limit);
+    },
+    async calibrationPostedToday() {
+      return calibrationUsage.postedToday;
+    },
+    async calibrationPending(limit) {
+      return calibrationPending.slice(0, limit);
+    },
+    async calibrationHotels(cityId) {
+      return calibrationHotels.get(cityId) ?? [];
+    },
+    async recordCalibrationPosts(rows) {
+      calibrationPosts.push(...rows);
+    },
+    async recordCalibrationResults(rows) {
+      calibrationResults.push(...rows);
+    },
     async recordLookupResults(rows) {
       lookupResults.push(...rows);
       for (const r of rows) {
@@ -489,6 +517,12 @@ export function memoryStore(
     lookupPending,
     lookupPosts,
     lookupResults,
+    calibrationJobs,
+    calibrationPending,
+    calibrationHotels,
+    calibrationPosts,
+    calibrationResults,
+    calibrationUsage,
     hotelsById: hotelById,
     alertOffers,
     recordedAlerts,
