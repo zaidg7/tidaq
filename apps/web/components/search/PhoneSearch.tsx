@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useImperativeHandle, useMemo, useRef, useState, type Ref } from 'react';
 import { ArrowLeft, ArrowRight, CircleAlert, Search, X } from 'lucide-react';
-import { type Locale, type RangeDraft } from '@tidaq/core';
+import { formatPercent, type Locale, type RangeDraft } from '@tidaq/core';
 import { RangeCalendar, PriceLegend, type CellPrice } from '@/components/calendar/RangeCalendar';
 import { Button, IconButton } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
@@ -127,27 +127,15 @@ export function PhoneSearch({
     }
   };
 
-  const intl = locale === 'de' ? 'de-DE' : 'en-GB';
-  const fmt = useMemo(
-    () => ({
-      cell: new Intl.NumberFormat(intl, { maximumFractionDigits: 0 }),
-      money: new Intl.NumberFormat(intl, {
-        style: 'currency',
-        currency: 'EUR',
-        maximumFractionDigits: 0,
-      }),
-    }),
-    [intl],
-  );
   const byNight = useMemo(
     () => new Map((search.hotel?.nights ?? []).map((n) => [n.night, n])),
     [search.hotel],
   );
   const price = (day: string): CellPrice | null => {
     const n = byNight.get(day);
-    if (!n || n.cents === null) return null;
-    const euros = Math.round(n.cents / 100);
-    return { text: fmt.cell.format(euros), spoken: fmt.money.format(euros), level: n.level };
+    if (!n || n.vs === null) return null;
+    const text = formatPercent(n.vs, locale, { signed: true });
+    return { text, spoken: text, level: n.level };
   };
   const draft: RangeDraft = {
     checkIn,

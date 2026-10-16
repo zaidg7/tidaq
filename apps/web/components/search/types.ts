@@ -34,9 +34,12 @@ export type SearchIndex = {
 
 export type Destination = { kind: 'hotel' | 'city'; slug: string } | null;
 
-/** `/api/hotel-nights`: today's price of every night at one hotel, level 0 (cheap) … 4 (dear). */
+/**
+ * `/api/hotel-nights`: every night at one hotel against a usual night there (`vs`, −0.18 = 18 %
+ * cheaper) and its level 0 (cheap) … 4 (dear). No amounts: base rates lack taxes (D-52, C-149).
+ */
 export type HotelNights = {
-  nights: { night: string; cents: number | null; level: number | null }[];
-  /** Upcoming Fri → Sun stays with a total on one reviewed site (none for unreliable nights). */
-  weekends: { checkIn: string; checkOut: string; totalCents: number }[];
+  nights: { night: string; vs: number | null; level: number | null }[];
+  /** Upcoming Fri → Sun stays on one reviewed site, against two usual nights (none for unreliable nights). */
+  weekends: { checkIn: string; checkOut: string; vs: number }[];
 };

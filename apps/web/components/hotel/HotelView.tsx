@@ -4,13 +4,16 @@ import { CalendarClock, CalendarOff } from 'lucide-react';
 import {
   cheapestStays,
   cityPath,
+  describeVs,
   formatDateRange,
-  formatPrice,
+  formatPercent,
   localizedPath,
   NIGHT_GRID,
   priceLevels,
   stayPath,
+  typicalNightCents,
   updatedAtParts,
+  vsTypical,
   type BestStay,
   type BestStayKind,
   type Locale,
@@ -20,6 +23,7 @@ import { PhotoSheet } from '@/components/shell/PhotoSheet';
 import { Icon } from '@/components/ui/Icon';
 import { cardPhoto } from '@/lib/photos';
 import type { HotelPage } from '@/lib/data/hotel';
+import { cn } from '@/lib/cn';
 import { routes } from '@/lib/routes';
 import { NightCurve } from './NightCurve';
 import { PriceCalendar, type CalendarLabels } from './PriceCalendar';
@@ -40,7 +44,8 @@ type Props = {
  * Hotel page (C-023a, mockup B language): the hotel's photo with the page on a sheet over it,
  * then the cheapest upcoming 5 nights and week (C-023b, C-125), the price of every night as a
  * chart (C-132b), the price calendar of every night (night grid, D-42) with three numbered steps
- * → pick dates → stay page with the history, and the alert for this hotel.
+ * → pick dates → stay page with the history, and the alert for this hotel. Nights are compared
+ * with a usual night here, never shown as euros: base rates lack taxes and fees (D-52, C-149).
  */
 export function HotelView({ data, today, now, drops, alert }: Props) {
   const t = useTranslations('hotel');
@@ -59,9 +64,11 @@ export function HotelView({ data, today, now, drops, alert }: Props) {
     hotel.active && !nightsUnreliable
       ? cheapestStays(nights, today, new Set(providers.map((p) => p.id)))
       : { trip: null, week: null };
+  const typical = typicalNightCents(nights.map((n) => n.bestCents));
   const bestStays = (['trip', 'week'] as const).flatMap((kind) => {
     const stay = best[kind];
-    return stay ? [{ kind, stay }] : [];
+    const vs = stay ? vsTypical(stay.totalCents, stay.nights, typical) : null;
+    return stay && vs !== null ? [{ kind, stay, vs }] : [];
   });
 
   const labels: CalendarLabels = {
@@ -75,6 +82,11 @@ export function HotelView({ data, today, now, drops, alert }: Props) {
     checkOut: t('checkOut'),
     today: t('today'),
     perNight: t.raw('perNight') as string,
+    vs: {
+      cheaper: t.raw('vsCheaper') as string,
+      dearer: t.raw('vsDearer') as string,
+      usual: t('vsUsual'),
+    },
     noPrice: t('noPrice'),
     levels: t('levels').split('|'),
     nightsOne: t('nightsOne'),
@@ -137,11 +149,12 @@ export function HotelView({ data, today, now, drops, alert }: Props) {
               {t('bestTitle')}
             </h2>
             <ul className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2 md:mt-5 md:gap-5">
-              {bestStays.map(({ kind, stay }) => (
+              {bestStays.map(({ kind, stay, vs }) => (
                 <li key={kind}>
                   <BestStayCard
                     kind={kind}
                     stay={stay}
+                    vs={vs}
                     slug={hotel.slug}
                     provider={providerNames[String(stay.providerId)] ?? ''}
                     locale={locale}
@@ -173,7 +186,7 @@ export function HotelView({ data, today, now, drops, alert }: Props) {
           </div>
         ) : (
           <>
-            <NightCurve nights={nights} />
+            <NightCurve nights={nights} typical={typical} />
             <section aria-labelledby="calendar-title" className="mt-10 md:mt-14">
               <h2
                 id="calendar-title"
@@ -193,6 +206,7 @@ export function HotelView({ data, today, now, drops, alert }: Props) {
                 <PriceCalendar
                   slug={hotel.slug}
                   nights={nights}
+                  typical={typical}
                   levels={priceLevels(nights.map((n) => n.bestCents))}
                   providers={providerNames}
                   nightsUnreliable={nightsUnreliable}
@@ -200,12 +214,15 @@ export function HotelView({ data, today, now, drops, alert }: Props) {
                   locale={locale}
                   labels={labels}
                 />
-                {updated && (
-                  <p className="mt-4 text-[13px] text-muted">
-                    {tv(`updated${updated.day}`, { time: updated.time, date: updated.date })} ·{' '}
-                    {tv('source')}
-                  </p>
-                )}
+                <p className="mt-4 text-[13px] text-muted">
+                  {updated && (
+                    <>
+                      {tv(`updated${updated.day}`, { time: updated.time, date: updated.date })} ·{' '}
+                      {tv('source')}.{' '}
+                    </>
+                  )}
+                  {t('amountsNote')}
+                </p>
               </div>
             </section>
           </>
@@ -220,17 +237,21 @@ export function HotelView({ data, today, now, drops, alert }: Props) {
 function BestStayCard({
   kind,
   stay,
+  vs,
   slug,
   provider,
   locale,
 }: {
   kind: BestStayKind;
   stay: BestStay;
+  /** The stay against as many usual nights here (`vsTypical`). */
+  vs: number;
   slug: string;
   provider: string;
   locale: Locale;
 }) {
   const t = useTranslations('hotel');
+  const said = describeVs(vs, locale);
   return (
     <article className="group relative flex h-full flex-col gap-1 rounded-card border border-[#ece9f1] bg-surface p-5 transition-[border-color,box-shadow] duration-[var(--t-base)] hover:border-line-strong hover:shadow-2 md:p-6">
       <p className="text-[14px] font-semibold text-accent">
@@ -244,14 +265,21 @@ function BestStayCard({
       </a>
       <p className="text-[14px] text-muted">{t('bestFacts', { nights: stay.nights, provider })}</p>
       <div className="mt-auto flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 pt-3">
-        <strong className="text-[26px] font-bold tracking-[-0.03em] tabular-nums">
-          {formatPrice(stay.totalCents, locale)}
-        </strong>
-        <span className="text-[14px] text-muted">
-          {t('perNight', {
-            price: formatPrice(Math.round(stay.totalCents / stay.nights), locale),
-          })}
-        </span>
+        {said.kind === 'usual' ? (
+          <strong className="text-[19px] font-semibold tracking-[-0.01em]">{t('vsUsual')}</strong>
+        ) : (
+          <>
+            <strong
+              className={cn(
+                'text-[26px] font-bold tracking-[-0.03em] tabular-nums',
+                said.kind === 'cheaper' && 'text-good',
+              )}
+            >
+              {formatPercent(vs, locale, { signed: true })}
+            </strong>
+            <span className="text-[14px] text-muted">{t('bestVs')}</span>
+          </>
+        )}
       </div>
     </article>
   );
