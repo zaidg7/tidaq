@@ -16,6 +16,7 @@ import {
 } from '@tidaq/core';
 import { hasSupabase, rest, rpc } from './supabase';
 import { reportError } from '@/lib/errors';
+import { taxesFor } from './priceFactors';
 
 const hotelRow = z.object({
   id: z.number(),
@@ -271,6 +272,8 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
       if (pr) providerByDay[d.day] = pr.is_direct ? hotel.name : pr.name;
     }
 
+    // Base rates plus the hotel's taxes and fees (C-157).
+    const tax = await taxesFor(hotel.id);
     const offers: StayOffer[] = [];
     for (const id of latestIds) {
       const pr = nameById.get(Number(id));
@@ -282,7 +285,7 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
         slug: pr.slug,
         name: pr.name,
         isDirect: pr.is_direct,
-        totalCents: cents,
+        totalCents: tax(cents),
         // The /go route builds the same target (core `outboundUrl`); no button without one.
         ...((pr.is_direct ? safeHttpsUrl(hotel.official_url) : hasOutboundSearch(pr.slug)) && {
           link: { slug: pr.slug, partner: isAffiliate(pr.affiliate_template) },
@@ -327,8 +330,11 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
           history === 'nights'
             ? (collected[0]?.collected_at ?? null)
             : (stay?.stay_stats?.updated_at ?? null),
-        realVsNights,
-        series: rows.map((d) => ({ day: d.day, bestCents: d.best_cents })),
+        realVsNights: realVsNights && {
+          realCents: tax(realVsNights.realCents),
+          nightsCents: tax(realVsNights.nightsCents),
+        },
+        series: rows.map((d) => ({ day: d.day, bestCents: tax(d.best_cents) })),
         providerByDay,
         offers: {
           day: latest?.day ?? null,
@@ -345,7 +351,7 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
             checkIn: c.check_in,
             checkOut: c.check_out,
             adults: c.adults,
-            bestCents: c.best_cents,
+            bestCents: c.best_cents === null ? null : tax(c.best_cents),
             state: c.state,
           })),
       },

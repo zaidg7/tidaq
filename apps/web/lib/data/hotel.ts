@@ -3,6 +3,7 @@ import { hotelPhoto, type PhotoSize } from '@/lib/hotelPhotos';
 import { NIGHT_GRID, shiftDays, z, type NightPrice } from '@tidaq/core';
 import { hasSupabase, rest, rpc } from './supabase';
 import { reportError } from '@/lib/errors';
+import { taxedRecord, taxesFor } from './priceFactors';
 
 const hotelRow = z.object({
   id: z.number(),
@@ -112,6 +113,8 @@ export async function getHotelPage(slug: string, today: string): Promise<HotelLo
       : [];
 
     const photo = hotelPhoto(hotel.slug);
+    // Base rates plus the hotel's taxes and fees (C-157).
+    const tax = await taxesFor(hotel.id);
     return {
       kind: 'ok',
       data: {
@@ -132,8 +135,8 @@ export async function getHotelPage(slug: string, today: string): Promise<HotelLo
         },
         nights: rows.map((r) => ({
           night: r.night,
-          bestCents: r.best_cents,
-          perProvider: r.per_provider,
+          bestCents: r.best_cents === null ? null : tax(r.best_cents),
+          perProvider: taxedRecord(r.per_provider, tax),
         })),
         updatedAt: rows.length ? (latest[0]?.collected_at ?? null) : null,
         providers: providers.map((p) => ({ id: p.id, name: p.name, isDirect: p.is_direct })),
