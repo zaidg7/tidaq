@@ -49,7 +49,8 @@ describe('runAlerts (C-031)', () => {
       headers: Record<string, string>;
     };
     expect(sent.to).toEqual(['gast@example.com']);
-    expect(sent.subject).toMatch(/^Hotel Adlon Kempinski: neuer Tiefpunkt, 1\.100\s€$/);
+    expect(sent.subject).toBe('Hotel Adlon Kempinski: neuer Tiefpunkt');
+    expect(sent.text).not.toMatch(/€/);
     expect(sent.text).toContain(
       'https://tidaq.com/hotel/hotel-adlon-kempinski-berlin/2026-12-04--2026-12-06?adults=2',
     );
@@ -135,7 +136,7 @@ describe('runAlerts (C-031)', () => {
     const mail = fakeMail();
     await runAlerts({ store: mem.store, env: live, now: NOW, fetchFn: mail.fetchFn });
     const text = mail.sent[0]?.text ?? '';
-    expect(text).toMatch(/Am günstigsten heute: Booking\.com, 1\.120\s€\./);
+    expect(text).toContain('Am günstigsten heute: Booking.com.');
     expect(text).toContain(
       'Zu Booking.com (Partnerlink): https://tidaq.com/go/booking-com/hotel-adlon-kempinski-berlin?in=2026-12-04&out=2026-12-06&adults=2&lang=de',
     );

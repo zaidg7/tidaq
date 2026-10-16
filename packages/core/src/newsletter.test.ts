@@ -24,7 +24,7 @@ const deals = [
 ];
 
 describe('newsletterMail', () => {
-  it('lists each deal with city, dates, price and drop, linked to its stay page', () => {
+  it('lists each deal with city, dates and drop, no euro amount, linked to its stay page', () => {
     const { subject, content } = newsletterMail({
       locale: 'de',
       deals,
@@ -33,13 +33,12 @@ describe('newsletterMail', () => {
     });
     expect(subject).toBe('2 Luxushotels gerade deutlich günstiger');
     const { html, text } = renderMail(content);
-    expect(text).toMatch(
-      /Zürich · 20\.–22\. Nov\. 2026 · 1\.180\s€, 14\s% unter dem 30-Tage-Schnitt/,
-    );
+    expect(text).toMatch(/Zürich · 20\.–22\. Nov\. 2026 · 14\s% unter dem 30-Tage-Schnitt/);
     expect(text).toContain(
       'https://tidaq.com/hotel/baur-au-lac-zuerich/2026-11-20--2026-11-22?adults=2',
     );
     expect(text).toContain('Abbestellen oder Alarme ändern: https://tidaq.com/alarm/verwalten/x');
+    expect(text).not.toMatch(/€/);
     expect(html).toContain('Hotel &lt;Adlon&gt;');
     expect(html).toContain('href="https://tidaq.com/deals"');
   });
@@ -53,7 +52,7 @@ describe('newsletterMail', () => {
     });
     expect(subject).toBe('2 luxury hotels clearly cheaper right now');
     expect(renderMail(content).text).toMatch(
-      /Zürich · 20–22 Nov 2026 · €1,180, 14% below the 30-day average/,
+      /Zürich · 20–22 Nov 2026 · 14% below the 30-day average/,
     );
   });
 });

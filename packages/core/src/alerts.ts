@@ -1,6 +1,6 @@
 import { addDays, daysBetween } from './dates';
 import type { StayState } from './db';
-import { formatDateRange, formatPrice, type Locale } from './format';
+import { formatDateRange, formatPercent, type Locale } from './format';
 import type { MailContent } from './mailTemplate';
 import { computeStayStats, type DailyPrice } from './stats';
 
@@ -124,10 +124,11 @@ export interface AlertMailOffer {
 const TEXT = {
   de: {
     subject: {
-      target: (h: string, p: string) => `${h}: jetzt ${p}, dein Wunschpreis ist erreicht`,
-      new_low: (h: string, p: string) => `${h}: neuer Tiefpunkt, ${p}`,
-      drop: (h: string, p: string) => `${h}: Preis gefallen, jetzt ${p}`,
-      near_low: (h: string, p: string) => `${h}: ${p}, nah am Tiefpunkt`,
+      target: (h: string) => `${h}: dein Wunschpreis ist erreicht`,
+      new_low: (h: string) => `${h}: neuer Tiefpunkt`,
+      drop: (h: string, p: string | null) =>
+        p ? `${h}: Preis um ${p} gefallen` : `${h}: Preis gefallen`,
+      near_low: (h: string) => `${h}: Preis nah am Tiefpunkt`,
     },
     heading: {
       target: 'Dein Wunschpreis ist erreicht',
@@ -137,30 +138,30 @@ const TEXT = {
     },
     stay: (h: string, d: string, a: number) =>
       `${h}, ${d}, ${a} ${a === 1 ? 'Erwachsener' : 'Erwachsene'}`,
-    now: (s: string, p: string) =>
-      `${s} kostet heute ${p} (Gesamtpreis, günstigste geprüfte Seite).`,
-    target: (p: string) => `Dein Wunschpreis: ${p}.`,
-    since: (p: string) => `Bei unserer letzten E-Mail waren es ${p}.`,
-    hint: 'Preise ändern sich oft mehrmals am Tag. Prüf den Preis auf der Buchungsseite, bevor du buchst.',
+    now: (s: string) => `Dein Aufenthalt: ${s}.`,
+    since: (p: string) =>
+      `Seit unserer letzten E-Mail hat sich der Gesamtpreis auf der günstigsten geprüften Seite um ${p} verändert.`,
+    amounts:
+      'Den genauen Endpreis mit Steuern und Gebühren siehst du auf der Buchungsseite. Preise ändern sich oft mehrmals am Tag.',
     button: 'Preisverlauf ansehen',
-    offer: (who: string, p: string) => `Am günstigsten heute: ${who}, ${p}.`,
-    offerExpected: (who: string, p: string, e: string) =>
-      `Am günstigsten heute: ${who}, ${p} angezeigt. An der Kasse erwarten wir nach unseren Tests etwa ${e}.`,
+    offer: (who: string) => `Am günstigsten heute: ${who}.`,
+    offerExpected: (who: string, e: string) =>
+      `Am günstigsten heute: ${who}. Nach unseren Tests liegt der Preis an der Kasse dort oft etwa ${e} höher.`,
     direct: 'direkt beim Hotel',
     linkTo: (who: string) => `Zu ${who}`,
     linkDirect: 'Zur Website des Hotels',
     partner: ' (Partnerlink)',
     eyebrow: 'Preisalarm',
-    preheader: (p: string) => `Jetzt ${p}. Höchstens eine E-Mail pro Tag.`,
+    preheader: (h: string) => `${h}. Höchstens eine E-Mail pro Tag.`,
     why: 'Du bekommst diese E-Mail, weil du auf tidaq.com einen Preisalarm für diesen Aufenthalt bestätigt hast. Höchstens eine E-Mail pro Tag und Alarm.',
     manage: (u: string) => `Alarme ändern oder abbestellen: ${u}`,
   },
   en: {
     subject: {
-      target: (h: string, p: string) => `${h}: now ${p}, your target price is reached`,
-      new_low: (h: string, p: string) => `${h}: new low, ${p}`,
-      drop: (h: string, p: string) => `${h}: price dropped, now ${p}`,
-      near_low: (h: string, p: string) => `${h}: ${p}, near the low`,
+      target: (h: string) => `${h}: your target price is reached`,
+      new_low: (h: string) => `${h}: new low`,
+      drop: (h: string, p: string | null) => (p ? `${h}: price down ${p}` : `${h}: price dropped`),
+      near_low: (h: string) => `${h}: price near its low`,
     },
     heading: {
       target: 'Your target price is reached',
@@ -169,44 +170,54 @@ const TEXT = {
       near_low: 'The price is near its low',
     },
     stay: (h: string, d: string, a: number) => `${h}, ${d}, ${a} ${a === 1 ? 'adult' : 'adults'}`,
-    now: (s: string, p: string) => `${s} costs ${p} today (total, cheapest reviewed site).`,
-    target: (p: string) => `Your target price: ${p}.`,
-    since: (p: string) => `In our last email it was ${p}.`,
-    hint: 'Prices often change several times a day. Check the price on the booking site before you book.',
+    now: (s: string) => `Your stay: ${s}.`,
+    since: (p: string) =>
+      `Since our last email the total on the cheapest reviewed site has changed by ${p}.`,
+    amounts:
+      'The exact final price with taxes and fees is on the booking site. Prices often change several times a day.',
     button: 'See the price history',
-    offer: (who: string, p: string) => `Cheapest today: ${who}, ${p}.`,
-    offerExpected: (who: string, p: string, e: string) =>
-      `Cheapest today: ${who}, ${p} listed. Based on our tests we expect about ${e} at checkout.`,
+    offer: (who: string) => `Cheapest today: ${who}.`,
+    offerExpected: (who: string, e: string) =>
+      `Cheapest today: ${who}. Based on our tests the price at checkout there is often about ${e} higher.`,
     direct: 'directly with the hotel',
     linkTo: (who: string) => `Go to ${who}`,
     linkDirect: "Go to the hotel's website",
     partner: ' (partner link)',
     eyebrow: 'Price alert',
-    preheader: (p: string) => `Now ${p}. At most one email a day.`,
+    preheader: (h: string) => `${h}. At most one email a day.`,
     why: "You're getting this email because you confirmed a price alert for this stay on tidaq.com. At most one email a day per alert.",
     manage: (u: string) => `Change or cancel alerts: ${u}`,
   },
 } as const;
 
-/** Subject and content of an alert email (rendered with `renderMail`). */
+/**
+ * Subject and content of an alert email (rendered with `renderMail`). No euro amounts: the
+ * prices are base rates without taxes and fees (D-52, C-149), so changes are in percent.
+ */
 export function alertMail(d: AlertMailData): { subject: string; content: MailContent } {
   const t = TEXT[d.locale];
-  const price = (c: number) => formatPrice(c, d.locale);
-  const now = price(d.nowCents);
+  const change = (from: number, to: number) =>
+    from > 0
+      ? formatPercent(Math.round((to / from - 1) * 100) / 100, d.locale, { signed: true })
+      : null;
+  const fell =
+    d.lastAlertCents !== null && d.lastAlertCents > d.nowCents
+      ? formatPercent(Math.round((1 - d.nowCents / d.lastAlertCents) * 100) / 100, d.locale)
+      : null;
+  const since = d.lastAlertCents !== null ? change(d.lastAlertCents, d.nowCents) : null;
   const stay = t.stay(d.hotel, formatDateRange(d.checkIn, d.checkOut, d.locale), d.adults);
   const o = d.offer ?? null;
   return {
-    subject: t.subject[d.kind](d.hotel, now),
+    subject: d.kind === 'drop' ? t.subject.drop(d.hotel, fell) : t.subject[d.kind](d.hotel),
     content: {
-      preheader: t.preheader(now),
+      preheader: t.preheader(t.heading[d.kind]),
       eyebrow: t.eyebrow,
       heading: t.heading[d.kind],
       paragraphs: [
-        t.now(stay, now),
-        ...(d.targetCents !== null ? [t.target(price(d.targetCents))] : []),
-        ...(d.lastAlertCents !== null ? [t.since(price(d.lastAlertCents))] : []),
-        ...(o ? [offerLine(t, o, price)] : []),
-        t.hint,
+        t.now(stay),
+        ...(since !== null ? [t.since(since)] : []),
+        ...(o ? [offerLine(t, o, d.locale)] : []),
+        t.amounts,
       ],
       button: { label: t.button, url: d.stayUrl },
       ...(o && {
@@ -220,13 +231,11 @@ export function alertMail(d: AlertMailData): { subject: string; content: MailCon
   };
 }
 
-function offerLine(
-  t: (typeof TEXT)[Locale],
-  o: AlertMailOffer,
-  price: (c: number) => string,
-): string {
+function offerLine(t: (typeof TEXT)[Locale], o: AlertMailOffer, locale: Locale): string {
   const who = o.isDirect ? t.direct : o.name;
-  return o.expectedCents === null
-    ? t.offer(who, price(o.totalCents))
-    : t.offerExpected(who, price(o.totalCents), price(o.expectedCents));
+  const markup =
+    o.expectedCents !== null && o.totalCents > 0 && o.expectedCents > o.totalCents
+      ? formatPercent(Math.round((o.expectedCents / o.totalCents - 1) * 100) / 100, locale)
+      : null;
+  return markup === null ? t.offer(who) : t.offerExpected(who, markup);
 }

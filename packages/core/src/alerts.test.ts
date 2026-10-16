@@ -100,7 +100,7 @@ describe('alertInputFromSeries', () => {
 });
 
 describe('alertMail', () => {
-  it('writes German and English emails with price, target and links', () => {
+  it('writes German and English emails without euro amounts (C-149)', () => {
     const data = {
       kind: 'target' as const,
       locale: 'de' as const,
@@ -115,13 +115,12 @@ describe('alertMail', () => {
       manageUrl: 'https://tidaq.com/alarm/verwalten/x',
     };
     const de = alertMail(data);
-    expect(de.subject).toMatch(
-      /^Hotel Adlon Kempinski: jetzt 980\s€, dein Wunschpreis ist erreicht$/,
-    );
+    expect(de.subject).toBe('Hotel Adlon Kempinski: dein Wunschpreis ist erreicht');
     const text = renderMail(de.content).text;
     expect(text).toContain('2 Erwachsene');
-    expect(text).toMatch(/Dein Wunschpreis: 1\.000\s€\./);
+    expect(text).toContain('Endpreis mit Steuern und Gebühren');
     expect(text).toContain('https://tidaq.com/alarm/verwalten/x');
+    expect(text).not.toMatch(/€/);
     const en = alertMail({
       ...data,
       locale: 'en',
@@ -129,11 +128,29 @@ describe('alertMail', () => {
       targetCents: null,
       lastAlertCents: 101_000,
     });
-    expect(en.subject).toMatch(/^Hotel Adlon Kempinski: new low, /);
-    expect(renderMail(en.content).text).toContain('In our last email it was');
+    expect(en.subject).toBe('Hotel Adlon Kempinski: new low');
+    expect(renderMail(en.content).text).toContain('Since our last email the total');
+    expect(renderMail(en.content).text).toContain('changed by -3%');
   });
 
-  it('names the best offer with its link, the expected checkout total and the partner label', () => {
+  it('puts the drop since the last email in the subject', () => {
+    const drop = alertMail({
+      kind: 'drop',
+      locale: 'de',
+      hotel: 'Hotel Adlon Kempinski',
+      checkIn: '2026-12-04',
+      checkOut: '2026-12-06',
+      adults: 2,
+      nowCents: 90_000,
+      targetCents: null,
+      lastAlertCents: 100_000,
+      stayUrl: 'https://tidaq.com/s',
+      manageUrl: 'https://tidaq.com/m',
+    });
+    expect(drop.subject).toBe('Hotel Adlon Kempinski: Preis um 10\u00a0% gefallen');
+  });
+
+  it('names the best offer with its link, the checkout markup and the partner label', () => {
     const data = {
       kind: 'drop' as const,
       locale: 'de' as const,
@@ -156,7 +173,7 @@ describe('alertMail', () => {
       url: 'https://tidaq.com/go/booking-com/a?in=2026-12-04',
     };
     const plain = renderMail(alertMail({ ...data, offer }).content);
-    expect(plain.text).toMatch(/Am günstigsten heute: Booking\.com, 980\s€\./);
+    expect(plain.text).toContain('Am günstigsten heute: Booking.com.');
     expect(plain.text).toContain(
       'Zu Booking.com: https://tidaq.com/go/booking-com/a?in=2026-12-04',
     );
@@ -165,10 +182,9 @@ describe('alertMail', () => {
     const expected = renderMail(
       alertMail({ ...data, offer: { ...offer, expectedCents: 103_900, partner: true } }).content,
     ).text;
-    expect(expected).toMatch(
-      /980\s€ angezeigt\. An der Kasse erwarten wir nach unseren Tests etwa 1\.039\s€\./,
-    );
+    expect(expected).toMatch(/an der Kasse dort oft etwa 6\s%\s?höher\./);
     expect(expected).toContain('Zu Booking.com (Partnerlink):');
+    expect(expected).not.toMatch(/€/);
 
     const direct = renderMail(
       alertMail({
@@ -177,7 +193,7 @@ describe('alertMail', () => {
         offer: { ...offer, isDirect: true, name: 'Hotel direkt' },
       }).content,
     ).text;
-    expect(direct).toMatch(/Cheapest today: directly with the hotel, €980\./);
+    expect(direct).toContain('Cheapest today: directly with the hotel.');
     expect(direct).toContain("Go to the hotel's website:");
 
     const none = renderMail(alertMail({ ...data, offer: null }).content);
