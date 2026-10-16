@@ -65,7 +65,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-070d                                                          | Stay page: no night-sum history for hotels where single nights mislead       | CLOUD | S             | C-070c                            | DONE                |
 | C-071a                                                          | Catalog: 25 cities, five-star discovery script, first batch (~50 hotels)     | CLOUD | M             | C-070a                            | DONE           |
 | C-071b1 | Catalog batch 1: 106 more five-star hotels (next 4 per city), own photos, Google ids | CLOUD | M | C-151 | DONE (PR pending; 189 active hotels) |
-| C-071b | Catalog: hundreds of hotels (batches 2–3: next ~8 per big city, then more cities), photos from LiteAPI | CLOUD | L | C-071b1, C-152 | TODO |
+| C-071b2 | Catalog batch 2: 96 more five-star hotels in the big cities (8 Paris, 8 London, 7 Dubai, 8 Maldives, 6 New York, …) | CLOUD | M | C-155 | DONE (444 active hotels; every hotel price-checked, photos checked) |
+| C-071b | Catalog: more destinations or hotels when Zaid asks (444 now; ~800 fit the two nights runs) | CLOUD | L | C-071b2, C-152 | TODO |
 | C-152 | Hotel photos to Cloudflare R2 (or Images) instead of the git repo before batch 2 (49 MB for 189 hotels) | CLOUD | S | – | TODO |
 | C-153 | Google ids for the 17 batch-1 hotels without one (their drops get no exact quote until then; ~$0.02) | CLOUD | S | C-071b1 | TODO |
 | C-071c                                                          | Photos for the new hotels (licensed, self-hosted, C-011c pipeline)           | CLOUD | S             | C-071a                            | DONE           |
