@@ -174,7 +174,7 @@
     "copyright": "© {year} Tidaq",
     "source": "No cookies · Partner links are labelled.",
     "about": "Tidaq",
-    "note": "Total prices for 2 adults incl. taxes. Prices often change several times a day. Partner links are labelled."
+    "note": "Prices for 2 adults incl. taxes and fees. Price Drops are checked exactly with the site; elsewhere we add the city’s taxes (measured from Google’s final prices). Prices often change several times a day. Partner links are labelled."
   },
   "notFound": {
     "meta": "Page not found",
@@ -391,7 +391,7 @@
     "toOffer": "View offer",
     "toOfferLabel": "View offer on {provider} (new tab)",
     "partnerLink": "Partner link",
-    "offersNote": "Total price for the whole stay, as the provider reported it at our latest check. Price accuracy shows how often the checkout price matched. Commissions never affect the order.",
+    "offersNote": "Total price for the whole stay incl. taxes and fees, at our latest check. The final price on the site can differ by a few percent. Price accuracy shows how often the checkout price matched. Commissions never affect the order.",
     "offersUnreviewed": "{n, plural, one {One more provider had a price but isn’t checked by us yet.} other {# more providers had a price but aren’t checked by us yet.}}",
     "watchTitle": "Watch this price",
     "watchText": "We'll email you when the price for this stay drops. Free, unsubscribe with one click.",
@@ -432,7 +432,7 @@
     "bestFacts": "{nights} nights for 2 adults on {provider}",
     "jsonLdDescription": "Five-star hotel in {city}. Tidaq shows the price of every night and the price history of your stay.",
     "calendarTitle": "Prices for every night",
-    "calendarText": "Cheapest price per night for 2 adults, across all booking sites we check. Pick your dates and we show the total and how it has moved.",
+    "calendarText": "Cheapest price per night for 2 adults incl. taxes and fees, across all booking sites we check. Pick your dates and we show the total and how it has moved.",
     "prevMonth": "Previous month",
     "nextMonth": "Next month",
     "chooseIn": "Pick your check-in.",

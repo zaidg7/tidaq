@@ -13,6 +13,7 @@ import {
 } from '@tidaq/core';
 import { hasSupabase, rest } from './supabase';
 import { reportError } from '@/lib/errors';
+import { taxesFor } from './priceFactors';
 
 const stayRow = z.object({
   stay_id: z.number(),
@@ -127,6 +128,8 @@ export async function getFeaturedStay(
     const latest = days.at(-1);
     if (!latest) return null;
 
+    // Base rates plus the hotel's taxes and fees (C-157).
+    const tax = await taxesFor(picked.hotel_id);
     const ids = Object.keys(latest.per_provider).filter((id) => /^\d+$/.test(id));
     // RLS returns reviewed providers only, so pending resellers drop out here.
     const providers = ids.length
@@ -140,9 +143,10 @@ export async function getFeaturedStay(
         totalCents: latest.per_provider[String(p.id)] as number,
       }))
       .filter((o) => Number.isInteger(o.totalCents) && o.totalCents > 0)
+      .map((o) => ({ ...o, totalCents: tax(o.totalCents) }))
       .sort((a, b) => a.totalCents - b.totalCents);
 
-    const series = days.map((d) => ({ day: d.day, bestCents: d.best_cents }));
+    const series = days.map((d) => ({ day: d.day, bestCents: tax(d.best_cents) }));
     const image = imageByHotel.get(picked.hotel_id);
     const photo = hotelPhoto(picked.hotel_slug);
     return {

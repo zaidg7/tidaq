@@ -1,9 +1,10 @@
 import 'server-only';
-import { DEALS, pickDeals, z } from '@tidaq/core';
+import { DEALS, pickDeals, withTaxes, z } from '@tidaq/core';
 import { berlinToday } from '@/lib/today';
 import { hasSupabase, rest } from './supabase';
 import { hotelPhoto } from '@/lib/hotelPhotos';
 import { reportError } from '@/lib/errors';
+import { getPriceFactors } from './priceFactors';
 
 const dealRow = z.object({
   stay_id: z.number(),
@@ -51,6 +52,7 @@ export async function getDeals(limit = 3): Promise<Deal[] | null> {
         '&now_cents=not.is.null&avg30_cents=not.is.null&limit=1000',
       dealRow,
     );
+    const factors = await getPriceFactors();
     return pickDeals(
       rows.map((r) => ({
         ...r,
@@ -70,7 +72,8 @@ export async function getDeals(limit = 3): Promise<Deal[] | null> {
       checkIn: d.check_in,
       checkOut: d.check_out,
       adults: d.adults,
-      nowCents: d.now_cents as number,
+      // Base rate plus the hotel's taxes and fees (C-157).
+      nowCents: withTaxes(d.now_cents as number, factors.get(d.hotel_id)),
       drop: d.drop,
       imageUrl: hotelPhoto(d.hotel_slug)?.[960].src ?? null,
     }));

@@ -1,9 +1,18 @@
 import 'server-only';
 import { hotelPhoto } from '@/lib/hotelPhotos';
 import { cityImage, type ImageRef } from '@/lib/photos';
-import { addDays, NIGHT_GRID, shiftDays, stayFromNights, z, type NightPrice } from '@tidaq/core';
+import {
+  addDays,
+  NIGHT_GRID,
+  shiftDays,
+  stayFromNights,
+  withTaxes,
+  z,
+  type NightPrice,
+} from '@tidaq/core';
 import { hasSupabase, rest, rpc } from './supabase';
 import { reportError } from '@/lib/errors';
+import { getPriceFactors } from './priceFactors';
 
 const cityRow = z.object({
   id: z.number(),
@@ -130,7 +139,12 @@ export async function getCityPage(
       : [];
     const providerById = new Map(providers.map((p) => [p.id, p]));
     const weekByHotel = new Map(weeks.map((w) => [w.hotel_id, w]));
-    const stays = dates ? await cityStays(hotels, dates) : null;
+    const [stays, factors] = await Promise.all([
+      dates ? cityStays(hotels, dates) : Promise.resolve(null),
+      getPriceFactors(),
+    ]);
+    // Base rates plus each hotel's taxes and fees (C-157).
+    const tax = (hotelId: number, cents: number) => withTaxes(cents, factors.get(hotelId));
 
     return {
       kind: 'ok',
@@ -148,14 +162,17 @@ export async function getCityPage(
           name: h.name,
           image: photo && h.image_credit ? photo[960] : cityImage(city.slug),
           ...(stays && {
-            stay: reliability && !unreliable.has(h.id) ? (stays.get(h.id) ?? null) : null,
+            stay: (() => {
+              const s = reliability && !unreliable.has(h.id) ? stays.get(h.id) : undefined;
+              return s ? { ...s, totalCents: tax(h.id, s.totalCents) } : null;
+            })(),
           }),
           week:
             w?.check_in && w.total_cents && p && reliability && !unreliable.has(h.id)
               ? {
                   checkIn: w.check_in,
                   checkOut: addDays(w.check_in, CITY_BEST_NIGHTS),
-                  totalCents: w.total_cents,
+                  totalCents: tax(h.id, w.total_cents),
                   provider: p.is_direct ? h.name : p.name,
                 }
               : null,

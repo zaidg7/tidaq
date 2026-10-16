@@ -174,7 +174,7 @@
     "copyright": "© {year} Tidaq",
     "source": "Ohne Cookies · Partnerlinks sind gekennzeichnet.",
     "about": "Tidaq",
-    "note": "Gesamtpreise für 2 Erwachsene inkl. Steuern. Preise ändern sich oft mehrmals am Tag. Partnerlinks sind gekennzeichnet."
+    "note": "Preise für 2 Erwachsene inkl. Steuern und Gebühren. Price Drops fragen wir beim Anbieter exakt ab, sonst rechnen wir die Steuern der Stadt dazu (aus Google-Endpreisen gemessen). Preise ändern sich oft mehrmals am Tag. Partnerlinks sind gekennzeichnet."
   },
   "notFound": {
     "meta": "Seite nicht gefunden",
@@ -391,7 +391,7 @@
     "toOffer": "Zum Angebot",
     "toOfferLabel": "Zum Angebot bei {provider} (neuer Tab)",
     "partnerLink": "Partnerlink",
-    "offersNote": "Gesamtpreis für den ganzen Aufenthalt, wie ihn der Anbieter bei unserer letzten Abfrage gemeldet hat. Mit Preistreue zeigen wir, wie oft der Preis an der Kasse stimmte. Die Reihenfolge hängt nie von Provisionen ab.",
+    "offersNote": "Gesamtpreis für den ganzen Aufenthalt inkl. Steuern und Gebühren, bei unserer letzten Abfrage. Der Endpreis beim Anbieter kann um wenige Prozent abweichen. Mit Preistreue zeigen wir, wie oft der Preis an der Kasse stimmte. Die Reihenfolge hängt nie von Provisionen ab.",
     "offersUnreviewed": "{n, plural, one {Ein weiterer Anbieter hatte einen Preis, ist aber noch nicht von uns geprüft.} other {# weitere Anbieter hatten einen Preis, sind aber noch nicht von uns geprüft.}}",
     "watchTitle": "Preis beobachten",
     "watchText": "Wir schreiben dir eine E-Mail, wenn der Preis für diesen Aufenthalt fällt. Kostenlos, abmelden mit einem Klick.",
@@ -432,7 +432,7 @@
     "bestFacts": "{nights} Nächte für 2 Erwachsene bei {provider}",
     "jsonLdDescription": "Fünf-Sterne-Hotel in {city}. Tidaq zeigt den Preis jeder Nacht und den Preisverlauf deines Aufenthalts.",
     "calendarTitle": "Preise jeder Nacht",
-    "calendarText": "Günstigster Preis pro Nacht für 2 Erwachsene, über alle geprüften Buchungsseiten. Wähl deine Daten, dann zeigen wir dir den Gesamtpreis und wie er sich entwickelt hat.",
+    "calendarText": "Günstigster Preis pro Nacht für 2 Erwachsene inkl. Steuern und Gebühren, über alle geprüften Buchungsseiten. Wähl deine Daten, dann zeigen wir dir den Gesamtpreis und wie er sich entwickelt hat.",
     "prevMonth": "Vorheriger Monat",
     "nextMonth": "Nächster Monat",
     "chooseIn": "Wähle deine Anreise.",
