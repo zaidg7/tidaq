@@ -163,7 +163,7 @@ describe('collect cron and the night grid', () => {
     const collectEnv = testEnv({
       PRICE_SOURCE: 'xotelo',
       NIGHT_WINDOW_DAYS: '3',
-      NIGHT_BATCH: '8',
+      NIGHT_BATCH: '10',
     });
     // A visitor-requested stay (C-022c1): the first cycle queues and collects it.
     mem.stays.push({
@@ -183,6 +183,7 @@ describe('collect cron and the night grid', () => {
     log.mockRestore();
     expect(mem.runs.map((r) => r.kind)).toEqual(['request', 'collect', 'nights']);
     // Half 0 of the hotels only (C-154): hotel 2's 3 nights; hotel 1 is the odd-minute run's.
+    // (NIGHT_BATCH 10 minus the drop-check query and the idle quote step's 5.)
     expect([...mem.nights.keys()].every((k) => k.startsWith('2|'))).toBe(true);
     expect(mem.nights.size).toBe(3);
   });
@@ -196,7 +197,7 @@ describe('collect cron and the night grid', () => {
       now: () => new Date('2026-10-15T05:01:00Z'),
     });
     const log = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const env = testEnv({ PRICE_SOURCE: 'xotelo', NIGHT_WINDOW_DAYS: '3', NIGHT_BATCH: '8' });
+    const env = testEnv({ PRICE_SOURCE: 'xotelo', NIGHT_WINDOW_DAYS: '3', NIGHT_BATCH: '10' });
     await worker.scheduled(controller(CRON_NIGHTS), env);
     expect(mem.runs.map((r) => r.kind)).toEqual(['nights']);
     expect([...mem.nights.keys()].sort()).toEqual([

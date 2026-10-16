@@ -68,7 +68,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-071b2 | Catalog batch 2: 96 more five-star hotels in the big cities (8 Paris, 8 London, 7 Dubai, 8 Maldives, 6 New York, …) | CLOUD | M | C-155 | DONE (444 active hotels; every hotel price-checked, photos checked) |
 | C-071b | Catalog: more destinations or hotels when Zaid asks (444 now; ~800 fit the two nights runs) | CLOUD | L | C-071b2, C-152 | TODO |
 | C-152 | Hotel photos to Cloudflare R2 (or Images) instead of the git repo before batch 2 (49 MB for 189 hotels) | CLOUD | S | – | TODO |
-| C-153 | Google ids for the 17 batch-1 hotels without one (their drops get no exact quote until then; ~$0.02) | CLOUD | S | C-071b1 | TODO |
+| C-153 | Google ids on demand: the collector looks a hotel up (Hotel Searches in its country, $0.0008, inside the quote budget) when it has a live drop and no id; matched by name and ≤ 1.5 km | CLOUD | M | C-148a | DONE (table `hotel_dfs_lookups`; a miss is retried after 14 days; 275 of 444 hotels had no id) |
 | C-071c                                                          | Photos for the new hotels (licensed, self-hosted, C-011c pipeline)           | CLOUD | S             | C-071a                            | DONE           |
 | C-072                                                           | Spike: LiteAPI room/board/occupancy rates (free supplier API)                | CLOUD | M             | B-010                             | DONE           |
 | C-074                                                           | Room-type normalizer prototype (Standard/Deluxe/Suite per hotel)             | CLOUD | M             | C-072, B-012                      | BLOCKED        |

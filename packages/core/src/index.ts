@@ -149,6 +149,7 @@ export {
   type DfsHotelInfoResponse,
   type DfsHotelInfoResult,
   type DfsHotelSearchItem,
+  type DfsHotelSearchResponse,
   type DfsPriceItem,
 } from './dataforseo';
 export {
@@ -243,6 +244,15 @@ export {
 } from './structuredData';
 export { inlineLinks, type InlinePart } from './inlineLinks';
 export { cityIn, cityPath, groupByRegion, regionOf, REGIONS, type Region } from './places';
+export {
+  dfsLocationCode,
+  matchHotelSearch,
+  metersBetween,
+  nameWords,
+  type MatchResult,
+  type MatchTarget,
+  type SearchCandidate,
+} from './hotelMatch';
 export { escapeHtml, renderMail, type MailContent } from './mailTemplate';
 export {
   extrasByCount,

@@ -2,6 +2,7 @@ import { dayDiff, normalizeHotelInfo, toIsoDate, z } from '@tidaq/core';
 import { postHotelInfoTasks, taskGet, tasksReady, type FetchFn } from './dataforseo';
 import type { Env } from './env';
 import { taskOutcome } from './ingest';
+import { runDfsLookups, type LookupRunSummary } from './dfsLookups';
 import type { CollectorStore, QuoteOffer, QuoteResult } from './store';
 
 /**
@@ -36,6 +37,8 @@ export interface QuoteRunSummary {
   /** Subrequests this run used, so the night grid can take the rest. */
   requests: number;
   errors: string[];
+  /** Google ids looked up for hotels with a drop but no id (C-153), within the same budget. */
+  lookups: LookupRunSummary | null;
 }
 
 const limitsSchema = z.object({
@@ -92,6 +95,7 @@ export async function runDropQuotes(opts: {
     budgetLimited: false,
     requests: 0,
     errors: [],
+    lookups: null,
   };
   const creds = { login: env.DATAFORSEO_LOGIN, password: env.DATAFORSEO_PASSWORD };
   const today = toIsoDate(now.getTime());
@@ -148,14 +152,26 @@ export async function runDropQuotes(opts: {
   const limits = limitsSchema.parse(env);
   const usage = await store.dropQuoteUsage(today);
   summary.requests++;
-  const allowed = Math.min(
-    QUOTES.postLimit,
-    quoteAllowance(usage, {
-      dailyCap: limits.DROP_QUOTE_DAILY_CAP,
-      monthlyUsd: limits.DROP_QUOTE_MONTHLY_USD,
-    }),
-  );
-  if (allowed === 0) {
+  const allowance = quoteAllowance(usage, {
+    dailyCap: limits.DROP_QUOTE_DAILY_CAP,
+    monthlyUsd: limits.DROP_QUOTE_MONTHLY_USD,
+  });
+  // Google ids first (C-153): a drop at a hotel without one can't be quoted at all.
+  try {
+    summary.lookups = await runDfsLookups({
+      store,
+      creds,
+      now,
+      allowed: allowance,
+      fetchFn: opts.fetchFn,
+    });
+    summary.requests += summary.lookups.requests;
+    summary.errors.push(...summary.lookups.errors);
+  } catch (err) {
+    summary.errors.push(`lookups: ${String(err)}`);
+  }
+  const allowed = Math.min(QUOTES.postLimit, allowance - (summary.lookups?.posted ?? 0));
+  if (allowed <= 0) {
     summary.budgetLimited = true;
     return summary;
   }

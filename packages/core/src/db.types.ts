@@ -234,6 +234,41 @@ export type Database = {
         };
         Relationships: [];
       };
+      hotel_dfs_lookups: {
+        Row: {
+          candidates: Json | null;
+          finished_at: string | null;
+          hotel_id: number;
+          posted_at: string | null;
+          status: string;
+          task_id: string | null;
+        };
+        Insert: {
+          candidates?: Json | null;
+          finished_at?: string | null;
+          hotel_id: number;
+          posted_at?: string | null;
+          status?: string;
+          task_id?: string | null;
+        };
+        Update: {
+          candidates?: Json | null;
+          finished_at?: string | null;
+          hotel_id?: number;
+          posted_at?: string | null;
+          status?: string;
+          task_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'hotel_dfs_lookups_hotel_id_fkey';
+            columns: ['hotel_id'];
+            isOneToOne: true;
+            referencedRelation: 'hotels';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       drop_checks: {
         Row: {
           best_cents: number | null;
@@ -1161,6 +1196,28 @@ export type Database = {
       drop_quote_jobs: {
         Args: { p_limit: number; p_max_age_minutes: number; p_today: string };
         Returns: { check_out: string; hotel_id: number; hotel_identifier: string; night: string }[];
+      };
+      dfs_lookup_jobs: {
+        Args: { p_limit: number; p_today: string };
+        Returns: {
+          city_en: string;
+          country_code: string;
+          hotel_id: number;
+          lat: number;
+          lng: number;
+          name: string;
+        }[];
+      };
+      dfs_lookup_pending: {
+        Args: { p_limit: number };
+        Returns: {
+          hotel_id: number;
+          lat: number;
+          lng: number;
+          name: string;
+          posted_at: string;
+          task_id: string;
+        }[];
       };
       drop_quote_pending: {
         Args: { p_limit: number };

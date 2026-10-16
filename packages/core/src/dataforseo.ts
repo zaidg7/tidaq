@@ -150,3 +150,4 @@ export type DfsPriceItem = z.infer<typeof dfsPriceItemSchema>;
 export type DfsHotelInfoResult = z.infer<typeof dfsHotelInfoResultSchema>;
 export type DfsHotelInfoResponse = z.infer<typeof dfsHotelInfoResponseSchema>;
 export type DfsHotelSearchItem = z.infer<typeof dfsHotelSearchItemSchema>;
+export type DfsHotelSearchResponse = z.infer<typeof dfsHotelSearchResponseSchema>;

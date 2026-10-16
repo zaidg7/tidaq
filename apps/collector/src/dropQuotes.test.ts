@@ -143,7 +143,7 @@ describe('runDropQuotes (C-148)', () => {
     expect(dfs.calls).toHaveLength(0);
   });
 
-  it('idle, it costs three queries and no paid call', async () => {
+  it('idle, it costs five queries and no paid call', async () => {
     const mem = memoryStore(hotels, { aliases: SEED_ALIASES });
     const dfs = fakeDfs(recorded);
     const summary = await runDropQuotes({
@@ -152,7 +152,8 @@ describe('runDropQuotes (C-148)', () => {
       now: NOW,
       fetchFn: dfs.fetchFn,
     });
-    expect(summary.requests).toBe(3);
+    // Quote pending, usage, quote jobs; lookup pending, lookup jobs (C-153).
+    expect(summary.requests).toBe(5);
     expect(dfs.calls).toHaveLength(0);
   });
 });

@@ -249,7 +249,12 @@ export function createWorker(deps: Deps = {}) {
         if (summary.drops?.checked) log('drop checks done', { ...summary.drops });
         if (
           summary.quotes &&
-          (summary.quotes.posted || summary.quotes.done || summary.quotes.failed)
+          (summary.quotes.posted ||
+            summary.quotes.done ||
+            summary.quotes.failed ||
+            summary.quotes.lookups?.posted ||
+            summary.quotes.lookups?.found ||
+            summary.quotes.lookups?.notFound)
         )
           log('drop quotes done', { ...summary.quotes });
         if (summary.nights?.runId) log('nights run done', { ...summary.nights });

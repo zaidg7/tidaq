@@ -418,6 +418,86 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
       return { postedToday: r?.posted_today ?? 0, spentMonthUsd: Number(r?.spent_month_usd ?? 0) };
     },
 
+    async dfsLookupJobs(today, limit) {
+      const rows = check(
+        await db.rpc('dfs_lookup_jobs', { p_today: today, p_limit: limit }),
+        'load lookup jobs',
+      );
+      return rows.map((r) => ({
+        hotelId: r.hotel_id,
+        name: r.name,
+        cityEn: r.city_en,
+        countryCode: r.country_code,
+        lat: r.lat,
+        lng: r.lng,
+      }));
+    },
+
+    async dfsLookupPending(limit) {
+      const rows = check(
+        await db.rpc('dfs_lookup_pending', { p_limit: limit }),
+        'load pending lookups',
+      );
+      return rows.map((r) => ({
+        taskId: r.task_id,
+        hotelId: r.hotel_id,
+        name: r.name,
+        lat: r.lat,
+        lng: r.lng,
+        postedAt: r.posted_at,
+      }));
+    },
+
+    async recordLookupPosts(rows) {
+      checkOk(
+        await db.from('hotel_dfs_lookups').upsert(
+          rows.map((r) => ({
+            hotel_id: r.hotelId,
+            task_id: r.taskId,
+            posted_at: r.postedAt,
+            status: 'posted',
+            finished_at: null,
+          })),
+        ),
+        'record lookup posts',
+      );
+      checkOk(
+        await db.from('drop_quote_log').insert(
+          rows.map((r) => ({
+            task_id: r.taskId,
+            hotel_id: r.hotelId,
+            night: r.checkIn,
+            check_out: r.checkOut,
+            posted_at: r.postedAt,
+            cost_usd: r.costUsd,
+          })),
+        ),
+        'log lookup posts',
+      );
+    },
+
+    async recordLookupResults(rows) {
+      for (const r of rows) {
+        checkOk(
+          await db
+            .from('hotel_dfs_lookups')
+            .update({ status: r.status, finished_at: r.finishedAt, candidates: r.candidates })
+            .eq('hotel_id', r.hotelId),
+          'record lookup result',
+        );
+        if (r.status === 'found' && r.identifier) {
+          checkOk(
+            await db
+              .from('hotels')
+              .update({ dfs_hotel_identifier: r.identifier })
+              .eq('id', r.hotelId)
+              .is('dfs_hotel_identifier', null),
+            'store google id',
+          );
+        }
+      }
+    },
+
     async recordQuotePosts(rows) {
       checkOk(
         await db.from('drop_quotes').upsert(

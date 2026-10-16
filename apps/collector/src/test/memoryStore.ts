@@ -11,6 +11,10 @@ import type {
   CollectorStore,
   DayReport,
   DropCheckJob,
+  LookupJob,
+  LookupPost,
+  LookupResult,
+  PendingLookup,
   PendingQuote,
   QuoteJob,
   QuotePost,
@@ -84,6 +88,10 @@ export function memoryStore(
   const quotePosts: QuotePost[] = [];
   const quoteResults: QuoteResult[] = [];
   const quoteUsage = { postedToday: 0, spentMonthUsd: 0 };
+  const lookupJobs: LookupJob[] = [];
+  const lookupPending: PendingLookup[] = [];
+  const lookupPosts: LookupPost[] = [];
+  const lookupResults: LookupResult[] = [];
   const dropChecks: DropCheckRow[] = [];
   /** Website errors for the daily check (C-041c); tests push into it. */
   const webErrors: (WebErrorRow & { env: string })[] = [];
@@ -400,6 +408,23 @@ export function memoryStore(
     async recordQuoteResults(rows) {
       quoteResults.push(...rows);
     },
+    async dfsLookupJobs(_today, limit) {
+      return lookupJobs.slice(0, limit);
+    },
+    async dfsLookupPending(limit) {
+      return lookupPending.slice(0, limit);
+    },
+    async recordLookupPosts(rows) {
+      lookupPosts.push(...rows);
+    },
+    async recordLookupResults(rows) {
+      lookupResults.push(...rows);
+      for (const r of rows) {
+        const h = hotels.find((x) => x.id === r.hotelId);
+        if (h && r.status === 'found' && r.identifier && !h.dfsHotelIdentifier)
+          h.dfsHotelIdentifier = r.identifier;
+      }
+    },
     async nightJobs(today, window, limit, part) {
       const jobs: { hotelId: number; xoteloKey: string; night: string }[] = [];
       for (let i = 0; i < window; i++) {
@@ -460,6 +485,11 @@ export function memoryStore(
     quotePosts,
     quoteResults,
     quoteUsage,
+    lookupJobs,
+    lookupPending,
+    lookupPosts,
+    lookupResults,
+    hotelsById: hotelById,
     alertOffers,
     recordedAlerts,
     /** Sets the `posted_at` time for tasks recorded from now on. */
