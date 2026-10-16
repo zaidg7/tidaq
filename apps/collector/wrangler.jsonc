@@ -6,6 +6,9 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
   "observability": { "enabled": true },
+  // Workers Paid (C-151): a run uses ~260 requests at most (200 nights + checks + database);
+  // the cap stops a runaway loop long before the plan's 10,000.
+  "limits": { "subrequests": 1000 },
   "triggers": {
     // 05:00 UTC morning run; 17:00 UTC evening run (off until EVENING_RUN=true, D-13);
     // collect every 2 min all day: queues visitor-requested stays, fetches stay results, prices
@@ -22,10 +25,12 @@
     // sums, so 4 per hotel (3 weekends + 1 midweek) let ~85 hotels fit the daily cap.
     "GRID_WEEKENDS": "3",
     "GRID_MIDWEEK": "1",
-    // Results fetched per collect run; the Workers free plan allows 50 subrequests per run.
+    // Stay results fetched per collect run (sized for the old free plan's 50 requests per run).
     "COLLECT_BATCH": "30",
     "NIGHT_WINDOW_DAYS": "270",
-    "NIGHT_BATCH": "40",
+    // Workers Paid since 16 Oct (B-023, C-151): 200 nights per run, ~90 s at most, so ~400
+    // hotels × 270 nights get priced every day.
+    "NIGHT_BATCH": "200",
     // Free price source (D-41); `dataforseo` switches back to the paid API (needs balance).
     "PRICE_SOURCE": "xotelo",
     // Exact quotes for Price Drops (C-148, D-52): Google Hotels via DataForSEO, $0.0008 a task.

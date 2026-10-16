@@ -17,18 +17,24 @@ export const NIGHTS = {
   /** Nights ahead per hotel. */
   defaultWindow: NIGHT_GRID.windowDays,
   /**
-   * Nights per run. The Workers free plan allows 50 outgoing requests per run; a nights run also
-   * makes ~6 Supabase calls, so 40 Xotelo calls leave a margin. 270 nights × 83 hotels ≈ 22,400
-   * calls a day ≈ 560 runs ≈ 19 h of the 2-minute cron (C-127); nearest nights go first.
+   * Nights per run. Workers Paid (B-023, C-151) allows 10,000 requests per run, so time is the
+   * limit, not requests: 40 calls took ~18 s (16 Oct), so 200 fit well inside the 2-minute cron.
+   * 270 nights × 400 hotels ≈ 108,000 calls a day ≈ 540 runs ≈ 18 h; nearest nights go first.
    */
-  defaultBatch: 40,
+  defaultBatch: 200,
+  /**
+   * No new Xotelo call starts later than this after the collect run began, so a slow Xotelo can't
+   * make a run overlap the next one (cron every 2 min) and price the same nights twice. Nights not
+   * started stay for the next run.
+   */
+  runBudgetMs: 90_000,
   /** Xotelo calls in flight at once (spike: 8 in parallel, 0 errors, ~3 s each). */
   concurrency: 8,
 } as const;
 
 const settingsSchema = z.object({
   window: z.coerce.number().int().min(0).max(365).default(NIGHTS.defaultWindow),
-  batch: z.coerce.number().int().min(1).max(200).default(NIGHTS.defaultBatch),
+  batch: z.coerce.number().int().min(1).max(1000).default(NIGHTS.defaultBatch),
 });
 
 export interface NightRunSummary {
@@ -63,14 +69,24 @@ const nothing = (): NightRunSummary => ({
 
 const nextDay = (day: string): string => toIsoDate(Date.parse(`${day}T00:00:00Z`) + 86_400_000);
 
-/** Runs `fn` over `items` with at most `limit` in flight; results keep the input order. */
-async function pool<T, R>(items: readonly T[], limit: number, fn: (item: T) => Promise<R>) {
+/**
+ * Runs `fn` over `items` with at most `limit` in flight; results keep the input order. Items not
+ * started by `deadline` (epoch ms) get `late(item)` instead.
+ */
+async function pool<T, R>(
+  items: readonly T[],
+  limit: number,
+  fn: (item: T) => Promise<R>,
+  deadline: number,
+  late: (item: T) => R,
+) {
   const out: R[] = new Array(items.length);
   let next = 0;
   const worker = async () => {
     while (next < items.length) {
       const i = next++;
-      out[i] = await fn(items[i] as T);
+      const item = items[i] as T;
+      out[i] = Date.now() < deadline ? await fn(item) : late(item);
     }
   };
   await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
@@ -92,9 +108,11 @@ export async function runNights(opts: {
   fetchFn?: FetchFn;
   /**
    * Requests other work in the same invocation already used (C-142: the drop checks). The batch
-   * shrinks by as many, so the run stays within the free plan's 50 requests.
+   * shrinks by as many (sized for the free plan's 50; harmless on Workers Paid).
    */
   reserve?: number;
+  /** Epoch ms after which no new call starts; default `runBudgetMs` from now. */
+  deadline?: number;
 }): Promise<NightRunSummary> {
   const { store, env, now } = opts;
   if (priceSource(env) !== 'xotelo') return nothing();
@@ -121,26 +139,33 @@ export async function runNights(opts: {
     let retry = 0;
     const failures: string[] = [];
 
-    const outcomes = await pool(jobs, NIGHTS.concurrency, async (job) => {
-      try {
-        const outcome = await fetchXoteloTask(
-          {
-            id: `night-${job.hotelId}-${job.night}`,
-            stayId: 0,
-            hotelId: job.hotelId,
-            checkIn: job.night,
-            checkOut: nextDay(job.night),
-            adults: 2,
-            xoteloKey: job.xoteloKey,
-            postedAt: now.toISOString(),
-          },
-          opts.fetchFn,
-        );
-        return { job, outcome };
-      } catch {
-        return { job, outcome: null };
-      }
-    });
+    const deadline = opts.deadline ?? Date.now() + NIGHTS.runBudgetMs;
+    const outcomes = await pool(
+      jobs,
+      NIGHTS.concurrency,
+      async (job) => {
+        try {
+          const outcome = await fetchXoteloTask(
+            {
+              id: `night-${job.hotelId}-${job.night}`,
+              stayId: 0,
+              hotelId: job.hotelId,
+              checkIn: job.night,
+              checkOut: nextDay(job.night),
+              adults: 2,
+              xoteloKey: job.xoteloKey,
+              postedAt: now.toISOString(),
+            },
+            opts.fetchFn,
+          );
+          return { job, outcome };
+        } catch {
+          return { job, outcome: null };
+        }
+      },
+      deadline,
+      (job) => ({ job, outcome: null }),
+    );
 
     for (const { job, outcome } of outcomes) {
       if (outcome === null || outcome.kind === 'pending') {

@@ -68,6 +68,24 @@ describe('runNights (C-070a)', () => {
     expect(mem.runs).toMatchObject([{ kind: 'nights', tasksDone: 4, errors: [] }]);
   });
 
+  it('starts no call after the deadline and leaves those nights for the next run (C-151)', async () => {
+    const mem = memoryStore(hotels, { aliases: ALIASES });
+    const x = fakeXotelo();
+    const late = await runNights({
+      store: mem.store,
+      env,
+      now: NOW,
+      fetchFn: x.fetchFn,
+      deadline: Date.now() - 1,
+    });
+    expect(late).toMatchObject({ fetched: 4, priced: 0, empty: 0, retry: 4, rows: 0 });
+    expect(x.calls).toHaveLength(0);
+    expect(mem.nights.size).toBe(0);
+    // The next run, in time, prices them.
+    const next = await runNights({ store: mem.store, env, now: NOW, fetchFn: x.fetchFn });
+    expect(next).toMatchObject({ fetched: 4, priced: 4, retry: 0 });
+  });
+
   it('continues where the last run stopped and is idle once the day is done', async () => {
     const mem = memoryStore(hotels, { aliases: ALIASES });
     const x = fakeXotelo();
