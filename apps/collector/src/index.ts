@@ -11,7 +11,7 @@ import { runPosting, runRequests, type PostRunSummary } from './morning';
 import { NIGHTS, runNights } from './nights';
 import { crashEmail, postingEmail, sendAdminEmail } from './notify';
 import { runDailyCheck } from './report';
-import type { CollectorStore } from './store';
+import type { CollectorStore, NightPart } from './store';
 import { supabaseStore } from './supabaseStore';
 
 const json = (body: unknown, status = 200): Response =>
@@ -32,6 +32,12 @@ export const CRON_EVENING = '0 17 * * *';
  * queries.
  */
 export const CRON_COLLECT = '*/2 * * * *';
+/**
+ * Second nights run on the odd minutes (C-154): Xotelo answers in ~3 s and a run holds at most 6
+ * connections, so one run prices ~165 nights. Two runs on disjoint halves of the hotels (by id)
+ * double that for 400+ hotels × 270 nights; the collect cycle prices half 0, this run half 1.
+ */
+export const CRON_NIGHTS = '1-59/2 * * * *';
 /** Daily check after the morning collect window: prune raw JSON, email problems (C-013c). */
 export const CRON_DAILY = '55 7 * * *';
 
@@ -87,7 +93,7 @@ export function createWorker(deps: Deps = {}) {
    * results, and only when no stay result is waiting price the next nights (C-070a), so one run
    * stays under the free plan's 50 requests. A failed request run doesn't stop the rest.
    */
-  const collectCycle = async (store: CollectorStore, env: Env) => {
+  const collectCycle = async (store: CollectorStore, env: Env, part?: NightPart) => {
     const started = Date.now();
     let requests: Awaited<ReturnType<typeof runRequests>> | null = null;
     try {
@@ -123,6 +129,7 @@ export function createWorker(deps: Deps = {}) {
         (quotes ? quotes.requests : QUOTES.fetchLimit + 8),
       // Workers Paid (C-151): time, not requests, bounds the run; it must end before the next.
       deadline: started + NIGHTS.runBudgetMs,
+      part,
     });
     return { requests, collect, drops, quotes, nights };
   };
@@ -221,8 +228,22 @@ export function createWorker(deps: Deps = {}) {
         }
         return;
       }
+      if (controller.cron === CRON_NIGHTS) {
+        const nights = await runNights({
+          store: storeFor(env, deps),
+          env,
+          now: now(),
+          fetchFn: deps.fetchFn,
+          part: { index: 1, of: NIGHTS.parts },
+        });
+        if (nights.runId) log('nights run done', { part: 1, ...nights });
+        return;
+      }
       if (controller.cron === CRON_COLLECT) {
-        const summary = await collectCycle(storeFor(env, deps), env);
+        const summary = await collectCycle(storeFor(env, deps), env, {
+          index: 0,
+          of: NIGHTS.parts,
+        });
         if (summary.requests?.runId) log('request run done', { ...summary.requests });
         if (summary.collect.runId !== null) log('collect run done', { ...summary.collect });
         if (summary.drops?.checked) log('drop checks done', { ...summary.drops });

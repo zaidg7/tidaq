@@ -109,6 +109,12 @@ export interface QuotePost {
 }
 
 /** A (hotel, night) pair still to price today (SQL `night_jobs`, C-070a). */
+/** One of `of` disjoint shares of the hotels (by id). */
+export interface NightPart {
+  index: number;
+  of: number;
+}
+
 export interface NightJob {
   hotelId: number;
   xoteloKey: string;
@@ -218,7 +224,11 @@ export interface CollectorStore {
   /** Runs started today (UTC) and today's task statuses. */
   dayReport(today: string): Promise<DayReport>;
   /** Nights without a row for `today`, nearest first (SQL `night_jobs`). */
-  nightJobs(today: string, window: number, limit: number): Promise<NightJob[]>;
+  /**
+   * Nights to price today; with `part`, only hotels whose id % of === index (C-154: two runs
+   * price disjoint halves at the same time).
+   */
+  nightJobs(today: string, window: number, limit: number, part?: NightPart): Promise<NightJob[]>;
   /** Price Drops whose last live check is older than `staleMinutes`, oldest first (C-139). */
   dropCheckJobs(today: string, staleMinutes: number, limit: number): Promise<DropCheckJob[]>;
   /** Stores live checks, one row per trip (upsert). */
