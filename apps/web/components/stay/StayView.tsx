@@ -8,14 +8,13 @@ import {
   dayDiff,
   formatDateRange,
   formatDayMonth,
-  formatPercent,
+  formatPrice,
   hotelPath,
   localizedPath,
   NIGHT_GRID,
   STATS,
   stayPath,
   verdictFacts,
-  vsTypical,
   type DailyPrice,
   type Locale,
   type StayOffer,
@@ -28,6 +27,7 @@ import { PriceChart } from '@/components/chart/PriceChart';
 import { buttonClasses } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
+import { PriceText } from '@/components/ui/PriceText';
 import { StateChip } from '@/components/ui/StateChip';
 import type { OtherStay, StayHotel } from '@/lib/data/stay';
 import { cn } from '@/lib/cn';
@@ -312,9 +312,6 @@ function TrackedPanel({
   const stats = computeStayStats(series, today, params.checkIn);
   const collecting = stats.state === 'collecting';
   const facts = verdictFacts(series, today, stats.nowCents);
-  // No euros from base rates (D-52, C-149): the chart reads in percent against the average.
-  const base =
-    stats.avg30Cents !== null && stats.avg30Cents > 0 ? stats.avg30Cents : stats.nowCents;
 
   return (
     <Card
@@ -339,7 +336,6 @@ function TrackedPanel({
             series={series}
             from={addDays(today, -(STATS.windowDays - 1))}
             to={today}
-            base={base}
             providerByDay={providerByDay}
           />
         ) : (
@@ -360,7 +356,6 @@ function TrackedPanel({
                   from={addDays(today, -(days - 1))}
                   to={today}
                   avgCents={stats.avg30Cents}
-                  base={base}
                   providerByDay={providerByDay}
                   todayTone={
                     stats.state === 'near_low' || stats.state === 'good'
@@ -401,10 +396,7 @@ function TrackedPanel({
   );
 }
 
-/**
- * Tief / Hoch against the 30-day average, each with the day it was seen (the latest such day),
- * and how many days we have prices for. Percent, not euros (D-52, C-149).
- */
+/** Tief / Ø 30 Tage / Hoch, each with the day it was seen (the latest such day). */
 function StatsRow({ stats, series }: { stats: StayStatsResult; series: DailyPrice[] }) {
   const t = useTranslations('stay');
   const locale = useLocale() as Locale;
@@ -413,25 +405,19 @@ function StatsRow({ stats, series }: { stats: StayStatsResult; series: DailyPric
     series.filter((p) => p.bestCents === cents).at(-1)?.day ?? null;
   const lowDay = lastDayWith(stats.lowCents);
   const highDay = lastDayWith(stats.highCents);
-  const avg = stats.avg30Cents;
-  const vs = (cents: number) =>
-    formatPercent(vsTypical(cents, 1, avg) ?? 0, locale, { signed: true });
+  const avgDays = Math.min(stats.daysTracked, 30);
 
   const items = [
     {
       label: t('low'),
-      value: vs(stats.lowCents),
+      cents: stats.lowCents,
       sub: lowDay && t('on', { date: formatDayMonth(lowDay, locale) }),
     },
+    { label: t('avg'), cents: stats.avg30Cents, sub: t('avgDays', { n: avgDays }) },
     {
       label: t('high'),
-      value: vs(stats.highCents),
+      cents: stats.highCents,
       sub: highDay && t('on', { date: formatDayMonth(highDay, locale) }),
-    },
-    {
-      label: t('tracked'),
-      value: t('trackedDays', { n: stats.daysTracked }),
-      sub: t('vsAvgNote'),
     },
   ];
   return (
@@ -443,9 +429,7 @@ function StatsRow({ stats, series }: { stats: StayStatsResult; series: DailyPric
         <div key={it.label} className="flex min-w-0 flex-col gap-0.5 px-3 py-4 sm:px-5 lg:px-8">
           <dt className="text-[12.5px] font-semibold text-muted-ink">{it.label}</dt>
           <dd className="flex flex-col gap-0.5">
-            <span className="text-[16px] font-extrabold tracking-[-0.01em] whitespace-nowrap tabular-nums">
-              {it.value}
-            </span>
+            <PriceText cents={it.cents} locale={locale} size="md" />
             {it.sub && <span className="text-[12px] text-muted-ink">{it.sub}</span>}
           </dd>
         </div>
@@ -517,8 +501,7 @@ function WatchCard({
 
 /**
  * Under the chart (C-070b, D-42): where the history comes from and, when today's real price for
- * these exact dates differs from the sum of the nights, by how much (percent, D-52). Facts only,
- * no adjustment.
+ * these exact dates differs from the sum of the nights, both numbers. Facts only, no adjustment.
  */
 function HistoryNote({
   history,
@@ -539,11 +522,8 @@ function HistoryNote({
       {realVsNights && (
         <>
           {t('realVsNights', {
-            pct: formatPercent(
-              vsTypical(realVsNights.realCents, 1, realVsNights.nightsCents) ?? 0,
-              locale,
-              { signed: true },
-            ),
+            real: formatPrice(realVsNights.realCents, locale),
+            nights: formatPrice(realVsNights.nightsCents, locale),
           })}{' '}
         </>
       )}
@@ -604,8 +584,9 @@ function OtherStayCard({
         {t('stayFacts', { nights: dayDiff(stay.checkIn, stay.checkOut), adults: stay.adults })}
       </p>
       <div className="mt-auto flex items-center justify-between gap-2 pt-1">
-        {/* No euros from base rates (D-52): the chip says how the price stands. */}
-        {stay.bestCents === null && (
+        {stay.bestCents !== null ? (
+          <PriceText cents={stay.bestCents} locale={locale} size="md" />
+        ) : (
           <span className="text-meta text-muted-ink">{t('othersNoPrice')}</span>
         )}
         {/* No day count here, so a collecting stay gets no "0/7" chip. */}

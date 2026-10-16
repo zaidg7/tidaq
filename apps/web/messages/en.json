@@ -174,7 +174,7 @@
     "copyright": "© {year} Tidaq",
     "source": "No cookies · Partner links are labelled.",
     "about": "Tidaq",
-    "note": "Euro amounts are final prices for 2 adults incl. taxes and fees. Prices often change several times a day. Partner links are labelled."
+    "note": "Total prices for 2 adults incl. taxes. Prices often change several times a day. Partner links are labelled."
   },
   "notFound": {
     "meta": "Page not found",
@@ -211,9 +211,7 @@
     "range": "Range",
     "range14": "14 d",
     "range30": "30 d",
-    "rangeAll": "All",
-    "avgLegendVs": "Dashed: 30-day average",
-    "priceVs": "Vs. average"
+    "rangeAll": "All"
   },
   "verdict": {
     "near_low": "Close to the lowest price since {since}.",
@@ -235,9 +233,7 @@
     "zone_cheap": "Cheap",
     "zone_normal": "Normal",
     "zone_dear": "Expensive",
-    "meterLabel": "{zone}: now {now}, between low {low} and high {high} since {since}",
-    "vsAvgSince": "vs. the average since {since}",
-    "vsAvg30": "vs. the 30-day average"
+    "meterLabel": "{zone}: now {now}, between low {low} and high {high} since {since}"
   },
   "collecting": {
     "title": "We're still collecting prices",
@@ -365,7 +361,7 @@
     "untrackedTitle": "No prices this far ahead yet",
     "untrackedText": "Every morning we collect the price of every night for the next {days} days. These dates are further out.",
     "historyHow": "How we calculate",
-    "realVsNights": "For exactly these dates the sites show {pct} today compared with the sum of the nights.",
+    "realVsNights": "For exactly these dates providers show {real} today; the nights add up to {nights}.",
     "historyNights": "The history is the sum of the single nights’ prices at the same provider.",
     "untrackedGuestsText": "We collect the history of every night for {adults} adults. For other guest counts we check the whole stay.",
     "untrackedGuestsTitle": "No history for {adults, plural, one {# person} other {# people}} yet",
@@ -395,7 +391,7 @@
     "toOffer": "View offer",
     "toOfferLabel": "View offer on {provider} (new tab)",
     "partnerLink": "Partner link",
-    "offersNote": "Compared with the cheapest site, for the whole stay, at our last check. The final price with taxes and fees is on the booking site. Price accuracy shows how often the price held at checkout. Commission never changes the order.",
+    "offersNote": "Total price for the whole stay, as the provider reported it at our latest check. Price accuracy shows how often the checkout price matched. Commissions never affect the order.",
     "offersUnreviewed": "{n, plural, one {One more provider had a price but isn’t checked by us yet.} other {# more providers had a price but aren’t checked by us yet.}}",
     "watchTitle": "Watch this price",
     "watchText": "We'll email you when the price for this stay drops. Free, unsubscribe with one click.",
@@ -422,10 +418,7 @@
     "historyRealOnly": "The history only shows prices we checked for exactly these dates. At this hotel, single nights often cost something different from the whole stay.",
     "trustDetails": ", {provider} price accuracy in detail",
     "requestCreated": "We check these dates every day from now on. The first prices usually arrive within a few minutes, so reload the page then.",
-    "requestFull": "We can't take new dates today. Open this page again tomorrow and we'll check them. Or pick dates below that we already check.",
-    "tracked": "Tracked",
-    "trackedDays": "{n, plural, one {# day} other {# days}}",
-    "vsAvgNote": "Percent vs. 30-day average"
+    "requestFull": "We can't take new dates today. Open this page again tomorrow and we'll check them. Or pick dates below that we already check."
   },
   "hotel": {
     "metaTitle": "{hotel}: prices for every night | Tidaq",
