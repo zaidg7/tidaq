@@ -5,21 +5,64 @@
     "alt": "Scheich-Zayid-Moschee in Abu Dhabi in der Abenddämmerung"
   },
   {
+    "slug": "amalfikueste",
+    "unsplash": "1568282167464-cb0d811b05c2",
+    "alt": "Bunte Häuser von Positano an der Amalfiküste"
+  },
+  {
     "slug": "amsterdam",
     "unsplash": "1534351590666-13e3e96b5017",
     "alt": "Gracht mit Booten in Amsterdam"
   },
-  { "slug": "bangkok", "unsplash": "1563492065599-3520f775eeed", "alt": "Tempeldächer in Bangkok" },
+  {
+    "slug": "bali",
+    "unsplash": "1555400038-63f5ba517a47",
+    "alt": "Reisterrassen von Tegallalang auf Bali mit Palmen"
+  },
+  {
+    "slug": "bangkok",
+    "unsplash": "1563492065599-3520f775eeed",
+    "alt": "Tempeldächer in Bangkok"
+  },
   {
     "slug": "barcelona",
     "unsplash": "1583422409516-2895a77efded",
     "alt": "Barcelona von oben mit der Sagrada Família"
   },
-  { "slug": "berlin", "unsplash": "1560969184-10fe8719e047", "alt": "Brandenburger Tor in Berlin" },
+  {
+    "slug": "berlin",
+    "unsplash": "1560969184-10fe8719e047",
+    "alt": "Brandenburger Tor in Berlin"
+  },
+  {
+    "slug": "budapest",
+    "unsplash": "1590001884547-ea3746671468",
+    "alt": "Parlamentsgebäude in Budapest an der Donau"
+  },
+  {
+    "slug": "capri",
+    "unsplash": "1657876363208-15395225592d",
+    "alt": "Faraglioni-Felsen vor der Küste von Capri"
+  },
+  {
+    "slug": "cote-d-azur",
+    "unsplash": "1590081649469-2c7a8a3a670e",
+    "alt": "Bucht von Villefranche-sur-Mer an der Côte d’Azur von oben"
+  },
+  {
+    "slug": "doha",
+    "unsplash": "1662050196100-6f8afc83d585",
+    "alt": "Skyline von West Bay in Doha am Wasser"
+  },
   {
     "slug": "dubai",
     "unsplash": "1512453979798-5ea266f8880c",
     "alt": "Skyline von Dubai mit dem Burj Khalifa"
+  },
+  {
+    "slug": "florenz",
+    "unsplash": "1687817997684-c9335cce7c5c",
+    "alt": "Dom von Florenz über den Dächern der Altstadt"
   },
   {
     "slug": "frankfurt",
@@ -27,14 +70,29 @@
     "alt": "Skyline von Frankfurt am Main"
   },
   {
+    "slug": "home-hero",
+    "unsplash": "1445019980597-93fa8acb246c",
+    "alt": "Zwei Liegen mit Handtüchern auf einer Dachterrasse im Abendlicht"
+  },
+  {
     "slug": "hongkong",
     "unsplash": "1536599018102-9f803c140fc1",
     "alt": "Hongkong bei Nacht vom Victoria Peak"
   },
   {
+    "slug": "ibiza",
+    "unsplash": "1596377940590-9ac8e3d22b79",
+    "alt": "Türkisblaue Bucht Cala de Sant Vicent auf Ibiza"
+  },
+  {
     "slug": "istanbul",
     "unsplash": "1524231757912-21f4fe3a7200",
     "alt": "Galataturm über den Dächern von Istanbul"
+  },
+  {
+    "slug": "kapstadt",
+    "unsplash": "1585896162053-6ae8d00f6b25",
+    "alt": "Kapstadt mit Tafelberg und Lion’s Head von oben"
   },
   {
     "slug": "lissabon",
@@ -67,14 +125,39 @@
     "alt": "Wasservillen auf den Malediven"
   },
   {
+    "slug": "mallorca",
+    "unsplash": "1626814628509-5076174f2895",
+    "alt": "Steilküste am Mirador Es Colomer auf Mallorca mit tiefblauem Meer"
+  },
+  {
+    "slug": "marrakesch",
+    "unsplash": "1597212618440-806262de4f6b",
+    "alt": "Minarett der Koutoubia-Moschee in Marrakesch vor dem Atlasgebirge"
+  },
+  {
+    "slug": "mauritius",
+    "unsplash": "1513415277900-a62401e19be4",
+    "alt": "Le Morne Brabant auf Mauritius mit türkiser Lagune"
+  },
+  {
     "slug": "miami",
     "unsplash": "1506966953602-c20cc11f75e3",
     "alt": "Skyline von Miami am Wasser"
   },
   {
+    "slug": "monaco",
+    "unsplash": "1658988856200-056dfdb42025",
+    "alt": "Hafen von Monaco mit Jachten und Monte-Carlo vor den Bergen"
+  },
+  {
     "slug": "muenchen",
     "unsplash": "1595867818082-083862f3d630",
     "alt": "Münchner Altstadt mit dem Alten Peter"
+  },
+  {
+    "slug": "mykonos",
+    "unsplash": "1700420242966-7e201c7283eb",
+    "alt": "Windmühlen von Mykonos über dem Meer"
   },
   {
     "slug": "new-york",
@@ -86,7 +169,36 @@
     "unsplash": "1499856871958-5b9627545d1a",
     "alt": "Pont Alexandre III in Paris am Abend"
   },
-  { "slug": "rom", "unsplash": "1552832230-c0197dd311b5", "alt": "Kolosseum in Rom" },
+  {
+    "slug": "phuket",
+    "unsplash": "1562428309-f97fc8e256e7",
+    "alt": "Yanui Beach auf Phuket mit türkisem Wasser"
+  },
+  {
+    "slug": "prag",
+    "unsplash": "1564511287568-54483b52a35e",
+    "alt": "Karlsbrücke und Altstädter Brückenturm in Prag"
+  },
+  {
+    "slug": "riviera-maya",
+    "unsplash": "1617220361167-9d556b850824",
+    "alt": "Maya-Ruine von Tulum über dem türkisen Meer"
+  },
+  {
+    "slug": "rom",
+    "unsplash": "1552832230-c0197dd311b5",
+    "alt": "Kolosseum in Rom"
+  },
+  {
+    "slug": "santorini",
+    "unsplash": "1563789031959-4c02bcb41319",
+    "alt": "Blaue Kuppeln und weiße Häuser in Oia auf Santorini"
+  },
+  {
+    "slug": "seychellen",
+    "unsplash": "1621329724906-1645709cfcc3",
+    "alt": "Granitfelsen und Palmen am Strand von La Digue, Seychellen"
+  },
   {
     "slug": "shanghai",
     "unsplash": "1474181487882-5abf3f0ba6c2",
@@ -108,14 +220,23 @@
     "alt": "Straßenkreuzung in Tokio bei Nacht"
   },
   {
+    "slug": "venedig",
+    "unsplash": "1514890547357-a9ee288728e0",
+    "alt": "Canal Grande in Venedig mit Gondeln und Santa Maria della Salute"
+  },
+  {
     "slug": "wien",
     "unsplash": "1516550893923-42d28e5677af",
     "alt": "Wien mit dem Stephansdom in der Abenddämmerung"
   },
-  { "slug": "zuerich", "unsplash": "1515488764276-beab7607c1e6", "alt": "Zürich an der Limmat" },
   {
-    "slug": "home-hero",
-    "unsplash": "1445019980597-93fa8acb246c",
-    "alt": "Zwei Liegen mit Handtüchern auf einer Dachterrasse im Abendlicht"
+    "slug": "zermatt",
+    "unsplash": "1605750454112-f2f3f696eeb0",
+    "alt": "Zermatt im Schnee mit dem Matterhorn"
+  },
+  {
+    "slug": "zuerich",
+    "unsplash": "1515488764276-beab7607c1e6",
+    "alt": "Zürich an der Limmat"
   }
 ]
