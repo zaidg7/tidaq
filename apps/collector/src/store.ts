@@ -58,6 +58,56 @@ export interface DropCheckRow {
   bestCents: number | null;
 }
 
+/** A live Price Drop due for an exact quote (SQL `drop_quote_jobs`, C-148). */
+export interface QuoteJob {
+  hotelId: number;
+  /** Google Hotels id (DataForSEO). */
+  hotelIdentifier: string;
+  night: string;
+  checkOut: string;
+}
+
+/** A posted quote task without its answer yet (SQL `drop_quote_pending`). */
+export interface PendingQuote {
+  taskId: string;
+  hotelId: number;
+  night: string;
+  checkOut: string;
+  postedAt: string;
+}
+
+/** One site's exact price in a quote (keys as stored in `drop_quotes.offers`). */
+export interface QuoteOffer {
+  slug: string;
+  name: string;
+  /** Per night as the site shows it, taxes and fees included, cents. */
+  nightly_cents: number;
+  /** nightly × nights, cents. */
+  total_cents: number;
+  url: string | null;
+  official: boolean;
+}
+
+/** A quote's answer: `done` with offers, or `failed` (no answer, no known site). */
+export interface QuoteResult {
+  hotelId: number;
+  night: string;
+  checkOut: string;
+  status: 'done' | 'failed';
+  quotedAt: string;
+  offers: QuoteOffer[] | null;
+}
+
+/** A posted quote task, for `drop_quotes` and the budget log. */
+export interface QuotePost {
+  taskId: string;
+  hotelId: number;
+  night: string;
+  checkOut: string;
+  postedAt: string;
+  costUsd: number;
+}
+
 /** A (hotel, night) pair still to price today (SQL `night_jobs`, C-070a). */
 export interface NightJob {
   hotelId: number;
@@ -173,6 +223,16 @@ export interface CollectorStore {
   dropCheckJobs(today: string, staleMinutes: number, limit: number): Promise<DropCheckJob[]>;
   /** Stores live checks, one row per trip (upsert). */
   recordDropChecks(rows: readonly DropCheckRow[]): Promise<void>;
+  /** Live drops that need an exact quote, new ones first (C-148). */
+  dropQuoteJobs(today: string, maxAgeMinutes: number, limit: number): Promise<QuoteJob[]>;
+  /** Posted quote tasks still without an answer, oldest first. */
+  dropQuotePending(limit: number): Promise<PendingQuote[]>;
+  /** Quote tasks posted today (UTC) and spent this month, for the budget guard. */
+  dropQuoteUsage(today: string): Promise<{ postedToday: number; spentMonthUsd: number }>;
+  /** Marks trips as posted (keeps their last offers) and logs each paid task. */
+  recordQuotePosts(rows: readonly QuotePost[]): Promise<void>;
+  /** Stores answers: offers for `done`; `failed` keeps the last offers. */
+  recordQuoteResults(rows: readonly QuoteResult[]): Promise<void>;
   /** Stores a batch of nights (SQL `night_ingest`). Returns the rows written. */
   ingestNights(payload: NightIngestPayload): Promise<number>;
   /** Compares `day`'s night sums with its real stay prices and stores the result (C-070c). */

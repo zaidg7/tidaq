@@ -14,6 +14,9 @@ export interface Env {
   /** Night grid (C-070a): nights ahead per hotel (default 120, 0 = off) and nights per run. */
   NIGHT_WINDOW_DAYS?: string;
   NIGHT_BATCH?: string;
+  /** Exact quotes for Price Drops (C-148): paid tasks a day and USD a month at most. */
+  DROP_QUOTE_DAILY_CAP?: string;
+  DROP_QUOTE_MONTHLY_USD?: string;
   /** `xotelo` (free, D-41) or `dataforseo` (paid fallback). Default `dataforseo`. */
   PRICE_SOURCE?: string;
   // Secrets (wrangler secret bulk from GitHub secrets in deploy.yml). Optional until C-013 uses them.

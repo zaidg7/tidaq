@@ -163,6 +163,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-145 | Search panels (destination, dates, guests) always open on the same side | CLOUD | S | – | DONE ([#125](https://github.com/zaidg7/tidaq/pull/125); every panel decides as if it were as tall as the date popover) |
 | C-146 | Tiered night grid: next 90 nights daily, later nights every 3 days (room for hundreds of hotels) | CLOUD | S | B-023 | BLOCKED (only if B-023 is no: far nights priced every 3 days lose their drops; 15 Oct the free plan priced 12,785 of 22,410 nights) |
 | C-147 | Second check of every Price Drop against LiteAPI live rooms (sold out or much dearer → hidden) | CLOUD | S | C-144, B-024 | BLOCKED |
+| C-148a | Exact final prices: Google ids for 80 hotels, `drop_quotes`, collector quotes every live drop (DataForSEO, budget-guarded) | CLOUD | M | C-144 | DONE (PR pending) |
+| C-148b | Radar and drop pages show only quoted prices: per night as the site shows it, stay total, quote time, the site's own link; no base-rate amounts | CLOUD | M | C-148a | TODO |
 | **Phase 4: Launch** (week 49, launch Mon 30 Nov)                |                                                                              |       |               |                                   |
 | L-040                                                           | Real-device QA on PC and iPhone, fix list                                    | LOCAL | M             | C-031, C-034, C-123               | TODO           |
 | C-041a                                                          | Launch hardening: axe checks, security headers                               | CLOUD | S             | C-031a                            | DONE           |

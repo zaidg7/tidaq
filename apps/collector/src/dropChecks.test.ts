@@ -110,13 +110,14 @@ describe('runDropChecks (C-139)', () => {
       log.mockRestore();
       return { mem, limits, calls: x.calls.length };
     };
-    // One drop: jobs + aliases + 1 price call + upsert = 4 requests off the 40 nights.
+    // One drop: jobs + aliases + 1 price call + upsert = 4 requests off the 40 nights, and the
+    // idle quote step (C-148: pending, usage, jobs) 3 more.
     const one = await run(1);
     expect(one.mem.dropChecks).toHaveLength(1);
-    expect(one.limits).toEqual([36]);
-    expect(one.calls).toBe(1 + 36);
+    expect(one.limits).toEqual([33]);
+    expect(one.calls).toBe(1 + 33);
     // Nothing to check still cost the jobs query.
     const none = await run(0);
-    expect(none.limits).toEqual([39]);
+    expect(none.limits).toEqual([36]);
   });
 });
