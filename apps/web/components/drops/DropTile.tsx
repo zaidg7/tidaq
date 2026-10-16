@@ -64,10 +64,10 @@ export function DropTile({
           {g.city.name[locale]} · {dropDates(d, locale)}
         </p>
         <p className="mt-1 text-[13px] text-muted md:mt-2 md:text-[15px]">
+          {/* Exact quote (D-52): nightly as the site shows it. */}
           <strong className="text-[17px] font-bold tracking-[-0.02em] text-ink tabular-nums md:text-[20px]">
-            {formatPrice(d.nowCents, locale)}
-          </strong>{' '}
-          {t('instead', { price: formatPrice(d.prevCents, locale) })}
+            {t('perNight', { price: formatPrice(d.nightlyCents, locale) })}
+          </strong>
         </p>
       </div>
     </a>

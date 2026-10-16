@@ -1,4 +1,4 @@
-import { dropDates, formatDrop, usualCents, type HotelDrops, type PriceDrop } from './drops';
+import { dropDates, formatDrop, type HotelDrops, type PriceDrop } from './drops';
 import { formatPrice, updatedAtParts } from './format';
 
 /**
@@ -45,11 +45,11 @@ export function dropCaption(g: HotelDrops, d: PriceDrop): string {
     d.priorDays >= 2
       ? `Niedrigster Preis seit ${d.priorDays + 1} Tagen.`
       : 'Niedrigster Preis, seit wir messen.';
-  const usual = usualCents(d);
+  // Exact quotes only (D-52): nightly as the site shows it and the stay total, taxes included.
   return [
     `Price Drop im ${g.hotel.name}, ${g.city.name.de} 📉`,
-    `${when(d)}: ${formatPrice(d.nowCents, 'de')} statt ${formatPrice(d.prevCents, 'de')} am Vortag (${formatDrop(d.drop, 'de')}) ${site(d)}.`,
-    usual !== null ? `Sonst um ${formatPrice(usual, 'de')}. ${low}` : low,
+    `${when(d)}: ${formatPrice(d.nightlyCents, 'de')} pro Nacht ${site(d)}, ${formatPrice(d.nowCents, 'de')} für ${d.nights === 1 ? '1 Nacht' : `${d.nights} Nächte`} inkl. Steuern und Gebühren (${formatDrop(d.drop, 'de')} seit gestern).`,
+    low,
     `Stand: ${seenText(d.seenAt)}. Preise ändern sich oft, prüf sie vor dem Buchen.`,
     `Alle Price Drops mit Preisverlauf: ${CAPTION.url}`,
     '',
@@ -68,7 +68,7 @@ export function topCaption(groups: readonly HotelDrops[], period: 'day' | 'week'
   const seen = top.reduce((max, g) => (g.top.seenAt > max ? g.top.seenAt : max), first.top.seenAt);
   const lines = top.map(
     (g, i) =>
-      `${i + 1}. ${g.hotel.name}, ${g.city.name.de}: ${formatPrice(g.top.nowCents, 'de')} statt ${formatPrice(g.top.prevCents, 'de')} (${formatDrop(g.top.drop, 'de')}), ${when(g.top)}`,
+      `${i + 1}. ${g.hotel.name}, ${g.city.name.de}: ${formatPrice(g.top.nightlyCents, 'de')} pro Nacht (${formatDrop(g.top.drop, 'de')} seit gestern), ${when(g.top)}`,
   );
   const cities = [...new Set(top.map((g) => cityTag(g.city.name.de)))];
   return [

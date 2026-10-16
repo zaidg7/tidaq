@@ -4,7 +4,6 @@ import { ArrowRight, CalendarRange } from 'lucide-react';
 import {
   dropDates,
   formatDayMonth,
-  formatPrice,
   formatWeekdayDayMonth,
   localizedPath,
   stayPath,
@@ -148,14 +147,9 @@ export function WeekView({
                             {g.city.name[locale]} ·{' '}
                             {td('night', { date: dropDates(d, locale), n: d.nights })}
                           </p>
-                          <p className="mt-1 text-[13.5px] tabular-nums">
-                            <strong className="text-[16px] font-bold">
-                              {formatPrice(d.nowCents, locale)}
-                            </strong>{' '}
-                            <span className="text-muted">
-                              {td('was', { price: formatPrice(d.prevCents, locale) })} ·{' '}
-                              {t('seen', { date: formatWeekdayDayMonth(d.seenDay, locale) })}
-                            </span>
+                          {/* Past drops were never quoted: no amounts, only the day (D-52). */}
+                          <p className="mt-1 text-[13.5px] text-muted">
+                            {t('seen', { date: formatWeekdayDayMonth(d.seenDay, locale) })}
                           </p>
                         </div>
                         <DropBadge

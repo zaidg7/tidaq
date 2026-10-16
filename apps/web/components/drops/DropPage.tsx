@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { getTranslations } from 'next-intl/server';
 import { Check, TrendingDown } from 'lucide-react';
 import {
@@ -8,15 +7,12 @@ import {
   dropKey,
   dropPath,
   formatDateRange,
-  formatDayMonth,
   formatPrice,
   formatWeekdayDayMonth,
   goPath,
   localizedPath,
-  percentileOf,
   stayPath,
   updatedAtParts,
-  usualCents,
   type DailyPrice,
   type Locale,
   type PriceDrop,
@@ -26,7 +22,6 @@ import { PhotoSheet } from '@/components/shell/PhotoSheet';
 import { StatusPage } from '@/components/shell/StatusPage';
 import { buttonClasses } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
-import { Meter } from '@/components/ui/Meter';
 import { cn } from '@/lib/cn';
 import type { HotelDropsWithPhoto } from '@/lib/data/drops';
 import { cardPhoto } from '@/lib/photos';
@@ -36,7 +31,6 @@ import { dropPercent } from './DropCard';
 import { DropShare } from './DropShare';
 import { DropAlertSection } from './DropAlertSection';
 import { HotelAlertBox } from './HotelAlertBox';
-import { DropStoryChart, storyStart } from './DropStoryChart';
 import { DropTile } from './DropTile';
 import { dropsHref } from './DropsTeaser';
 import type { StoryText } from './storyImage';
@@ -50,31 +44,29 @@ export async function dropFacts(g: HotelDropsWithPhoto, d: PriceDrop, locale: Lo
   // Trips (C-125) and old weekend links: the total for all nights.
   const trip = d.nights > 1;
   const nowP = formatPrice(d.nowCents, locale);
-  const was = formatPrice(d.prevCents, locale);
   const site = d.provider.direct ? t('atDirect') : t('atSite', { provider: d.provider.name });
-  const usual = usualCents(d);
   const newLow = d.priorDays >= 2 ? td('newLow', { days: d.priorDays + 1 }) : td('firstLow');
-  const low =
-    usual !== null ? `${td('usual', { price: formatPrice(usual, locale) })} · ${newLow}` : newLow;
+  // Base-rate amounts (yesterday, usual) are never shown (D-52): the low is a fact, no amount.
+  const low = newLow;
   const seen = updatedAtParts(d.seenAt, now, locale);
   const saved = d.provider.direct
-    ? td('savedDirect', { amount: formatPrice(d.savedCents, locale) })
-    : td('saved', { amount: formatPrice(d.savedCents, locale), provider: d.provider.name });
+    ? td('sinceDirect', { pct })
+    : td('sinceAt', { pct, provider: d.provider.name });
   const vars = {
     hotel: g.hotel.name,
     city: g.city.name[locale],
     date,
     pct,
     now: nowP,
-    was,
     n: d.nights,
   };
   const story: StoryText = {
     pct,
     hotel: g.hotel.name,
     place: `${g.city.name[locale]} · ${date}`,
-    now: nowP,
-    was: td('was', { price: was }),
+    // Exact quote only (D-52): the nightly price big, the stay total under it.
+    now: formatPrice(d.nightlyCents, locale),
+    was: `${td('perNight', { price: '' }).trim()} · ${td('totalFor', { price: nowP, n: d.nights })}`,
     saved,
     // One short line on the image: the new low only.
     low: newLow,
@@ -100,41 +92,25 @@ export async function dropFacts(g: HotelDropsWithPhoto, d: PriceDrop, locale: Lo
 const stayHref = (slug: string, s: { night: string; checkOut: string }, locale: Locale) =>
   localizedPath(stayPath(slug, s.night, s.checkOut, 2), locale);
 
-/** Today's place among the night's prices (0 = lowest seen), plus the range, for the meter. */
-function meterFacts(series: readonly DailyPrice[], d: PriceDrop, today: string) {
-  const values = series.filter((p) => p.day < today).map((p) => p.bestCents);
-  values.push(d.nowCents);
-  const percentile = percentileOf(d.nowCents, values);
-  if (percentile === null) return null;
-  return {
-    percentile,
-    low: Math.min(...values),
-    high: Math.max(...values),
-    since: series[0]?.day ?? today,
-  };
-}
-
 /**
  * `/price-drops/[hotel]/[night]` (C-080b, mockup B drop page; a 5- or 7-night trip, C-125): the
  * hotel's photo, a sheet sliding over it with the hotel, the stay as chips and the drop card
- * (huge "−54 %", both prices, the new low), the way to the site, then how the price moved, where
- * today sits (meter and one sentence), the hotel's other drops, a Price Alert for this hotel and
- * today's other drops. Phones read it top to bottom; from 768 px the drop card and its button
+ * (huge "−54 %", the exact quote per night and in total, the new low), the way to the site, the
+ * hotel's other drops, a Price Alert for this hotel and today's other drops. Phones read it top to bottom; from 768 px the drop card and its button
  * stay on the right while the story scrolls on the left.
  */
 export async function DropPage({
   group: g,
   drop: d,
-  series,
   others,
   offer = null,
   credit = null,
   locale,
-  today,
   now,
 }: {
   group: HotelDropsWithPhoto;
   drop: PriceDrop;
+  /** Unused since C-148b (base-rate history); kept until exact quote history exists (C-148c). */
   series: DailyPrice[];
   others: HotelDropsWithPhoto[];
   /** The drop's site, when we can link to it (C-080g). */
@@ -163,13 +139,8 @@ export async function DropPage({
     6,
   );
   const pic = cardPhoto(g.hotel.slug, g.city.slug);
-  const usual = usualCents(d);
-  const saved = (usual ?? d.prevCents) - d.nowCents;
-  const m = meterFacts(series, d, today);
   const newLow = d.priorDays >= 2 ? td('newLow', { days: d.priorDays + 1 }) : td('firstLow');
-  const b = (c: ReactNode) => <strong className="font-semibold text-ink">{c}</strong>;
   const sale = dropTextClass(d.drop);
-  const green = (c: ReactNode) => <strong className={cn('font-semibold', sale)}>{c}</strong>;
   const offerLabel = d.provider.direct
     ? t('ctaGoDirect')
     : t('ctaGo', { provider: d.provider.name });
@@ -247,11 +218,14 @@ export async function DropPage({
               >
                 {f.pct}
               </p>
-              <p className="mt-3.5 text-[16px] text-muted">
+              {/* Exact quote (D-52): nightly as the site shows it, the stay total, taxes in. */}
+              <p className="mt-3.5">
                 <strong className="text-[32px] font-bold tracking-[-0.03em] text-ink tabular-nums">
-                  {price(d.nowCents)}
-                </strong>{' '}
-                {t('insteadYesterday', { price: price(d.prevCents) })}
+                  {td('perNight', { price: price(d.nightlyCents) })}
+                </strong>
+              </p>
+              <p className="mt-1 text-[15px] text-muted tabular-nums">
+                {td('totalFor', { price: price(d.nowCents), n: d.nights })} · {td('inclTaxes')}
               </p>
               <p className="mt-4 flex items-start gap-2.5 border-t border-[#ece9f1] pt-4 text-[15px]">
                 <Icon icon={Check} size={20} className={cn('mt-0.5 shrink-0', sale)} />
@@ -275,12 +249,15 @@ export async function DropPage({
                 )}
                 target="_blank"
                 rel="sponsored nofollow noopener"
-                aria-label={t('newTab', { label: `${offerLabel} · ${price(d.nowCents)}` })}
+                aria-label={t('newTab', {
+                  label: `${offerLabel} · ${td('perNight', { price: price(d.nightlyCents) })}`,
+                })}
                 className="mt-4 flex min-h-[60px] items-center justify-between gap-3 rounded-[18px] bg-accent px-[22px] text-[17px] font-semibold text-white transition-colors duration-[var(--t-fast)] hover:bg-accent-hover"
               >
                 <span>{offerLabel}</span>
                 <span className="tabular-nums">
-                  {price(d.nowCents)} <span aria-hidden="true">→</span>
+                  {td('perNight', { price: price(d.nightlyCents) })}{' '}
+                  <span aria-hidden="true">→</span>
                 </span>
               </a>
             ) : (
@@ -332,70 +309,8 @@ export async function DropPage({
             </div>
           </div>
 
-          {series.length >= 2 && (
-            <section aria-labelledby="drop-history" className="mt-10 [grid-area:chart] md:mt-12">
-              <h2
-                id="drop-history"
-                className="text-[22px] font-semibold tracking-[-0.02em] md:text-[26px]"
-              >
-                {t('chartTitle')}
-              </h2>
-              <p className="mt-1 mb-4 text-[15px] text-muted">
-                {f.trip ? t('chartLeadTrip', { n: d.nights }) : t('chartLead')}
-              </p>
-              <DropStoryChart
-                series={series}
-                today={today}
-                locale={locale}
-                labels={{
-                  start: storyStart(usual, d.prevCents, locale, (k, v) => t(k, v)),
-                  today: t('chartToday', { price: price(d.nowCents) }),
-                  axisToday: t('chartAxisToday'),
-                  label: t('chartLabel', {
-                    from: formatDayMonth(series[0]?.day ?? today, locale),
-                    first: price(series[0]?.bestCents ?? d.prevCents),
-                    now: price(d.nowCents),
-                  }),
-                }}
-              />
-            </section>
-          )}
-
-          <section aria-labelledby="drop-meter" className="mt-9 [grid-area:meter] md:mt-12">
-            <h2
-              id="drop-meter"
-              className="mb-4 text-[22px] font-semibold tracking-[-0.02em] md:text-[26px]"
-            >
-              {t('meterTitle')}
-            </h2>
-            {m && (
-              <Meter
-                percentile={m.percentile}
-                lowCents={m.low}
-                highCents={m.high}
-                nowCents={d.nowCents}
-                since={formatDayMonth(m.since, locale)}
-                size="lg"
-              />
-            )}
-            <p className="mt-3.5 text-[15px] text-muted md:text-[16px]">
-              {usual !== null
-                ? t.rich(f.trip ? 'meterUsualTrip' : 'meterUsual', {
-                    n: d.nights,
-                    usual: price(usual),
-                    saved: price(saved),
-                    b,
-                    g: green,
-                  })
-                : t.rich(f.trip ? 'meterYesterdayTrip' : 'meterYesterday', {
-                    n: d.nights,
-                    was: price(d.prevCents),
-                    saved: price(saved),
-                    b,
-                    g: green,
-                  })}
-            </p>
-          </section>
+          {/* The chart and the meter used base rates without taxes; they come back with exact
+              quote history (C-148c, D-52). */}
 
           {nights.length > 0 && (
             <section aria-labelledby="drop-nights" className="mt-9 [grid-area:more] md:mt-12">

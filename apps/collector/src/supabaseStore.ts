@@ -666,7 +666,7 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
     async todayDrops(today) {
       // Trips of 5 and 7 nights, like the radar (C-125); single nights are no reason to travel.
       const results = await Promise.all(
-        DROPS.tripLengths.map((n) => db.rpc('radar_trip_drops', { p_today: today, p_nights: n })),
+        DROPS.tripLengths.map((n) => db.rpc('radar_quoted_drops', { p_today: today, p_nights: n })),
       );
       const rows = z.array(priceDropRowSchema);
       return results.flatMap((r) => rows.parse(check(r, 'load trip drops')));

@@ -40,7 +40,7 @@ export async function creatorKit(
         hotel: g.hotel.name,
         place: `${g.city.name.de} · ${dropDates(d, 'de')}${d.nights > 1 ? ` · ${d.nights} Nächte` : ''}`,
         pct: f.pct,
-        prices: `${formatPrice(d.nowCents, 'de')} statt ${formatPrice(d.prevCents, 'de')}`,
+        prices: `${formatPrice(d.nightlyCents, 'de')} pro Nacht · ${formatPrice(d.nowCents, 'de')} gesamt`,
         photo: g.image?.src ?? null,
         thumb: hotelPhoto(g.hotel.slug)?.[160].src ?? null,
         story: f.story,

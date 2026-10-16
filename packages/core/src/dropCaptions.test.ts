@@ -52,9 +52,12 @@ describe('dropCaption', () => {
     const text = plain(dropCaption(g, g.top));
     expect(text).toContain('Price Drop im Baur au Lac, Zürich');
     expect(text).toContain(
-      'Nacht vom Di, 27. Okt.: 684 € statt 989 € am Vortag (−31 %) bei Booking.com.',
+      'Nacht vom Di, 27. Okt.: 684 € pro Nacht bei Booking.com, 684 € für 1 Nacht inkl. Steuern und Gebühren (−31 % seit gestern).',
     );
-    expect(text).toContain('Sonst um 952 €. Niedrigster Preis seit 10 Tagen.');
+    // Base-rate amounts (the day before, the usual price) are never shown (D-52).
+    expect(text).not.toContain('statt');
+    expect(text).not.toContain('Sonst um');
+    expect(text).toContain('Niedrigster Preis seit 10 Tagen.');
     expect(text).toContain('Stand: 15. Okt., 08:12.');
     expect(text).toContain('prüf sie vor dem Buchen');
     expect(text).toContain(CAPTION.url);
@@ -67,23 +70,22 @@ describe('dropCaption', () => {
     const [g] = groupDrops([row({ night: '2026-10-23', check_out: '2026-10-25' })]);
     if (!g) throw new Error('no group');
     expect(plain(dropCaption(g, g.top))).toContain(
-      'Wochenende Fr, 23. Okt. – So, 25. Okt.: 684 € statt 989 € am Vortag',
+      'Wochenende Fr, 23. Okt. – So, 25. Okt.: 342 € pro Nacht',
     );
   });
 
   it('a trip names its length (C-125)', () => {
     const [g] = groupDrops([row({ night: '2026-11-03', check_out: '2026-11-10' })]);
     if (!g) throw new Error('no group');
-    expect(plain(dropCaption(g, g.top))).toContain(
-      '7 Nächte, Di, 3. Nov. – Di, 10. Nov.: 684 € statt 989 € am Vortag',
-    );
+    expect(plain(dropCaption(g, g.top))).toContain('7 Nächte, Di, 3. Nov. – Di, 10. Nov.: ');
   });
 
   it('says "direkt beim Hotel" and "seit wir messen" when that applies', () => {
     const [g] = groupDrops([row({ provider_direct: true, prior_days: 1 })]);
     if (!g) throw new Error('no group');
     const text = plain(dropCaption(g, g.top));
-    expect(text).toContain('(−31 %) direkt beim Hotel.');
+    expect(text).toContain('pro Nacht direkt beim Hotel, ');
+    expect(text).toContain('(−31 % seit gestern).');
     expect(text).toContain('Niedrigster Preis, seit wir messen.');
   });
 
@@ -118,9 +120,11 @@ describe('topCaption', () => {
       'Die 2 größten Price Drops in Luxushotels seit gestern (Stand: 15. Okt., 09:40):',
     );
     expect(text).toContain(
-      '1. Baur au Lac, Zürich: 684 € statt 989 € (−31 %), Nacht vom Di, 27. Okt.',
+      '1. Baur au Lac, Zürich: 684 € pro Nacht (−31 % seit gestern), Nacht vom Di, 27. Okt.',
     );
-    expect(text).toContain('2. Hotel Adlon Kempinski, Berlin: 389 € statt 526 € (−26 %)');
+    expect(text).toContain(
+      '2. Hotel Adlon Kempinski, Berlin: 389 € pro Nacht (−26 % seit gestern)',
+    );
     expect(text).toContain('#zürich #berlin #luxushotel');
   });
 
