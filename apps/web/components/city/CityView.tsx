@@ -4,6 +4,7 @@ import {
   cityIn,
   cityPath,
   formatDateRange,
+  formatPrice,
   hotelPath,
   localizedPath,
   NIGHT_GRID,
@@ -23,8 +24,8 @@ import { routes } from '@/lib/routes';
  * Paris" on it, then its hotels as photo cards, each with its cheapest upcoming week on one site
  * (C-126). The card opens the hotel page (calendar of every night); the week opens its stay page.
  * `children` follow the hotels (the city's Price Drops, the alert band). With `dates` from the
- * search (C-110) the cheapest stays come first; hotels without a total for those dates follow,
- * A–Z. No euro amounts: base rates lack taxes and fees (D-52, C-149).
+ * search (C-110) every card shows that stay's total and the cheapest come first; hotels without
+ * a total for those dates follow, A–Z.
  */
 export function CityView({
   city,
@@ -144,6 +145,7 @@ function HotelCard({
   const t = useTranslations('city');
   const w = hotel.week;
   const s = hotel.stay;
+  const price = (c: number) => formatPrice(c, locale);
   return (
     <HotelPhotoCard
       slug={hotel.slug}
@@ -155,15 +157,20 @@ function HotelCard({
         {dates ? (
           s ? (
             <>
-              <a
-                href={localizedPath(
-                  stayPath(hotel.slug, dates.checkIn, dates.checkOut, dates.adults),
-                  locale,
-                )}
-                className="relative z-[1] text-[15px] font-semibold text-accent underline-offset-2 hover:underline"
-              >
-                {t('stayLink')}
-              </a>
+              <div className="flex items-baseline justify-between gap-3">
+                <a
+                  href={localizedPath(
+                    stayPath(hotel.slug, dates.checkIn, dates.checkOut, dates.adults),
+                    locale,
+                  )}
+                  className="relative z-[1] text-[15px] font-semibold text-accent underline-offset-2 hover:underline"
+                >
+                  {t('stayLink')}
+                </a>
+                <strong className="text-[20px] font-bold tracking-[-0.02em] tabular-nums">
+                  {price(s.totalCents)}
+                </strong>
+              </div>
               <p className="mt-0.5 text-[14px] text-muted">
                 {t('stayFacts', { nights: dates.nights, provider: s.provider })}
               </p>
@@ -174,16 +181,21 @@ function HotelCard({
         ) : w ? (
           <>
             <p className="text-[13px] text-muted">{t('week')}</p>
-            {/* Above the card link: the week opens its own stay page. */}
-            <a
-              href={localizedPath(
-                stayPath(hotel.slug, w.checkIn, w.checkOut, NIGHT_GRID.adults),
-                locale,
-              )}
-              className="relative z-[1] mt-0.5 inline-block text-[16px] font-semibold text-accent underline-offset-2 hover:underline"
-            >
-              {formatDateRange(w.checkIn, w.checkOut, locale)}
-            </a>
+            <div className="mt-0.5 flex items-baseline justify-between gap-3">
+              {/* Above the card link: the week opens its own stay page. */}
+              <a
+                href={localizedPath(
+                  stayPath(hotel.slug, w.checkIn, w.checkOut, NIGHT_GRID.adults),
+                  locale,
+                )}
+                className="relative z-[1] text-[16px] font-semibold text-accent underline-offset-2 hover:underline"
+              >
+                {formatDateRange(w.checkIn, w.checkOut, locale)}
+              </a>
+              <strong className="text-[20px] font-bold tracking-[-0.02em] tabular-nums">
+                {price(w.totalCents)}
+              </strong>
+            </div>
             <p className="mt-0.5 text-[14px] text-muted">
               {t('weekFacts', { provider: w.provider })}
             </p>

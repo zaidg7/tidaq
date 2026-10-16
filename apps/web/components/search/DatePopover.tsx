@@ -3,8 +3,8 @@
 import { useMemo, useState, type KeyboardEvent } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
+  cheapestInMonth,
   dayDiff,
-  formatPercent,
   monthOf,
   shiftDays,
   shiftMonths,
@@ -98,6 +98,12 @@ export function DatePopover({
   const intl = locale === 'de' ? 'de-DE' : 'en-GB';
   const fmt = useMemo(
     () => ({
+      cell: new Intl.NumberFormat(intl, { maximumFractionDigits: 0 }),
+      money: new Intl.NumberFormat(intl, {
+        style: 'currency',
+        currency: 'EUR',
+        maximumFractionDigits: 0,
+      }),
       range: new Intl.DateTimeFormat(intl, { day: 'numeric', month: 'short', timeZone: 'UTC' }),
       weekend: new Intl.DateTimeFormat(intl, {
         weekday: 'short',
@@ -113,9 +119,9 @@ export function DatePopover({
   const hasPrices = byNight.size > 0;
   const price = (day: string): CellPrice | null => {
     const n = byNight.get(day);
-    if (!n || n.vs === null) return null;
-    const text = formatPercent(n.vs, locale, { signed: true });
-    return { text, spoken: text, level: n.level };
+    if (!n || n.cents === null) return null;
+    const euros = Math.round(n.cents / 100);
+    return { text: fmt.cell.format(euros), spoken: fmt.money.format(euros), level: n.level };
   };
 
   const update = (next: RangeDraft) => {
@@ -186,7 +192,6 @@ export function DatePopover({
           onMonth={setFlexMonth}
           hotel={hotel}
           today={today}
-          locale={locale}
           fmt={fmt}
           labels={labels}
           onPick={(checkIn, checkOut) => {
@@ -217,8 +222,8 @@ type FlexProps = {
   onMonth: (month: string) => void;
   hotel: HotelNights | null;
   today: string;
-  locale: Locale;
   fmt: {
+    money: Intl.NumberFormat;
     weekend: Intl.DateTimeFormat;
     monthName: Intl.DateTimeFormat;
   };
@@ -233,15 +238,12 @@ const FLEX_MONTHS = 4;
  * Friday → Sunday stays of that month at the picked hotel as cards. Without a hotel: that
  * month's weekends without prices. A card sets the dates and moves on to the guests.
  */
-function Flexible({ month, onMonth, hotel, today, locale, fmt, labels, onPick }: FlexProps) {
+function Flexible({ month, onMonth, hotel, today, fmt, labels, onPick }: FlexProps) {
   const months = Array.from({ length: FLEX_MONTHS }, (_, i) => shiftMonths(monthOf(today), i));
   const at = months.indexOf(month);
   const priced = hotel !== null && hotel.nights.length > 0;
-  const cards: { checkIn: string; checkOut: string; vs?: number }[] = priced
-    ? hotel.weekends
-        .filter((w) => w.checkIn.startsWith(month.slice(0, 7)))
-        .sort((a, b) => a.vs - b.vs || a.checkIn.localeCompare(b.checkIn))
-        .slice(0, 3)
+  const cards: { checkIn: string; checkOut: string; totalCents?: number }[] = priced
+    ? cheapestInMonth(hotel.weekends, month, 3)
     : fridays(month, today).map((f) => ({ checkIn: f, checkOut: shiftDays(f, 2) }));
 
   return (
@@ -294,12 +296,12 @@ function Flexible({ month, onMonth, hotel, today, locale, fmt, labels, onPick }:
                 <span className="text-[15px] font-semibold text-ink">
                   {fmt.weekend.formatRange(utc(c.checkIn), utc(c.checkOut))}
                 </span>
-                {c.vs !== undefined && (
+                {c.totalCents !== undefined && (
                   <span className="text-small text-muted-ink">
                     <span className="text-[17px] font-semibold text-ink tabular-nums">
-                      {formatPercent(c.vs, locale, { signed: true })}
+                      {fmt.money.format(Math.round(c.totalCents / 100))}
                     </span>{' '}
-                    {labels.flexTotal}
+                    {labels.flexTotal.replace('{n}', '2')}
                   </span>
                 )}
               </button>

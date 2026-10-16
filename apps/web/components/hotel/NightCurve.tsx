@@ -1,10 +1,8 @@
 import { useLocale, useTranslations } from 'next-intl';
 import {
-  describeVs,
   formatDayMonth,
-  formatPercent,
+  formatPrice,
   priceLevels,
-  vsTypical,
   type Locale,
   type NightPrice,
 } from '@tidaq/core';
@@ -22,32 +20,17 @@ const MONTH = { de: 'de-DE', en: 'en-GB' } as const;
 /**
  * "So ändert sich der Preis" on the hotel page (C-132b): one bar per upcoming night, its height
  * the cheapest price that night, coloured like the calendar (green = cheap). The cheapest and
- * the dearest night are named in the lead, against a usual night (no euros: base rates lack
- * taxes, D-52); month names run under the bars. A picture of when the hotel is cheap; the
- * calendar below is where you pick dates. Bars are decorative, the lead says the same in
- * words. Needs at least 7 priced nights.
+ * the dearest night are named in the lead; month names run under the bars. A picture of when
+ * the hotel is cheap; the calendar below is where you pick dates. Bars are decorative, the
+ * lead says the same in words. Needs at least 7 priced nights.
  */
-export function NightCurve({
-  nights,
-  typical,
-}: {
-  nights: readonly NightPrice[];
-  /** A usual night here (`typicalNightCents`). */
-  typical: number | null;
-}) {
+export function NightCurve({ nights }: { nights: readonly NightPrice[] }) {
   const t = useTranslations('hotel');
   const locale = useLocale() as Locale;
   const priced = nights.filter(
     (n): n is NightPrice & { bestCents: number } => n.bestCents !== null,
   );
-  if (priced.length < 7 || typical === null) return null;
-  const vs = (cents: number) => vsTypical(cents, 1, typical) ?? 0;
-  const say = (cents: number) => {
-    const d = describeVs(vs(cents), locale);
-    return d.kind === 'usual'
-      ? t('vsUsual')
-      : t(d.kind === 'cheaper' ? 'vsCheaper' : 'vsDearer', { pct: d.pct });
-  };
+  if (priced.length < 7) return null;
 
   const low = priced.reduce((a, b) => (b.bestCents < a.bestCents ? b : a));
   const high = priced.reduce((a, b) => (b.bestCents > a.bestCents ? b : a));
@@ -73,9 +56,9 @@ export function NightCurve({
       </h2>
       <p className="mt-1 max-w-[46em] text-[15px] text-muted md:text-[16px]">
         {t('curveText', {
-          low: say(low.bestCents),
+          low: formatPrice(low.bestCents, locale),
           lowDay: formatDayMonth(low.night, locale),
-          high: say(high.bestCents),
+          high: formatPrice(high.bestCents, locale),
           highDay: formatDayMonth(high.night, locale),
         })}
       </p>
@@ -88,7 +71,7 @@ export function NightCurve({
             <div key={n.night} className="relative flex h-full min-w-0 flex-1 items-end">
               {n.bestCents !== null && (
                 <div
-                  title={`${formatDayMonth(n.night, locale)}: ${formatPercent(vs(n.bestCents), locale, { signed: true })}`}
+                  title={`${formatDayMonth(n.night, locale)}: ${formatPrice(n.bestCents, locale)}`}
                   className="relative w-full rounded-t-[3px]"
                   style={{
                     height: `${Math.min(100, Math.max(4, ((n.bestCents - floor) / span) * 100))}%`,
@@ -97,7 +80,7 @@ export function NightCurve({
                 >
                   {n.night === low.night && (
                     <span className="absolute bottom-full left-1/2 mb-1.5 -translate-x-1/2 rounded-full bg-good px-2 py-0.5 text-[11.5px] font-bold whitespace-nowrap text-white tabular-nums">
-                      {formatPercent(vs(low.bestCents), locale, { signed: true })}
+                      {formatPrice(low.bestCents, locale)}
                     </span>
                   )}
                 </div>

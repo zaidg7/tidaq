@@ -13,8 +13,6 @@ import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   dayDiff,
   dayRole,
-  describeVs,
-  formatPercent,
   isSelectable,
   localizedPath,
   monthOf,
@@ -25,7 +23,6 @@ import {
   shiftMonths,
   stayFromNights,
   stayPath,
-  vsTypical,
   type GridKey,
   type Locale,
   type NightPrice,
@@ -46,17 +43,15 @@ export type CalendarLabels = {
   checkIn: string;
   checkOut: string;
   today: string;
-  /** With `{price}`: the night against a usual one, "−18 %". */
+  /** With `{price}`. */
   perNight: string;
-  /** "18 % günstiger als üblich" (`{pct}`), dearer the same, or about usual. */
-  vs: { cheaper: string; dearer: string; usual: string };
   noPrice: string;
   /** Level names, cheapest first (5). */
   levels: string[];
   nightsOne: string;
   /** With `{n}`. */
   nightsOther: string;
-  /** With `{vs}` and `{provider}`. */
+  /** With `{price}` and `{provider}`. */
   total: string;
   missingOne: string;
   /** With `{n}`. */
@@ -72,8 +67,6 @@ type Props = {
   slug: string;
   /** Today's price of every night from today on. */
   nights: NightPrice[];
-  /** A usual night here (`typicalNightCents`): cells and the total compare with it. */
-  typical: number | null;
   /** 0–4 per night (same order as `nights`), null without a price. */
   levels: (number | null)[];
   /** Reviewed platforms: id → display name (the hotel's name for its own site). */
@@ -111,16 +104,14 @@ function useMonthCount(): 1 | 2 {
 }
 
 /**
- * Price calendar (C-023a, DESIGN.md calendar cell): every night with today's cheapest price
- * against a usual night here and its level (5 tints, the percent as text so color is never the
- * only signal). Picking check-in and check-out shows how the stay compares on one site and links
- * to the stay page with its history. No euros: base rates lack taxes and fees (D-52, C-149). The
+ * Price calendar (C-023a, DESIGN.md calendar cell): every night with today's cheapest price and
+ * its level (5 tints, the price as text so color is never the only signal). Picking check-in and
+ * check-out shows the stay's total on one site and links to the stay page with its history. The
  * grid follows the WAI-ARIA date grid like the search's date picker (C-021b).
  */
 export function PriceCalendar({
   slug,
   nights,
-  typical,
   levels,
   providers,
   nightsUnreliable,
@@ -158,6 +149,13 @@ export function PriceCalendar({
       range: new Intl.DateTimeFormat(l, { day: 'numeric', month: 'short', timeZone: 'UTC' }),
       weekdayShort: new Intl.DateTimeFormat(l, { weekday: 'short', timeZone: 'UTC' }),
       weekdayLong: new Intl.DateTimeFormat(l, { weekday: 'long', timeZone: 'UTC' }),
+      // In the cell: euros without the sign (the legend says "per night").
+      cell: new Intl.NumberFormat(l, { maximumFractionDigits: 0 }),
+      price: new Intl.NumberFormat(l, {
+        style: 'currency',
+        currency: 'EUR',
+        maximumFractionDigits: 0,
+      }),
     };
   }, [locale]);
 
@@ -226,22 +224,11 @@ export function PriceCalendar({
   const nightsText =
     count === 1 ? labels.nightsOne : labels.nightsOther.replace('{n}', String(count));
 
-  const pct = (cents: number) => {
-    const vs = vsTypical(cents, 1, typical);
-    return vs === null ? null : formatPercent(vs, locale, { signed: true });
-  };
-  const vsLine = (vs: number) => {
-    const d = describeVs(vs, locale);
-    return d.kind === 'usual' ? labels.vs.usual : labels.vs[d.kind].replace('{pct}', d.pct);
-  };
-  const totalVs = total?.kind === 'ok' ? vsTypical(total.totalCents, total.nights, typical) : null;
-
   const cellLabel = (day: string, role: ReturnType<typeof dayRole>) => {
     const parts = [fmt.full.format(utc(day))];
     const n = byNight.get(day);
-    const text = n?.price != null ? pct(n.price) : null;
-    if (n && text) {
-      parts.push(labels.perNight.replace('{price}', text));
+    if (n?.price != null) {
+      parts.push(labels.perNight.replace('{price}', fmt.price.format(n.price / 100)));
       if (n.level !== null) parts.push(labels.levels[n.level] ?? '');
     } else if (day >= today) parts.push(labels.noPrice);
     if (day === today) parts.push(labels.today);
@@ -319,8 +306,9 @@ export function PriceCalendar({
               today={today}
               price={(day) => {
                 const n = byNight.get(day);
-                const text = n?.price != null ? pct(n.price) : null;
-                return n && text ? { text, level: n.level } : null;
+                return n?.price != null
+                  ? { text: fmt.cell.format(Math.round(n.price / 100)), level: n.level }
+                  : null;
               }}
               label={cellLabel}
               onPick={pick}
@@ -352,9 +340,9 @@ export function PriceCalendar({
               <span className="block text-[13.5px] font-semibold text-muted-ink">
                 {nightsUnreliable
                   ? labels.unreliable
-                  : total?.kind === 'ok' && totalVs !== null
+                  : total?.kind === 'ok'
                     ? labels.total
-                        .replace('{vs}', vsLine(totalVs))
+                        .replace('{price}', fmt.price.format(total.totalCents / 100))
                         .replace('{provider}', providers[String(total.providerId)] ?? '')
                     : total?.kind === 'missing'
                       ? total.missing === 1

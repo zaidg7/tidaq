@@ -2,11 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   cheapestInMonth,
   cheapestStays,
-  describeVs,
   priceLevels,
   stayFromNights,
-  typicalNightCents,
-  vsTypical,
   weekendStays,
   type NightPrice,
 } from './hotelCalendar';
@@ -190,50 +187,5 @@ describe('cheapestInMonth', () => {
     ]);
     expect(cheapestInMonth(stays, '2026-12-01', 1)).toEqual([stays[4]]);
     expect(cheapestInMonth(stays, '2027-01-01')).toEqual([]);
-  });
-});
-
-describe('typicalNightCents (C-149)', () => {
-  it('is the median of the priced nights', () => {
-    expect(typicalNightCents([300, null, 100, 200])).toBe(200);
-    expect(typicalNightCents([100, 200, 400, 300])).toBe(250);
-    expect(typicalNightCents([101, 102])).toBe(102); // 101.5 rounds up
-  });
-
-  it('is null without a priced night', () => {
-    expect(typicalNightCents([])).toBeNull();
-    expect(typicalNightCents([null, null])).toBeNull();
-    expect(typicalNightCents([0])).toBeNull();
-  });
-});
-
-describe('vsTypical (C-149)', () => {
-  it('compares the stay per night with a usual night, in whole percent', () => {
-    expect(vsTypical(82_000, 5, 20_000)).toBe(-0.18);
-    expect(vsTypical(30_000, 1, 20_000)).toBe(0.5);
-    expect(vsTypical(20_000, 1, 20_000)).toBe(0);
-  });
-
-  it('never returns −0', () => {
-    expect(Object.is(vsTypical(19_999, 1, 20_000), 0)).toBe(true);
-  });
-
-  it('is null without a usual night or nights', () => {
-    expect(vsTypical(10_000, 1, null)).toBeNull();
-    expect(vsTypical(10_000, 0, 20_000)).toBeNull();
-    expect(vsTypical(Number.NaN, 1, 20_000)).toBeNull();
-  });
-});
-
-describe('describeVs (C-149)', () => {
-  it('says cheaper or dearer with the unsigned percent', () => {
-    expect(describeVs(-0.18, 'de')).toEqual({ kind: 'cheaper', pct: '18\u00a0%' });
-    expect(describeVs(1.2, 'en')).toEqual({ kind: 'dearer', pct: '120%' });
-  });
-
-  it('calls anything within ±3 % about usual', () => {
-    expect(describeVs(0.02, 'en').kind).toBe('usual');
-    expect(describeVs(-0.02, 'en').kind).toBe('usual');
-    expect(describeVs(-0.03, 'en').kind).toBe('cheaper');
   });
 });
