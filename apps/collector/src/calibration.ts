@@ -20,7 +20,10 @@ export const CALIBRATIONS = {
   fetchLimit: 5,
   /** A posted task not listed as ready after this long is fetched directly. */
   fetchDirectlyAfterMinutes: 10,
-  /** Google, as seen from Germany (DataForSEO location code). */
+  /**
+   * Google as seen from Germany (DataForSEO location code), with the keyword searched as written
+   * (`search_this_area: false`): the city's hotels at the prices a German visitor sees.
+   */
   locationCode: 2276,
   languageCode: 'de',
   keyword: (cityEn: string) => `luxury hotels ${cityEn}`,
@@ -140,6 +143,7 @@ export async function runCalibrations(opts: {
       keyword: CALIBRATIONS.keyword(j.cityEn),
       locationCode: CALIBRATIONS.locationCode,
       languageCode: CALIBRATIONS.languageCode,
+      searchThisArea: false,
       checkIn: j.checkIn,
       checkOut: j.checkOut,
     })),
