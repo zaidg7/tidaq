@@ -172,6 +172,11 @@ export interface HotelSearchTask {
   locationCode: number;
   /** Result language; 'en' unless given (C-157 asks in German, like a German visitor). */
   languageCode?: string;
+  /**
+   * False: search the keyword as written. By default DataForSEO appends the location's name to
+   * the keyword ("luxury hotels Paris, Germany" from location Germany returns German hotels).
+   */
+  searchThisArea?: boolean;
   checkIn: string;
   checkOut: string;
 }
@@ -205,6 +210,7 @@ export async function postHotelSearchTasks(
     check_in: t.checkIn,
     check_out: t.checkOut,
     tag: String(t.hotelId),
+    ...(t.searchThisArea === false && { search_this_area: false }),
   }));
   try {
     const res = await fetchWithRetry(fetchFn, `${SEARCH_API}/task_post`, {

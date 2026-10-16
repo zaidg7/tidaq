@@ -66,6 +66,7 @@ describe('runCalibrations (C-157)', () => {
         keyword: 'luxury hotels Berlin',
         location_code: CALIBRATIONS.locationCode,
         language_code: 'de',
+        search_this_area: false,
         check_in: '2026-11-06',
         check_out: '2026-11-08',
       }),
