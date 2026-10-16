@@ -170,6 +170,8 @@ export interface HotelSearchTask {
   hotelId: number;
   keyword: string;
   locationCode: number;
+  /** Result language; 'en' unless given (C-157 asks in German, like a German visitor). */
+  languageCode?: string;
   checkIn: string;
   checkOut: string;
 }
@@ -197,7 +199,7 @@ export async function postHotelSearchTasks(
   const body = tasks.slice(0, MAX_TASKS_PER_POST).map((t) => ({
     keyword: t.keyword,
     location_code: t.locationCode,
-    language_code: 'en',
+    language_code: t.languageCode ?? 'en',
     currency: 'EUR',
     adults: 2,
     check_in: t.checkIn,

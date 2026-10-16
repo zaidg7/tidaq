@@ -1,6 +1,8 @@
 import type {
   AlertKind,
   BudgetReason,
+  CalibrationHotel,
+  CalibrationPoint,
   DailyPrice,
   GridHotel,
   GridStay,
@@ -148,6 +150,45 @@ export interface LookupResult {
   candidates: { title: string; id: string; meters: number | null }[];
 }
 
+/** A city due for a tax calibration (SQL `calibration_due`, C-157). */
+export interface CalibrationJob {
+  cityId: number;
+  cityEn: string;
+  /** One of its hotels: the budget log needs a hotel id per task. */
+  anchorHotelId: number;
+  checkIn: string;
+  checkOut: string;
+}
+
+/** A posted calibration without its answer yet (SQL `calibration_pending`). */
+export interface PendingCalibration {
+  id: number;
+  taskId: string;
+  cityId: number;
+  checkIn: string;
+  checkOut: string;
+  postedAt: string;
+}
+
+/** A posted calibration, for `price_calibrations` and the budget log. */
+export interface CalibrationPost {
+  taskId: string;
+  cityId: number;
+  anchorHotelId: number;
+  checkIn: string;
+  checkOut: string;
+  postedAt: string;
+  costUsd: number;
+}
+
+/** A calibration's answer: its points, and Google ids for hotels that had none. */
+export interface CalibrationResult {
+  id: number;
+  status: 'done' | 'failed';
+  finishedAt: string;
+  points: CalibrationPoint[];
+}
+
 /** A (hotel, night) pair still to price today (SQL `night_jobs`, C-070a). */
 /** One of `of` disjoint shares of the hotels (by id). */
 export interface NightPart {
@@ -291,6 +332,18 @@ export interface CollectorStore {
   recordLookupPosts(rows: readonly LookupPost[]): Promise<void>;
   /** Stores answers; `found` sets the hotel's Google id (only where it has none). */
   recordLookupResults(rows: readonly LookupResult[]): Promise<void>;
+  /** Cities due for a tax calibration, least recently calibrated first (C-157). */
+  calibrationDue(today: string, limit: number): Promise<CalibrationJob[]>;
+  /** Calibration tasks posted today (their own daily cap). */
+  calibrationPostedToday(today: string): Promise<number>;
+  /** Posted calibrations still without an answer, oldest first. */
+  calibrationPending(limit: number): Promise<PendingCalibration[]>;
+  /** A city's active hotels with our base rate per night for the stay (all nights priced). */
+  calibrationHotels(cityId: number, checkIn: string, checkOut: string): Promise<CalibrationHotel[]>;
+  /** Stores posted calibrations and logs each paid task in the quote budget log. */
+  recordCalibrationPosts(rows: readonly CalibrationPost[]): Promise<void>;
+  /** Stores answers and their points; sets Google ids where a hotel has none. */
+  recordCalibrationResults(rows: readonly CalibrationResult[]): Promise<void>;
   /** Stores a batch of nights (SQL `night_ingest`). Returns the rows written. */
   ingestNights(payload: NightIngestPayload): Promise<number>;
   /** Compares `day`'s night sums with its real stay prices and stores the result (C-070c). */

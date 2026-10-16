@@ -1,4 +1,5 @@
 import { runDropChecks, type DropCheckSummary } from './dropChecks';
+import { CALIBRATIONS, runCalibrations, type CalibrationRunSummary } from './calibration';
 import { QUOTES, runDropQuotes, type QuoteRunSummary } from './dropQuotes';
 import { DROP_CHECK, runToken, safeEqual } from '@tidaq/core';
 import { runAlerts } from './alerts';
@@ -102,7 +103,9 @@ export function createWorker(deps: Deps = {}) {
       log('request run failed', { error: String(err) });
     }
     const collect = await runCollect({ store, env, now: now(), fetchFn: deps.fetchFn });
-    if (collect.open > 0) return { requests, collect, drops: null, quotes: null, nights: null };
+    if (collect.open > 0) {
+      return { requests, collect, drops: null, quotes: null, calibrations: null, nights: null };
+    }
     // Live check of Price Drops first (C-139, C-142), the night grid takes the requests left.
     // NIGHT_BATCH is sized to fill the run, so every request the checks use comes off the nights;
     // after a failed check run its requests are unknown, so the most it could have used.
@@ -119,6 +122,13 @@ export function createWorker(deps: Deps = {}) {
     } catch (err) {
       log('drop quotes failed', { error: String(err) });
     }
+    // Taxes on our prices (C-157): one Google search per city a week, inside the budget.
+    let calibrations: CalibrationRunSummary | null = null;
+    try {
+      calibrations = await runCalibrations({ store, env, now: now(), fetchFn: deps.fetchFn });
+    } catch (err) {
+      log('calibrations failed', { error: String(err) });
+    }
     const nights = await runNights({
       store,
       env,
@@ -126,12 +136,13 @@ export function createWorker(deps: Deps = {}) {
       fetchFn: deps.fetchFn,
       reserve:
         (drops ? drops.requests : DROP_CHECK.batch + 3) +
-        (quotes ? quotes.requests : QUOTES.fetchLimit + 8),
+        (quotes ? quotes.requests : QUOTES.fetchLimit + 8) +
+        (calibrations ? calibrations.requests : CALIBRATIONS.fetchLimit * 4 + 8),
       // Workers Paid (C-151): time, not requests, bounds the run; it must end before the next.
       deadline: started + NIGHTS.runBudgetMs,
       part,
     });
-    return { requests, collect, drops, quotes, nights };
+    return { requests, collect, drops, quotes, calibrations, nights };
   };
 
   return {
@@ -257,6 +268,10 @@ export function createWorker(deps: Deps = {}) {
             summary.quotes.lookups?.notFound)
         )
           log('drop quotes done', { ...summary.quotes });
+        const c = summary.calibrations;
+        if (c && (c.posted || c.done || c.failed || c.errors.length)) {
+          log('calibrations done', { ...c });
+        }
         if (summary.nights?.runId) log('nights run done', { ...summary.nights });
         return;
       }

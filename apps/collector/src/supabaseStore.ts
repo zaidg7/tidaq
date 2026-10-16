@@ -498,6 +498,127 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
       }
     },
 
+    async calibrationDue(today, limit) {
+      const rows = check(
+        await db.rpc('calibration_due', { p_today: today, p_limit: limit }),
+        'load calibration jobs',
+      );
+      return rows.map((r) => ({
+        cityId: r.city_id,
+        cityEn: r.city_en,
+        anchorHotelId: r.anchor_hotel_id,
+        checkIn: r.check_in,
+        checkOut: r.check_out,
+      }));
+    },
+
+    async calibrationPostedToday(today) {
+      return check(
+        await db.rpc('calibration_posted_today', { p_today: today }),
+        'count calibrations',
+      );
+    },
+
+    async calibrationPending(limit) {
+      const rows = check(
+        await db.rpc('calibration_pending', { p_limit: limit }),
+        'load pending calibrations',
+      );
+      return rows.map((r) => ({
+        id: r.id,
+        taskId: r.task_id,
+        cityId: r.city_id,
+        checkIn: r.check_in,
+        checkOut: r.check_out,
+        postedAt: r.posted_at,
+      }));
+    },
+
+    async calibrationHotels(cityId, checkIn, checkOut) {
+      const rows = check(
+        await db.rpc('calibration_hotels', {
+          p_city: cityId,
+          p_check_in: checkIn,
+          p_check_out: checkOut,
+        }),
+        'load calibration hotels',
+      );
+      return rows.map((r) => ({
+        hotelId: r.hotel_id,
+        name: r.name,
+        lat: r.lat,
+        lng: r.lng,
+        identifier: r.dfs_hotel_identifier,
+        baseNightCents: r.base_night_cents,
+      }));
+    },
+
+    async recordCalibrationPosts(rows) {
+      checkOk(
+        await db.from('price_calibrations').insert(
+          rows.map((r) => ({
+            city_id: r.cityId,
+            task_id: r.taskId,
+            check_in: r.checkIn,
+            check_out: r.checkOut,
+            posted_at: r.postedAt,
+          })),
+        ),
+        'record calibration posts',
+      );
+      checkOk(
+        await db.from('drop_quote_log').insert(
+          rows.map((r) => ({
+            task_id: r.taskId,
+            hotel_id: r.anchorHotelId,
+            night: r.checkIn,
+            check_out: r.checkOut,
+            posted_at: r.postedAt,
+            cost_usd: r.costUsd,
+          })),
+        ),
+        'log calibration posts',
+      );
+    },
+
+    async recordCalibrationResults(rows) {
+      for (const r of rows) {
+        if (r.points.length > 0) {
+          checkOk(
+            await db.from('price_calibration_points').upsert(
+              r.points.map((p) => ({
+                calibration_id: r.id,
+                hotel_id: p.hotelId,
+                google_night_cents: p.googleNightCents,
+                base_night_cents: p.baseNightCents,
+                ratio: p.ratio,
+                measured_at: r.finishedAt,
+              })),
+            ),
+            'record calibration points',
+          );
+        }
+        checkOk(
+          await db
+            .from('price_calibrations')
+            .update({ status: r.status, finished_at: r.finishedAt })
+            .eq('id', r.id),
+          'record calibration result',
+        );
+        for (const p of r.points) {
+          if (!p.identifier) continue;
+          checkOk(
+            await db
+              .from('hotels')
+              .update({ dfs_hotel_identifier: p.identifier })
+              .eq('id', p.hotelId)
+              .is('dfs_hotel_identifier', null),
+            'store google id',
+          );
+        }
+      }
+    },
+
     async recordQuotePosts(rows) {
       checkOk(
         await db.from('drop_quotes').upsert(

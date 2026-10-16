@@ -111,13 +111,14 @@ describe('runDropChecks (C-139)', () => {
       return { mem, limits, calls: x.calls.length };
     };
     // One drop: jobs + aliases + 1 price call + upsert = 4 requests off the 40 nights, and the
-    // idle quote step 5 more (C-148: pending, usage, jobs; C-153: lookup pending, lookup jobs).
+    // idle quote step 5 more (C-148: pending, usage, jobs; C-153: lookup pending, lookup jobs),
+    // the idle calibration step 2 (C-157: pending, due cities).
     const one = await run(1);
     expect(one.mem.dropChecks).toHaveLength(1);
-    expect(one.limits).toEqual([31]);
-    expect(one.calls).toBe(1 + 31);
+    expect(one.limits).toEqual([29]);
+    expect(one.calls).toBe(1 + 29);
     // Nothing to check still cost the jobs query.
     const none = await run(0);
-    expect(none.limits).toEqual([34]);
+    expect(none.limits).toEqual([32]);
   });
 });
