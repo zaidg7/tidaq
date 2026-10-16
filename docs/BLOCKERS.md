@@ -29,13 +29,13 @@ Steps for Zaid (≈ 3 min):
 ## B-023 · Decision: Cloudflare Workers Paid ($5/month) for hundreds of hotels (1 min)
 
 Status: OPEN · Opened: 2026-10-16 by CLOUD · Blocks: C-071b beyond ~90 hotels
-What I need: a yes or no. You want every five-star hotel in the big cities (hundreds). Each hotel costs 270 price calls a day (one per night, D-42) plus the live checks of its drops. The free Cloudflare plan allows 50 requests per run, every 2 minutes: about 28,000 calls a day. 83 hotels already use ~22,400, and since tonight the live drop checks take their share too. So the free plan is full at about 90 hotels.
+What I need: a yes or no. You want every five-star hotel in the big cities (hundreds). Each hotel costs 270 price calls a day (one per night, D-42) plus the live checks of its drops. The free Cloudflare plan allows 50 requests per run, every 2 minutes: about 28,000 calls a day. 83 hotels already use ~22,400, and since tonight the live drop checks take their share too. So the free plan is full. **Measured 16 Oct:** on 15 Oct the grid priced only 12,785 of the 22,410 nights it should (it reached 18 Mar 2027, not mid-July), so even today's 83 hotels don't fit, and the live drop checks now take ~30 % of each run on top.
 Options:
 
 - **Workers Paid, $5 a month (recommended).** 10,000 requests per run instead of 50. Room for 500+ hotels with the same code, and the same plan unlocks the share images (C-028c) later. It's inside the €50 budget plan (Z-04).
 - **Free:** move the night grid to a Supabase Edge Function (the Pro plan you already pay includes 2 M calls a month). About a day of work, and the collector then runs on two platforms, so more can break. I'd only do this if $5 is a no.
 
-Either way I'll also make the grid lighter (next 90 nights daily, later nights every 3 days, C-146), so Xotelo isn't hammered.
+A lighter grid (far nights only every 3 days, C-146) is no real way out: a drop needs the same nights priced on two days in a row, so far-out drops would disappear. It only makes sense if the answer is no.
 Steps for Zaid if yes (≈ 3 min):
 
 1. dash.cloudflare.com → account **tidaq** → **Workers & Pages** → **Plans** → **Workers Paid** → subscribe.
