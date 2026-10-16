@@ -501,6 +501,8 @@ function WatchCard({
         locale={locale}
         labels={{
           email: t('watchEmail'),
+          target: t('watchTarget'),
+          targetHint: t('watchTargetHint'),
           consent: t('watchConsent'),
           privacy: t('watchPrivacy'),
           privacyHref: localizedPath(routes.privacy, locale),

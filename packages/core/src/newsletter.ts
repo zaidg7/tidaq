@@ -1,7 +1,7 @@
-import { formatDateRange, formatPercent, type Locale } from './format';
+import { formatDateRange, formatPercent, formatPrice, type Locale } from './format';
 import type { MailContent } from './mailTemplate';
 
-/** Weekly deals newsletter (C-054b). No euro amounts: base rates lack taxes (D-52, C-149). */
+/** Weekly deals newsletter (C-054b). */
 export const NEWSLETTER = {
   /** Deals per email. */
   maxDeals: 8,
@@ -31,9 +31,9 @@ const TEXT = {
     preheader: 'Die Aufenthalte, die diese Woche am weitesten unter ihrem 30-Tage-Schnitt liegen.',
     heading: 'Die besten Deals dieser Woche',
     intro:
-      'Diese Aufenthalte liegen heute am deutlichsten unter ihrem eigenen Durchschnitt der letzten 30 Tage. Verglichen wird der Gesamtpreis für 2 Erwachsene auf der günstigsten geprüften Seite, Stand heute Morgen. Den Endpreis mit Steuern und Gebühren siehst du auf der Buchungsseite.',
-    meta: (city: string, dates: string, drop: string) =>
-      `${city} · ${dates} · ${drop} unter dem 30-Tage-Schnitt`,
+      'Diese Aufenthalte liegen heute am deutlichsten unter ihrem eigenen Durchschnitt der letzten 30 Tage. Gesamtpreis für 2 Erwachsene, günstigste geprüfte Seite, Stand heute Morgen.',
+    meta: (city: string, dates: string, price: string, drop: string) =>
+      `${city} · ${dates} · ${price}, ${drop} unter dem 30-Tage-Schnitt`,
     hint: 'Preise ändern sich oft mehrmals am Tag. Prüf den Preis auf der Buchungsseite, bevor du buchst.',
     button: 'Alle Deals ansehen',
     why: 'Du bekommst diese E-Mail, weil du auf tidaq.com die Deals per E-Mail bestellt hast. Einmal pro Woche.',
@@ -45,9 +45,9 @@ const TEXT = {
     preheader: 'The stays furthest below their 30-day average this week.',
     heading: "This week's best deals",
     intro:
-      'These stays are furthest below their own average of the last 30 days today. Compared is the total for 2 adults on the cheapest reviewed site, as of this morning. The final price with taxes and fees is on the booking site.',
-    meta: (city: string, dates: string, drop: string) =>
-      `${city} · ${dates} · ${drop} below the 30-day average`,
+      'These stays are furthest below their own average of the last 30 days today. Total for 2 adults, cheapest reviewed site, as of this morning.',
+    meta: (city: string, dates: string, price: string, drop: string) =>
+      `${city} · ${dates} · ${price}, ${drop} below the 30-day average`,
     hint: 'Prices often change several times a day. Check the price on the booking site before you book.',
     button: 'See all deals',
     why: "You're getting this email because you asked for the deals by email on tidaq.com. Once a week.",
@@ -75,6 +75,7 @@ export function newsletterMail(d: {
         meta: t.meta(
           x.city,
           formatDateRange(x.checkIn, x.checkOut, d.locale),
+          formatPrice(x.nowCents, d.locale),
           formatPercent(Math.abs(x.drop), d.locale),
         ),
         url: x.url,

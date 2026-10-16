@@ -1,11 +1,12 @@
 import { formatDateRange, localizedPath, stayPath, type Locale } from '@tidaq/core';
 import { Card } from '@/components/ui/Card';
+import { Price } from '@/components/ui/Price';
 import { PriceDelta } from '@/components/ui/PriceDelta';
 import type { Deal } from '@/lib/data/deals';
 
 /**
- * Deal card (DESIGN.md §3): photo, hotel (→ stay page), city and dates and the drop against the
- * stay's own 30-day average. No euro amount: base rates lack taxes and fees (D-52, C-149).
+ * Deal card (DESIGN.md §3): photo, hotel (→ stay page), city and dates, today's price and the
+ * drop against the stay's own 30-day average. Shared by the homepage and `/deals`.
  */
 export function DealCard({
   deal: d,
@@ -41,7 +42,10 @@ export function DealCard({
         <p className="text-meta mt-1 text-muted-ink">
           {d.cityName[locale]} · {meta}
         </p>
-        <PriceDelta ratio={d.drop} className="mt-4 text-[15px]" />
+        <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+          <Price cents={d.nowCents} size="lg" />
+          <PriceDelta ratio={d.drop} />
+        </div>
       </div>
     </Card>
   );
