@@ -1,11 +1,12 @@
 import { useLocale, useTranslations } from 'next-intl';
 import {
   formatDayMonth,
-  formatPrice,
+  formatPercent,
   goPath,
   localizedPath,
   providerPath,
   rankOffers,
+  vsTypical,
   type Locale,
   type OutboundStay,
   type StayOffer,
@@ -55,9 +56,10 @@ function monogram(name: string): string {
 }
 
 /**
- * Provider table (CRAFT.md §3 Provider row, PLAN §8.3): every reviewed provider's latest stay
- * total, sorted by the price you can expect at checkout, with its Preistreue score and, when tests
- * show a markup, "an der Kasse ≈ …"; the score links to the provider page (C-034b). Commission
+ * Provider table (CRAFT.md §3 Provider row, PLAN §8.3): every reviewed provider, sorted by the
+ * price you can expect at checkout, each against the cheapest in percent (no euros: base rates
+ * lack taxes and fees, D-52, C-149), with its Preistreue score and, when tests show a markup,
+ * "an der Kasse ≈ …"; the score links to the provider page (C-034b). Commission
  * never affects the order. "Zum Angebot ↗" goes
  * through `/go/…` (C-026: click counted, provider search for these dates, new tab); on phones the
  * whole row is the link. Past stays get no links.
@@ -73,8 +75,9 @@ export function ProviderTable({
 }: Props) {
   const t = useTranslations('stay');
   const locale = useLocale() as Locale;
-  const price = (c: number) => formatPrice(c, locale);
   const ranked = rankOffers(offers);
+  const floor = ranked.length ? Math.min(...ranked.map((o) => o.totalCents)) : null;
+  const vs = (c: number) => formatPercent(vsTypical(c, 1, floor) ?? 0, locale, { signed: true });
   const bookable = stay.checkIn >= today;
   const hasLinks = bookable && ranked.some((o) => o.link);
   const [first, second] = ranked;
@@ -147,11 +150,11 @@ export function ProviderTable({
               </span>
               <span className="flex flex-col items-end text-right">
                 <span className="text-[16px] font-extrabold whitespace-nowrap tabular-nums">
-                  {price(o.totalCents)}
+                  {vs(o.totalCents)}
                 </span>
                 {o.expectedCents !== null && (
                   <span className="text-[12.5px] font-semibold whitespace-nowrap text-bad-ink tabular-nums">
-                    {t('expected', { price: price(o.expectedCents) })}
+                    {t('expected', { price: vs(o.expectedCents) })}
                   </span>
                 )}
               </span>

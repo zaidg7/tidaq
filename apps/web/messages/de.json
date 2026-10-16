@@ -174,7 +174,7 @@
     "copyright": "© {year} Tidaq",
     "source": "Ohne Cookies · Partnerlinks sind gekennzeichnet.",
     "about": "Tidaq",
-    "note": "Gesamtpreise für 2 Erwachsene inkl. Steuern. Preise ändern sich oft mehrmals am Tag. Partnerlinks sind gekennzeichnet."
+    "note": "Euro-Beträge sind Endpreise für 2 Erwachsene inkl. Steuern und Gebühren. Preise ändern sich oft mehrmals am Tag. Partnerlinks sind gekennzeichnet."
   },
   "notFound": {
     "meta": "Seite nicht gefunden",
@@ -211,7 +211,9 @@
     "range": "Zeitraum",
     "range14": "14 T",
     "range30": "30 T",
-    "rangeAll": "Alles"
+    "rangeAll": "Alles",
+    "avgLegendVs": "Gestrichelt: Ø der letzten 30 Tage",
+    "priceVs": "Gegenüber Ø"
   },
   "verdict": {
     "near_low": "Nah am tiefsten Preis seit {since}.",
@@ -233,7 +235,9 @@
     "zone_cheap": "Günstig",
     "zone_normal": "Normal",
     "zone_dear": "Teuer",
-    "meterLabel": "{zone}: aktuell {now}, zwischen Tief {low} und Hoch {high} seit {since}"
+    "meterLabel": "{zone}: aktuell {now}, zwischen Tief {low} und Hoch {high} seit {since}",
+    "vsAvgSince": "gegenüber dem Ø seit {since}",
+    "vsAvg30": "gegenüber dem Ø der letzten 30 Tage"
   },
   "collecting": {
     "title": "Wir sammeln noch Preise",
@@ -361,7 +365,7 @@
     "untrackedTitle": "So weit im Voraus haben wir noch keine Preise",
     "untrackedText": "Wir sammeln jeden Morgen die Preise jeder Nacht für die nächsten {days} Tage. Diese Daten liegen weiter in der Zukunft.",
     "historyHow": "So rechnen wir",
-    "realVsNights": "Für genau diese Daten zeigen die Anbieter heute {real}, die Summe der Nächte liegt bei {nights}.",
+    "realVsNights": "Für genau diese Daten zeigen die Anbieter heute {pct} gegenüber der Summe der Nächte.",
     "historyNights": "Der Verlauf ist die Summe der Preise der einzelnen Nächte beim selben Anbieter.",
     "untrackedGuestsText": "Den Verlauf jeder Nacht sammeln wir für {adults} Erwachsene. Für andere Gästezahlen prüfen wir den ganzen Aufenthalt.",
     "untrackedGuestsTitle": "Für {adults, plural, one {# Person} other {# Personen}} gibt es noch keinen Verlauf",
@@ -391,7 +395,7 @@
     "toOffer": "Zum Angebot",
     "toOfferLabel": "Zum Angebot bei {provider} (neuer Tab)",
     "partnerLink": "Partnerlink",
-    "offersNote": "Gesamtpreis für den ganzen Aufenthalt, wie ihn der Anbieter bei unserer letzten Abfrage gemeldet hat. Mit Preistreue zeigen wir, wie oft der Preis an der Kasse stimmte. Die Reihenfolge hängt nie von Provisionen ab.",
+    "offersNote": "Verglichen mit dem günstigsten Anbieter, für den ganzen Aufenthalt, bei unserer letzten Abfrage. Den Endpreis mit Steuern und Gebühren siehst du beim Anbieter. Mit Preistreue zeigen wir, wie oft der Preis an der Kasse stimmte. Die Reihenfolge hängt nie von Provisionen ab.",
     "offersUnreviewed": "{n, plural, one {Ein weiterer Anbieter hatte einen Preis, ist aber noch nicht von uns geprüft.} other {# weitere Anbieter hatten einen Preis, sind aber noch nicht von uns geprüft.}}",
     "watchTitle": "Preis beobachten",
     "watchText": "Wir schreiben dir eine E-Mail, wenn der Preis für diesen Aufenthalt fällt. Kostenlos, abmelden mit einem Klick.",
@@ -418,7 +422,10 @@
     "historyRealOnly": "Der Verlauf zeigt nur Preise, die wir für genau diese Daten abgefragt haben. Bei diesem Hotel kosten einzelne Nächte oft anders als der ganze Aufenthalt.",
     "trustDetails": ", Preistreue von {provider} im Detail",
     "requestCreated": "Wir prüfen diese Daten ab jetzt jeden Tag. Die ersten Preise kommen meist nach ein paar Minuten, lad die Seite dann neu.",
-    "requestFull": "Heute nehmen wir keine neuen Daten mehr an. Öffne die Seite morgen noch einmal, dann prüfen wir sie. Oder wähl unten Daten, die wir schon prüfen."
+    "requestFull": "Heute nehmen wir keine neuen Daten mehr an. Öffne die Seite morgen noch einmal, dann prüfen wir sie. Oder wähl unten Daten, die wir schon prüfen.",
+    "tracked": "Beobachtet",
+    "trackedDays": "{n, plural, one {# Tag} other {# Tage}}",
+    "vsAvgNote": "Prozent gegenüber Ø 30 Tage"
   },
   "hotel": {
     "metaTitle": "{hotel}: Preise jeder Nacht | Tidaq",

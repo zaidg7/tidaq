@@ -204,7 +204,8 @@ export function vsTypical(
   nights: number,
   typical: number | null,
 ): number | null {
-  if (typical === null || typical <= 0 || nights < 1 || !Number.isFinite(totalCents)) return null;
+  if (typical === null || !(typical > 0) || !Number.isFinite(typical)) return null;
+  if (nights < 1 || !Number.isFinite(totalCents)) return null;
   const r = Math.round(((totalCents / nights - typical) / typical) * 100) / 100;
   return r === 0 ? 0 : r; // −0 → 0
 }
