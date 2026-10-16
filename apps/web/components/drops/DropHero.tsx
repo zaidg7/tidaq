@@ -5,7 +5,6 @@ import {
   dropPath,
   formatPrice,
   localizedPath,
-  usualCents,
   type Locale,
 } from '@tidaq/core';
 import { Icon } from '@/components/ui/Icon';
@@ -28,7 +27,6 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
   const locale = useLocale() as Locale;
   const d = g.top;
   const pct = dropPercent(d.drop, locale);
-  const usual = usualCents(d);
   const href = localizedPath(dropPath(g.hotel.slug, d), locale);
   const pic = cardPhoto(g.hotel.slug, g.city.slug);
   return (
@@ -73,20 +71,21 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
           {g.city.name[locale]} · {t('night', { date: dropDates(d, locale), n: d.nights })}
         </p>
         <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1 md:mt-7">
+          {/* Exact quote (D-52): nightly as the site shows it, then the stay total. */}
           <strong className="text-[40px] leading-none font-bold tracking-[-0.04em] tabular-nums md:text-[56px]">
-            {formatPrice(d.nowCents, locale)}
+            {t('perNight', { price: formatPrice(d.nightlyCents, locale) })}
           </strong>
-          <span className="text-[16px] text-muted tabular-nums md:text-[17px]">
-            {t('was', { price: formatPrice(d.prevCents, locale) })}
-          </span>
+        </p>
+        <p className="mt-1.5 text-[15px] text-muted tabular-nums md:text-[16px]">
+          {t('totalFor', { price: formatPrice(d.nowCents, locale), n: d.nights })} ·{' '}
+          {t('inclTaxes')}
         </p>
         <p className={cn('mt-2.5 text-[16px] font-semibold', dropTextClass(d.drop))}>
           {d.provider.direct
-            ? t('savedDirect', { amount: formatPrice(d.savedCents, locale) })
-            : t('saved', { amount: formatPrice(d.savedCents, locale), provider: d.provider.name })}
+            ? t('sinceDirect', { pct: dropPercent(d.drop, locale) })
+            : t('sinceAt', { pct: dropPercent(d.drop, locale), provider: d.provider.name })}
         </p>
         <p className="mt-0.5 text-[15px] text-muted">
-          {usual !== null && <>{t('usual', { price: formatPrice(usual, locale) })} · </>}
           {d.priorDays >= 2 ? t('newLow', { days: d.priorDays + 1 }) : t('firstLow')}
         </p>
         <span

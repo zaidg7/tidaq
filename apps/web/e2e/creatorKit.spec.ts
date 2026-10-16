@@ -31,7 +31,9 @@ test.describe('creator kit (C-080c, sample data on /dev/admin/drops)', () => {
     await expect(first.getByRole('heading')).toHaveText('1. Baur au Lac');
     const caption = plain(await first.getByLabel('Text für Baur au Lac').inputValue());
     expect(caption).toContain('Price Drop im Baur au Lac, Zürich');
-    expect(caption).toMatch(/: 3\.420 € statt 4\.945 € am Vortag \(−31 %\) bei Booking\.com\./);
+    expect(caption).toMatch(
+      /: 684 € pro Nacht bei Booking\.com, 3\.420 € für 5 Nächte inkl\. Steuern und Gebühren \(−31 % seit gestern\)\./,
+    );
     expect(caption).toContain('#zürich');
     await expect(first.getByRole('link', { name: 'Seite öffnen' })).toHaveAttribute(
       'href',
@@ -54,7 +56,7 @@ test.describe('creator kit (C-080c, sample data on /dev/admin/drops)', () => {
     expect(caption.split('\n')[0]).toMatch(
       /^Die 5 größten Price Drops in Luxushotels seit gestern/,
     );
-    expect(caption).toContain('1. Baur au Lac, Zürich: 3.420 € statt 4.945 € (−31 %)');
+    expect(caption).toContain('1. Baur au Lac, Zürich: 684 € pro Nacht (−31 % seit gestern)');
 
     const files: Download[] = [];
     page.on('download', (d) => files.push(d));

@@ -10,7 +10,7 @@ test.describe('drops on hotel and stay pages (C-080i)', () => {
     const callout = page.getByRole('complementary', { name: 'Price Drop bei diesem Hotel' });
     await expect(callout).toBeVisible();
     expect(plain(await callout.textContent())).toMatch(
-      /5 Nächte\): 3\.420 € statt 4\.945 € am Vortag, −31 % bei Booking\.com\./,
+      /5 Nächte\): 3\.420 € bei Booking\.com, −31 % seit gestern\./,
     );
     await expect(callout.getByRole('link', { name: 'Zum Price Drop' })).toHaveAttribute(
       'href',
@@ -26,7 +26,7 @@ test.describe('drops on hotel and stay pages (C-080i)', () => {
     await page.goto('/dev/stay/tracked?drop');
     const callout = page.getByRole('complementary', { name: 'Price Drop seit gestern' });
     expect(plain(await callout.textContent())).toContain(
-      'Dieser Aufenthalt kostet heute 3.420 € statt 4.945 € am Vortag, −31 % bei Booking.com.',
+      'Dieser Aufenthalt kostet heute 3.420 € bei Booking.com, −31 % seit gestern.',
     );
     await page.goto('/dev/stay/tracked');
     await expect(page.getByRole('complementary', { name: /Price Drop/ })).toHaveCount(0);

@@ -109,7 +109,6 @@ export function FromVideos({ items }: { items: VideoItem[] }) {
                       <span className="font-semibold tabular-nums">
                         {t('livePrices', {
                           now: formatPrice(live.nowCents, locale),
-                          was: formatPrice(live.prevCents, locale),
                         })}
                       </span>
                     </span>

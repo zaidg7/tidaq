@@ -29,15 +29,19 @@ test.describe('Price Drop-Radar (C-080a, sample data on /dev/drops)', () => {
     await expect(hero).toContainText('Price Drop des Tages');
     await expect(hero).toContainText('Preis um −31 % gefallen');
     await expect(hero).toContainText('5 Nächte, 2 Erwachsene');
-    await expect(hero).toContainText('3.420 €');
-    await expect(hero).toContainText('Vortag 4.945 €');
-    await expect(hero).toContainText('1.525 € weniger bei Booking.com');
-    await expect(hero).toContainText('Sonst um 5.143 € · Niedrigster Preis seit 10 Tagen');
+    // Exact quote only (D-52): per night as the site shows it, the stay total, taxes included.
+    await expect(hero).toContainText('684 € pro Nacht');
+    await expect(hero).toContainText('3.420 € für 5 Nächte · inkl. Steuern und Gebühren');
+    await expect(hero).toContainText('−31 % seit gestern bei Booking.com');
+    await expect(hero).toContainText('Niedrigster Preis seit 10 Tagen');
+    await expect(hero).not.toContainText('Vortag');
+    await expect(hero).not.toContainText('Sonst um');
 
     // The hero leaves the grid.
     const cards = main.getByRole('list', { name: 'Price Drops' }).getByRole('listitem');
     await expect(cards).toHaveCount(4);
-    await expect(cards.first()).toContainText('685 € weniger direkt beim Hotel');
+    await expect(cards.first()).toContainText(/% seit gestern direkt beim Hotel/);
+    await expect(cards.first()).not.toContainText('weniger');
     await expect(cards.nth(2)).toContainText('Niedrigster Preis, seit wir messen');
     await expect(cards.nth(2)).not.toContainText('Sonst um');
   });
@@ -65,8 +69,8 @@ test.describe('Price Drop-Radar (C-080a, sample data on /dev/drops)', () => {
     await expect(card).toContainText(
       /Hamburg · \p{L}{2}, \d+\. \p{L}+\.? – \p{L}{2}, \d+\. \p{L}+\.?\d/u,
     );
-    await expect(card).toContainText('4.900 €');
-    await expect(card).toContainText('Vortag 6.200 €');
+    await expect(card).toContainText('700 € pro Nacht');
+    await expect(card).toContainText('4.900 € für 7 Nächte');
     const link = card.getByRole('link', { name: 'Fairmont Hotel Vier Jahreszeiten' });
     await expect(link).toHaveAttribute(
       'href',
@@ -75,12 +79,8 @@ test.describe('Price Drop-Radar (C-080a, sample data on /dev/drops)', () => {
 
     await page.goto('/dev/drops?share=fairmont-hotel-vier-jahreszeiten-hamburg');
     const main = page.getByRole('main');
-    await expect(main.getByRole('heading', { name: 'So hat sich der Preis bewegt' })).toBeVisible();
-    await expect(
-      main.getByText(
-        'Gesamtpreis für alle 7 Nächte auf einer Buchungsseite, jeden Morgen gemessen.',
-      ),
-    ).toBeVisible();
+    await expect(main).toContainText('700 € pro Nacht');
+    await expect(main).toContainText('4.900 € für 7 Nächte');
     await expect(
       main.getByRole('list').getByText('7 Nächte', { exact: true }).first(),
     ).toBeVisible();
@@ -238,8 +238,9 @@ test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
     const main = page.getByRole('main');
     const card = main.getByRole('region', { name: 'Preis um −31 % gefallen' });
     await expect(card.getByText('Price Drop seit gestern')).toBeVisible();
-    await expect(card).toContainText('3.420 €');
-    await expect(card).toContainText('statt 4.945 € gestern');
+    await expect(card).toContainText('684 € pro Nacht');
+    await expect(card).toContainText('3.420 € für 5 Nächte · inkl. Steuern und Gebühren');
+    await expect(card).not.toContainText('statt');
     await expect(card).toContainText(/Geprüft heute, \d\d:\d\d bei Booking\.com\./);
     await expect(
       main.getByRole('link', { name: 'Alle Seiten und Preise für diese Daten' }),
@@ -248,13 +249,11 @@ test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
       'href',
       '/price-drops?stadt=zuerich',
     );
-    await expect(main.getByRole('heading', { name: 'So hat sich der Preis bewegt' })).toBeVisible();
-    await expect(
-      main.getByRole('img', { name: /^Preisverlauf: .+ kostete .+, heute 3\.420 €\.$/ }),
-    ).toBeVisible();
-    const meter = main.getByRole('region', { name: 'Günstig oder teuer?' });
-    await expect(meter.getByRole('img', { name: /^Günstig: aktuell 3\.420 €/ })).toBeVisible();
-    await expect(meter).toContainText('Sonst kosten diese 5 Nächte um');
+    // Chart and meter used base rates without taxes; they're gone until exact history exists.
+    await expect(main.getByRole('heading', { name: 'So hat sich der Preis bewegt' })).toHaveCount(
+      0,
+    );
+    await expect(main.getByRole('region', { name: 'Günstig oder teuer?' })).toHaveCount(0);
     const nights = main.getByRole('region', { name: 'Weitere Price Drops hier' });
     // Different dates only (C-125): the 7-night trip a day later overlaps and is left out.
     await expect(nights.getByRole('link')).toHaveCount(3);
@@ -275,7 +274,7 @@ test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
   test('straight to the site with the price: labelled partner link, new tab', async ({ page }) => {
     await page.goto('/dev/drops?share');
     const offer = page.getByRole('link', {
-      name: 'Bei Booking.com ansehen · 3.420 € (neuer Tab)',
+      name: 'Bei Booking.com ansehen · 684 € pro Nacht (neuer Tab)',
     });
     await expect(offer).toHaveAttribute(
       'href',
@@ -283,7 +282,7 @@ test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
     );
     await expect(offer).toHaveAttribute('target', '_blank');
     await expect(offer).toHaveAttribute('rel', 'sponsored nofollow noopener');
-    await expect(page.getByText(/^Partnerlink\. Prüf den Preis vor dem Buchen/)).toBeVisible();
+    await expect(page.getByText(/^Partnerlink\. Günstigster Tarif der Seite/)).toBeVisible();
     await expect(page.getByRole('link', { name: 'Mehr dazu' })).toHaveAttribute(
       'href',
       '/affiliate-hinweis',

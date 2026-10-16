@@ -52,6 +52,13 @@ export const priceDropRowSchema = z.object({
   provider_direct: z.boolean(),
   offers: z.number().int().nonnegative(),
   confirmed: z.boolean(),
+  /**
+   * The exact quote (C-148, D-52): the site's nightly price incl. taxes and fees as Google Hotels
+   * shows it, its link and when we asked. `now_cents` is then the quoted stay total.
+   */
+  quote_nightly_cents: cents.nullish(),
+  quote_url: z.string().nullish(),
+  quoted_at: z.string().nullish(),
 });
 export type PriceDropRow = z.infer<typeof priceDropRowSchema>;
 
@@ -81,6 +88,12 @@ export interface PriceDrop {
   offers: number;
   /** A second reviewed site was within 10 % of the price. */
   confirmed: boolean;
+  /**
+   * Nightly price as the site shows it, taxes and fees included (exact quote, D-52). `nowCents`
+   * is nightly × nights. Amounts measured on base rates (`prevCents`, `savedCents`, the prior
+   * ones) are for sorting and the percentage only, never shown (C-148b).
+   */
+  nightlyCents: number;
 }
 
 export interface HotelDrops {
@@ -110,6 +123,9 @@ function toDrop(r: PriceDropRow): PriceDrop {
     provider: { slug: r.provider_slug, name: r.provider_name, direct: r.provider_direct },
     offers: r.offers,
     confirmed: r.confirmed,
+    nightlyCents:
+      r.quote_nightly_cents ??
+      Math.round(r.now_cents / Math.max(1, daysBetween(r.night, checkOut))),
   };
 }
 

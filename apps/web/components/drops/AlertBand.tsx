@@ -89,7 +89,6 @@ export async function AlertBand({
               <p className="truncate text-[13px] text-night-ink/78 md:text-[14px]">
                 {t('alertSub', {
                   now: formatPrice(d.nowCents, locale),
-                  prev: formatPrice(d.prevCents, locale),
                   date: dropDates(d, locale),
                 })}
               </p>

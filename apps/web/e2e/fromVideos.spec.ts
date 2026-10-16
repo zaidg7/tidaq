@@ -21,7 +21,8 @@ test.describe('"Aus unseren Videos" on the bio-link landing (C-080j)', () => {
     // Cheaper today than in the video: today's prices, not the post's.
     const baur = plain(await links.nth(1).textContent());
     expect(baur).toContain('Baur au Lac');
-    expect(baur).toContain('3.420 € statt 4.945 €');
+    expect(baur).toContain('3.420 €');
+    expect(baur).not.toContain('statt');
 
     const claridges = plain(await links.nth(2).textContent());
     expect(claridges).toContain("Claridge's");
