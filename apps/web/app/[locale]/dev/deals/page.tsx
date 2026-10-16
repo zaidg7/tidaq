@@ -18,7 +18,8 @@ const deal = (
   city: [string, string],
   checkIn: string,
   checkOut: string,
-  nowCents: number,
+  // Sample price kept in the calls for reference; the card shows only the drop (C-149).
+  _nowCents: number,
   drop: number,
 ): Deal => ({
   stayId,
@@ -29,7 +30,6 @@ const deal = (
   checkIn,
   checkOut,
   adults: 2,
-  nowCents,
   drop,
   imageUrl: hotelPhoto(hotelSlug)?.[960].src ?? null,
 });

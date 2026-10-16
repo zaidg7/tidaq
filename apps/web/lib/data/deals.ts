@@ -30,7 +30,6 @@ export interface Deal {
   checkIn: string;
   checkOut: string;
   adults: number;
-  nowCents: number;
   /** Relative to the 30-day average, e.g. −0.14. */
   drop: number;
   imageUrl: string | null;
@@ -70,7 +69,6 @@ export async function getDeals(limit = 3): Promise<Deal[] | null> {
       checkIn: d.check_in,
       checkOut: d.check_out,
       adults: d.adults,
-      nowCents: d.now_cents as number,
       drop: d.drop,
       imageUrl: hotelPhoto(d.hotel_slug)?.[960].src ?? null,
     }));

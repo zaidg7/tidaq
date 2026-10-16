@@ -3,10 +3,11 @@ import { getTranslations } from 'next-intl/server';
 import {
   addDays,
   formatDayMonth,
-  formatPrice,
+  formatPercent,
   formatWeekdayDayMonth,
   localizedPath,
   stayPath,
+  vsTypical,
   type Locale,
 } from '@tidaq/core';
 import { buttonClasses } from '@/components/ui/Button';
@@ -44,6 +45,7 @@ type Example = {
  * stay whose verdict says cheap today when we have one (`getFeaturedStay(…, 'cheap')`), with a
  * link to its price history. Until a stay has 7 days of prices, an example with made-up prices,
  * marked "Beispiel" on the card and in a note under it (CLAUDE.md rule 8: no fake facts).
+ * Today against the usual price in percent, no euros: base rates lack taxes (D-52, C-149).
  */
 export async function HomeResult({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'home' });
@@ -159,11 +161,13 @@ export async function HomeResult({ locale }: { locale: Locale }) {
                 {ex.near ? t('resultChipLow') : t('resultChipGood')}
               </span>
               <p className="mt-2.5 text-[40px] leading-none font-bold tracking-[-0.04em] tabular-nums md:mt-3 md:text-[48px]">
-                {formatPrice(ex.nowCents, locale)}
+                {formatPercent(vsTypical(ex.nowCents, 1, ex.usualCents) ?? 0, locale, {
+                  signed: true,
+                })}
               </p>
             </div>
             <p className="mb-1 text-[15px] text-muted md:text-[16px]">
-              {t.rich('resultUsual', { price: formatPrice(ex.usualCents, locale), b })}
+              {t.rich('resultUsual', { b })}
             </p>
           </div>
 
@@ -173,6 +177,7 @@ export async function HomeResult({ locale }: { locale: Locale }) {
             highCents={ex.highCents}
             nowCents={ex.nowCents}
             since={ex.since}
+            base={ex.usualCents}
             size="lg"
             className="mt-5 md:mt-7"
           />

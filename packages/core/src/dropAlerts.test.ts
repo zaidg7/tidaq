@@ -120,11 +120,11 @@ describe('dropAlertMail', () => {
     expect(plain(first?.badge ?? '')).toBe('−31 %');
     expect(content.eyebrow).toBe('Price Alert');
     expect(plain(first?.meta ?? '')).toBe(
-      'Zürich · Di, 27. Okt. · 684 € statt 989 € am Vortag, sonst um 1.029 € · 1 weitere Nacht günstiger',
+      'Zürich · Di, 27. Okt. · jetzt 684 € inkl. Steuern und Gebühren · 1 weitere Nacht günstiger',
     );
     expect(first?.url).toBe('https://tidaq.com/price-drops/baur-au-lac-zuerich/2026-10-27');
-    // One earlier check only: no "usual" price.
-    expect(plain(second?.meta ?? '')).not.toContain('sonst um');
+    // No base-rate amounts (D-52, C-149).
+    expect(plain(second?.meta ?? '')).not.toContain('statt');
     expect(content.button.url).toBe('https://tidaq.com/price-drops');
     expect(content.footer.join(' ')).toContain('Höchstens eine am Tag.');
     expect(content.footer.join(' ')).toContain('https://tidaq.com/alarm/verwalten/abc');
@@ -139,7 +139,7 @@ describe('dropAlertMail', () => {
     );
     const en = mail('en', 'Zurich');
     expect(plain(en.subject)).toBe('Price drop: −31% at Baur au Lac and 1 more');
-    expect(plain(en.content.items?.[0]?.meta ?? '')).toContain('instead of');
+    expect(plain(en.content.items?.[0]?.meta ?? '')).toContain('incl. taxes and fees');
   });
 
   it('followed hotels in the heading (C-080k)', () => {
