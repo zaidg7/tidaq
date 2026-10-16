@@ -35,6 +35,13 @@ export interface City {
   geos: string[];
   /** LiteAPI city names in `countryCode`. */
   liteCities: string[];
+  /**
+   * Holiday regions with many small towns (C-155: Mallorca, Côte d'Azur, Bali…): LiteAPI's
+   * five-star hotels within `radiusKm` of this point instead of by city name.
+   */
+  area?: { lat: number; lng: number; radiusKm: number };
+  /** Xotelo list pages (100 hotels each, by popularity); regions have thousands of hotels. */
+  pages?: number;
 }
 
 /** The 25 most popular luxury cities (C-071) plus Hamburg and Frankfurt (launch, D-04). */
@@ -255,6 +262,214 @@ export const CITIES: City[] = [
     geos: ['g255060'],
     liteCities: ['Sydney'],
   },
+  // C-155: high-travel holiday places (Zaid, 16 Oct: "at least 400-500 five-star hotels,
+  // prioritise high travel places"). Tripadvisor ids checked by their hotel lists.
+  {
+    slug: 'mallorca',
+    nameDe: 'Mallorca',
+    nameEn: 'Mallorca',
+    countryCode: 'ES',
+    geos: ['g187462'],
+    liteCities: [],
+    area: { lat: 39.6, lng: 2.95, radiusKm: 70 },
+    pages: 20,
+  },
+  {
+    slug: 'ibiza',
+    nameDe: 'Ibiza',
+    nameEn: 'Ibiza',
+    countryCode: 'ES',
+    geos: ['g187460'],
+    liteCities: [],
+    area: { lat: 38.98, lng: 1.43, radiusKm: 25 },
+    pages: 10,
+  },
+  {
+    slug: 'cote-d-azur',
+    nameDe: 'Côte d’Azur',
+    nameEn: 'French Riviera',
+    countryCode: 'FR',
+    geos: ['g187216', 'g187242'],
+    liteCities: [],
+    area: { lat: 43.5, lng: 6.95, radiusKm: 75 },
+    pages: 20,
+  },
+  {
+    slug: 'monaco',
+    nameDe: 'Monaco',
+    nameEn: 'Monaco',
+    countryCode: 'MC',
+    geos: ['g190409'],
+    liteCities: [],
+    area: { lat: 43.74, lng: 7.42, radiusKm: 4 },
+  },
+  {
+    slug: 'santorini',
+    nameDe: 'Santorini',
+    nameEn: 'Santorini',
+    countryCode: 'GR',
+    geos: ['g189433'],
+    liteCities: [],
+    area: { lat: 36.4, lng: 25.43, radiusKm: 15 },
+    pages: 20,
+  },
+  {
+    slug: 'mykonos',
+    nameDe: 'Mykonos',
+    nameEn: 'Mykonos',
+    countryCode: 'GR',
+    geos: ['g189430'],
+    liteCities: [],
+    area: { lat: 37.45, lng: 25.36, radiusKm: 10 },
+    pages: 12,
+  },
+  {
+    slug: 'amalfikueste',
+    nameDe: 'Amalfiküste',
+    nameEn: 'Amalfi Coast',
+    countryCode: 'IT',
+    geos: ['g187779'],
+    liteCities: [],
+    area: { lat: 40.635, lng: 14.55, radiusKm: 12 },
+    pages: 18,
+  },
+  {
+    slug: 'capri',
+    nameDe: 'Capri',
+    nameEn: 'Capri',
+    countryCode: 'IT',
+    geos: ['g187783'],
+    liteCities: [],
+    area: { lat: 40.55, lng: 14.23, radiusKm: 6 },
+  },
+  {
+    slug: 'venedig',
+    nameDe: 'Venedig',
+    nameEn: 'Venice',
+    countryCode: 'IT',
+    geos: ['g187870'],
+    liteCities: [],
+    area: { lat: 45.437, lng: 12.335, radiusKm: 8 },
+    pages: 17,
+  },
+  {
+    slug: 'florenz',
+    nameDe: 'Florenz',
+    nameEn: 'Florence',
+    countryCode: 'IT',
+    geos: ['g187895'],
+    liteCities: [],
+    area: { lat: 43.77, lng: 11.255, radiusKm: 10 },
+    pages: 20,
+  },
+  {
+    slug: 'prag',
+    nameDe: 'Prag',
+    nameEn: 'Prague',
+    countryCode: 'CZ',
+    geos: ['g274707'],
+    liteCities: [],
+    area: { lat: 50.08, lng: 14.42, radiusKm: 15 },
+    pages: 20,
+  },
+  {
+    slug: 'budapest',
+    nameDe: 'Budapest',
+    nameEn: 'Budapest',
+    countryCode: 'HU',
+    geos: ['g274887'],
+    liteCities: [],
+    area: { lat: 47.5, lng: 19.05, radiusKm: 15 },
+    pages: 20,
+  },
+  {
+    slug: 'zermatt',
+    nameDe: 'Zermatt',
+    nameEn: 'Zermatt',
+    countryCode: 'CH',
+    geos: ['g188098'],
+    liteCities: [],
+    area: { lat: 46.02, lng: 7.75, radiusKm: 6 },
+  },
+  {
+    slug: 'marrakesch',
+    nameDe: 'Marrakesch',
+    nameEn: 'Marrakech',
+    countryCode: 'MA',
+    geos: ['g293734'],
+    liteCities: [],
+    area: { lat: 31.63, lng: -8.0, radiusKm: 25 },
+    pages: 20,
+  },
+  {
+    slug: 'bali',
+    nameDe: 'Bali',
+    nameEn: 'Bali',
+    countryCode: 'ID',
+    geos: ['g294226'],
+    liteCities: [],
+    area: { lat: -8.6, lng: 115.2, radiusKm: 60 },
+    pages: 32,
+  },
+  {
+    slug: 'phuket',
+    nameDe: 'Phuket',
+    nameEn: 'Phuket',
+    countryCode: 'TH',
+    geos: ['g293920'],
+    liteCities: [],
+    area: { lat: 7.95, lng: 98.33, radiusKm: 35 },
+    pages: 30,
+  },
+  {
+    slug: 'doha',
+    nameDe: 'Doha',
+    nameEn: 'Doha',
+    countryCode: 'QA',
+    geos: ['g294009'],
+    liteCities: [],
+    area: { lat: 25.3, lng: 51.5, radiusKm: 25 },
+  },
+  {
+    slug: 'mauritius',
+    nameDe: 'Mauritius',
+    nameEn: 'Mauritius',
+    countryCode: 'MU',
+    geos: ['g293816'],
+    liteCities: [],
+    area: { lat: -20.25, lng: 57.55, radiusKm: 60 },
+    pages: 15,
+  },
+  {
+    slug: 'seychellen',
+    nameDe: 'Seychellen',
+    nameEn: 'Seychelles',
+    countryCode: 'SC',
+    geos: ['g293738'],
+    liteCities: [],
+    area: { lat: -4.6, lng: 55.5, radiusKm: 80 },
+    pages: 8,
+  },
+  {
+    slug: 'kapstadt',
+    nameDe: 'Kapstadt',
+    nameEn: 'Cape Town',
+    countryCode: 'ZA',
+    geos: ['g1722390'],
+    liteCities: [],
+    area: { lat: -33.95, lng: 18.42, radiusKm: 25 },
+    pages: 20,
+  },
+  {
+    slug: 'riviera-maya',
+    nameDe: 'Cancún & Riviera Maya',
+    nameEn: 'Cancún & Riviera Maya',
+    countryCode: 'MX',
+    geos: ['g150807', 'g150812', 'g150813'],
+    liteCities: [],
+    area: { lat: 20.9, lng: -86.95, radiusKm: 110 },
+    pages: 14,
+  },
 ];
 
 interface XoteloHotel {
@@ -310,9 +525,9 @@ async function getJson(url: string, headers: Record<string, string> = {}): Promi
   }
 }
 
-async function xoteloList(geo: string): Promise<XoteloHotel[]> {
+async function xoteloList(geo: string, pages = PAGES): Promise<XoteloHotel[]> {
   const out: XoteloHotel[] = [];
-  for (let page = 0; page < PAGES; page++) {
+  for (let page = 0; page < pages; page++) {
     const data = (await getJson(
       `https://data.xotelo.com/api/list?location_key=${geo}&offset=${page * 100}&limit=100&sort=popularity`,
     )) as { result?: { list?: XoteloHotel[]; total_count?: number } };
@@ -324,9 +539,17 @@ async function xoteloList(geo: string): Promise<XoteloHotel[]> {
   return out;
 }
 
-async function liteFiveStar(countryCode: string, cityName: string | null): Promise<LiteHotel[]> {
+async function liteFiveStar(
+  countryCode: string,
+  cityName: string | null,
+  area?: City['area'],
+): Promise<LiteHotel[]> {
   const key = process.env.LITEAPI_KEY;
-  const city = cityName ? `&cityName=${encodeURIComponent(cityName)}` : '';
+  const city = area
+    ? `&latitude=${area.lat}&longitude=${area.lng}&radius=${area.radiusKm * 1000}`
+    : cityName
+      ? `&cityName=${encodeURIComponent(cityName)}`
+      : '';
   const data = (await getJson(
     `https://api.liteapi.travel/v3.0/data/hotels?countryCode=${countryCode}${city}&starRating=5&limit=1000`,
     key ? { 'x-api-key': key } : {},
@@ -454,10 +677,10 @@ async function main() {
     if (only.length && !only.includes(c.slug)) continue;
     const lite: LiteHotel[] = [];
     for (const name of c.liteCities.length ? c.liteCities : [null]) {
-      lite.push(...(await liteFiveStar(c.countryCode, name)));
+      lite.push(...(await liteFiveStar(c.countryCode, name, c.area)));
     }
     const xo: XoteloHotel[] = [];
-    for (const geo of c.geos) xo.push(...(await xoteloList(geo)));
+    for (const geo of c.geos) xo.push(...(await xoteloList(geo, c.pages)));
     all[c.slug] = match(c.slug, lite, xo);
     console.log(
       `${c.slug}: ${lite.length} five-star in LiteAPI, ${xo.length} Xotelo hotels read, ${all[c.slug]?.length} matched`,
