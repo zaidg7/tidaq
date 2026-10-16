@@ -8,7 +8,7 @@ import { runCollect } from './collect';
 import type { FetchFn } from './dataforseo';
 import type { Env } from './env';
 import { runPosting, runRequests, type PostRunSummary } from './morning';
-import { runNights } from './nights';
+import { NIGHTS, runNights } from './nights';
 import { crashEmail, postingEmail, sendAdminEmail } from './notify';
 import { runDailyCheck } from './report';
 import type { CollectorStore } from './store';
@@ -27,9 +27,9 @@ export const CRON_EVENING = '0 17 * * *';
  * Collect runs every 2 minutes, all day (D-39, C-013b, C-022c1, C-070a). Each first queues stays a
  * visitor just requested, then fetches at most COLLECT_BATCH stay results; when no stay result is
  * waiting it checks stale Price Drops live (C-142) and prices the night grid with the requests
- * left, up to NIGHT_BATCH nights (stay results and nights together would
- * break the free plan's 50 requests per run). ~4,200 nights a day take ~4 hours after 00:00 UTC,
- * the ~400 morning stays ~30 minutes after 05:00. Idle, a run costs three queries.
+ * left, up to NIGHT_BATCH nights, and starts no night call later than 90 s into the run (C-151,
+ * Workers Paid). The ~400 morning stays take ~30 minutes after 05:00. Idle, a run costs three
+ * queries.
  */
 export const CRON_COLLECT = '*/2 * * * *';
 /** Daily check after the morning collect window: prune raw JSON, email problems (C-013c). */
@@ -88,6 +88,7 @@ export function createWorker(deps: Deps = {}) {
    * stays under the free plan's 50 requests. A failed request run doesn't stop the rest.
    */
   const collectCycle = async (store: CollectorStore, env: Env) => {
+    const started = Date.now();
     let requests: Awaited<ReturnType<typeof runRequests>> | null = null;
     try {
       requests = await runRequests({ store, env, now: now(), fetchFn: deps.fetchFn });
@@ -120,6 +121,8 @@ export function createWorker(deps: Deps = {}) {
       reserve:
         (drops ? drops.requests : DROP_CHECK.batch + 3) +
         (quotes ? quotes.requests : QUOTES.fetchLimit + 8),
+      // Workers Paid (C-151): time, not requests, bounds the run; it must end before the next.
+      deadline: started + NIGHTS.runBudgetMs,
     });
     return { requests, collect, drops, quotes, nights };
   };

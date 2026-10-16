@@ -38,7 +38,7 @@ Steps for Zaid (≈ 3 min):
 
 ## B-023 · Decision: Cloudflare Workers Paid ($5/month) for hundreds of hotels (1 min)
 
-Status: OPEN · Opened: 2026-10-16 by CLOUD · Blocks: C-071b beyond ~90 hotels
+Status: DONE (16 Oct: Zaid upgraded the tidaq account to Workers Paid; C-151 uses it) · Opened: 2026-10-16 by CLOUD · Blocks: C-071b beyond ~90 hotels
 What I need: a yes or no. You want every five-star hotel in the big cities (hundreds). Each hotel costs 270 price calls a day (one per night, D-42) plus the live checks of its drops. The free Cloudflare plan allows 50 requests per run, every 2 minutes: about 28,000 calls a day. 83 hotels already use ~22,400, and since tonight the live drop checks take their share too. So the free plan is full. **Measured 16 Oct:** on 15 Oct the grid priced only 12,785 of the 22,410 nights it should (it reached 18 Mar 2027, not mid-July), so even today's 83 hotels don't fit, and the live drop checks now take ~30 % of each run on top.
 Options:
 
