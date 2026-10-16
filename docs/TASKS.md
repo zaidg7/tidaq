@@ -170,7 +170,9 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-148a | Exact final prices: Google ids for 80 hotels, `drop_quotes`, collector quotes every live drop (DataForSEO, budget-guarded) | CLOUD | M | C-144 | DONE ([#127](https://github.com/zaidg7/tidaq/pull/127)) |
 | C-148b | Radar and drop pages show only quoted prices: per night as the site shows it, stay total, quote time, the site's own link; no base-rate amounts | CLOUD | M | C-148a | DONE ([#128](https://github.com/zaidg7/tidaq/pull/128); SQL `radar_quoted_drops`; chart and meter off on drop pages) |
 | C-148c | Drop page chart and meter from exact quote history (quotes every 4 h build it) | CLOUD | S | C-148b | TODO |
-| C-149 | Hotel, stay and city pages: exact quoted prices or no amounts (they still show Xotelo base rates without taxes) | CLOUD | M | C-148b | TODO |
+| C-149a | Hotel page, city page and search calendar: nights and stays against a usual night at the hotel ("−18 %", "18 % günstiger als üblich"), no euro amounts; `/api/hotel-nights` sends no cents | CLOUD | M | C-148b | DONE (PR pending; core `typicalNightCents`, `vsTypical`, `describeVs`) |
+| C-149b | Stay page without base-rate amounts: verdict, chart and stats in percent vs usual, sites ranked without euros; footer line fixed | CLOUD | M | C-149a | TODO |
+| C-149c | Home "what an answer looks like", /deals, newsletter and stay alerts without base-rate amounts; alert target price in € replaced by a percent | CLOUD | M | C-149b | TODO |
 | C-150 | Lean quote budget: 80 exact quotes a day, $3 a month | CLOUD | S | C-148b | DONE ([#129](https://github.com/zaidg7/tidaq/pull/129)) |
 | C-151 | Workers Paid: 200 nights per collect run, no new call after 90 s (room for ~400 hotels × 270 nights a day) | CLOUD | S | B-023 | DONE (check /admin the next day: nights priced vs due) |
 | C-154 | Second nights run on the odd minutes: two runs price disjoint halves of the hotels (room for ~800 hotels × 270 nights) | CLOUD | S | C-151 | DONE (SQL `night_jobs_part`; collect cron = half 0, `1-59/2` cron = half 1) |
