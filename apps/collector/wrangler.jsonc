@@ -28,6 +28,9 @@
     "NIGHT_BATCH": "40",
     // Free price source (D-41); `dataforseo` switches back to the paid API (needs balance).
     "PRICE_SOURCE": "xotelo",
+    // Exact quotes for Price Drops (C-148, D-52): Google Hotels via DataForSEO, $0.0008 a task.
+    "DROP_QUOTE_DAILY_CAP": "600",
+    "DROP_QUOTE_MONTHLY_USD": "15",
     // Operations emails (failed runs, 80 % budget, daily check). Comma-separated (CLAUDE.md §7).
     "ADMIN_EMAILS": "zaidghazal216@gmail.com",
     // Stays true until the alert engine (C-031) is tested end to end.

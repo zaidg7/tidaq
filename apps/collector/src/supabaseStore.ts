@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { DEALS, DROPS, priceDropRowSchema, z, type Database } from '@tidaq/core';
+import { DEALS, DROPS, priceDropRowSchema, z, type Database, type Json } from '@tidaq/core';
 import type { IngestPayload, OpenTask } from './ingest';
 import type {
   CatalogHotel,
@@ -371,6 +371,96 @@ export function supabaseStore(url: string, serviceRoleKey: string): CollectorSto
         providerSlug: r.provider_slug,
         nowCents: r.now_cents,
       }));
+    },
+
+    async dropQuoteJobs(today, maxAgeMinutes, limit) {
+      const rows = check(
+        await db.rpc('drop_quote_jobs', {
+          p_today: today,
+          p_max_age_minutes: maxAgeMinutes,
+          p_limit: limit,
+        }),
+        'load drop quote jobs',
+      );
+      return rows.map((r) => ({
+        hotelId: r.hotel_id,
+        hotelIdentifier: r.hotel_identifier,
+        night: r.night,
+        checkOut: r.check_out,
+      }));
+    },
+
+    async dropQuotePending(limit) {
+      const rows = check(
+        await db.rpc('drop_quote_pending', { p_limit: limit }),
+        'load pending quotes',
+      );
+      return rows.map((r) => ({
+        taskId: r.task_id,
+        hotelId: r.hotel_id,
+        night: r.night,
+        checkOut: r.check_out,
+        postedAt: r.posted_at,
+      }));
+    },
+
+    async dropQuoteUsage(today) {
+      const rows = check(await db.rpc('drop_quote_usage', { p_today: today }), 'load quote usage');
+      const r = rows[0];
+      return { postedToday: r?.posted_today ?? 0, spentMonthUsd: Number(r?.spent_month_usd ?? 0) };
+    },
+
+    async recordQuotePosts(rows) {
+      checkOk(
+        await db.from('drop_quotes').upsert(
+          rows.map((r) => ({
+            hotel_id: r.hotelId,
+            night: r.night,
+            check_out: r.checkOut,
+            task_id: r.taskId,
+            posted_at: r.postedAt,
+            status: 'posted',
+          })),
+        ),
+        'record quote posts',
+      );
+      checkOk(
+        await db.from('drop_quote_log').insert(
+          rows.map((r) => ({
+            task_id: r.taskId,
+            hotel_id: r.hotelId,
+            night: r.night,
+            check_out: r.checkOut,
+            posted_at: r.postedAt,
+            cost_usd: r.costUsd,
+          })),
+        ),
+        'log quote posts',
+      );
+    },
+
+    async recordQuoteResults(rows) {
+      for (const status of ['done', 'failed'] as const) {
+        const part = rows.filter((r) => r.status === status);
+        if (part.length === 0) continue;
+        checkOk(
+          await db.from('drop_quotes').upsert(
+            part.map((r) =>
+              status === 'done'
+                ? {
+                    hotel_id: r.hotelId,
+                    night: r.night,
+                    check_out: r.checkOut,
+                    status,
+                    quoted_at: r.quotedAt,
+                    offers: r.offers as unknown as Json,
+                  }
+                : { hotel_id: r.hotelId, night: r.night, check_out: r.checkOut, status },
+            ),
+          ),
+          'record quote results',
+        );
+      }
     },
 
     async recordDropChecks(rows) {

@@ -11,6 +11,10 @@ import type {
   CollectorStore,
   DayReport,
   DropCheckJob,
+  PendingQuote,
+  QuoteJob,
+  QuotePost,
+  QuoteResult,
   DropCheckRow,
   NightAccuracyRow,
   RunKind,
@@ -75,6 +79,11 @@ export function memoryStore(
   const drops: PriceDropRow[] = [];
   /** Live checks of drops (C-139): tests push due jobs; recorded checks land in dropChecks. */
   const dropCheckJobs: DropCheckJob[] = [];
+  const quoteJobs: QuoteJob[] = [];
+  const quotePending: PendingQuote[] = [];
+  const quotePosts: QuotePost[] = [];
+  const quoteResults: QuoteResult[] = [];
+  const quoteUsage = { postedToday: 0, spentMonthUsd: 0 };
   const dropChecks: DropCheckRow[] = [];
   /** Website errors for the daily check (C-041c); tests push into it. */
   const webErrors: (WebErrorRow & { env: string })[] = [];
@@ -376,6 +385,21 @@ export function memoryStore(
     async recordDropChecks(rows) {
       dropChecks.push(...rows);
     },
+    async dropQuoteJobs(_today, _maxAge, limit) {
+      return quoteJobs.slice(0, limit);
+    },
+    async dropQuotePending(limit) {
+      return quotePending.slice(0, limit);
+    },
+    async dropQuoteUsage() {
+      return { ...quoteUsage };
+    },
+    async recordQuotePosts(rows) {
+      quotePosts.push(...rows);
+    },
+    async recordQuoteResults(rows) {
+      quoteResults.push(...rows);
+    },
     async nightJobs(today, window, limit) {
       const jobs: { hotelId: number; xoteloKey: string; night: string }[] = [];
       for (let i = 0; i < window; i++) {
@@ -430,6 +454,11 @@ export function memoryStore(
     drops,
     dropCheckJobs,
     dropChecks,
+    quoteJobs,
+    quotePending,
+    quotePosts,
+    quoteResults,
+    quoteUsage,
     alertOffers,
     recordedAlerts,
     /** Sets the `posted_at` time for tasks recorded from now on. */

@@ -1,4 +1,5 @@
 import { runDropChecks, type DropCheckSummary } from './dropChecks';
+import { QUOTES, runDropQuotes, type QuoteRunSummary } from './dropQuotes';
 import { DROP_CHECK, runToken, safeEqual } from '@tidaq/core';
 import { runAlerts } from './alerts';
 import { runDropAlerts } from './dropAlerts';
@@ -94,7 +95,7 @@ export function createWorker(deps: Deps = {}) {
       log('request run failed', { error: String(err) });
     }
     const collect = await runCollect({ store, env, now: now(), fetchFn: deps.fetchFn });
-    if (collect.open > 0) return { requests, collect, drops: null, nights: null };
+    if (collect.open > 0) return { requests, collect, drops: null, quotes: null, nights: null };
     // Live check of Price Drops first (C-139, C-142), the night grid takes the requests left.
     // NIGHT_BATCH is sized to fill the run, so every request the checks use comes off the nights;
     // after a failed check run its requests are unknown, so the most it could have used.
@@ -104,14 +105,23 @@ export function createWorker(deps: Deps = {}) {
     } catch (err) {
       log('drop checks failed', { error: String(err) });
     }
+    // Exact final prices for live drops (C-148): answers in, new tasks out, inside the budget.
+    let quotes: QuoteRunSummary | null = null;
+    try {
+      quotes = await runDropQuotes({ store, env, now: now(), fetchFn: deps.fetchFn });
+    } catch (err) {
+      log('drop quotes failed', { error: String(err) });
+    }
     const nights = await runNights({
       store,
       env,
       now: now(),
       fetchFn: deps.fetchFn,
-      reserve: drops ? drops.requests : DROP_CHECK.batch + 3,
+      reserve:
+        (drops ? drops.requests : DROP_CHECK.batch + 3) +
+        (quotes ? quotes.requests : QUOTES.fetchLimit + 8),
     });
-    return { requests, collect, drops, nights };
+    return { requests, collect, drops, quotes, nights };
   };
 
   return {
@@ -213,6 +223,11 @@ export function createWorker(deps: Deps = {}) {
         if (summary.requests?.runId) log('request run done', { ...summary.requests });
         if (summary.collect.runId !== null) log('collect run done', { ...summary.collect });
         if (summary.drops?.checked) log('drop checks done', { ...summary.drops });
+        if (
+          summary.quotes &&
+          (summary.quotes.posted || summary.quotes.done || summary.quotes.failed)
+        )
+          log('drop quotes done', { ...summary.quotes });
         if (summary.nights?.runId) log('nights run done', { ...summary.nights });
         return;
       }

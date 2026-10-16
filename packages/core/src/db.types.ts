@@ -180,6 +180,66 @@ export type Database = {
           },
         ]
       }
+      drop_quotes: {
+        Row: {
+          check_out: string
+          hotel_id: number
+          night: string
+          offers: Json | null
+          posted_at: string | null
+          quoted_at: string | null
+          status: string
+          task_id: string | null
+        }
+        Insert: {
+          check_out: string
+          hotel_id: number
+          night: string
+          offers?: Json | null
+          posted_at?: string | null
+          quoted_at?: string | null
+          status?: string
+          task_id?: string | null
+        }
+        Update: {
+          check_out?: string
+          hotel_id?: number
+          night?: string
+          offers?: Json | null
+          posted_at?: string | null
+          quoted_at?: string | null
+          status?: string
+          task_id?: string | null
+        }
+        Relationships: []
+      }
+      drop_quote_log: {
+        Row: {
+          check_out: string
+          cost_usd: number
+          hotel_id: number
+          night: string
+          posted_at: string
+          task_id: string
+        }
+        Insert: {
+          check_out: string
+          cost_usd?: number
+          hotel_id: number
+          night: string
+          posted_at?: string
+          task_id: string
+        }
+        Update: {
+          check_out?: string
+          cost_usd?: number
+          hotel_id?: number
+          night?: string
+          posted_at?: string
+          task_id?: string
+        }
+        Relationships: []
+      }
       drop_checks: {
         Row: {
           best_cents: number | null
@@ -1099,6 +1159,24 @@ export type Database = {
       }
       collector_ingest: { Args: { payload: Json }; Returns: Json }
       newsletter_off: { Args: { p_token: string }; Returns: boolean }
+      drop_quote_jobs: {
+        Args: { p_limit: number; p_max_age_minutes: number; p_today: string }
+        Returns: { check_out: string; hotel_id: number; hotel_identifier: string; night: string }[]
+      }
+      drop_quote_pending: {
+        Args: { p_limit: number }
+        Returns: {
+          check_out: string
+          hotel_id: number
+          night: string
+          posted_at: string
+          task_id: string
+        }[]
+      }
+      drop_quote_usage: {
+        Args: { p_today: string }
+        Returns: { posted_today: number; spent_month_usd: number }[]
+      }
       drop_check_jobs: {
         Args: { p_limit: number; p_stale_minutes: number; p_today: string }
         Returns: {
