@@ -36,7 +36,11 @@ export interface KitItem {
   mark: { slug: string; key: string; period: 'day' | 'week'; posted: Platform[] };
 }
 
-const PLATFORM_NAME: Record<Platform, string> = { tiktok: 'TikTok', instagram: 'Instagram' };
+const PLATFORM_NAME: Record<Platform, string> = {
+  tiktok: 'TikTok',
+  instagram: 'Instagram',
+  youtube: 'YouTube',
+};
 
 const font = () => getComputedStyle(document.body).fontFamily;
 

@@ -164,7 +164,7 @@ const postedForm = z.object({
 });
 
 /**
- * "Gepostet" in the creator kit (C-080j): marks a drop as posted on TikTok or Instagram, or takes
+ * "Gepostet" in the creator kit (C-080j): marks a drop as posted on TikTok, Instagram or YouTube, or takes
  * the mark back. The drop is looked up again on the server (today's radar or the week), so only
  * real drops get saved, with their current facts.
  */
