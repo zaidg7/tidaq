@@ -218,14 +218,15 @@ export async function DropPage({
               >
                 {f.pct}
               </p>
-              {/* Exact quote (D-52): nightly as the site shows it, the stay total, taxes in. */}
+              {/* Exact quote (D-52) or the checked price plus measured taxes (D-53). */}
               <p className="mt-3.5">
                 <strong className="text-[32px] font-bold tracking-[-0.03em] text-ink tabular-nums">
                   {td('perNight', { price: price(d.nightlyCents) })}
                 </strong>
               </p>
               <p className="mt-1 text-[15px] text-muted tabular-nums">
-                {td('totalFor', { price: price(d.nowCents), n: d.nights })} · {td('inclTaxes')}
+                {td('totalFor', { price: price(d.nowCents), n: d.nights })} ·{' '}
+                {td(d.exact ? 'inclTaxes' : 'inclTaxesEst')}
               </p>
               <p className="mt-4 flex items-start gap-2.5 border-t border-[#ece9f1] pt-4 text-[15px]">
                 <Icon icon={Check} size={20} className={cn('mt-0.5 shrink-0', sale)} />

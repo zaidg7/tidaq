@@ -65,6 +65,18 @@ describe('quoteAllowance', () => {
   });
 });
 
+describe('quoteAllowance pacing (C-159)', () => {
+  const limits = { dailyCap: 80, monthlyUsd: 3 };
+  const at = (hhmm: string) => new Date(`2026-10-18T${hhmm}:00Z`);
+  it('opens the daily cap over the day instead of all at midnight', () => {
+    // 00:00: 1/1440 of 80 rounds up to 1, plus the burst of 4.
+    expect(quoteAllowance({ postedToday: 0, spentMonthUsd: 0 }, limits, at('00:00'))).toBe(5);
+    expect(quoteAllowance({ postedToday: 0, spentMonthUsd: 0 }, limits, at('11:59'))).toBe(44);
+    expect(quoteAllowance({ postedToday: 40, spentMonthUsd: 0 }, limits, at('11:59'))).toBe(4);
+    expect(quoteAllowance({ postedToday: 79, spentMonthUsd: 0 }, limits, at('23:59'))).toBe(1);
+  });
+});
+
 describe('runDropQuotes (C-148)', () => {
   it('posts a task for each drop that needs a quote and logs it', async () => {
     const mem = memoryStore(hotels, { aliases: SEED_ALIASES });

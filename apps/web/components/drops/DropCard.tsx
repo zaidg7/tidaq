@@ -82,7 +82,7 @@ export function DropCard({ group: g, max = 3 }: { group: HotelDropsWithPhoto; ma
         </p>
         <p className="text-[14px] text-muted tabular-nums">
           {t('totalFor', { price: formatPrice(d.nowCents, locale), n: d.nights })} ·{' '}
-          {t('inclTaxes')}
+          {t(d.exact ? 'inclTaxes' : 'inclTaxesEst')}
         </p>
         <p className={cn('mt-1 text-[14px] font-semibold', dropTextClass(d.drop))}>
           {d.provider.direct

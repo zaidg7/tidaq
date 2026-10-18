@@ -181,8 +181,9 @@ describe('runDropQuotes with lookups (C-153)', () => {
   it('lookups come out of the same allowance as quotes', async () => {
     const mem = memoryStore(hotels, { aliases: SEED_ALIASES });
     mem.lookupJobs.push(job(1, 'Grand Hyatt Berlin'));
-    // 2 tasks left today: the lookup takes one, a quote the other.
-    mem.quoteUsage.postedToday = 78;
+    // 2 tasks left by 13:00 UTC (48 of the 80 opened, C-159): the lookup takes one, a quote the
+    // other.
+    mem.quoteUsage.postedToday = 46;
     mem.quoteJobs.push(
       { hotelId: 2, hotelIdentifier: 'ChX', night: '2026-11-20', checkOut: '2026-11-25' },
       { hotelId: 2, hotelIdentifier: 'ChX', night: '2026-11-21', checkOut: '2026-11-26' },

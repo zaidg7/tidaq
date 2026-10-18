@@ -36,7 +36,7 @@ export type DropsLoad =
 
 /**
  * Today's sudden price drops, one entry per hotel with its photo. Trips only since C-125: 5 and
- * 7 nights in a row (SQL `radar_quoted_drops`: only drops with an exact quote, D-52), because a
+ * 7 nights in a row (SQL `radar_drops_priced`: exact quote or price incl. measured taxes, D-53), because a
  * cheaper single night is no reason to travel. Cached per request: the radar, the homepage
  * teaser and city pages share one read.
  */
@@ -46,7 +46,7 @@ export const getDrops = cache(async (today: string): Promise<DropsLoad> => {
     const rows = (
       await Promise.all(
         DROPS.tripLengths.map((n) =>
-          rpc('radar_quoted_drops', { p_today: today, p_nights: n }, z.array(priceDropRowSchema)),
+          rpc('radar_drops_priced', { p_today: today, p_nights: n }, z.array(priceDropRowSchema)),
         ),
       )
     ).flat();

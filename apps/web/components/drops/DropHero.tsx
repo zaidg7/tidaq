@@ -65,14 +65,14 @@ export function DropHero({ group: g }: { group: HotelDropsWithPhoto }) {
           {g.city.name[locale]} · {t('night', { date: dropDates(d, locale), n: d.nights })}
         </p>
         <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1 md:mt-7">
-          {/* Exact quote (D-52): nightly as the site shows it, then the stay total. */}
+          {/* Exact quote (D-52) or the checked price plus measured taxes (D-53): nightly, total. */}
           <strong className="text-[40px] leading-none font-bold tracking-[-0.04em] tabular-nums md:text-[56px]">
             {t('perNight', { price: formatPrice(d.nightlyCents, locale) })}
           </strong>
         </p>
         <p className="mt-1.5 text-[15px] text-muted tabular-nums md:text-[16px]">
           {t('totalFor', { price: formatPrice(d.nowCents, locale), n: d.nights })} ·{' '}
-          {t('inclTaxes')}
+          {t(d.exact ? 'inclTaxes' : 'inclTaxesEst')}
         </p>
         <p className={cn('mt-2.5 text-[16px] font-semibold', dropTextClass(d.drop))}>
           {d.provider.direct
