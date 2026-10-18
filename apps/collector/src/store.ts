@@ -357,7 +357,7 @@ export interface CollectorStore {
    * `city`: a city slug, or null for all cities.
    */
   dropAlertRecipients(today: string): Promise<DropAlertRecipient[]>;
-  /** Today's quoted drops: 5- and 7-night trips (SQL `radar_quoted_drops`, C-125, C-148). */
+  /** Today's priced drops: 5- and 7-night trips (SQL `radar_drops_priced`, C-125, C-159). */
   todayDrops(today: string): Promise<PriceDropRow[]>;
   /** Records the day of the last Preissturz-Alarm for these watcher ids (one a day, C-080e2). */
   markDropAlertsSent(ids: string[], today: string): Promise<void>;

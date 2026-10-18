@@ -1372,6 +1372,7 @@ export type Database = {
       radar_drops: { Args: { p_today: string }; Returns: Json };
       radar_weekend_drops: { Args: { p_today: string }; Returns: Json };
       radar_trip_drops: { Args: { p_today: string; p_nights: number }; Returns: Json };
+      radar_drops_priced: { Args: { p_today: string; p_nights: number }; Returns: Json };
       radar_quoted_drops: { Args: { p_today: string; p_nights: number }; Returns: Json };
       drop_alert_recipients: {
         Args: { p_today: string };

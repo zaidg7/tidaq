@@ -136,7 +136,9 @@ export function dropAlertMail(d: {
             t.meta(
               g.city.name[d.locale],
               dropDates(g.top, d.locale) + (g.top.nights > 1 ? t.stay(g.top.nights) : ''),
-              formatPrice(g.top.nowCents, d.locale),
+              // Calculated prices (checked price plus measured taxes, D-53) say "about".
+              (g.top.exact ? '' : d.locale === 'de' ? 'ca. ' : 'about ') +
+                formatPrice(g.top.nowCents, d.locale),
             ) + (g.more.length > 0 ? t.more(g.more.length) : ''),
           url: d.dropUrl(g.hotel.slug, g.top),
         };

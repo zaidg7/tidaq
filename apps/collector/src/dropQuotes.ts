@@ -26,6 +26,11 @@ export const QUOTES = {
   costPerTaskUsd: 0.0008,
   /** A posted task not listed as ready after this long is fetched directly. */
   fetchDirectlyAfterMinutes: 10,
+  /**
+   * C-159: the daily cap is spread over the day (UTC), plus this many ahead, so quotes don't all
+   * go out after midnight and leave the radar without exact prices for the rest of the day.
+   */
+  paceBurst: 4,
 } as const;
 
 export interface QuoteRunSummary {
@@ -46,12 +51,18 @@ const limitsSchema = z.object({
   DROP_QUOTE_MONTHLY_USD: z.coerce.number().min(0).max(500).default(QUOTES.defaultMonthlyUsd),
 });
 
-/** How many tasks the budget guard allows now (hard rule 4). Pure. */
+/**
+ * How many tasks the budget guard allows now (hard rule 4). With `now`, the daily cap opens up
+ * over the day: by 06:00 UTC a quarter of it (C-159). Pure.
+ */
 export function quoteAllowance(
   usage: { postedToday: number; spentMonthUsd: number },
   limits: { dailyCap: number; monthlyUsd: number },
+  now?: Date,
 ): number {
-  const byDay = limits.dailyCap - usage.postedToday;
+  const share = now ? (now.getUTCHours() * 60 + now.getUTCMinutes() + 1) / 1440 : 1;
+  const opened = Math.min(limits.dailyCap, Math.ceil(limits.dailyCap * share) + QUOTES.paceBurst);
+  const byDay = opened - usage.postedToday;
   const byMonth = Math.floor(
     (limits.monthlyUsd - usage.spentMonthUsd + 1e-9) / QUOTES.costPerTaskUsd,
   );
@@ -152,10 +163,11 @@ export async function runDropQuotes(opts: {
   const limits = limitsSchema.parse(env);
   const usage = await store.dropQuoteUsage(today);
   summary.requests++;
-  const allowance = quoteAllowance(usage, {
-    dailyCap: limits.DROP_QUOTE_DAILY_CAP,
-    monthlyUsd: limits.DROP_QUOTE_MONTHLY_USD,
-  });
+  const allowance = quoteAllowance(
+    usage,
+    { dailyCap: limits.DROP_QUOTE_DAILY_CAP, monthlyUsd: limits.DROP_QUOTE_MONTHLY_USD },
+    now,
+  );
   // Google ids first (C-153): a drop at a hotel without one can't be quoted at all.
   try {
     summary.lookups = await runDfsLookups({

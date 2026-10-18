@@ -1012,9 +1012,10 @@
     "resultCount": "{n, plural, one {# hotel} other {# hotels}}",
     "perNight": "{price} a night",
     "totalFor": "{price} for {n, plural, one {# night} other {# nights}}",
-    "inclTaxes": "incl. taxes and fees",
+    "inclTaxes": "incl. taxes and fees, checked exactly",
     "sinceAt": "{pct} since yesterday on {provider}",
-    "sinceDirect": "{pct} since yesterday on the hotel’s own site"
+    "sinceDirect": "{pct} since yesterday on the hotel’s own site",
+    "inclTaxesEst": "incl. taxes and fees (calculated)"
   },
   "drop": {
     "metaTitle": "{hotel}: {pct} for {date} | Tidaq",

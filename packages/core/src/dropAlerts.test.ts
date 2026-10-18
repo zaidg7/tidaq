@@ -30,6 +30,7 @@ const row = (over: Partial<PriceDropRow>): PriceDropRow => ({
   provider_direct: false,
   offers: 4,
   confirmed: true,
+  exact: true,
   ...over,
 });
 const hotel = (n: number, city: string, drop: number, over: Partial<PriceDropRow> = {}) =>
@@ -183,5 +184,19 @@ describe('dropAlertMail', () => {
 
   it('refuses an empty list', () => {
     expect(() => mail('de', null, [])).toThrow();
+  });
+});
+
+describe('dropAlertMail: calculated prices (C-159)', () => {
+  it('says "ca." before a price that is the checked price plus measured taxes', () => {
+    const { content } = dropAlertMail({
+      locale: 'de',
+      groups: groupDrops([row({ exact: false })]),
+      cityName: null,
+      radarUrl: 'https://tidaq.com/price-drops',
+      manageUrl: 'https://tidaq.com/alarm/verwalten/x',
+      dropUrl: () => 'https://tidaq.com/price-drops/x',
+    });
+    expect(content.items?.[0]?.meta).toContain('jetzt ca. ');
   });
 });

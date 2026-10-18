@@ -59,6 +59,11 @@ export const priceDropRowSchema = z.object({
   quote_nightly_cents: cents.nullish(),
   quote_url: z.string().nullish(),
   quoted_at: z.string().nullish(),
+  /**
+   * C-159 (D-53): true when the amounts are an exact quote; false when they are the live-checked
+   * price plus the hotel's measured taxes and fees (C-157). Missing: exact when quoted.
+   */
+  exact: z.boolean().nullish(),
 });
 export type PriceDropRow = z.infer<typeof priceDropRowSchema>;
 
@@ -94,6 +99,8 @@ export interface PriceDrop {
    * ones) are for sorting and the percentage only, never shown (C-148b).
    */
   nightlyCents: number;
+  /** The price is an exact quote (C-148); else the checked price plus measured taxes (C-159). */
+  exact: boolean;
 }
 
 export interface HotelDrops {
@@ -126,6 +133,7 @@ function toDrop(r: PriceDropRow): PriceDrop {
     nightlyCents:
       r.quote_nightly_cents ??
       Math.round(r.now_cents / Math.max(1, daysBetween(r.night, checkOut))),
+    exact: r.exact ?? Boolean(r.quoted_at),
   };
 }
 
