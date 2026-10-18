@@ -180,6 +180,7 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-158 | Check `hotel_dfs_lookups` matches for the city-word weakness fixed in C-157f (a shared word like "Paris" counted as a name match); re-run doubtful ones | CLOUD | S | C-157f | TODO |
 | C-159 | Price Drops all day (D-53): exact quote when fresh, else checked price × tax factor (confirmed by a 2nd site, ≤ 50 %); paid quotes paced over the day; alert emails say "ca." for calculated prices | CLOUD | M | C-157f | DONE (PR pending; SQL `radar_drops_priced`) |
 | C-160 | Catalog audit: check every hotel's official star rating (Frankfurt Marriott, Hilton Frankfurt City Centre and others look like 4-star); deactivate non-luxury ones | CLOUD | S | – | TODO |
+| C-161 | Bio link /youtube (YouTube Shorts as third platform in the kit) + fix "Gepostet" for 5/7-night trip drops (posted_drops allowed only 2 nights since C-125) | CLOUD | S | C-080j | DONE |
 | C-157c | Emails with taxes: stay alerts (target vs taxed price) and the weekly newsletter use the hotel's factor too (collector) | CLOUD | S | C-157a | TODO |
 | C-150 | Lean quote budget: 80 exact quotes a day, $3 a month | CLOUD | S | C-148b | DONE ([#129](https://github.com/zaidg7/tidaq/pull/129)) |
 | C-151 | Workers Paid: 200 nights per collect run, no new call after 90 s (room for ~400 hotels × 270 nights a day) | CLOUD | S | B-023 | DONE (check /admin the next day: nights priced vs due) |

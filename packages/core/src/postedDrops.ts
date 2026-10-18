@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { findDrop, groupDrops, priceDropRowSchema, type HotelDrops, type PriceDrop } from './drops';
 
 /**
- * "Aus unseren Videos" (C-080j): drops we showed in a TikTok or Instagram post. The creator kit
+ * "Aus unseren Videos" (C-080j): drops we showed in a TikTok, Instagram or YouTube post. The creator kit
  * stores a snapshot of the drop as posted (SQL `posted_drops`), because the radar is recomputed
  * every day and a drop from a video can be gone by the time someone taps the bio link. The
  * landing lists these first and says honestly whether each one is still on the radar.
@@ -14,7 +14,7 @@ export const POSTED = {
   max: 6,
 } as const;
 
-export const PLATFORMS = ['tiktok', 'instagram'] as const;
+export const PLATFORMS = ['tiktok', 'instagram', 'youtube'] as const;
 export type Platform = (typeof PLATFORMS)[number];
 export const platformSchema = z.enum(PLATFORMS);
 

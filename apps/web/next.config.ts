@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       // Short links for social bios (C-080d): land on the radar with a welcome for that platform.
-      ...['tiktok', 'instagram'].flatMap((ref) => [
+      ...['tiktok', 'instagram', 'youtube'].flatMap((ref) => [
         { source: `/${ref}`, destination: `/price-drops?ref=${ref}`, permanent: false },
         { source: `/en/${ref}`, destination: `/en/price-drops?ref=${ref}`, permanent: false },
       ]),

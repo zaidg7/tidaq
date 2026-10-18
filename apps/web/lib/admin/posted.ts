@@ -1,6 +1,7 @@
 import 'server-only';
 import {
   addDays,
+  platformSchema,
   POSTED,
   postedDropInsert,
   z,
@@ -42,7 +43,7 @@ const markRow = z.object({
   hotel_id: z.number().int(),
   night: z.string(),
   check_out: z.string(),
-  platform: z.enum(['tiktok', 'instagram']),
+  platform: platformSchema,
 });
 
 /** Marks of the last week as `hotelId|night|checkOut` → platforms. Empty when the read fails. */

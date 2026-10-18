@@ -28,9 +28,13 @@ import { DropFilterSheet } from './DropFilterSheet';
 import { DropHero } from './DropHero';
 
 /** Social bio links that land on the radar (`/tiktok` → `/price-drops?ref=tiktok`, C-080d). */
-export const DROP_SOURCES = ['tiktok', 'instagram'] as const;
+export const DROP_SOURCES = ['tiktok', 'instagram', 'youtube'] as const;
 export type DropSource = (typeof DROP_SOURCES)[number];
-const SOURCE_NAME: Record<DropSource, string> = { tiktok: 'TikTok', instagram: 'Instagram' };
+const SOURCE_NAME: Record<DropSource, string> = {
+  tiktok: 'TikTok',
+  instagram: 'Instagram',
+  youtube: 'YouTube',
+};
 
 export interface DropFilters {
   city: string | null;

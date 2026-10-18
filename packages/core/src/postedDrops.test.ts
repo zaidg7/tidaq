@@ -45,9 +45,10 @@ describe('postedDropRowSchema (C-080j)', () => {
   it('accepts the SQL row and rejects unknown platforms or none', () => {
     expect(postedDropRowSchema.parse({ ...posted(), drop_pct: '0.3087' }).drop_pct).toBe(0.3087);
     expect(postedDropRowSchema.safeParse(posted({ platforms: [] })).success).toBe(false);
-    expect(postedDropRowSchema.safeParse({ ...posted(), platforms: ['youtube'] }).success).toBe(
+    expect(postedDropRowSchema.safeParse({ ...posted(), platforms: ['facebook'] }).success).toBe(
       false,
     );
+    expect(postedDropRowSchema.safeParse(posted({ platforms: ['youtube'] })).success).toBe(true);
   });
 });
 

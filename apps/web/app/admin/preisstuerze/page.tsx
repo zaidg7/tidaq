@@ -34,7 +34,7 @@ export default async function DropsKitPage({ searchParams }: Props) {
       {(q.ok === 'posted' || q.fail === 'posted') && (
         <p role="status" className="text-[15px] font-semibold">
           {q.ok === 'posted'
-            ? 'Gespeichert. Gepostete Price Drops stehen eine Woche lang unter „Aus unseren Videos“ auf tidaq.com/tiktok und /instagram.'
+            ? 'Gespeichert. Gepostete Price Drops stehen eine Woche lang unter „Aus unseren Videos“ auf tidaq.com/tiktok, /instagram und /youtube.'
             : 'Das hat nicht geklappt. Der Price Drop ist vielleicht nicht mehr auf dem Radar. Lad die Seite neu.'}
         </p>
       )}
