@@ -31,6 +31,9 @@ type Props = {
   className?: string;
 };
 
+/** Checkout tests a site needs before the Preistreue column shows. */
+const TRUST_MIN_TESTS = 5;
+
 // Phones: box and note side by side under the name, so rows stay short.
 const TRUST_CLASSES =
   'max-sm:max-w-none max-sm:flex-row max-sm:items-center max-sm:gap-2 sm:max-w-[176px]';
@@ -77,30 +80,20 @@ export function ProviderTable({
   const ranked = rankOffers(offers);
   const bookable = stay.checkIn >= today;
   const hasLinks = bookable && ranked.some((o) => o.link);
+  // Preistreue only once a site has enough checkout tests to mean something (C-174): until then
+  // a column of "noch nicht getestet" is noise.
+  const showTrust = ranked.some((o) => (o.trust?.tests ?? 0) >= TRUST_MIN_TESTS);
   const [first, second] = ranked;
   const cheapestId =
     first && (!second || first.trustedCents < second.trustedCents) ? first.providerId : null;
 
   return (
     <section aria-labelledby="offers-title" className={className}>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h2 id="offers-title" className="text-h3">
-          {day && day !== today
-            ? t('offersTitleDay', { date: formatDayMonth(day, locale) })
-            : t('offersTitle')}
-        </h2>
-        {ranked.length > 1 && (
-          <p className="text-meta text-muted-ink">
-            {t('offersSorted')} ·{' '}
-            <a
-              href={localizedPath(routes.ranking, locale)}
-              className="font-semibold text-accent underline-offset-2 hover:underline"
-            >
-              {t('offersRanking')}
-            </a>
-          </p>
-        )}
-      </div>
+      <h2 id="offers-title" className="text-h3">
+        {day && day !== today
+          ? t('offersTitleDay', { date: formatDayMonth(day, locale) })
+          : t('offersTitle')}
+      </h2>
 
       {ranked.length === 0 ? (
         <p className="mt-3 text-[15px] text-muted-ink">{t('offersEmpty')}</p>
@@ -111,9 +104,13 @@ export function ProviderTable({
               key={o.providerId}
               className={cn(
                 'relative grid min-h-[72px] grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 px-4 py-3 sm:px-5',
-                hasLinks
-                  ? 'sm:grid-cols-[32px_minmax(0,1fr)_120px_160px_auto]'
-                  : 'sm:grid-cols-[32px_minmax(0,1fr)_120px_176px]',
+                showTrust
+                  ? hasLinks
+                    ? 'sm:grid-cols-[32px_minmax(0,1fr)_120px_160px_auto]'
+                    : 'sm:grid-cols-[32px_minmax(0,1fr)_120px_176px]'
+                  : hasLinks
+                    ? 'sm:grid-cols-[32px_minmax(0,1fr)_120px_auto]'
+                    : 'sm:grid-cols-[32px_minmax(0,1fr)_120px]',
                 bookable && o.link && 'max-sm:hover:bg-surface-2',
               )}
             >
@@ -155,7 +152,7 @@ export function ProviderTable({
                   </span>
                 )}
               </span>
-              {o.slug ? (
+              {!showTrust ? null : o.slug ? (
                 // The provider page (C-034b): what our tests found. Above the phone row link.
                 <a
                   href={localizedPath(providerPath(o.slug), locale)}
@@ -184,12 +181,10 @@ export function ProviderTable({
                   className={cn(
                     buttonClasses({ variant: 'ghost', size: 'sm' }),
                     // Phones: no button, the whole row is the link (CRAFT.md §3 Provider row).
-                    'lg:max-xl:w-9 lg:max-xl:px-0',
                     'max-sm:absolute max-sm:inset-0 max-sm:h-auto max-sm:rounded-none max-sm:border-0 max-sm:bg-transparent max-sm:z-[1] max-sm:p-0 max-sm:after:hidden',
                   )}
                 >
-                  {/* 1024–1279 px: the watch card takes the side, so the button is icon-only. */}
-                  <span className="max-sm:sr-only lg:max-xl:sr-only">{t('toOffer')}</span>
+                  <span className="max-sm:sr-only">{t('toOffer')}</span>
                   <Icon icon={ArrowUpRight} size={16} className="max-sm:hidden" />
                 </a>
               )}
@@ -201,9 +196,15 @@ export function ProviderTable({
           ))}
         </ul>
       )}
-      <p className="text-meta mt-3 max-w-[44em] text-muted-ink">
+      <p className="text-meta mt-3 text-muted-ink">
         {t('offersNote')}
-        {unreviewed > 0 && <> {t('offersUnreviewed', { n: unreviewed })}</>}
+        {unreviewed > 0 && <> {t('offersUnreviewed', { n: unreviewed })}</>}{' '}
+        <a
+          href={localizedPath(routes.ranking, locale)}
+          className="font-semibold text-accent underline-offset-2 hover:underline"
+        >
+          {t('offersRanking')}
+        </a>
       </p>
     </section>
   );

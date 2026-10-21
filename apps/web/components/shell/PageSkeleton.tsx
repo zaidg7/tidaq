@@ -12,7 +12,8 @@ export type SkeletonKind = 'list' | 'stay' | 'hotel' | 'drop' | 'text';
  */
 export async function PageSkeleton({ kind }: { kind: SkeletonKind }) {
   const t = await getTranslations('loading');
-  const photo = kind === 'stay' || kind === 'hotel' || kind === 'drop';
+  // The stay page has a compact header since C-174: no photo block.
+  const photo = kind === 'hotel' || kind === 'drop';
   return (
     <div aria-busy="true" className="w-full">
       <span role="status" className="sr-only">
@@ -26,12 +27,13 @@ export async function PageSkeleton({ kind }: { kind: SkeletonKind }) {
               <SheetHead />
               {kind === 'drop' && <DropBody />}
               {kind === 'hotel' && <HotelBody />}
-              {kind === 'stay' && <StayBody />}
             </div>
           </div>
         </>
       ) : (
         <div className="mx-auto max-w-[1240px] px-[18px] pt-6 pb-16 md:px-10 md:pt-12">
+          {kind === 'stay' && <StayHead />}
+          {kind === 'stay' && <StayBody />}
           {kind === 'list' && <ListSkeleton />}
           {kind === 'text' && <TextSkeleton />}
         </div>
@@ -145,6 +147,22 @@ function HotelBody() {
         ))}
       </div>
     </>
+  );
+}
+
+/** Small photo, place line and name, the dates line (the stay page's compact header). */
+function StayHead() {
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-4">
+        <Skeleton className="size-14 shrink-0 rounded-[14px] md:size-[72px] md:rounded-[18px]" />
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <Skeleton className="h-4 w-36" />
+          <Skeleton className="h-8 w-[min(420px,100%)] md:h-10" />
+        </div>
+      </div>
+      <Skeleton className="h-11 w-[min(340px,100%)] rounded-[14px]" />
+    </div>
   );
 }
 

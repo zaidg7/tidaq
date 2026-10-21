@@ -3,25 +3,37 @@ import { expect, test } from '@playwright/test';
 const STAY = '/hotel/hotel-adlon-kempinski-berlin/2026-12-04--2026-12-06';
 
 test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
-  test('tracked: verdict, chart, low/avg/high, advice and other dates', async ({ page }) => {
+  test('tracked: compact header, verdict once, main booking button (C-174)', async ({ page }) => {
     await page.goto('/dev/stay/tracked');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Hotel Adlon Kempinski');
-    // The stay as one line of text under the name (C-137).
-    await expect(page.getByText('4.–6. Dez. 2026', { exact: true })).toBeVisible();
-    await expect(
-      page.locator('main header p', { hasText: '2 Nächte · 2 Erwachsene' }).last(),
-    ).toBeVisible();
-    await expect(
-      page.getByRole('link', { name: 'Preise jeder Nacht in diesem Hotel' }),
-    ).toHaveAttribute('href', '/hotel/hotel-adlon-kempinski-berlin');
+    // The dates line is the button that changes them (blueprint rule 7).
+    const dates = page.getByRole('button', { name: /4\.–6\. Dez\. 2026/ });
+    await expect(dates).toContainText('2 Nächte · 2 Erwachsene');
+    await expect(dates).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.getByRole('link', { name: 'Zum Hotel' })).toHaveAttribute(
+      'href',
+      '/hotel/hotel-adlon-kempinski-berlin',
+    );
     await expect(page.getByText('Guter Preis').first()).toBeVisible();
 
-    await expect(page.getByRole('term')).toHaveText(['Tief', 'Ø 30 Tage', 'Hoch']);
-    await expect(page.getByRole('definition').first()).toContainText('am 24. Sept.');
-
-    await expect(page.getByRole('heading', { name: 'Unsere Einschätzung' })).toBeVisible();
-    await expect(page.getByText('Guter Preis im Vergleich zu den letzten 58 Tagen.')).toBeVisible();
+    // The verdict once: no stats row, no meter, no advice box, no method paragraph.
+    await expect(page.getByRole('term')).toHaveCount(0);
+    await expect(page.getByRole('meter')).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: 'Unsere Einschätzung' })).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: 'So entsteht die Einschätzung' })).toHaveCount(
+      0,
+    );
     await expect(page.getByText('Als Tabelle anzeigen').locator('visible=true')).toHaveCount(1);
+
+    // Main button: the cheapest site that pays us, labelled, through /go in a new tab.
+    const book = page.getByRole('link', { name: /^Bei Trip\.com buchen · / });
+    await expect(book).toHaveAttribute(
+      'href',
+      '/go/trip-com/hotel-adlon-kempinski-berlin?in=2026-12-04&out=2026-12-06&adults=2&lang=de',
+    );
+    await expect(book).toHaveAttribute('target', '_blank');
+    await expect(book).toHaveAttribute('rel', 'sponsored nofollow noopener');
+    await expect(page.getByText(/^Stand: .* · Partnerlink$/)).toBeVisible();
 
     // No other dates of the hotel (C-173): people come with their own dates.
     await expect(page.getByText('Weitere Termine in diesem Hotel')).toHaveCount(0);
@@ -75,8 +87,8 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     await expect(table.getByText(/Die Reihenfolge hängt nie von Provisionen ab\./)).toBeVisible();
     await expect(table.getByText(/2 weitere Anbieter hatten einen Preis/)).toBeVisible();
 
-    // Price alert (C-030b): email, optional target, consent never pre-ticked.
-    const watch = page.getByRole('region', { name: 'Preis beobachten' });
+    // Price alert band (C-030b, C-174): email, optional target, consent never pre-ticked.
+    const watch = page.getByRole('region', { name: 'Noch nicht buchen?' });
     await expect(watch.getByLabel('Deine E-Mail-Adresse')).toHaveAttribute('type', 'email');
     await expect(watch.getByLabel('Wunschpreis (optional)')).toBeVisible();
     await expect(watch.getByRole('checkbox')).not.toBeChecked();
@@ -119,7 +131,7 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
 
   test('price alert: the form explains every outcome (C-030b)', async ({ page }) => {
     await page.goto('/dev/stay/tracked');
-    const watch = page.getByRole('region', { name: 'Preis beobachten' });
+    const watch = page.getByRole('region', { name: 'Noch nicht buchen?' });
     await watch.getByLabel('Deine E-Mail-Adresse').fill('gast@example.com');
     await watch.getByLabel('Wunschpreis (optional)').fill('viel');
     await watch.getByRole('checkbox').check();
@@ -145,27 +157,23 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     );
   });
 
-  test('check-in within 7 days adds the "don\'t wait" note', async ({ page }) => {
-    await page.goto('/dev/stay/soon');
-    await expect(page.getByText(/Kurz vor Anreise steigen Preise oft\./)).toBeVisible();
-  });
-
-  test('collecting: price so far and the 7-day progress, no stats yet', async ({ page }) => {
+  test('collecting: the chart draws the days it has, no placeholder, no stats (C-174)', async ({
+    page,
+  }) => {
     await page.goto('/dev/stay/collecting');
     await expect(page.getByText('Für ein Urteil fehlen noch 4 Tage mit Preis.')).toBeVisible();
-    await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '3');
+    await expect(page.getByText('Daten werden gesammelt (3/7)')).toBeVisible();
+    await expect(page.getByText('Hier entsteht der Verlauf')).toHaveCount(0);
+    await expect(page.getByRole('radiogroup', { name: 'Zeitraum' })).toHaveCount(0);
+    await expect(page.locator('figure svg[role="img"]')).toHaveAttribute(
+      'aria-label',
+      /^Preisverlauf über 3 Tage/,
+    );
     await expect(page.getByRole('term')).toHaveCount(0);
   });
 
-  test('history from single nights says so, and shows a real price that differs (C-070b)', async ({
-    page,
-  }) => {
+  test('history from single nights shows a real price that differs (C-070b)', async ({ page }) => {
     await page.goto('/dev/stay/nights');
-    await expect(
-      page.getByText(
-        /^Der Verlauf ist die Summe der Preise der einzelnen Nächte beim selben Anbieter\./,
-      ),
-    ).toBeVisible();
     await expect(
       page.getByText(
         /Für genau diese Daten zeigen die Anbieter heute 1\.544\s€, die Summe der Nächte liegt bei 2\.244\s€\./,
@@ -244,10 +252,10 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     ).toHaveAttribute('href', '/');
   });
 
-  test('"Ändern" opens the search card prefilled with this stay', async ({ page }) => {
+  test('the dates line opens the search card prefilled with this stay', async ({ page }) => {
     await page.goto('/dev/stay/tracked');
     await page.getByRole('button', { name: 'Ändern' }).click();
-    // The same button now closes the card.
+    // The same dates line now closes the card.
     await expect(page.getByRole('button', { name: 'Schließen' })).toHaveAttribute(
       'aria-expanded',
       'true',
@@ -267,19 +275,21 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
   test('fits an iPhone screen', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/dev/stay/tracked');
-    // Icon-only edit button beside the name, still named for screen readers.
-    await expect(page.getByRole('button', { name: 'Ändern' })).toBeVisible();
+    // Price, verdict and the main button on the first screen (blueprint rule 2).
+    const book = page.getByRole('link', { name: /^Bei Trip\.com buchen · / });
+    const box = await book.boundingBox();
+    expect((box?.y ?? 9999) + (box?.height ?? 0)).toBeLessThanOrEqual(844);
     const width = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(width).toBeLessThanOrEqual(390);
   });
 
   test('English copy', async ({ page }) => {
     await page.goto('/en/dev/stay/tracked');
-    await expect(page.getByText('4–6 Dec 2026', { exact: true })).toBeVisible();
-    await expect(
-      page.locator('main header p', { hasText: '2 nights · 2 adults' }).last(),
-    ).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Our take' })).toBeVisible();
+    await expect(page.getByRole('button', { name: /4–6 Dec 2026/ })).toContainText(
+      '2 nights · 2 adults',
+    );
+    await expect(page.getByRole('link', { name: /^Book on Trip\.com · / })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Not booking yet?' })).toBeVisible();
   });
 });
 

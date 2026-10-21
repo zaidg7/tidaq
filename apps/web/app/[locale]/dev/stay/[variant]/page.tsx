@@ -2,7 +2,13 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { addDays, type DailyPrice, type Locale, type StayOffer } from '@tidaq/core';
+import {
+  addDays,
+  formatDateRange,
+  type DailyPrice,
+  type Locale,
+  type StayOffer,
+} from '@tidaq/core';
 import { EditStay } from '@/components/stay/EditStay';
 import { StayView, type StayStatus } from '@/components/stay/StayView';
 import type { StayHotel } from '@/lib/data/stay';
@@ -81,7 +87,7 @@ function sampleOffers(series: DailyPrice[]): StayOffer[] {
       name: 'Trip.com',
       isDirect: false,
       slug: 'trip-com',
-      link: { slug: 'trip-com', partner: false },
+      link: { slug: 'trip-com', partner: true },
       totalCents: at(4),
       trust: null,
     },
@@ -222,6 +228,10 @@ export default async function DevStayPage({
       now={NOW}
       edit={
         <EditStay
+          summary={{
+            dates: formatDateRange(v.checkIn, checkOut, locale),
+            facts: t('stayFacts', { nights: 2, adults: v.adults ?? 2 }),
+          }}
           hotels={[{ slug: SLUG, name: HOTEL.name, city: 'Berlin' }]}
           today={TODAY}
           locale={locale}

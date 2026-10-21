@@ -201,6 +201,10 @@ async function StayPageBody(props: Props) {
       today={today}
       edit={
         <EditStay
+          summary={{
+            dates: formatDateRange(p.checkIn, p.checkOut, locale),
+            facts: t('stayFacts', { nights: p.nights, adults: p.adults }),
+          }}
           hotels={hotels}
           today={today}
           locale={locale}
