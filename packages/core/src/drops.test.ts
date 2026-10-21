@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  dropSiteSeries,
   weekSummary,
   heroDrop,
   usualCents,
@@ -347,5 +348,29 @@ describe('dropTier', () => {
     expect(dropTier(0.394)).toBe('medium');
     expect(dropTier(0.196)).toBe('medium');
     expect(dropTier(0.194)).toBe('small');
+  });
+});
+
+describe('dropSiteSeries (C-175)', () => {
+  const rows: { day: string; best_cents: number; per_provider: Record<string, number> }[] = [
+    { day: '2026-10-18', best_cents: 90_000, per_provider: { '3': 100_000, '7': 90_000 } },
+    { day: '2026-10-19', best_cents: 95_000, per_provider: { '7': 95_000 } },
+    { day: '2026-10-20', best_cents: 98_000, per_provider: { '3': 110_000, '7': 98_000 } },
+    { day: '2026-10-21', best_cents: 60_000, per_provider: { '3': 60_000 } },
+  ];
+  const tax = (c: number) => Math.round(c * 1.1);
+
+  it("follows the drop's own site with taxes and ends at the card's price", () => {
+    expect(dropSiteSeries(rows, 3, tax, '2026-10-21', 70_400)).toEqual([
+      { day: '2026-10-18', bestCents: 110_000 },
+      { day: '2026-10-20', bestCents: 121_000 },
+      { day: '2026-10-21', bestCents: 70_400 },
+    ]);
+  });
+
+  it('without the site id shows only today, never another site as if it were this one', () => {
+    expect(dropSiteSeries(rows, null, tax, '2026-10-21', 70_400)).toEqual([
+      { day: '2026-10-21', bestCents: 70_400 },
+    ]);
   });
 });

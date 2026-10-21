@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { addDays, daysBetween } from './dates';
 import { formatPercent, formatWeekdayDayMonth, type Locale } from './format';
+import type { DailyPrice } from './stats';
 import { isoDateSchema } from './zod';
 
 /**
@@ -375,4 +376,26 @@ export function weekSummary(rows: readonly PriceDropRow[]): WeekSummary {
       (a, b) => b.drops - a.drops || b.biggest - a.biggest || a.name.de.localeCompare(b.name.de),
     ),
   };
+}
+
+/**
+ * The drop page's chart (C-175): the trip on the drop's own site, so the line ends where the card
+ * starts. Past days are summed nights plus the hotel's measured taxes (D-53); today is the price
+ * the card shows (an exact quote or the live check), never a second, different number.
+ */
+export function dropSiteSeries(
+  rows: readonly { day: string; best_cents: number; per_provider: Record<string, number> }[],
+  providerId: number | null,
+  tax: (cents: number) => number,
+  today: string,
+  nowCents: number,
+): DailyPrice[] {
+  const past = rows.flatMap((r) => {
+    if (r.day >= today) return [];
+    const cents = providerId === null ? undefined : r.per_provider[String(providerId)];
+    return cents !== undefined && Number.isInteger(cents) && cents > 0
+      ? [{ day: r.day, bestCents: tax(cents) }]
+      : [];
+  });
+  return [...past, { day: today, bestCents: nowCents }];
 }

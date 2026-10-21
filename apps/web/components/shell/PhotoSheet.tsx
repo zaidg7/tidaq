@@ -12,9 +12,12 @@ export function PhotoSheet({
   photo,
   alt,
   tag,
+  size = 'hero',
   children,
 }: {
   photo: HotelPhoto | null;
+  /** `compact`: a short band (drop page, C-175), so the deal shows on the first screen. */
+  size?: 'hero' | 'compact';
   alt: string;
   tag?: ReactNode;
   children: ReactNode;
@@ -27,7 +30,11 @@ export function PhotoSheet({
           alt={alt}
           sizes="100vw"
           priority
-          className="h-[400px] bg-[#2a2620] md:h-[480px] lg:h-[540px]"
+          className={
+            size === 'compact'
+              ? 'h-[260px] bg-[#2a2620] md:h-[300px] lg:h-[340px]'
+              : 'h-[400px] bg-[#2a2620] md:h-[480px] lg:h-[540px]'
+          }
         >
           <span
             aria-hidden="true"
