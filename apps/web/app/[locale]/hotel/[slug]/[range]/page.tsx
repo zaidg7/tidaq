@@ -136,7 +136,6 @@ async function StayPageBody(props: Props) {
     stay,
     series,
     providerByDay,
-    others,
     offers,
     history,
     updatedAt,
@@ -198,7 +197,6 @@ async function StayPageBody(props: Props) {
       history={history}
       realVsNights={realVsNights}
       nightsUnreliable={nightsUnreliable}
-      others={others}
       offers={offers}
       today={today}
       edit={

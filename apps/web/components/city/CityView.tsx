@@ -21,9 +21,8 @@ import { routes } from '@/lib/routes';
 
 /**
  * City page (C-024, mockup B language): the city's photo full-bleed with "Fünf-Sterne-Hotels in
- * Paris" on it, then its hotels as photo cards, each with its cheapest upcoming week on one site
- * (C-126). The card opens the hotel page (calendar of every night); the week opens its stay page.
- * `children` follow the hotels (the city's Price Drops, the alert band). With `dates` from the
+ * Paris" on it, then its hotels as photo cards. Without dates a card opens the hotel page (calendar
+ * of every night); with dates from the search it opens that stay (C-173). `children` follow the hotels (the city's Price Drops, the alert band). With `dates` from the
  * search (C-110) every card shows that stay's total and the cheapest come first; hotels without
  * a total for those dates follow, A–Z.
  */
@@ -143,7 +142,6 @@ function HotelCard({
   dates: StayParams | null;
 }) {
   const t = useTranslations('city');
-  const w = hotel.week;
   const s = hotel.stay;
   const price = (c: number) => formatPrice(c, locale);
   return (
@@ -151,7 +149,13 @@ function HotelCard({
       slug={hotel.slug}
       name={hotel.name}
       citySlug={citySlug}
-      href={localizedPath(hotelPath(hotel.slug), locale)}
+      // With dates from the search, the card opens that stay (C-173): no second date picker.
+      href={localizedPath(
+        dates
+          ? stayPath(hotel.slug, dates.checkIn, dates.checkOut, dates.adults)
+          : hotelPath(hotel.slug),
+        locale,
+      )}
     >
       <div className="mt-3 border-t border-line pt-3">
         {dates ? (
@@ -178,30 +182,8 @@ function HotelCard({
           ) : (
             <p className="text-[14px] text-muted">{t('noStay')}</p>
           )
-        ) : w ? (
-          <>
-            <p className="text-[13px] text-muted">{t('week')}</p>
-            <div className="mt-0.5 flex items-baseline justify-between gap-3">
-              {/* Above the card link: the week opens its own stay page. */}
-              <a
-                href={localizedPath(
-                  stayPath(hotel.slug, w.checkIn, w.checkOut, NIGHT_GRID.adults),
-                  locale,
-                )}
-                className="relative z-[1] text-[16px] font-semibold text-accent underline-offset-2 hover:underline"
-              >
-                {formatDateRange(w.checkIn, w.checkOut, locale)}
-              </a>
-              <strong className="text-[20px] font-bold tracking-[-0.02em] tabular-nums">
-                {price(w.totalCents)}
-              </strong>
-            </div>
-            <p className="mt-0.5 text-[14px] text-muted">
-              {t('weekFacts', { provider: w.provider })}
-            </p>
-          </>
         ) : (
-          <p className="text-[14px] text-muted">{t('noWeek')}</p>
+          <p className="text-[14px] text-muted">{t('pickDates')}</p>
         )}
       </div>
     </HotelPhotoCard>

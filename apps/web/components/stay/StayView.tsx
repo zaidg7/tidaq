@@ -5,7 +5,6 @@ import {
   addDays,
   cityPath,
   computeStayStats,
-  dayDiff,
   formatDateRange,
   formatDayMonth,
   formatPrice,
@@ -28,8 +27,7 @@ import { buttonClasses } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
 import { PriceText } from '@/components/ui/PriceText';
-import { StateChip } from '@/components/ui/StateChip';
-import type { OtherStay, StayHotel } from '@/lib/data/stay';
+import type { StayHotel } from '@/lib/data/stay';
 import { cn } from '@/lib/cn';
 import { cardPhoto } from '@/lib/photos';
 import { routes } from '@/lib/routes';
@@ -74,7 +72,6 @@ type Props = {
   realVsNights?: { realCents: number; nightsCents: number } | null;
   /** Single nights mislead at this hotel (C-070d): only real checks of the stay count. */
   nightsUnreliable?: boolean;
-  others: OtherStay[];
   /** The latest day's reviewed providers (C-022b); `unreviewed` counts the hidden ones. */
   offers: { day: string | null; list: StayOffer[]; unreviewed: number };
   /** `YYYY-MM-DD` in German time. */
@@ -94,8 +91,7 @@ type Props = {
 
 /**
  * Stay page (C-022a, DESIGN.md §5): compact header → panel (verdict, 60-day chart, low/avg/high,
- * advice) → today's prices by provider → watch card → other dates at this hotel → how the verdict is
- * made. Every state has its own screen.
+ * advice) → today's prices by provider → watch card → how the verdict is made. Every state has its own screen.
  */
 export function StayView({
   hotel,
@@ -107,7 +103,6 @@ export function StayView({
   history = null,
   realVsNights = null,
   nightsUnreliable = false,
-  others,
   offers,
   today,
   edit,
@@ -263,21 +258,6 @@ export function StayView({
             />
             <WatchCard hotel={hotel} params={params} locale={locale} />
           </div>
-        )}
-
-        {others.length > 0 && (
-          <section aria-labelledby="others-title" className="mt-12">
-            <h2 id="others-title" className="text-h3">
-              {t('othersTitle')}
-            </h2>
-            <ul className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {others.map((o) => (
-                <li key={`${o.checkIn}-${o.checkOut}-${o.adults}`}>
-                  <OtherStayCard hotelSlug={hotel.slug} stay={o} locale={locale} />
-                </li>
-              ))}
-            </ul>
-          </section>
         )}
 
         <section aria-labelledby="method-title" className="mt-12 max-w-[40em]">
@@ -559,39 +539,5 @@ function Notice({
       <p className="mt-1 max-w-[34em] text-[15px] text-muted-ink">{text}</p>
       {children && <div className="mt-6">{children}</div>}
     </div>
-  );
-}
-
-function OtherStayCard({
-  hotelSlug,
-  stay,
-  locale,
-}: {
-  hotelSlug: string;
-  stay: OtherStay;
-  locale: Locale;
-}) {
-  const t = useTranslations('stay');
-  return (
-    <Card interactive className="flex h-full flex-col gap-2">
-      <a
-        href={localizedPath(stayPath(hotelSlug, stay.checkIn, stay.checkOut, stay.adults), locale)}
-        className="font-bold after:absolute after:inset-0"
-      >
-        {formatDateRange(stay.checkIn, stay.checkOut, locale)}
-      </a>
-      <p className="text-meta text-muted-ink">
-        {t('stayFacts', { nights: dayDiff(stay.checkIn, stay.checkOut), adults: stay.adults })}
-      </p>
-      <div className="mt-auto flex items-center justify-between gap-2 pt-1">
-        {stay.bestCents !== null ? (
-          <PriceText cents={stay.bestCents} locale={locale} size="md" />
-        ) : (
-          <span className="text-meta text-muted-ink">{t('othersNoPrice')}</span>
-        )}
-        {/* No day count here, so a collecting stay gets no "0/7" chip. */}
-        {stay.state && stay.state !== 'collecting' && <StateChip state={stay.state} size="sm" />}
-      </div>
-    </Card>
   );
 }

@@ -23,12 +23,8 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     await expect(page.getByText('Guter Preis im Vergleich zu den letzten 58 Tagen.')).toBeVisible();
     await expect(page.getByText('Als Tabelle anzeigen').locator('visible=true')).toHaveCount(1);
 
-    const others = page.getByRole('region', { name: 'Weitere Termine in diesem Hotel' });
-    await expect(others.getByRole('link')).toHaveCount(4);
-    await expect(others.getByRole('link', { name: '16.–18. Okt. 2026' })).toHaveAttribute(
-      'href',
-      '/hotel/hotel-adlon-kempinski-berlin/2026-10-16--2026-10-18?adults=2',
-    );
+    // No other dates of the hotel (C-173): people come with their own dates.
+    await expect(page.getByText('Weitere Termine in diesem Hotel')).toHaveCount(0);
   });
 
   test('price history: 30 days first, 14 T / Alles switch, usual range legend (C-111)', async ({
