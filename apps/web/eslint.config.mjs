@@ -1,8 +1,5 @@
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { FlatCompat } from '@eslint/eslintrc';
-
-const compat = new FlatCompat({ baseDirectory: dirname(fileURLToPath(import.meta.url)) });
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTs from 'eslint-config-next/typescript';
 
 const config = [
   {
@@ -16,7 +13,17 @@ const config = [
       'test-results',
     ],
   },
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  ...nextVitals,
+  ...nextTs,
+  {
+    // New React Compiler rules in eslint-config-next 16 (C-163). They flag 9 working spots in the
+    // search popovers and calendars (ref reads in render, setState in effects); warnings until
+    // those are refactored and checked on phone and desktop (C-164).
+    rules: {
+      'react-hooks/refs': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+    },
+  },
 ];
 
 export default config;
