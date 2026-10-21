@@ -1,15 +1,7 @@
 import 'server-only';
 import { hotelPhoto } from '@/lib/hotelPhotos';
 import { cityImage, type ImageRef } from '@/lib/photos';
-import {
-  addDays,
-  NIGHT_GRID,
-  shiftDays,
-  stayFromNights,
-  withTaxes,
-  z,
-  type NightPrice,
-} from '@tidaq/core';
+import { NIGHT_GRID, shiftDays, stayFromNights, withTaxes, z, type NightPrice } from '@tidaq/core';
 import { hasSupabase, rest, rpc } from './supabase';
 import { reportError } from '@/lib/errors';
 import { getPriceFactors } from './priceFactors';
@@ -27,16 +19,6 @@ const hotelRow = z.object({
   slug: z.string(),
   name: z.string(),
   image_credit: z.string().nullable(),
-});
-
-/** Days in the city page's "Günstigste Woche" (C-126). */
-export const CITY_BEST_NIGHTS = 7;
-
-const bestRow = z.object({
-  hotel_id: z.number(),
-  check_in: z.string().nullable(),
-  total_cents: z.number().int().positive().nullable(),
-  provider_id: z.number().nullable(),
 });
 
 const providerRow = z.object({ id: z.number(), name: z.string(), is_direct: z.boolean() });
@@ -73,11 +55,6 @@ export interface CityHotel {
   /** Self-hosted 960 px photo (C-011c), when licensed; else the city's photo (`city: true`, C-105). */
   image: ImageRef | null;
   /**
-   * Cheapest upcoming week (7 nights, any check-in day) on one reviewed site (SQL
-   * `city_best_trips`, C-126), or null: no prices yet, or single nights mislead here (C-070d).
-   */
-  week: { checkIn: string; checkOut: string; totalCents: number; provider: string } | null;
-  /**
    * With dates (C-110): the stay's total on one reviewed site, from today's night prices; null
    * when a night has no price yet, it's beyond the grid, or single nights mislead here.
    */
@@ -94,7 +71,7 @@ export type CityLoad =
   { kind: 'ok'; city: City; hotels: CityHotel[] } | { kind: 'missing' } | { kind: 'unavailable' };
 
 /**
- * City page (C-024): the city and its active hotels, A–Z, each with its cheapest week. With
+ * City page (C-024): the city and its active hotels, A–Z. With
  * `dates` (C-110) each hotel also gets that stay's total, and the list is sorted by it.
  */
 export async function getCityPage(
@@ -109,15 +86,10 @@ export async function getCityPage(
       cityRow,
     );
     if (!city) return { kind: 'missing' };
-    const [hotels, weeks, reliability] = await Promise.all([
+    const [hotels, reliability] = await Promise.all([
       rest(
         `hotels?select=id,slug,name,image_credit&city_id=eq.${city.id}&active=eq.true&order=name`,
         hotelRow,
-      ),
-      rpc(
-        'city_best_trips',
-        { p_city: slug, p_today: today, p_nights: CITY_BEST_NIGHTS },
-        z.array(bestRow),
       ),
       rpc('night_reliability', { p_day: today }, z.array(reliabilityRow)).catch(
         (error: unknown) => {
@@ -128,17 +100,6 @@ export async function getCityPage(
       ),
     ]);
     const unreliable = new Set(reliability?.filter((r) => !r.reliable).map((r) => r.hotel_id));
-    const providerIds = [
-      ...new Set(weeks.map((w) => w.provider_id).filter((id): id is number => id !== null)),
-    ];
-    const providers = providerIds.length
-      ? await rest(
-          `providers?select=id,name,is_direct&id=in.(${providerIds.join(',')})`,
-          providerRow,
-        )
-      : [];
-    const providerById = new Map(providers.map((p) => [p.id, p]));
-    const weekByHotel = new Map(weeks.map((w) => [w.hotel_id, w]));
     const [stays, factors] = await Promise.all([
       dates ? cityStays(hotels, dates) : Promise.resolve(null),
       getPriceFactors(),
@@ -154,8 +115,6 @@ export async function getCityPage(
         name: { de: city.name_de, en: city.name_en },
       },
       hotels: hotels.map((h) => {
-        const w = weekByHotel.get(h.id);
-        const p = w?.provider_id != null ? providerById.get(w.provider_id) : undefined;
         const photo = hotelPhoto(h.slug);
         return {
           slug: h.slug,
@@ -167,15 +126,6 @@ export async function getCityPage(
               return s ? { ...s, totalCents: tax(h.id, s.totalCents) } : null;
             })(),
           }),
-          week:
-            w?.check_in && w.total_cents && p && reliability && !unreliable.has(h.id)
-              ? {
-                  checkIn: w.check_in,
-                  checkOut: addDays(w.check_in, CITY_BEST_NIGHTS),
-                  totalCents: tax(h.id, w.total_cents),
-                  provider: p.is_direct ? h.name : p.name,
-                }
-              : null,
         };
       }),
     };

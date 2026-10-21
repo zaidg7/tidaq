@@ -1,9 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('city page (C-024, sample data on /dev/city)', () => {
-  test('hotel cards with the cheapest week, linking to hotel and stay (C-126)', async ({
-    page,
-  }) => {
+  test('hotel cards link to the hotel page; no suggested dates (C-173)', async ({ page }) => {
     await page.goto('/dev/city');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Fünf-Sterne-Hotels in Berlin',
@@ -17,34 +15,19 @@ test.describe('city page (C-024, sample data on /dev/city)', () => {
       'href',
       '/hotel/hotel-adlon-kempinski-berlin',
     );
-    await expect(adlon.getByRole('link', { name: '9.–16. Nov. 2026' })).toHaveAttribute(
-      'href',
-      '/hotel/hotel-adlon-kempinski-berlin/2026-11-09--2026-11-16?adults=2',
-    );
-    await expect(adlon).toContainText('Günstigste Woche');
-    await expect(adlon).toContainText('7 Nächte, 2 Erwachsene, bei Booking.com');
-    await expect(adlon).toContainText(/4\.487\s€/);
-
-    await expect(cards.filter({ hasText: 'Waldorf Astoria Berlin' })).toContainText(
-      'Noch kein Preis für eine ganze Woche',
-    );
+    await expect(adlon).toContainText('Wähl deine Daten, dann siehst du den Preis.');
+    await expect(page.getByText('Günstigste Woche')).toHaveCount(0);
     await expect(page.getByRole('link', { name: 'Alle Hotels' }).first()).toHaveAttribute(
       'href',
       '/hotels',
     );
   });
 
-  test('the week link sits above the card link', async ({ page }) => {
-    await page.goto('/dev/city');
-    await page.getByRole('link', { name: '9.–16. Nov. 2026' }).click();
-    await expect(page).toHaveURL(/\/hotel\/hotel-adlon-kempinski-berlin\/2026-11-09--2026-11-16/);
-  });
-
   test('English copy and phone width', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/en/dev/city');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Five-star hotels in Berlin');
-    await expect(page.getByText('Cheapest week').first()).toBeVisible();
+    await expect(page.getByText('Pick your dates to see the price.').first()).toBeVisible();
     const width = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(width).toBeLessThanOrEqual(390);
   });
@@ -119,6 +102,10 @@ test.describe('all hotels (C-024, sample data on /dev/hotels)', () => {
       'href',
       '/hotel/the-ritz-carlton-berlin/2026-12-04--2026-12-06?adults=2',
     );
+    // The whole card opens that stay too: the dates from the search are never asked again.
+    await expect(
+      cards.nth(0).getByRole('link', { name: 'The Ritz-Carlton Berlin' }),
+    ).toHaveAttribute('href', '/hotel/the-ritz-carlton-berlin/2026-12-04--2026-12-06?adults=2');
     await expect(cards.nth(1)).toContainText('Hotel Adlon Kempinski');
     await expect(cards.nth(2)).toContainText('Für diese Daten noch kein Preis');
   });

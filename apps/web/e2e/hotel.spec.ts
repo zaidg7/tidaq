@@ -23,21 +23,11 @@ test.describe('hotel page (C-023a, sample data on /dev/hotel)', () => {
     await expect(page.getByText('Stand: heute, 10:58 Uhr')).toBeVisible();
   });
 
-  test('the price of every night as a chart, cheapest and dearest in words (C-132b)', async ({
-    page,
-  }) => {
+  test('no suggested dates and no night chart, only the calendar (C-173)', async ({ page }) => {
     await page.goto('/dev/hotel/calendar');
-    const curve = page.getByRole('region', { name: 'So ändert sich der Preis pro Nacht' });
-    await expect(
-      curve.getByText(/^Günstigste Nacht: [\d.]+\s€ am \d+\. \w+\.? · Teuerste:/),
-    ).toBeVisible();
-    // The calendar comes after it: the chart shows when, the calendar is where you pick.
-    const order = await page.evaluate(() =>
-      [...document.querySelectorAll('h2')].map((h) => h.textContent),
-    );
-    expect(order.indexOf('So ändert sich der Preis pro Nacht')).toBeLessThan(
-      order.indexOf('Preise jeder Nacht'),
-    );
+    await expect(page.getByRole('region', { name: 'Preise jeder Nacht' })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Günstigste Termine' })).toHaveCount(0);
+    await expect(page.getByText('So ändert sich der Preis pro Nacht')).toHaveCount(0);
   });
 
   test('picking dates shows the total on one site and links to the stay', async ({ page }) => {
@@ -79,27 +69,6 @@ test.describe('hotel page (C-023a, sample data on /dev/hotel)', () => {
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('Enter');
     await expect(page.getByText(/^2 Nächte · 14\.–16\. Okt\.$/)).toBeVisible();
-  });
-
-  test('cheapest 5 nights and week link to their stay pages (C-023b, C-125)', async ({ page }) => {
-    await page.goto('/dev/hotel/calendar');
-    const best = page.getByRole('region', { name: 'Günstigste Termine' });
-    await expect(best.getByRole('listitem')).toHaveCount(2);
-    for (const [label, n] of [
-      ['5 Nächte', 5],
-      ['Eine Woche', 7],
-    ] as const) {
-      const card = best.getByRole('listitem').filter({ hasText: label });
-      const href = await card.getByRole('link').getAttribute('href');
-      const m =
-        /^\/hotel\/hotel-adlon-kempinski-berlin\/(\d{4}-\d{2}-\d{2})--(\d{4}-\d{2}-\d{2})\?adults=2$/.exec(
-          href ?? '',
-        );
-      expect(m, href ?? '').not.toBeNull();
-      expect((Date.parse(m?.[2] ?? '') - Date.parse(m?.[1] ?? '')) / 86_400_000).toBe(n);
-      await expect(card).toContainText(`${n} Nächte für 2 Erwachsene bei`);
-      await expect(card).toContainText(/\d\s€ pro Nacht/);
-    }
   });
 
   test('hotels where single nights mislead show no total', async ({ page }) => {

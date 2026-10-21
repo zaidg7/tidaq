@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { addDays, type DailyPrice, type Locale, type StayOffer } from '@tidaq/core';
 import { EditStay } from '@/components/stay/EditStay';
 import { StayView, type StayStatus } from '@/components/stay/StayView';
-import type { OtherStay, StayHotel } from '@/lib/data/stay';
+import type { StayHotel } from '@/lib/data/stay';
 import { hotelPhoto } from '@/lib/hotelPhotos';
 import { sampleSeries } from '@/lib/sampleStay';
 import { searchCardProps } from '@/lib/searchCardProps';
@@ -33,19 +33,6 @@ const HOTEL: StayHotel = {
       }
     : null,
 };
-
-const OTHERS: OtherStay[] = [
-  { checkIn: '2026-10-16', checkOut: '2026-10-18', adults: 2, bestCents: 112_400, state: 'good' },
-  { checkIn: '2026-10-23', checkOut: '2026-10-25', adults: 2, bestCents: 129_800, state: 'high' },
-  {
-    checkIn: '2026-10-28',
-    checkOut: '2026-10-29',
-    adults: 2,
-    bestCents: 48_900,
-    state: 'collecting',
-  },
-  { checkIn: '2026-11-06', checkOut: '2026-11-08', adults: 2, bestCents: null, state: null },
-];
 
 /**
  * Today's prices by provider around the latest best price: the hotel site is cheapest, Expedia
@@ -115,7 +102,6 @@ const VARIANTS: Record<
     status: StayStatus;
     checkIn: string;
     series: DailyPrice[];
-    others: OtherStay[];
     active?: boolean;
     /** Day of the provider prices when not today ("Preise vom …"). */
     offersDay?: string;
@@ -133,29 +119,25 @@ const VARIANTS: Record<
     status: 'tracked',
     checkIn: '2026-12-04',
     series: sampleSeries(TODAY),
-    others: OTHERS,
   },
   // Check-in in 5 days: the advice adds "Kurz vor Anreise …".
   soon: {
     status: 'tracked',
     checkIn: addDays(TODAY, 5),
     series: sampleSeries(TODAY),
-    others: [],
     offersDay: addDays(TODAY, -1),
   },
   collecting: {
     status: 'tracked',
     checkIn: '2026-12-04',
     series: sampleSeries(TODAY).slice(-3),
-    others: OTHERS,
   },
-  'no-data': { status: 'no_data', checkIn: '2026-12-04', series: [], others: OTHERS },
+  'no-data': { status: 'no_data', checkIn: '2026-12-04', series: [] },
   // History from the night grid; today's real check is 31 % below the nights' sum (C-070b).
   nights: {
     status: 'tracked',
     checkIn: '2026-12-04',
     series: sampleSeries(TODAY),
-    others: OTHERS,
     history: 'nights',
     realVsNights: { realCents: 154_400, nightsCents: 224_400 },
   },
@@ -164,7 +146,6 @@ const VARIANTS: Record<
     status: 'untracked',
     checkIn: '2027-08-06',
     series: [],
-    others: OTHERS,
     request: 'full',
   },
   // 3 adults: the night grid collects 2.
@@ -172,7 +153,6 @@ const VARIANTS: Record<
     status: 'untracked',
     checkIn: '2026-12-05',
     series: [],
-    others: OTHERS,
     adults: 3,
   },
   // C-070d: single nights mislead here, so only real checks of the exact stay count.
@@ -180,7 +160,6 @@ const VARIANTS: Record<
     status: 'untracked',
     checkIn: '2026-12-04',
     series: [],
-    others: OTHERS,
     nightsUnreliable: true,
     request: 'created',
   },
@@ -188,11 +167,10 @@ const VARIANTS: Record<
     status: 'tracked',
     checkIn: '2026-12-04',
     series: sampleSeries(TODAY).slice(-9),
-    others: OTHERS,
     nightsUnreliable: true,
   },
-  past: { status: 'past', checkIn: '2026-09-04', series: [], others: OTHERS },
-  inactive: { status: 'inactive', checkIn: '2026-12-04', series: [], others: [], active: false },
+  past: { status: 'past', checkIn: '2026-09-04', series: [] },
+  inactive: { status: 'inactive', checkIn: '2026-12-04', series: [], active: false },
 };
 
 /**
@@ -235,7 +213,6 @@ export default async function DevStayPage({
       realVsNights={v.realVsNights ?? null}
       nightsUnreliable={v.nightsUnreliable ?? false}
       request={v.request ?? null}
-      others={v.others}
       offers={{
         day: v.series.length ? (v.offersDay ?? TODAY) : null,
         list: sampleOffers(v.series),

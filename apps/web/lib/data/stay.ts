@@ -8,7 +8,6 @@ import {
   safeHttpsUrl,
   STATS,
   withAffiliate,
-  stayStates,
   z,
   type DailyPrice,
   type StayOffer,
@@ -76,14 +75,6 @@ const providerRow = z.object({
 export const isAffiliate = (template: string | null) =>
   withAffiliate('https://example.com/', template) !== 'https://example.com/';
 
-const calendarRow = z.object({
-  check_in: z.string(),
-  check_out: z.string(),
-  adults: z.number(),
-  best_cents: z.number().nullable(),
-  state: z.enum(stayStates).nullable(),
-});
-
 export interface StayHotel {
   slug: string;
   name: string;
@@ -91,15 +82,6 @@ export interface StayHotel {
   city: { slug: string; name: { de: string; en: string } };
   /** Self-hosted thumbnail (C-011c) with its credit, when licensed. */
   image: (PhotoSize & { credit: string; sourceUrl: string | null }) | null;
-}
-
-/** Another tracked stay of the same hotel ("Weitere Termine"). */
-export interface OtherStay {
-  checkIn: string;
-  checkOut: string;
-  adults: number;
-  bestCents: number | null;
-  state: (typeof stayStates)[number] | null;
 }
 
 export interface StayData {
@@ -129,8 +111,6 @@ export interface StayData {
   series: DailyPrice[];
   /** Name of the cheapest provider per day, for the chart readout and table. */
   providerByDay: Record<string, string>;
-  /** Up to 6 upcoming tracked stays of this hotel, soonest first, without this one. */
-  others: OtherStay[];
   /**
    * The latest day's price per reviewed provider with its checkout-test record (C-022b).
    * `unreviewed`: providers with a price that aren't reviewed yet (RLS hides their names).
@@ -161,20 +141,12 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
     if (!hotel) return { kind: 'missing' };
 
     const gridDates = hotel.active && inNightGrid(p, today);
-    const [stays, calendar, reliability] = await Promise.all([
+    const [stays, reliability] = await Promise.all([
       rest(
         `tracked_stays?select=id,active,stay_stats(updated_at)&hotel_id=eq.${hotel.id}` +
           `&check_in=eq.${p.checkIn}&check_out=eq.${p.checkOut}&adults=eq.${p.adults}&limit=1`,
         stayRow,
       ),
-      hotel.active
-        ? rest(
-            `v_hotel_calendar?select=check_in,check_out,adults,best_cents,state` +
-              `&hotel_id=eq.${hotel.id}&check_in=gte.${today}&order=check_in.asc,check_out.asc` +
-              '&limit=7',
-            calendarRow,
-          )
-        : Promise.resolve([]),
       gridDates
         ? rpc(
             'night_reliability',
@@ -341,19 +313,6 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
           list: offers,
           unreviewed: latestIds.filter((id) => !nameById.has(Number(id))).length,
         },
-        others: calendar
-          .filter(
-            (c) =>
-              !(c.check_in === p.checkIn && c.check_out === p.checkOut && c.adults === p.adults),
-          )
-          .slice(0, 6)
-          .map((c) => ({
-            checkIn: c.check_in,
-            checkOut: c.check_out,
-            adults: c.adults,
-            bestCents: c.best_cents === null ? null : tax(c.best_cents),
-            state: c.state,
-          })),
       },
     };
   } catch (error) {
