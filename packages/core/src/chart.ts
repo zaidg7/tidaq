@@ -26,13 +26,13 @@ export interface ChartDay {
 export interface ChartBand {
   x0: number;
   x1: number;
-  /** `building`: days before tracking started. `stale`: no data since `since`. */
-  kind: 'building' | 'stale';
-  since?: string;
+  /** No data since `since` (the days before tracking started are cut, never boxed: C-174). */
+  kind: 'stale';
+  since: string;
 }
 
 export interface ChartGeometry {
-  /** The window actually drawn (a sparse series gets a shorter one). */
+  /** The window actually drawn: it starts at the first price, never with empty days (C-174). */
   from: string;
   to: string;
   days: ChartDay[];
@@ -58,7 +58,7 @@ export interface ChartGeometry {
    * band would be thinner than a line.
    */
   usual: { lowCents: number; highCents: number; yTop: number; yBottom: number } | null;
-  /** Fewer than `CHART.minLinePoints`: dots only. */
+  /** Fewer than `CHART.minLinePoints`: a dot on every price, no average or usual band. */
   sparse: boolean;
   /** All prices within 0.5 %: no low marker. */
   flat: boolean;
@@ -81,8 +81,8 @@ export const CHART = {
   /** Below this share of the mean the series counts as flat. */
   flatShare: 0.005,
   minLinePoints: 7,
-  /** A sparse series is drawn over at least this many days, so its dots don't overlap. */
-  sparseWindowDays: 14,
+  /** The x axis spans at least this many days, so one or two prices don't sit on the edges. */
+  minWindowDays: 3,
   /** No data for this many days before `to`: show the "no data since" band. */
   staleDays: 2,
   xTickCount: 4,
@@ -154,12 +154,13 @@ export function chartGeometry(series: readonly DailyPrice[], window: ChartWindow
   const sortedDays = [...byDay.keys()].sort();
   const sparse = sortedDays.length < CHART.minLinePoints;
 
-  // A sparse series gets a short window so its few dots are readable and scrubbable.
+  // The axis starts at the first price (C-174): days before tracking started are left out,
+  // not drawn as an empty box. At least `minWindowDays`, so a lone price isn't on the edge.
   let from = window.from;
   const first = sortedDays[0];
-  if (sparse && first) {
-    const short = addDays(window.to, -(CHART.sparseWindowDays - 1));
-    from = [window.from, first < short ? first : short].sort()[1] as string;
+  if (first && first > from) {
+    const shortest = addDays(window.to, -(CHART.minWindowDays - 1));
+    from = [window.from, first < shortest ? first : shortest].sort()[1] as string;
   }
   const to = window.to;
   const totalDays = Math.max(1, daysBetween(from, to));
@@ -268,9 +269,7 @@ export function chartGeometry(series: readonly DailyPrice[], window: ChartWindow
 
   let band: ChartBand | null = null;
   const halfDay = (1 - inset.left - inset.right) / totalDays / 2;
-  if (first && sparse && first > from) {
-    band = { x0: xOf(from), x1: xOf(first) - halfDay, kind: 'building' };
-  } else if (last && daysBetween(last.day, to) >= CHART.staleDays) {
+  if (last && daysBetween(last.day, to) >= CHART.staleDays) {
     band = { x0: xOf(last.day) + halfDay, x1: xOf(to), kind: 'stale', since: last.day };
   }
 

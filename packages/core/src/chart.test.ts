@@ -102,17 +102,33 @@ describe('chartGeometry', () => {
     expect(g.segments.map((s) => s.length)).toEqual([30, 9, 19]);
   });
 
-  it('draws a sparse series over a short window with a "building" band', () => {
+  it('starts the axis at the first price: no empty days, no placeholder band (C-174)', () => {
     const g = chartGeometry(
       days('2026-10-27', 4, (i) => 115_000 + i * 500),
       { from: FROM, to: TO },
     );
     expect(g.sparse).toBe(true);
-    expect(g.from).toBe('2026-10-17');
-    expect(g.days).toHaveLength(14);
-    expect(g.band).toMatchObject({ kind: 'building' });
-    expect(g.band?.x1).toBeLessThan(g.points[0]?.x as number);
+    expect(g.from).toBe('2026-10-27');
+    expect(g.days).toHaveLength(4);
+    expect(g.band).toBeNull();
+    expect(g.points[0]?.x).toBeCloseTo(CHART.inset.left);
+    expect(g.segments.map((s) => s.length)).toEqual([4]);
     expect(g.lastIsCurrent).toBe(true);
+  });
+
+  it('spans at least three days, so a lone price is not on the edge', () => {
+    const g = chartGeometry([{ day: TO, bestCents: 100_000 }], { from: FROM, to: TO });
+    expect(g.from).toBe('2026-10-28');
+    expect(g.points[0]?.x).toBeCloseTo(1 - CHART.inset.right);
+  });
+
+  it('starts a longer series at its first price too', () => {
+    const g = chartGeometry(
+      days('2026-10-11', 20, (i) => 100_000 + i * 100),
+      { from: FROM, to: TO },
+    );
+    expect(g.sparse).toBe(false);
+    expect(g.from).toBe('2026-10-11');
   });
 
   it('shows no average for a sparse series (a 30-day mean of 3 days says little)', () => {

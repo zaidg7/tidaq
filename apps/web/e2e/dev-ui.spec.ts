@@ -129,7 +129,8 @@ test.describe('/dev/ui', () => {
   test('price chart: sparse, empty, stale and outlier states', async ({ page }) => {
     await page.goto('/dev/ui');
     const section = page.locator('#preisverlauf');
-    await expect(section.getByText('Hier entsteht der Verlauf')).toHaveCount(1);
+    // A few days: the axis starts at the first price, no placeholder box (C-174).
+    await expect(section.getByText('Hier entsteht der Verlauf')).toHaveCount(0);
     await expect(
       section.getByRole('img', { name: 'Noch keine Preise für diesen Aufenthalt.' }),
     ).toBeVisible();
@@ -147,11 +148,10 @@ test.describe('/dev/ui', () => {
     await expect(
       panel.getByText('Stand: heute, 07:12 Uhr · Quelle: Preise der Buchungsseiten'),
     ).toBeVisible();
-    await expect(
-      panel.getByRole('img', {
-        name: /^(Günstig|Normal|Teuer): aktuell .+, zwischen Tief .+ und Hoch .+ seit 15\. Aug\.$/,
-      }),
-    ).toBeVisible();
+    // The verdict is said once (C-174): no meter beside the chip and the sentence.
+    await expect(panel.getByRole('img', { name: /^(Günstig|Normal|Teuer): aktuell/ })).toHaveCount(
+      0,
+    );
 
     const total = panel.getByText(/^gesamt · .+ pro Nacht · 2 Nächte, 2 Erwachsene$/);
     await expect(total).toBeVisible();

@@ -271,7 +271,7 @@ function Plot({ g, summary, locale, t, todayColor }: PlotProps) {
             fill="var(--surface-2)"
           />
         )}
-        {!g.sparse && (
+        {g.segments.some((seg) => seg.length > 1) && (
           <svg
             viewBox="0 0 1000 1000"
             preserveAspectRatio="none"
@@ -349,7 +349,7 @@ function Plot({ g, summary, locale, t, todayColor }: PlotProps) {
             <circle cx={pct(g.last.x)} cy={pct(g.last.y)} r="6" fill={todayColor} />
           </g>
         )}
-        {g.last && !g.lastIsCurrent && !g.sparse && !g.last.outlier && (
+        {g.last && !g.lastIsCurrent && !g.last.outlier && (
           <circle cx={pct(g.last.x)} cy={pct(g.last.y)} r="3.5" fill="var(--ink)" />
         )}
       </svg>
@@ -385,10 +385,7 @@ function Plot({ g, summary, locale, t, todayColor }: PlotProps) {
         {g.band &&
           (() => {
             const band = g.band;
-            const text =
-              band.kind === 'building'
-                ? t('building')
-                : t('stale', { since: formatDayMonth(band.since ?? g.to, locale) });
+            const text = t('stale', { since: formatDayMonth(band.since, locale) });
             // A wide band holds its label; a narrow one (a few stale days) gets it above, on one line.
             const wide = band.x1 - band.x0 >= 0.3;
             return (
