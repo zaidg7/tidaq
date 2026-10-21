@@ -27,7 +27,7 @@ test.describe('Price Drop-Radar (C-080a, sample data on /dev/drops)', () => {
       DROP('baur-au-lac-zuerich'),
     );
     await expect(hero).toContainText('Price Drop des Tages');
-    await expect(hero).toContainText('Preis um −31 % gefallen');
+    await expect(hero).toContainText('Preis gefallen: −31 %');
     await expect(hero).toContainText('5 Nächte, 2 Erwachsene');
     // Exact quote only (D-52): per night as the site shows it, the stay total, taxes included.
     await expect(hero).toContainText('684 € pro Nacht');
@@ -236,7 +236,7 @@ test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
     await page.goto('/dev/drops?share');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Baur au Lac');
     const main = page.getByRole('main');
-    const card = main.getByRole('region', { name: 'Preis um −31 % gefallen' });
+    const card = main.getByRole('region', { name: 'Preis gefallen: −31 %' });
     await expect(card.getByText('Price Drop seit gestern')).toBeVisible();
     await expect(card).toContainText('684 € pro Nacht');
     await expect(card).toContainText('3.420 € für 5 Nächte · inkl. Steuern und Gebühren');
