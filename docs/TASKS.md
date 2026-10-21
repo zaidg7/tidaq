@@ -203,6 +203,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-166 | Accuracy page in /admin: daily sample of exact checks vs our shown prices, error per site (median, share within 5 %) | CLOUD | S | – | TODO |
 | C-167 | Trip.com Hotel Availability API 2.0 (official, prices incl. taxes per stay, our AllianceID/SID + icode/userKey from Trip.com): exact Trip.com prices for stays people view and for drops | CLOUD | M | Zaid: API access | BLOCKED |
 | C-168 | Agoda Search API (affiliate model, inclusive prices) after Agoda approval and certification | CLOUD | M | Agoda approval | BLOCKED |
+| C-169 | Price Drops empty since 19 Oct: refresh_trip_drops hit the 2-min statement timeout; cron job now sets 10 min | CLOUD | S | – | DONE |
+| C-170 | Make compute_trip_drops fast again (index or pre-aggregated trip totals), so the refresh stays well under 2 minutes; alert in /admin when a cron job fails | CLOUD | M | C-169 | TODO |
 | C-051                                                           | Weekly content pack routine                                                  | CLOUD | S             | C-044                             | TODO           |
 | C-052                                                           | "Beste Buchungszeit" and event SEO pages                                     | CLOUD | M             | C-044 (30+ days data)             | TODO           |
 | C-053                                                           | Coverage expansion and "request a hotel"                                     | CLOUD | M             | C-044                             | TODO           |
