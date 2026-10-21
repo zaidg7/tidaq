@@ -128,12 +128,25 @@ export function safeHttpsUrl(value: string | null | undefined): string | null {
 }
 
 /**
- * Applies a provider's affiliate template (`providers.affiliate_template`, e.g.
- * `https://partner.example/click?id=42&url={url}`): `{url}` becomes the encoded target. A template
- * that isn't https or has no `{url}` is ignored, so a typo never breaks the link.
+ * Applies a provider's affiliate template (`providers.affiliate_template`). Two kinds:
+ * - a wrapper, e.g. `https://partner.example/click?id=42&url={url}`: `{url}` becomes the encoded
+ *   target;
+ * - query parameters, e.g. `?Allianceid=11087826&SID=334094272` (Trip.com, C-050a): added to the
+ *   target itself, replacing a parameter of the same name.
+ * A template that isn't https, has no `{url}` or no parameters is ignored, so a typo never breaks
+ * the link.
  */
 export function withAffiliate(url: string, template: string | null | undefined): string {
-  if (!template || !template.includes('{url}')) return url;
+  if (!template) return url;
+  if (template.startsWith('?')) {
+    const extra = new URLSearchParams(template.slice(1));
+    const target = safeHttpsUrl(url);
+    if (!target || [...extra.keys()].length === 0) return url;
+    const out = new URL(target);
+    for (const [k, v] of extra) out.searchParams.set(k, v);
+    return out.toString();
+  }
+  if (!template.includes('{url}')) return url;
   return safeHttpsUrl(template.replaceAll('{url}', encodeURIComponent(url))) ?? url;
 }
 

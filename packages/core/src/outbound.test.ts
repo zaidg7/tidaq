@@ -117,6 +117,28 @@ describe('withAffiliate', () => {
     expect(withAffiliate(target, null)).toBe(target);
     expect(withAffiliate(target, 'https://partner.example/click')).toBe(target);
     expect(withAffiliate(target, 'http://partner.example/?u={url}')).toBe(target);
+    expect(withAffiliate(target, '?')).toBe(target);
+  });
+
+  it('wraps the target in a {url} template', () => {
+    expect(
+      withAffiliate('https://www.booking.com/x?a=1', 'https://p.example/c?id=7&url={url}'),
+    ).toBe('https://p.example/c?id=7&url=https%3A%2F%2Fwww.booking.com%2Fx%3Fa%3D1');
+  });
+
+  it('adds query-template parameters to the target (Trip.com, C-050a)', () => {
+    const tpl = '?Allianceid=11087826&SID=334094272';
+    expect(withAffiliate('https://de.trip.com/hotels/detail/?hotelId=1&curr=EUR', tpl)).toBe(
+      'https://de.trip.com/hotels/detail/?hotelId=1&curr=EUR&Allianceid=11087826&SID=334094272',
+    );
+    expect(withAffiliate('https://de.trip.com/hotels/list?SID=1', tpl)).toBe(
+      'https://de.trip.com/hotels/list?SID=334094272&Allianceid=11087826',
+    );
+    expect(
+      outboundUrl(provider('trip-com', false, tpl), { ...hotel, page: '12345' }, stay, 'de'),
+    ).toContain(
+      'hotelId=12345&checkIn=2026-12-04&checkOut=2026-12-06&adult=2&children=0&crn=1&curr=EUR&Allianceid=11087826&SID=334094272',
+    );
   });
 });
 

@@ -609,11 +609,11 @@
     },
     "affiliate": {
       "metaTitle": "Affiliate disclosure | Tidaq",
-      "metaDescription": "How Tidaq plans to earn money and why it never affects the order of prices.",
+      "metaDescription": "How Tidaq earns money and why it never affects the order of prices.",
       "eyebrow": "Transparency",
       "title": "Affiliate disclosure",
-      "intro": "Tidaq is free. Later we want to earn money with partner links. Here is how that works and what it means for you.",
-      "updated": "Last updated: 14 October 2026",
+      "intro": "Tidaq is free. We earn money with partner links. Here is how that works and what it means for you.",
+      "updated": "Last updated: 21 October 2026",
       "sections": [
         {
           "title": "How partner links work",
@@ -624,7 +624,7 @@
         {
           "title": "As of today",
           "text": [
-            "We haven't joined any partner programme yet. All links on Tidaq are plain links that earn us nothing."
+            "We are a Trip.com partner. If you book on Trip.com after clicking a Trip.com link, we earn a commission. All other links on Tidaq are plain links that earn us nothing."
           ]
         },
         {

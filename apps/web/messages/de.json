@@ -611,11 +611,11 @@
     },
     "affiliate": {
       "metaTitle": "Affiliate-Hinweis | Tidaq",
-      "metaDescription": "Wie Tidaq Geld verdienen will und warum das die Reihenfolge der Preise nie beeinflusst.",
+      "metaDescription": "Wie Tidaq Geld verdient und warum das die Reihenfolge der Preise nie beeinflusst.",
       "eyebrow": "Transparenz",
       "title": "Affiliate-Hinweis",
-      "intro": "Tidaq ist kostenlos. Später wollen wir über Partnerlinks Geld verdienen. Hier steht, wie das funktioniert und was es für dich bedeutet.",
-      "updated": "Stand: 14. Oktober 2026",
+      "intro": "Tidaq ist kostenlos. Wir verdienen Geld über Partnerlinks. Hier steht, wie das funktioniert und was es für dich bedeutet.",
+      "updated": "Stand: 21. Oktober 2026",
       "sections": [
         {
           "title": "Wie Partnerlinks funktionieren",
@@ -626,7 +626,7 @@
         {
           "title": "Stand heute",
           "text": [
-            "Wir sind noch bei keinem Partnerprogramm angemeldet. Alle Links auf Tidaq sind normale Links, an denen wir nichts verdienen."
+            "Wir sind Partner von Trip.com. Buchst du nach einem Klick auf einen Trip.com-Link dort, bekommen wir eine Provision. Alle anderen Links auf Tidaq sind normale Links, an denen wir nichts verdienen."
           ]
         },
         {
