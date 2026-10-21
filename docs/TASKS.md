@@ -205,6 +205,8 @@ The work queue. Sessions take the **first** task that is `TODO`, has their owner
 | C-168 | Agoda Search API (affiliate model, inclusive prices) after Agoda approval and certification | CLOUD | M | Agoda approval | BLOCKED |
 | C-169 | Price Drops empty since 19 Oct: refresh_trip_drops hit the 2-min statement timeout; cron job now sets 10 min | CLOUD | S | – | DONE |
 | C-170 | Make compute_trip_drops fast again (index or pre-aggregated trip totals), so the refresh stays well under 2 minutes; alert in /admin when a cron job fails | CLOUD | M | C-169 | TODO |
+| C-171 | Live drop checks: showable drops first (confirmed, ≤ 50 %, tax factor), one per hotel before the next | CLOUD | S | C-169 | DONE |
+| C-172 | Riviera Maya (and any city without a tax factor): calibration so its drops can show | CLOUD | S | – | TODO |
 | C-051                                                           | Weekly content pack routine                                                  | CLOUD | S             | C-044                             | TODO           |
 | C-052                                                           | "Beste Buchungszeit" and event SEO pages                                     | CLOUD | M             | C-044 (30+ days data)             | TODO           |
 | C-053                                                           | Coverage expansion and "request a hotel"                                     | CLOUD | M             | C-044                             | TODO           |
