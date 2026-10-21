@@ -84,7 +84,7 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
       'href',
       '/ranking',
     );
-    await expect(table.getByText(/Die Reihenfolge hängt nie von Provisionen ab\./)).toBeVisible();
+    await expect(table.getByText(/die Reihenfolge hängt nie von Provisionen ab\./)).toBeVisible();
     await expect(table.getByText(/2 weitere Anbieter hatten einen Preis/)).toBeVisible();
 
     // Price alert band (C-030b, C-174): email, optional target, consent never pre-ticked.
@@ -98,27 +98,34 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     );
   });
 
-  test('"Zum Angebot" opens the provider in a new tab through /go (C-026)', async ({ page }) => {
+  test('"Zum Angebot" only for partners, in a new tab through /go (C-026, D-54)', async ({
+    page,
+  }) => {
     await page.goto('/dev/stay/tracked');
     const table = page.getByRole('region', { name: 'Preise heute' });
-    const booking = table.getByRole('link', { name: 'Zum Angebot bei Booking.com (neuer Tab)' });
-    await expect(booking).toHaveAttribute(
+    const trip = table.getByRole('link', { name: 'Zum Angebot bei Trip.com (neuer Tab)' });
+    await expect(trip).toHaveAttribute(
       'href',
-      '/go/booking-com/hotel-adlon-kempinski-berlin?in=2026-12-04&out=2026-12-06&adults=2&lang=de',
+      '/go/trip-com/hotel-adlon-kempinski-berlin?in=2026-12-04&out=2026-12-06&adults=2&lang=de',
     );
-    await expect(booking).toHaveAttribute('target', '_blank');
-    await expect(booking).toHaveAttribute('rel', 'sponsored nofollow noopener');
-    await expect(booking).toContainText('Zum Angebot');
-    await expect(table.getByRole('link', { name: /^Zum Angebot bei/ })).toHaveCount(5);
-    await expect(
-      table.getByRole('link', { name: 'Zum Angebot bei Website des Hotels (neuer Tab)' }),
-    ).toHaveAttribute('href', /^\/go\/hotel-direct\//);
+    await expect(trip).toHaveAttribute('target', '_blank');
+    await expect(trip).toHaveAttribute('rel', 'sponsored nofollow noopener');
+    await expect(trip).toContainText('Zum Angebot');
+    // Sites that don't pay us keep their price, without a link.
+    await expect(table.getByRole('link', { name: /^Zum Angebot bei/ })).toHaveCount(1);
+    await expect(table.getByRole('listitem').filter({ hasText: 'Booking.com' })).toContainText(
+      /1\.167\s€/,
+    );
+    await expect(table.getByText(/Links gibt es nur zu unseren Partnern/)).toBeVisible();
   });
 
   test('on phones the whole provider row is the link', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/dev/stay/tracked');
-    const row = page.getByRole('region', { name: 'Preise heute' }).getByRole('listitem').nth(1);
+    const row = page
+      .getByRole('region', { name: 'Preise heute' })
+      .getByRole('listitem')
+      .filter({ hasText: 'Trip.com' });
     // The outbound link (the trust score links to the provider page, C-034b).
     const link = row.locator('a[target="_blank"]');
     const [r, l] = await Promise.all([row.boundingBox(), link.boundingBox()]);

@@ -290,15 +290,15 @@ export function StayView({
 }
 
 /**
- * The main button (blueprint rule 1): the cheapest site that pays us and that we can link to for
- * these dates; without one, the cheapest linkable site. Null for past stays or no links.
+ * The main button (blueprint rule 1): the cheapest partner we can link to for these dates (only
+ * partners get links, D-54). Null for past stays or when no partner has a price.
  */
 function mainOffer(offers: StayOffer[], bookable: boolean) {
   if (!bookable) return null;
   const linked = rankOffers(offers).filter(
     (o): o is typeof o & { link: NonNullable<StayOffer['link']> } => o.link !== undefined,
   );
-  return linked.find((o) => o.link.partner) ?? linked[0] ?? null;
+  return linked[0] ?? null;
 }
 
 function TrackedPanel({

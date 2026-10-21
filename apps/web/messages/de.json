@@ -376,7 +376,7 @@
     "toOffer": "Zum Angebot",
     "toOfferLabel": "Zum Angebot bei {provider} (neuer Tab)",
     "partnerLink": "Partnerlink",
-    "offersNote": "Gesamtpreise inkl. Steuern und Gebühren, bei unserer letzten Abfrage. Die Reihenfolge hängt nie von Provisionen ab.",
+    "offersNote": "Gesamtpreise inkl. Steuern und Gebühren, bei unserer letzten Abfrage. Links gibt es nur zu unseren Partnern, die Reihenfolge hängt nie von Provisionen ab.",
     "offersUnreviewed": "{n, plural, one {Ein weiterer Anbieter hatte einen Preis, ist aber noch nicht von uns geprüft.} other {# weitere Anbieter hatten einen Preis, sind aber noch nicht von uns geprüft.}}",
     "watchEmail": "Deine E-Mail-Adresse",
     "watchTarget": "Wunschpreis (optional)",
@@ -608,7 +608,7 @@
         {
           "title": "Stand heute",
           "text": [
-            "Wir sind Partner von Trip.com. Buchst du nach einem Klick auf einen Trip.com-Link dort, bekommen wir eine Provision. Alle anderen Links auf Tidaq sind normale Links, an denen wir nichts verdienen."
+            "Wir sind Partner von Trip.com. Buttons zu Buchungsseiten gibt es nur bei unseren Partnern: Buchst du nach einem Klick darauf, bekommen wir eine Provision. Die Preise aller anderen Seiten zeigen wir weiter, nur ohne Link, damit du ehrlich vergleichen kannst."
           ]
         },
         {
@@ -657,7 +657,7 @@
         {
           "title": "Was nie eine Rolle spielt",
           "text": [
-            "Ob uns eine Buchungsseite eine Provision zahlt, beeinflusst weder die Reihenfolge noch die Auswahl noch unsere Einschätzung. Mehr im [Affiliate-Hinweis](/affiliate-hinweis)."
+            "Ob uns eine Buchungsseite eine Provision zahlt, beeinflusst weder die Reihenfolge noch welche Preise wir zeigen noch unsere Einschätzung. Es entscheidet nur, ob es einen Button gibt: Links setzen wir nur zu unseren Partnern. Mehr im [Affiliate-Hinweis](/affiliate-hinweis)."
           ]
         }
       ]

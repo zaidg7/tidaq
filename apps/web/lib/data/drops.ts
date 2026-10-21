@@ -116,7 +116,7 @@ export type DropPageLoad =
       series: DailyPrice[];
       /** Other hotels on today's radar, biggest drop first. */
       others: HotelDropsWithPhoto[];
-      /** The drop's site, when we can send visitors there (C-080g); `partner` = affiliate link. */
+      /** The drop's site, when it is a partner we can send visitors to (C-080g, D-54). */
       offer: { partner: boolean } | null;
       /** Credit for the hotel's own photo ("Toglenn, CC BY-SA 3.0"); null for city photos. */
       credit: { text: string; href: string | null } | null;
@@ -211,7 +211,8 @@ export const getDropPage = cache(
     return {
       kind: 'ok',
       ...found,
-      offer: offerRow ? { partner: isAffiliate(offerRow.affiliate_template) } : null,
+      // Buttons only to partners (D-54): other sites' drops still show, the way on is the stay page.
+      offer: offerRow && isAffiliate(offerRow.affiliate_template) ? { partner: true } : null,
       credit: creditRow?.image_credit
         ? {
             // Stored as "Foto: Name, Lizenz, via Wikimedia Commons"; the page adds its own prefix.

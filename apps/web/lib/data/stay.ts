@@ -258,10 +258,12 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
         name: pr.name,
         isDirect: pr.is_direct,
         totalCents: tax(cents),
-        // The /go route builds the same target (core `outboundUrl`); no button without one.
-        ...((pr.is_direct ? safeHttpsUrl(hotel.official_url) : hasOutboundSearch(pr.slug)) && {
-          link: { slug: pr.slug, partner: isAffiliate(pr.affiliate_template) },
-        }),
+        // Buttons only to partners (D-54): sites that pay us get "Zum Angebot", every other site
+        // keeps its price without a link. The /go route builds the same target (`outboundUrl`).
+        ...(isAffiliate(pr.affiliate_template) &&
+          (pr.is_direct ? safeHttpsUrl(hotel.official_url) : hasOutboundSearch(pr.slug)) && {
+            link: { slug: pr.slug, partner: true },
+          }),
         trust: sc
           ? {
               score: sc.score,

@@ -376,7 +376,7 @@
     "toOffer": "View offer",
     "toOfferLabel": "View offer on {provider} (new tab)",
     "partnerLink": "Partner link",
-    "offersNote": "Total prices incl. taxes and fees, from our latest check. The order never depends on commissions.",
+    "offersNote": "Total prices incl. taxes and fees, from our latest check. We link to our partners only; the order never depends on commissions.",
     "offersUnreviewed": "{n, plural, one {One more provider had a price but isn’t checked by us yet.} other {# more providers had a price but aren’t checked by us yet.}}",
     "watchEmail": "Your email address",
     "watchTarget": "Target price (optional)",
@@ -606,7 +606,7 @@
         {
           "title": "As of today",
           "text": [
-            "We are a Trip.com partner. If you book on Trip.com after clicking a Trip.com link, we earn a commission. All other links on Tidaq are plain links that earn us nothing."
+            "We are a Trip.com partner. Only our partners get a button to their booking site: if you book after clicking it, we earn a commission. We keep showing every other site's price, just without a link, so you can compare honestly."
           ]
         },
         {
@@ -655,7 +655,7 @@
         {
           "title": "What never matters",
           "text": [
-            "Whether a booking site pays us a commission affects neither the order nor the selection nor our view on a price. More in the [affiliate disclosure](/affiliate-hinweis)."
+            "Whether a booking site pays us a commission affects neither the order nor which prices we show nor our view on a price. It only decides whether there is a button: we link to our partners only. More in the [affiliate disclosure](/affiliate-hinweis)."
           ]
         }
       ]
