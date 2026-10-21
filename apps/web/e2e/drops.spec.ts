@@ -81,11 +81,9 @@ test.describe('Price Drop-Radar (C-080a, sample data on /dev/drops)', () => {
     const main = page.getByRole('main');
     await expect(main).toContainText('700 € pro Nacht');
     await expect(main).toContainText('4.900 € für 7 Nächte');
-    await expect(
-      main.getByRole('list').getByText('7 Nächte', { exact: true }).first(),
-    ).toBeVisible();
+    await expect(main.locator('header').getByText('7 Nächte', { exact: true })).toBeVisible();
     const stay = await main
-      .getByRole('link', { name: 'Alle Seiten und Preise für diese Daten' })
+      .getByRole('link', { name: /^Alle Seiten (vergleichen|und Preise für diese Daten)$/ })
       .getAttribute('href');
     expect(stay).toMatch(STAY('fairmont-hotel-vier-jahreszeiten-hamburg'));
     expect(nightsIn(stay)).toBe(7);
@@ -232,7 +230,7 @@ test.describe('Price Drop-Radar (C-080a, sample data on /dev/drops)', () => {
 });
 
 test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
-  test("the drop, the way to the stay and the night's history", async ({ page }) => {
+  test('the deal card, the way to the site and the price history (C-175)', async ({ page }) => {
     await page.goto('/dev/drops?share');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Baur au Lac');
     const main = page.getByRole('main');
@@ -242,33 +240,26 @@ test.describe('drop page (C-080b, sample data on /dev/drops?share)', () => {
     await expect(card).toContainText('3.420 € für 5 Nächte · inkl. Steuern und Gebühren');
     await expect(card).not.toContainText('statt');
     await expect(card).toContainText(/Geprüft heute, \d\d:\d\d bei Booking\.com\./);
-    await expect(
-      main.getByRole('link', { name: 'Alle Seiten und Preise für diese Daten' }),
-    ).toHaveAttribute('href', STAY('baur-au-lac-zuerich'));
+    // Everything about the deal sits in the card (C-175): compare all sites, share.
+    await expect(card.getByRole('link', { name: 'Alle Seiten vergleichen' })).toHaveAttribute(
+      'href',
+      STAY('baur-au-lac-zuerich'),
+    );
+    await expect(card.getByRole('button', { name: 'Link teilen' })).toBeVisible();
     await expect(main.getByRole('link', { name: 'Zürich', exact: true })).toHaveAttribute(
       'href',
       '/price-drops?stadt=zuerich',
     );
-    // Chart and meter used base rates without taxes; they're gone until exact history exists.
-    await expect(main.getByRole('heading', { name: 'So hat sich der Preis bewegt' })).toHaveCount(
-      0,
-    );
-    await expect(main.getByRole('region', { name: 'Günstig oder teuer?' })).toHaveCount(0);
-    const nights = main.getByRole('region', { name: 'Weitere Price Drops hier' });
-    // Different dates only (C-125): the 7-night trip a day later overlaps and is left out.
-    await expect(nights.getByRole('link')).toHaveCount(3);
-    await expect(nights.getByRole('link').first()).toHaveAttribute(
-      'href',
-      DROP('baur-au-lac-zuerich'),
-    );
+    // The proof (C-175): this trip's price on the drop's site, ending at the card's price.
+    const history = main.getByRole('region', { name: 'Preisverlauf bei Booking.com' });
+    await expect(history.getByRole('img', { name: /^Preisverlauf über \d+ Tage/ })).toBeVisible();
+    await expect(history.getByRole('img', { name: /zuletzt 3\.420\s€/ })).toBeVisible();
+    // No other dates and no alert: the price just dropped.
+    await expect(main.getByRole('region', { name: 'Weitere Price Drops hier' })).toHaveCount(0);
+    await expect(main.getByRole('region', { name: 'Price Alert für dieses Hotel' })).toHaveCount(0);
     // Four of today's other drops as tiles.
     const others = main.getByRole('region', { name: 'Heute auch gefallen' });
     await expect(others.getByRole('listitem')).toHaveCount(4);
-    // The alert is for this hotel only: no city to pick, consent never pre-ticked.
-    const alert = main.getByRole('region', { name: 'Price Alert für dieses Hotel' });
-    await expect(alert.getByRole('combobox')).toHaveCount(0);
-    await expect(alert.getByRole('checkbox')).not.toBeChecked();
-    await expect(alert.getByRole('button', { name: 'Price Alert aktivieren' })).toBeVisible();
   });
 
   test('straight to the site with the price: labelled partner link, new tab', async ({ page }) => {

@@ -21,7 +21,15 @@ export async function PageSkeleton({ kind }: { kind: SkeletonKind }) {
       </span>
       {photo ? (
         <>
-          <Skeleton className="-mt-16 h-[400px] w-full rounded-none md:h-[480px] lg:-mt-[76px] lg:h-[540px]" />
+          {/* Same heights as PhotoSheet: the drop page has the compact band (C-175). */}
+          <Skeleton
+            className={cn(
+              '-mt-16 w-full rounded-none lg:-mt-[76px]',
+              kind === 'drop'
+                ? 'h-[260px] md:h-[300px] lg:h-[340px]'
+                : 'h-[400px] md:h-[480px] lg:h-[540px]',
+            )}
+          />
           <div className="photo-sheet relative -mt-7 bg-bg md:-mt-12">
             <div className="mx-auto max-w-[1240px] px-[18px] pt-[26px] pb-16 md:px-10 md:pt-10">
               <SheetHead />

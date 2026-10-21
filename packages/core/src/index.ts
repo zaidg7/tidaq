@@ -287,6 +287,7 @@ export {
 export { scrubErrorText } from './errorText';
 export { clientIp, createRateLimiter } from './rateLimit';
 export {
+  dropSiteSeries,
   DROP_SORTS,
   dropMonth,
   dropMonths,

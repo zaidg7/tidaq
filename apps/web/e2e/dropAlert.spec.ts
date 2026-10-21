@@ -33,12 +33,10 @@ test.describe('Price Alert (C-080e1)', () => {
     await expect(section.getByRole('checkbox')).toBeChecked();
   });
 
-  test('drop pages and hotel pages offer "only this hotel" first (C-080k1)', async ({ page }) => {
-    // The drop page (mockup B): the alert is for this hotel, only the address to enter.
+  test('gone drops and hotel pages offer "only this hotel" first (C-080k1)', async ({ page }) => {
+    // A live drop page has no alert (C-175): the price just dropped.
     await page.goto('/dev/drops?share');
-    const onDrop = page.getByRole('region', { name: 'Price Alert für dieses Hotel' });
-    await expect(onDrop.locator('input[name="city"]')).toHaveValue('hotel:baur-au-lac-zuerich');
-    await expect(onDrop).toContainText('wenn Baur au Lac wieder billiger wird');
+    await expect(page.getByRole('region', { name: 'Price Alert für dieses Hotel' })).toHaveCount(0);
 
     // The gone-drop page keeps the full form: this hotel first, a whole city one tap away.
     await page.goto('/dev/drops?over');

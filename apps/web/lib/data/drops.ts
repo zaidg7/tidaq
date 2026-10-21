@@ -1,6 +1,7 @@
 import 'server-only';
 import { cache } from 'react';
 import {
+  dropSiteSeries,
   addDays,
   DROPS,
   findDrop,
@@ -23,6 +24,7 @@ import {
 import { getCatalog, type CatalogHotel } from './catalog';
 import { reportError } from '@/lib/errors';
 import { hotelImage, type ImageRef } from '@/lib/photos';
+import { taxesFor } from './priceFactors';
 import { isAffiliate } from './stay';
 import { hasSupabase, rest, rpc } from './supabase';
 
@@ -92,8 +94,12 @@ export const getRadarStats = cache(async (today: string): Promise<RadarStats | n
   }
 });
 
-/** One day of `stay_history_from_nights` for the drop's stay (C-080b). */
-const nightDay = z.object({ day: z.string(), best_cents: z.number().int().positive() });
+/** One day of `stay_history_from_nights` for the drop's stay (C-080b), per site (C-175). */
+const nightDay = z.object({
+  day: z.string(),
+  best_cents: z.number().int().positive(),
+  per_provider: z.record(z.string(), z.number()),
+});
 
 /** Days of history on a drop page's chart. */
 export const DROP_HISTORY_DAYS = 30;
@@ -103,7 +109,10 @@ export type DropPageLoad =
       kind: 'ok';
       group: HotelDropsWithPhoto;
       drop: PriceDrop;
-      /** The night's cheapest reviewed price per check day (may be empty if that read failed). */
+      /**
+       * The trip's total on the drop's site per check day, taxes included (D-53), ending with
+       * today's shown price (C-175). Empty when that read failed.
+       */
       series: DailyPrice[];
       /** Other hotels on today's radar, biggest drop first. */
       others: HotelDropsWithPhoto[];
@@ -175,17 +184,24 @@ export const getDropPage = cache(
           return null;
         });
     try {
-      const rows = await rpc(
-        'stay_history_from_nights',
-        {
-          p_hotel_id: found.group.hotel.id,
-          p_check_in: stay.night,
-          p_check_out: stay.checkOut,
-          p_from_day: addDays(today, -(DROP_HISTORY_DAYS - 1)),
-        },
-        z.array(nightDay),
-      );
-      series = rows.map((r) => ({ day: r.day, bestCents: r.best_cents }));
+      const [rows, site, tax] = await Promise.all([
+        rpc(
+          'stay_history_from_nights',
+          {
+            p_hotel_id: found.group.hotel.id,
+            p_check_in: stay.night,
+            p_check_out: stay.checkOut,
+            p_from_day: addDays(today, -(DROP_HISTORY_DAYS - 1)),
+          },
+          z.array(nightDay),
+        ),
+        rest(
+          `providers?select=id&slug=eq.${encodeURIComponent(offerSlug)}&limit=1`,
+          z.object({ id: z.number() }),
+        ),
+        taxesFor(found.group.hotel.id),
+      ]);
+      series = dropSiteSeries(rows, site[0]?.id ?? null, tax, today, found.drop.nowCents);
     } catch (error) {
       // The drop itself is known; the page shows it without the chart.
       reportError('drop history unavailable', error);
