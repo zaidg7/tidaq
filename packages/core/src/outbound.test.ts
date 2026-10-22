@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { goPath, hasOutboundSearch, outboundUrl, safeHttpsUrl, withAffiliate } from './outbound';
+import {
+  canLinkOut,
+  goPath,
+  hasOutboundSearch,
+  outboundUrl,
+  safeHttpsUrl,
+  withAffiliate,
+} from './outbound';
 
 const hotel = {
   name: 'Hotel Adlon Kempinski',
@@ -29,12 +36,11 @@ describe('outboundUrl', () => {
   });
 
   it('builds every known search, with nights where a site wants them', () => {
-    for (const slug of ['agoda', 'trip-com', 'hotels-com', 'expedia']) {
+    for (const slug of ['hotels-com', 'expedia']) {
       const url = outboundUrl(provider(slug), hotel, stay, 'de');
       expect(url).toMatch(/^https:\/\//);
       expect(url).toContain('2026-12-04');
     }
-    expect(outboundUrl(provider('agoda'), hotel, stay, 'de')).toContain('los=2');
     expect(hasOutboundSearch('booking-com')).toBe(true);
     expect(hasOutboundSearch('check24')).toBe(false);
     expect(hasOutboundSearch('toString')).toBe(false);
@@ -70,16 +76,26 @@ describe('outboundUrl', () => {
     });
   });
 
-  it('falls back to the search for a malformed page or a provider without pages', () => {
+  it('falls back to the search for a provider without pages', () => {
+    const url = outboundUrl(provider('booking-com'), { ...hotel, page: '1587250' }, stay, 'de');
+    expect(url).toContain('Hotel+Adlon+Kempinski+Berlin');
+  });
+
+  it('never sends Trip.com or Agoda to a search by name, only to the hotel page (C-177)', () => {
     for (const [slug, page] of [
+      ['agoda', null],
       ['agoda', '../evil.html'],
       ['agoda', '1587250'],
+      ['trip-com', null],
       ['trip-com', 'hotel-adlon-kempinski/hotel/berlin-de.html'],
-      ['booking-com', '1587250'],
     ] as const) {
-      const url = outboundUrl(provider(slug), { ...hotel, page }, stay, 'de') ?? '';
-      expect(url, slug).toContain('Hotel+Adlon+Kempinski+Berlin');
+      expect(outboundUrl(provider(slug), { ...hotel, page }, stay, 'de'), slug).toBeNull();
     }
+    expect(canLinkOut('trip-com', false)).toBe(false);
+    expect(canLinkOut('trip-com', true)).toBe(true);
+    expect(canLinkOut('agoda', true)).toBe(true);
+    expect(canLinkOut('booking-com', false)).toBe(true);
+    expect(canLinkOut('check24', true)).toBe(false);
   });
 
   it('sends the hotel-direct provider to the official site, only over https', () => {

@@ -205,8 +205,6 @@
     "date": "Datum",
     "price": "Bester Preis",
     "provider": "Anbieter",
-    "usual": "üblich",
-    "usualLegend": "Üblich: {low} bis {high}",
     "range": "Zeitraum",
     "range14": "14 T",
     "range30": "30 T",

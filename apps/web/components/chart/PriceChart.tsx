@@ -83,7 +83,7 @@ export function PriceChart({
 
   return (
     <figure className={cn('flex flex-col', className)}>
-      <div className="relative h-[256px] pt-9 md:h-[296px]">
+      <div className="relative h-[200px] pt-7 md:h-[264px]">
         <div className="relative h-full" style={{ '--gutter': `${gutter}px` } as CSSProperties}>
           <svg aria-hidden="true" className="absolute inset-0 h-full w-full">
             {g.yTicks.map((tk) => (
@@ -138,13 +138,7 @@ export function PriceChart({
       </div>
 
       <div className="mt-1 flex flex-wrap items-start justify-between gap-x-6">
-        {g.usual && (
-          <p className="text-meta flex min-h-11 items-center gap-2 text-muted">
-            <span aria-hidden="true" className="h-3 w-[18px] shrink-0 rounded-[3px] bg-surface-2" />
-            {t('usualLegend', { low: price(g.usual.lowCents), high: price(g.usual.highCents) })}
-          </p>
-        )}
-        {g.avg && !g.usual && (
+        {g.avg && (
           <p className="text-meta flex min-h-11 items-center gap-2 text-muted-ink">
             <svg aria-hidden="true" width="18" height="2" className="shrink-0">
               <line
@@ -261,16 +255,6 @@ function Plot({ g, summary, locale, t, todayColor }: PlotProps) {
             strokeDasharray="4 4"
           />
         )}
-        {g.usual && (
-          <rect
-            x="0"
-            y={pct(g.usual.yTop)}
-            width="100%"
-            height={pct(g.usual.yBottom - g.usual.yTop)}
-            rx="6"
-            fill="var(--surface-2)"
-          />
-        )}
         {g.segments.some((seg) => seg.length > 1) && (
           <svg
             viewBox="0 0 1000 1000"
@@ -314,7 +298,7 @@ function Plot({ g, summary, locale, t, todayColor }: PlotProps) {
                   />
                 </g>
               ))}
-            {g.avg && !g.usual && (
+            {g.avg && (
               <line
                 x1="0"
                 x2="1000"
@@ -369,14 +353,6 @@ function Plot({ g, summary, locale, t, todayColor }: PlotProps) {
               {formatDayMonth(tk.day, locale)}
             </span>
           ))}
-        {g.usual && (
-          <span
-            className="chart-halo absolute left-1.5 text-[11px] leading-none font-semibold text-muted"
-            style={{ top: pct(g.usual.yTop), transform: 'translateY(5px)' }}
-          >
-            {t('usual')}
-          </span>
-        )}
         {g.points.length === 0 && (
           <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 px-4 text-center text-[13.5px] font-semibold text-muted-ink">
             {t('empty')}

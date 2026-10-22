@@ -39,7 +39,7 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
     await expect(page.getByText('Weitere Termine in diesem Hotel')).toHaveCount(0);
   });
 
-  test('price history: 30 days first, 14 T / Alles switch, usual range legend (C-111)', async ({
+  test('price history: 30 days first, 14 T / Alles switch, no usual band (C-111, C-177)', async ({
     page,
   }) => {
     await page.goto('/dev/stay/tracked');
@@ -48,7 +48,7 @@ test.describe('stay page states (C-022a, sample data on /dev/stay)', () => {
       'aria-checked',
       'true',
     );
-    await expect(page.getByText(/^Üblich: /).locator('visible=true')).toHaveCount(1);
+    await expect(page.getByText(/^Üblich: /)).toHaveCount(0);
     const visibleChart = page.locator('figure:visible');
     await expect(visibleChart).toHaveCount(1);
     const thirty = await visibleChart.locator('svg[role="img"]').getAttribute('aria-label');

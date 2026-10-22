@@ -2,7 +2,7 @@ import 'server-only';
 import { hotelPhoto, type PhotoSize } from '@/lib/hotelPhotos';
 import {
   addDays,
-  hasOutboundSearch,
+  canLinkOut,
   inNightGrid,
   nightSumGap,
   safeHttpsUrl,
@@ -16,6 +16,7 @@ import {
 import { hasSupabase, rest, rpc } from './supabase';
 import { reportError } from '@/lib/errors';
 import { taxesFor } from './priceFactors';
+import { hotelPageProviders } from './providerPages';
 
 const hotelRow = z.object({
   id: z.number(),
@@ -244,8 +245,8 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
       if (pr) providerByDay[d.day] = pr.is_direct ? hotel.name : pr.name;
     }
 
-    // Base rates plus the hotel's taxes and fees (C-157).
-    const tax = await taxesFor(hotel.id);
+    // Base rates plus the hotel's taxes and fees (C-157); the sites where we know its page (C-177).
+    const [tax, pages] = await Promise.all([taxesFor(hotel.id), hotelPageProviders(hotel.id)]);
     const offers: StayOffer[] = [];
     for (const id of latestIds) {
       const pr = nameById.get(Number(id));
@@ -261,7 +262,9 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
         // Buttons only to partners (D-54): sites that pay us get "Zum Angebot", every other site
         // keeps its price without a link. The /go route builds the same target (`outboundUrl`).
         ...(isAffiliate(pr.affiliate_template) &&
-          (pr.is_direct ? safeHttpsUrl(hotel.official_url) : hasOutboundSearch(pr.slug)) && {
+          (pr.is_direct
+            ? safeHttpsUrl(hotel.official_url)
+            : canLinkOut(pr.slug, pages.has(pr.id))) && {
             link: { slug: pr.slug, partner: true },
           }),
         trust: sc

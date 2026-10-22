@@ -228,6 +228,7 @@ export {
 export type { Database, Json, Tables, TablesInsert, TablesUpdate } from './db.types';
 export {
   goPath,
+  canLinkOut,
   hasOutboundSearch,
   outboundUrl,
   safeHttpsUrl,
