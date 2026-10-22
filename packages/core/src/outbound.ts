@@ -111,9 +111,21 @@ const PAGE: Record<string, PageUrl> = {
       : null,
 };
 
+/**
+ * Sites whose search by name lands on an empty or wrong list (Zaid, 22 Oct: Trip.com showed no
+ * hotel, he had to type it): we only link them when we know the hotel's own page (C-177).
+ */
+const PAGE_ONLY = new Set(['trip-com', 'agoda']);
+
 /** Providers we can send visitors to (plus the hotel's own site when we know it). */
 export function hasOutboundSearch(providerSlug: string): boolean {
   return Object.hasOwn(SEARCH, providerSlug);
+}
+
+/** Whether `/go` has a target for this site and hotel: a working search, or the hotel's page. */
+export function canLinkOut(providerSlug: string, hasHotelPage: boolean): boolean {
+  if (PAGE_ONLY.has(providerSlug)) return hasHotelPage && Object.hasOwn(PAGE, providerSlug);
+  return hasOutboundSearch(providerSlug);
 }
 
 /** A safe absolute https URL, or null (no `javascript:`, no plain http, no credentials). */
@@ -162,7 +174,7 @@ export function outboundUrl(
   else {
     // The hotel's own page where we know it (dates filled in), else the provider's search.
     const page = hotel.page ? (PAGE[provider.slug]?.(hotel.page, stay, locale) ?? null) : null;
-    const search = SEARCH[provider.slug];
+    const search = PAGE_ONLY.has(provider.slug) ? undefined : SEARCH[provider.slug];
     target = page ?? (search ? search(`${hotel.name} ${hotel.city}`, stay, locale) : null);
   }
   return target && withAffiliate(target, provider.affiliateTemplate);

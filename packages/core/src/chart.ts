@@ -70,11 +70,11 @@ export interface ChartGeometry {
 export const CHART = {
   /** Plot insets as fractions. Left and right are tiny: the web layer reserves label gutters. */
   inset: { left: 0.012, right: 0.012, top: 0.08, bottom: 0.14 },
-  /** Domain = [min − 0.5·range, max + 0.15·range] … */
-  domainBelow: 0.5,
-  domainAbove: 0.15,
-  /** … and at least ±6 % around the average, so a 9 € wiggle doesn't look like a cliff. */
-  domainMinSwing: 0.06,
+  /** Domain = [min − 0.3·range, max + 0.3·range] (C-177: the line fills the plot) … */
+  domainBelow: 0.3,
+  domainAbove: 0.3,
+  /** … and at least ±3 % around the average, so a 9 € wiggle doesn't look like a cliff. */
+  domainMinSwing: 0.03,
   /** Points above 1.6× or below 0.5× the median are outliers (e.g. a broken provider price). */
   outlierHigh: 1.6,
   outlierLow: 0.5,

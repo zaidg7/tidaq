@@ -62,16 +62,16 @@ describe('chartGeometry', () => {
     }
   });
 
-  it('leaves room below the low and a little above the high', () => {
+  it('leaves a little room below the low and above the high (C-177)', () => {
     const g = chartGeometry(
       days(FROM, 30, (i) => 100_000 + (i % 2) * 20_000),
       { from: FROM, to: TO },
     );
-    expect(g.domain).toEqual({ min: 90_000, max: 123_000 });
-    expect(g.yTicks.map((t) => t.cents)).toEqual([90_000, 100_000, 110_000, 120_000]);
+    expect(g.domain).toEqual({ min: 94_000, max: 126_000 });
+    expect(g.yTicks.map((t) => t.cents)).toEqual([100_000, 110_000, 120_000]);
   });
 
-  it('keeps a small wiggle flat (at least ±6 % of the average)', () => {
+  it('keeps a small wiggle flat (at least ±3 % of the average)', () => {
     const g = chartGeometry(
       days(FROM, 20, (i) => 100_000 + (i % 2) * 900),
       {
@@ -80,10 +80,10 @@ describe('chartGeometry', () => {
         avgCents: 100_450,
       },
     );
-    expect(g.domain.min).toBeLessThanOrEqual(Math.round(100_450 * 0.94));
-    expect(g.domain.max).toBeGreaterThanOrEqual(Math.round(100_450 * 1.06));
+    expect(g.domain.min).toBeLessThanOrEqual(Math.round(100_450 * 0.97));
+    expect(g.domain.max).toBeGreaterThanOrEqual(Math.round(100_450 * 1.03));
     const ys = g.points.map((p) => p.y);
-    expect(Math.max(...ys) - Math.min(...ys)).toBeLessThan(0.1);
+    expect(Math.max(...ys) - Math.min(...ys)).toBeLessThan(0.15);
     expect(g.avg?.cents).toBe(100_450);
   });
 

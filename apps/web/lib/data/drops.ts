@@ -1,6 +1,7 @@
 import 'server-only';
 import { cache } from 'react';
 import {
+  canLinkOut,
   dropSiteSeries,
   addDays,
   DROPS,
@@ -25,6 +26,7 @@ import { getCatalog, type CatalogHotel } from './catalog';
 import { reportError } from '@/lib/errors';
 import { hotelImage, type ImageRef } from '@/lib/photos';
 import { taxesFor } from './priceFactors';
+import { hotelPageProviders } from './providerPages';
 import { isAffiliate } from './stay';
 import { hasSupabase, rest, rpc } from './supabase';
 
@@ -162,13 +164,19 @@ export const getDropPage = cache(
             return null;
           })
       : hasOutboundSearch(offerSlug)
-        ? rest(
-            `providers?select=affiliate_template&slug=eq.${encodeURIComponent(offerSlug)}`,
-            z.object({ affiliate_template: z.string().nullable() }),
-          ).catch((error: unknown) => {
-            reportError('drop offer unavailable', error);
-            return null;
-          })
+        ? Promise.all([
+            rest(
+              `providers?select=id,affiliate_template&slug=eq.${encodeURIComponent(offerSlug)}`,
+              z.object({ id: z.number(), affiliate_template: z.string().nullable() }),
+            ),
+            hotelPageProviders(found.group.hotel.id),
+          ])
+            // Trip.com and Agoda only with the hotel's own page (C-177).
+            .then(([rows, pages]) => rows.filter((r) => canLinkOut(offerSlug, pages.has(r.id))))
+            .catch((error: unknown) => {
+              reportError('drop offer unavailable', error);
+              return null;
+            })
         : Promise.resolve(null);
     // The licence asks for the author's name next to the photo (C-011c).
     const creditLoad = found.group.image?.city

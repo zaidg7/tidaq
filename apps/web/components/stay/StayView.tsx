@@ -344,7 +344,6 @@ function TrackedPanel({
       series={series}
       from={addDays(today, -(days - 1))}
       to={today}
-      avgCents={stats.state === 'collecting' ? null : stats.avg30Cents}
       providerByDay={providerByDay}
       todayTone={tone}
     />
