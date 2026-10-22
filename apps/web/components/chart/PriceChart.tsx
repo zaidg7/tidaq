@@ -6,7 +6,7 @@ import {
   chartGeometry,
   formatDayMonth,
   formatPrice,
-  linePath,
+  smoothPath,
   type ChartGeometry,
   type DailyPrice,
   type Locale,
@@ -138,23 +138,6 @@ export function PriceChart({
       </div>
 
       <div className="mt-1 flex flex-wrap items-start justify-between gap-x-6">
-        {g.avg && (
-          <p className="text-meta flex min-h-11 items-center gap-2 text-muted-ink">
-            <svg aria-hidden="true" width="18" height="2" className="shrink-0">
-              <line
-                x1="0"
-                x2="18"
-                y1="1"
-                y2="1"
-                stroke="var(--muted)"
-                strokeWidth="1.5"
-                strokeDasharray="4 3"
-              />
-            </svg>
-            {t('avgLegend', { price: price(g.avg.cents) })}
-          </p>
-        )}
-
         {g.points.length > 0 && (
           <details className="group text-meta open:basis-full">
             <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-1.5 rounded-full font-semibold text-accent hover:underline [&::-webkit-details-marker]:hidden">
@@ -282,13 +265,13 @@ function Plot({ g, summary, locale, t, todayColor }: PlotProps) {
                 <g key={seg[0]?.day}>
                   <path
                     className="chart-area"
-                    d={areaPath(seg, 1000, 1000, g.baseY)}
+                    d={areaPath(seg, 1000, 1000, g.baseY, true)}
                     fill={`url(#${gradientId})`}
                   />
                   <path
                     className="chart-line"
                     pathLength={1}
-                    d={linePath(seg, 1000, 1000)}
+                    d={smoothPath(seg, 1000, 1000)}
                     fill="none"
                     stroke="var(--ink)"
                     strokeWidth="2.5"
@@ -353,6 +336,15 @@ function Plot({ g, summary, locale, t, todayColor }: PlotProps) {
               {formatDayMonth(tk.day, locale)}
             </span>
           ))}
+        {g.avg && (
+          // The average on its line (C-179), not in a legend under the chart.
+          <span
+            className="chart-halo absolute right-0 text-[11px] leading-none font-semibold whitespace-nowrap text-muted-ink tabular-nums"
+            style={{ top: pct(g.avg.y), transform: 'translateY(calc(-100% - 3px))' }}
+          >
+            {t('avgLegend', { price: price(g.avg.cents) })}
+          </span>
+        )}
         {g.points.length === 0 && (
           <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 px-4 text-center text-[13.5px] font-semibold text-muted-ink">
             {t('empty')}

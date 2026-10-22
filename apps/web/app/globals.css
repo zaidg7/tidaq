@@ -201,64 +201,65 @@
 }
 
 @layer utilities {
-  /* Type styles (PREMIUM.md §3.2), mobile first. Headings 600–700, never thin or italic. */
+  /* Type styles (PREMIUM.md §3.2), mobile first; phone sizes one step smaller since C-179 (Zaid:
+     "everything feels oversized" on the phone). Headings 600–700, never thin or italic. */
   .text-display {
-    font-size: 44px;
+    font-size: 38px;
     font-weight: 650;
     letter-spacing: -0.035em;
     line-height: 1.02;
   }
   .text-hero-number {
-    font-size: 76px;
+    font-size: 64px;
     font-weight: 700;
     letter-spacing: -0.05em;
     line-height: 0.95;
   }
   .text-h1 {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 650;
     letter-spacing: -0.03em;
     line-height: 1.1;
   }
   /* Card and block titles on pages not yet rebuilt (Soft Modern "title" role). */
   .text-title {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 650;
     letter-spacing: -0.025em;
     line-height: 1.15;
   }
   .text-h2 {
-    font-size: 26px;
+    font-size: 23px;
     font-weight: 650;
     letter-spacing: -0.03em;
     line-height: 1.12;
   }
   .text-h3 {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     letter-spacing: -0.01em;
     line-height: 1.3;
   }
   .text-price-xl {
-    font-size: 40px;
+    font-size: 34px;
     font-weight: 700;
     letter-spacing: -0.04em;
     line-height: 1;
   }
   .text-price-l {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.2;
   }
   .text-lead {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 400;
     line-height: 1.5;
   }
   .text-small,
   .text-meta {
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.5;
   }
   .text-label {

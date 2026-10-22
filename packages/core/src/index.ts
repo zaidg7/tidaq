@@ -112,6 +112,8 @@ export {
   chartGeometry,
   gridTicks,
   linePath,
+  quantile,
+  smoothPath,
   type ChartBand,
   type ChartDay,
   type ChartGeometry,

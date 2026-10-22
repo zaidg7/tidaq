@@ -10,7 +10,7 @@ import {
   type OutboundStay,
   type StayOffer,
 } from '@tidaq/core';
-import { ArrowUpRight, Hotel } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { buttonClasses } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
 import { Icon } from '@/components/ui/Icon';
@@ -46,17 +46,6 @@ function trustProps(o: StayOffer) {
   };
 }
 
-/** "Booking.com" → "B", "Hotel Adlon" → "HA": a neutral tile instead of third-party logos. */
-function monogram(name: string): string {
-  const words = name
-    .replace(/\.[a-z]{2,}$/i, '')
-    .split(/[\s.-]+/)
-    .filter(Boolean);
-  return (
-    words.length > 1 ? `${words[0]?.[0]}${words[1]?.[0]}` : (words[0]?.[0] ?? '?')
-  ).toUpperCase();
-}
-
 /**
  * Provider table (CRAFT.md §3 Provider row, PLAN §8.3): every reviewed provider's latest stay
  * total, sorted by the price you can expect at checkout, with its Preistreue score and, when tests
@@ -84,6 +73,14 @@ export function ProviderTable({
   // a column of "noch nicht getestet" is noise.
   const showTrust = ranked.some((o) => (o.trust?.tests ?? 0) >= TRUST_MIN_TESTS);
   const [first, second] = ranked;
+  // Each row's gap to the cheapest (C-179): "+29 €" and a bar from short (cheapest) to long.
+  const totals = ranked.map((o) => o.totalCents);
+  const minTotal = Math.min(...totals);
+  const maxTotal = Math.max(...totals);
+  const barWidth = (cents: number) =>
+    maxTotal > minTotal
+      ? `${Math.round(20 + (75 * (cents - minTotal)) / (maxTotal - minTotal))}%`
+      : '50%';
   const cheapestId =
     first && (!second || first.trustedCents < second.trustedCents) ? first.providerId : null;
 
@@ -103,26 +100,20 @@ export function ProviderTable({
             <li
               key={o.providerId}
               className={cn(
-                'relative grid min-h-[72px] grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 px-4 py-3 sm:px-5',
+                'relative grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 px-4 pt-3 pb-3.5 sm:px-5',
                 showTrust
                   ? hasLinks
-                    ? 'sm:grid-cols-[32px_minmax(0,1fr)_120px_160px_auto]'
-                    : 'sm:grid-cols-[32px_minmax(0,1fr)_120px_176px]'
+                    ? 'sm:grid-cols-[minmax(0,1fr)_120px_160px_auto]'
+                    : 'sm:grid-cols-[minmax(0,1fr)_120px_176px]'
                   : hasLinks
-                    ? 'sm:grid-cols-[32px_minmax(0,1fr)_120px_auto]'
-                    : 'sm:grid-cols-[32px_minmax(0,1fr)_120px]',
+                    ? 'sm:grid-cols-[minmax(0,1fr)_120px_auto]'
+                    : 'sm:grid-cols-[minmax(0,1fr)_120px]',
                 bookable && o.link && 'max-sm:hover:bg-surface-2',
               )}
             >
-              <span
-                aria-hidden="true"
-                className="grid size-8 place-items-center rounded-[10px] bg-surface-2 text-[12px] font-bold text-muted-ink ring-1 ring-line"
-              >
-                {o.isDirect ? <Icon icon={Hotel} size={16} /> : monogram(o.name)}
-              </span>
               <span className="flex min-w-0 flex-col">
                 <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span className="min-w-0 text-[15px] leading-tight font-bold">
+                  <span className="min-w-0 text-[15px] leading-tight font-semibold">
                     {o.isDirect ? t('direct') : o.name}
                   </span>
                   {bookable && o.link && (
@@ -135,7 +126,7 @@ export function ProviderTable({
                   {o.providerId === cheapestId && <Badge tone="good">{t('cheapest')}</Badge>}
                 </span>
                 {(o.isDirect || o.link?.partner) && (
-                  <span className="text-[13px] text-muted-ink">
+                  <span className="text-[12.5px] text-muted-ink">
                     {[o.isDirect && t('directNote'), o.link?.partner && t('partnerLink')]
                       .filter(Boolean)
                       .join(' · ')}
@@ -143,7 +134,12 @@ export function ProviderTable({
                 )}
               </span>
               <span className="flex flex-col items-end text-right">
-                <span className="text-[16px] font-extrabold whitespace-nowrap tabular-nums">
+                <span className="text-[15px] font-bold whitespace-nowrap tabular-nums">
+                  {o.totalCents > minTotal && (
+                    <span className="mr-1.5 text-[12px] font-medium text-muted-ink">
+                      +{price(o.totalCents - minTotal)}
+                    </span>
+                  )}
                   {price(o.totalCents)}
                 </span>
                 {o.expectedCents !== null && (
@@ -156,7 +152,7 @@ export function ProviderTable({
                 // The provider page (C-034b): what our tests found. Above the phone row link.
                 <a
                   href={localizedPath(providerPath(o.slug), locale)}
-                  className="relative z-[2] col-span-2 col-start-2 justify-self-start rounded-badge underline-offset-2 hover:[&_span]:underline sm:col-span-1 sm:col-start-auto"
+                  className="relative z-[2] col-span-2 col-start-1 justify-self-start rounded-badge underline-offset-2 hover:[&_span]:underline sm:col-span-1 sm:col-start-auto"
                 >
                   <TrustScore {...trustProps(o)} className={TRUST_CLASSES} />
                   <span className="sr-only">
@@ -168,7 +164,7 @@ export function ProviderTable({
                   {...trustProps(o)}
                   className={cn(
                     TRUST_CLASSES,
-                    'col-span-2 col-start-2 sm:col-span-1 sm:col-start-auto',
+                    'col-span-2 col-start-1 sm:col-span-1 sm:col-start-auto',
                   )}
                 />
               )}
@@ -192,6 +188,15 @@ export function ProviderTable({
               {hasLinks && !(bookable && o.link) && (
                 <span aria-hidden="true" className="hidden sm:block" />
               )}
+              <span aria-hidden="true" className="col-span-full h-1.5 rounded-full bg-neutral-soft">
+                <span
+                  className={cn(
+                    'block h-full rounded-full',
+                    o.totalCents === minTotal ? 'bg-good' : 'bg-line-strong',
+                  )}
+                  style={{ width: barWidth(o.totalCents) }}
+                />
+              </span>
             </li>
           ))}
         </ul>

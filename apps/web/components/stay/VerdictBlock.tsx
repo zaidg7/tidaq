@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import {
+  addDays,
   formatDayMonth,
   formatPrice,
   STATS,
@@ -10,9 +11,13 @@ import {
   type Locale,
   type StayStatsResult,
 } from '@tidaq/core';
+import { PricePosition } from './PricePosition';
 import { StateChip } from '@/components/ui/StateChip';
 import { cn } from '@/lib/cn';
 import { VerdictPrice } from './VerdictPrice';
+
+/** Days the price track compares today with (the chart's default range). */
+const POSITION_DAYS = 30;
 
 type Props = {
   stats: StayStatsResult;
@@ -70,7 +75,7 @@ export function VerdictBlock({
 
   // Parts that describe today fade while the chart is scrubbed (`.scrub-fade`, globals.css).
   return (
-    <div className={cn('flex flex-col gap-4', className)}>
+    <div className={cn('flex flex-col gap-3 md:gap-4', className)}>
       <StateChip
         state={stats.state}
         daysTracked={stats.daysTracked}
@@ -86,8 +91,24 @@ export function VerdictBlock({
         scrubbedLine={t('scrubbed', { date: '{date}' })}
         noPriceLine={t('noPrice', { date: '{date}' })}
       />
-      {/* "seit 15. Aug." at the end of a sentence must not end in "..". */}
-      <p className="scrub-fade font-semibold text-fg">{fact.replace(/\.\.$/, '.')}</p>
+      {stats.state === 'collecting' ? (
+        // "seit 15. Aug." at the end of a sentence must not end in "..".
+        <p className="scrub-fade font-semibold text-fg">{fact.replace(/\.\.$/, '.')}</p>
+      ) : (
+        // With a verdict, the track says it (C-179): today between low, usual and high.
+        <PricePosition
+          className="scrub-fade"
+          nowCents={stats.nowCents}
+          series={series.filter((p) => p.day > addDays(today, -POSITION_DAYS))}
+          tone={
+            stats.state === 'good' || stats.state === 'near_low'
+              ? 'good'
+              : stats.state === 'high'
+                ? 'high'
+                : 'normal'
+          }
+        />
+      )}
       {action}
       {updated && (
         <p className={cn('scrub-fade text-meta text-muted-ink', !action && '-mt-2')}>

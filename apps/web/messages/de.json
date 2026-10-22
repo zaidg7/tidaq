@@ -195,7 +195,7 @@
     "summary": "Preisverlauf über {days} Tage: Tief {low} am {lowDay}, zuletzt {last} am {lastDay}.",
     "empty": "Noch keine Preise für diesen Aufenthalt.",
     "low": "Tief {price}",
-    "avgLegend": "Ø 30 Tage: {price}",
+    "avgLegend": "Ø {price}",
     "stale": "Keine Daten seit {since}",
     "scrub": "Preis an einem Tag ansehen, mit den Pfeiltasten wählen",
     "noPrice": "kein Preis",
@@ -230,7 +230,11 @@
     "zone_cheap": "Günstig",
     "zone_normal": "Normal",
     "zone_dear": "Teuer",
-    "meterLabel": "{zone}: aktuell {now}, zwischen Tief {low} und Hoch {high} seit {since}"
+    "meterLabel": "{zone}: aktuell {now}, zwischen Tief {low} und Hoch {high} seit {since}",
+    "positionLabel": "Heute {now}, üblich {low} bis {high}, Spanne {min} bis {max} in den letzten {days} Tagen",
+    "positionToday": "Heute {price}",
+    "positionUsual": "üblich {low}–{high}",
+    "positionHigh": "Hoch {price}"
   },
   "collecting": {
     "title": "Wir sammeln noch Preise",

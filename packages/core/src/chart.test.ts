@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { addDays } from './dates';
-import { areaPath, CHART, chartGeometry, gridTicks, linePath, quantile } from './chart';
+import { areaPath, CHART, chartGeometry, gridTicks, linePath, quantile, smoothPath } from './chart';
 import type { DailyPrice } from './stats';
 
 const FROM = '2026-09-01';
@@ -246,6 +246,24 @@ describe('paths', () => {
 
   it('draws straight segments in pixels', () => {
     expect(linePath(pts, 200, 100)).toBe('M0 50L100 25');
+  });
+
+  it('draws a smooth curve that never leaves the range of its points (C-179)', () => {
+    const wave = [0.2, 0.8, 0.3, 0.3, 0.9].map((y, i) => ({
+      day: String(i),
+      cents: 1,
+      x: i / 4,
+      y,
+      outlier: null,
+    }));
+    const d = smoothPath(wave, 400, 100);
+    expect(d.startsWith('M0 20C')).toBe(true);
+    expect(d.endsWith(' 400 90')).toBe(true);
+    const ys = [...d.matchAll(/[\d.]+ ([\d.]+)/g)].map((m) => Number(m[1]));
+    expect(Math.min(...ys)).toBeGreaterThanOrEqual(20);
+    expect(Math.max(...ys)).toBeLessThanOrEqual(90);
+    // Two points: a straight line.
+    expect(smoothPath(pts, 200, 100)).toBe('M0 50L100 25');
   });
 
   it('closes the area at the baseline', () => {

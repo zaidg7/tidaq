@@ -117,7 +117,7 @@ export function StayView({
   const main = status === 'tracked' ? mainOffer(offers.list, params.checkIn >= today) : null;
 
   return (
-    <div className="mx-auto w-full max-w-[1240px] px-[18px] pt-6 pb-16 md:px-10 md:pt-10 md:pb-24">
+    <div className="mx-auto w-full max-w-[1240px] px-4 pt-4 pb-14 md:px-10 md:pt-10 md:pb-24">
       <header className="flex flex-col gap-3">
         <div className="flex items-center gap-4">
           <Photo
@@ -125,10 +125,10 @@ export function StayView({
             alt=""
             sizes="72px"
             priority
-            className="size-14 shrink-0 rounded-[14px] md:size-[72px] md:rounded-[18px]"
+            className="size-11 shrink-0 rounded-[12px] md:size-[64px] md:rounded-[16px]"
           />
           <div className="min-w-0">
-            <p className="text-[14px] text-muted md:text-[15px]">
+            <p className="text-[13px] text-muted md:text-[15px]">
               <a
                 href={localizedPath(cityPath(hotel.city.slug), locale)}
                 className="underline-offset-2 hover:text-ink hover:underline"
@@ -143,7 +143,7 @@ export function StayView({
                 {t('aboutHotel')}
               </a>
             </p>
-            <h1 className="mt-0.5 text-[26px] leading-[1.12] font-semibold tracking-[-0.03em] md:text-[38px] md:leading-[1.08]">
+            <h1 className="mt-0.5 text-[21px] leading-[1.15] font-semibold tracking-[-0.025em] md:text-[34px] md:leading-[1.08]">
               {hotel.name}
             </h1>
           </div>
@@ -168,15 +168,17 @@ export function StayView({
                 target="_blank"
                 rel="sponsored nofollow noopener"
                 className={cn(
-                  buttonClasses({ size: 'lg', block: true }),
-                  'scrub-fade max-sm:px-4 max-sm:text-[16px]',
+                  buttonClasses({ size: 'md', block: true }),
+                  'scrub-fade justify-between max-sm:h-12 max-sm:px-4 max-sm:text-[15px]',
                 )}
               >
                 <span className="min-w-0 truncate">
-                  {main.isDirect ? t('bookDirect') : t('book', { provider: main.name })} ·{' '}
-                  <span className="tabular-nums">{formatPrice(main.totalCents, locale)}</span>
+                  {main.isDirect ? t('bookDirect') : t('book', { provider: main.name })}
                 </span>
-                <Icon icon={ArrowUpRight} size={18} className="shrink-0 max-[379px]:hidden" />
+                <span className="flex shrink-0 items-center gap-1.5 tabular-nums">
+                  {formatPrice(main.totalCents, locale)}
+                  <Icon icon={ArrowUpRight} size={16} />
+                </span>
               </a>
             )
           }
@@ -255,7 +257,7 @@ export function StayView({
       {status === 'tracked' && (
         <>
           <ProviderTable
-            className="mt-12"
+            className="mt-8 md:mt-12"
             offers={offers.list}
             unreviewed={offers.unreviewed}
             day={offers.day}
@@ -268,7 +270,7 @@ export function StayView({
       )}
 
       {(pic?.city || hotel.image) && (
-        <p className="mt-12 text-[12px] text-muted">
+        <p className="mt-8 text-[12px] md:mt-12 text-muted">
           {pic?.city
             ? tp('cityTag')
             : hotel.image &&
@@ -344,6 +346,7 @@ function TrackedPanel({
       series={series}
       from={addDays(today, -(days - 1))}
       to={today}
+      avgCents={stats.state === 'collecting' ? null : stats.avg30Cents}
       providerByDay={providerByDay}
       todayTone={tone}
     />
@@ -355,10 +358,10 @@ function TrackedPanel({
       variant="float"
       radius="search"
       padded={false}
-      className="mt-6 lg:mt-8"
+      className="mt-4 md:mt-6 lg:mt-8"
       data-scrub-scope=""
     >
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 p-5 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-10 lg:p-8">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-5 p-4 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-10 md:p-6 lg:p-8">
         <VerdictBlock
           stats={stats}
           series={series}
@@ -419,7 +422,7 @@ function AlertBand({
   return (
     <section
       aria-labelledby="watch-title"
-      className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-5 rounded-card bg-accent-soft p-5 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-10 md:p-8"
+      className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-4 rounded-card bg-accent-soft p-4 md:mt-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-10 md:p-8"
     >
       <div className="flex items-start gap-3">
         <span className="grid size-10 shrink-0 place-items-center rounded-full bg-surface text-accent">

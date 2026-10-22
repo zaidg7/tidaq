@@ -303,16 +303,56 @@ export function linePath(points: readonly ChartPoint[], width: number, height: n
     .join('');
 }
 
+/**
+ * A smooth line through `points` (C-179) that never overshoots: monotone cubic interpolation
+ * (Fritsch–Carlson, like d3's curveMonotoneX), so a curve never dips below the real low or above
+ * the real high between two days.
+ */
+export function smoothPath(points: readonly ChartPoint[], width: number, height: number): string {
+  if (points.length < 3) return linePath(points, width, height);
+  const xs = points.map((p) => p.x * width);
+  const ys = points.map((p) => p.y * height);
+  const last = points.length - 1;
+  const slope = (i: number) => {
+    const dx = (xs[i + 1] as number) - (xs[i] as number);
+    return dx === 0 ? 0 : ((ys[i + 1] as number) - (ys[i] as number)) / dx;
+  };
+  const tangents = xs.map((_, i) => {
+    if (i === 0) return slope(0);
+    if (i === last) return slope(last - 1);
+    const s0 = slope(i - 1);
+    const s1 = slope(i);
+    if (s0 * s1 <= 0) return 0;
+    const h0 = (xs[i] as number) - (xs[i - 1] as number);
+    const h1 = (xs[i + 1] as number) - (xs[i] as number);
+    const t = (s0 * h1 + s1 * h0) / (h0 + h1);
+    return Math.sign(s0) * Math.min(Math.abs(s0), Math.abs(s1), 0.5 * Math.abs(t)) * 2;
+  });
+  let d = `M${n(xs[0] as number)} ${n(ys[0] as number)}`;
+  for (let i = 0; i < last; i++) {
+    const x0 = xs[i] as number;
+    const x1 = xs[i + 1] as number;
+    const h = (x1 - x0) / 3;
+    d +=
+      `C${n(x0 + h)} ${n((ys[i] as number) + (tangents[i] as number) * h)}` +
+      ` ${n(x1 - h)} ${n((ys[i + 1] as number) - (tangents[i + 1] as number) * h)}` +
+      ` ${n(x1)} ${n(ys[i + 1] as number)}`;
+  }
+  return d;
+}
+
 /** Closed area under `points` down to `baseY` (a fraction of the height). */
 export function areaPath(
   points: readonly ChartPoint[],
   width: number,
   height: number,
   baseY: number,
+  smooth = false,
 ): string {
   const first = points[0];
   const last = points.at(-1);
   if (!first || !last) return '';
   const base = n(baseY * height);
-  return `${linePath(points, width, height)}L${n(last.x * width)} ${base}L${n(first.x * width)} ${base}Z`;
+  const line = smooth ? smoothPath(points, width, height) : linePath(points, width, height);
+  return `${line}L${n(last.x * width)} ${base}L${n(first.x * width)} ${base}Z`;
 }
