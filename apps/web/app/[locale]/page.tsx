@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { alternatesFor, jsonLdString, siteJsonLd, type Locale } from '@tidaq/core';
+import { notFound } from 'next/navigation';
+import { alternatesFor, isLocale, jsonLdString, siteJsonLd, type Locale } from '@tidaq/core';
 import { Hero } from '@/components/home/Hero';
 import { HomeAlert } from '@/components/home/HomeAlert';
 import { HomeCities } from '@/components/home/HomeCities';
@@ -24,6 +25,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  */
 export default async function Home({ params }: Props) {
   const { locale } = await params;
+  // Bot paths like /xmlrpc.php skip the middleware and arrive here as the locale (C-183): stop
+  // before any section formats a price or date with it.
+  if (!isLocale(locale)) notFound();
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'meta' });
   return (
