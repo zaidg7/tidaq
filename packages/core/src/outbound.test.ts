@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   canLinkOut,
   goPath,
+  cleanRef,
+  refFromReferrer,
   hasOutboundSearch,
   outboundUrl,
   safeHttpsUrl,
@@ -171,5 +173,35 @@ describe('goPath', () => {
     expect(goPath('booking-com', 'hotel-adlon-kempinski-berlin', stay, 'en')).toBe(
       '/go/booking-com/hotel-adlon-kempinski-berlin?in=2026-12-04&out=2026-12-06&adults=2&lang=en',
     );
+  });
+
+  it('adds a clean source tag and drops a malformed one (C-180)', () => {
+    expect(goPath('trip-com', 'aman-tokyo', stay, 'de', 'TikTok')).toBe(
+      '/go/trip-com/aman-tokyo?in=2026-12-04&out=2026-12-06&adults=2&lang=de&ref=tiktok',
+    );
+    expect(goPath('trip-com', 'aman-tokyo', stay, 'de', '<x>')).not.toContain('ref=');
+    expect(goPath('trip-com', 'aman-tokyo', stay, 'de', null)).not.toContain('ref=');
+  });
+});
+
+describe('cleanRef', () => {
+  it('keeps short lowercase tags only', () => {
+    expect(cleanRef(' Instagram ')).toBe('instagram');
+    expect(cleanRef('tt-1026a')).toBe('tt-1026a');
+    expect(cleanRef('a'.repeat(33))).toBeNull();
+    expect(cleanRef('a b')).toBeNull();
+    expect(cleanRef('')).toBeNull();
+    expect(cleanRef(undefined)).toBeNull();
+  });
+});
+
+describe('refFromReferrer', () => {
+  it('reads the tag of a same-site referrer only', () => {
+    expect(refFromReferrer('https://tidaq.com/price-drops?ref=tiktok', 'tidaq.com')).toBe('tiktok');
+    expect(refFromReferrer('https://tidaq.com/en/price-drops', 'tidaq.com')).toBeNull();
+    expect(refFromReferrer('https://evil.example/?ref=tiktok', 'tidaq.com')).toBeNull();
+    expect(refFromReferrer('not a url', 'tidaq.com')).toBeNull();
+    expect(refFromReferrer(null, 'tidaq.com')).toBeNull();
+    expect(refFromReferrer('https://tidaq.com/?ref=tiktok', null)).toBeNull();
   });
 });
