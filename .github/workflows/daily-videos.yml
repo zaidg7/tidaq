@@ -1,0 +1,51 @@
+# C-181: every morning, today's two best price drops as ready-to-post vertical videos, emailed to
+# Zaid with captions (and kept as a workflow artifact for 7 days). Reads public drop data with the
+# anon key; no paid API calls.
+name: daily-videos
+
+on:
+  schedule:
+    - cron: '23 5 * * *' # ~06:23 Berlin in winter, 07:23 in summer
+  workflow_dispatch:
+    inputs:
+      email:
+        description: Email the videos
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-videos
+  cancel-in-progress: false
+
+jobs:
+  videos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Chromium and ffmpeg
+        run: |
+          pnpm --filter web exec playwright install --with-deps chromium
+          command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+      - name: Render and email
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: node scripts/videos/daily.mjs --out videos-out ${{ (github.event_name == 'workflow_dispatch' && !inputs.email) && '--no-email' || '' }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: videos
+          path: videos-out
+          retention-days: 7
+          if-no-files-found: ignore
