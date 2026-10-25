@@ -18,6 +18,10 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+// Only `de` and `en` exist (C-183): bot paths like /xmlrpc.php skip the middleware and used to
+// render every page with "xmlrpc.php" as the locale, which threw before the 404 (740 errors a day).
+export const dynamicParams = false;
+
 export async function generateMetadata({ params }: Omit<Props, 'children'>): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
