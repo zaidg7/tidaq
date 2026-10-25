@@ -26,6 +26,9 @@ export default async function AdminHome({ searchParams }: Props) {
         <Link href="/admin/zahlen" className={buttonClasses({ variant: 'ghost', size: 'sm' })}>
           Zahlen
         </Link>
+        <Link href="/admin/genauigkeit" className={buttonClasses({ variant: 'ghost', size: 'sm' })}>
+          Genauigkeit
+        </Link>
         <Link
           href="/admin/preisstuerze"
           className={buttonClasses({ variant: 'ghost', size: 'sm' })}
