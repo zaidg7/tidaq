@@ -231,6 +231,8 @@ export {
   canLinkOut,
   hasOutboundSearch,
   outboundUrl,
+  cleanRef,
+  refFromReferrer,
   safeHttpsUrl,
   withAffiliate,
   type OutboundHotel,

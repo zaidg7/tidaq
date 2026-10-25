@@ -180,17 +180,48 @@ export function outboundUrl(
   return target && withAffiliate(target, provider.affiliateTemplate);
 }
 
-/** `/go/booking-com/hotel-adlon-kempinski-berlin?in=…&out=…&adults=2&lang=de` */
+/**
+ * `/go/booking-com/hotel-adlon-kempinski-berlin?in=…&out=…&adults=2&lang=de`, plus `&ref=tiktok`
+ * when the visit came through a social link (C-180).
+ */
 export function goPath(
   providerSlug: string,
   hotelSlug: string,
   stay: OutboundStay,
   locale: Locale,
+  ref?: string | null,
 ): string {
+  const tag = cleanRef(ref);
   return `/go/${providerSlug}/${hotelSlug}?${params({
     in: stay.checkIn,
     out: stay.checkOut,
     adults: stay.adults,
     lang: locale,
+    ...(tag ? { ref: tag } : {}),
   })}`;
+}
+
+const REF = /^[a-z0-9-]{1,32}$/;
+
+/** A visit's source tag (`tiktok`, `instagram`, `tt-1026a`), or null when missing or malformed. */
+export function cleanRef(raw: string | null | undefined): string | null {
+  const v = raw?.trim().toLowerCase();
+  return v && REF.test(v) ? v : null;
+}
+
+/**
+ * The source tag of the page a visitor came from (C-180): the `ref` of a same-site referrer, e.g.
+ * the radar at `/price-drops?ref=tiktok` when they open a drop. Null for other sites.
+ */
+export function refFromReferrer(
+  referrer: string | null | undefined,
+  host: string | null,
+): string | null {
+  if (!referrer || !host) return null;
+  try {
+    const u = new URL(referrer);
+    return u.host === host ? cleanRef(u.searchParams.get('ref')) : null;
+  } catch {
+    return null;
+  }
 }

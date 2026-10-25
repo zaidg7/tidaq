@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import {
+  cleanRef,
   clientIp,
   createRateLimiter,
   isLocale,
@@ -107,17 +108,21 @@ export async function GET(
   if (!hasSupabase()) return unavailable(locale);
 
   try {
-    const found = await rpc(
-      'outbound_click',
-      {
-        p_provider: provider,
-        p_hotel: hotel,
-        p_check_in: checkIn,
-        p_check_out: checkOut,
-        p_adults: adults,
-      },
-      target,
-    );
+    const args = {
+      p_provider: provider,
+      p_hotel: hotel,
+      p_check_in: checkIn,
+      p_check_out: checkOut,
+      p_adults: adults,
+    };
+    // C-180: the click carries the visit's source. If the database doesn't know p_ref yet, the
+    // plain call still opens the partner site.
+    const ref = cleanRef(q.get('ref'));
+    const found = ref
+      ? await rpc('outbound_click', { ...args, p_ref: ref }, target).catch(() =>
+          rpc('outbound_click', args, target),
+        )
+      : await rpc('outbound_click', args, target);
     const url =
       found &&
       outboundUrl(
