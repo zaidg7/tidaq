@@ -23,6 +23,9 @@ export default async function AdminHome({ searchParams }: Props) {
           <h1 className="text-h2">Übersicht</h1>
           <p className="text-meta text-muted-ink">Angemeldet als {email}</p>
         </div>
+        <Link href="/admin/zahlen" className={buttonClasses({ variant: 'ghost', size: 'sm' })}>
+          Zahlen
+        </Link>
         <Link
           href="/admin/preisstuerze"
           className={buttonClasses({ variant: 'ghost', size: 'sm' })}

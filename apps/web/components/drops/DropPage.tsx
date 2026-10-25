@@ -112,6 +112,7 @@ export async function DropPage({
   locale,
   today,
   now,
+  refTag = null,
 }: {
   group: HotelDropsWithPhoto;
   drop: PriceDrop;
@@ -123,6 +124,8 @@ export async function DropPage({
   /** Photo credit for the hotel's own photo. */
   credit?: { text: string; href: string | null } | null;
   locale: Locale;
+  /** Where the visit came from (`tiktok`, …), passed on to the partner click (C-180). */
+  refTag?: string | null;
   today: string;
   now: Date;
 }) {
@@ -249,6 +252,7 @@ export async function DropPage({
                   g.hotel.slug,
                   { checkIn: d.night, checkOut: d.checkOut, adults: 2 },
                   locale,
+                  refTag,
                 )}
                 target="_blank"
                 rel="sponsored nofollow noopener"
