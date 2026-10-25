@@ -16,6 +16,15 @@ Where to put the result: <GitHub secret name / reply in issue / nothing>
 
 ---
 
+## B-026 · Reconnect the Supabase connector in claude.ai (1 min, urgent)
+
+Status: OPEN · Opened: 2026-10-25 by CLOUD · Blocks: C-180 and C-182 database parts (visits/clicks per source, accuracy page, exact prices on stay pages), weekly numbers
+What I need: the claude.ai Supabase connector signed in again. It logged out, so sessions can't apply migrations or read the numbers. Two migrations wait in `supabase/pending/`.
+Steps for Zaid (≈ 1 min):
+
+1. claude.ai → **Settings** → **Connectors** → **Supabase** → **Connect** (log in with the account that owns the "tidaq" Pro organization).
+   Where to put the result: tell the session "Supabase reconnected". It applies the two migrations and sends this week's numbers.
+
 ## B-025 · Top up DataForSEO with $50: exact prices for every Price Drop (3 min, urgent)
 
 Status: OPEN · Opened: 2026-10-16 by CLOUD · Blocks: Price Drops on the site from about Saturday morning (17 Oct)
