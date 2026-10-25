@@ -17,6 +17,7 @@ import { hasSupabase, rest, rpc } from './supabase';
 import { reportError } from '@/lib/errors';
 import { taxesFor } from './priceFactors';
 import { hotelPageProviders } from './providerPages';
+import { withExactToday } from '@tidaq/core';
 
 const hotelRow = z.object({
   id: z.number(),
@@ -52,6 +53,13 @@ const nightDayRow = z.object({
 });
 
 const collectedRow = z.object({ collected_at: z.string() });
+
+/** A fresh exact quote of these dates (C-182, SQL `stay_quote`): one row per site. */
+const quoteRow = z.object({
+  quoted_at: z.string(),
+  provider: z.string(),
+  total_cents: z.number().int().positive(),
+});
 
 /** `night_reliability` for one hotel (C-070d); no row = not enough comparisons = reliable. */
 const reliabilityRow = z.object({ hotel_id: z.number(), reliable: z.boolean() });
@@ -246,7 +254,20 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
     }
 
     // Base rates plus the hotel's taxes and fees (C-157); the sites where we know its page (C-177).
-    const [tax, pages] = await Promise.all([taxesFor(hotel.id), hotelPageProviders(hotel.id)]);
+    const [tax, pages, quote] = await Promise.all([
+      taxesFor(hotel.id),
+      hotelPageProviders(hotel.id),
+      // C-182: an exact quote of these dates (2 adults, from a Price Drop) beats the calculated
+      // total of that site. Older databases don't have the function: then nothing changes.
+      p.adults === 2
+        ? rpc(
+            'stay_quote',
+            { p_hotel_id: hotel.id, p_check_in: p.checkIn, p_check_out: p.checkOut },
+            z.array(quoteRow),
+          ).catch(() => [])
+        : Promise.resolve([]),
+    ]);
+    const exact = new Map(quote.map((q) => [q.provider, q.total_cents]));
     const offers: StayOffer[] = [];
     for (const id of latestIds) {
       const pr = nameById.get(Number(id));
@@ -258,7 +279,7 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
         slug: pr.slug,
         name: pr.name,
         isDirect: pr.is_direct,
-        totalCents: tax(cents),
+        totalCents: exact.get(pr.slug) ?? tax(cents),
         // Buttons only to partners (D-54): sites that pay us get "Zum Angebot", every other site
         // keeps its price without a link. The /go route builds the same target (`outboundUrl`).
         ...(isAffiliate(pr.affiliate_template) &&
@@ -311,7 +332,11 @@ export async function getStay(slug: string, p: StayParams, today: string): Promi
           realCents: tax(realVsNights.realCents),
           nightsCents: tax(realVsNights.nightsCents),
         },
-        series: rows.map((d) => ({ day: d.day, bestCents: tax(d.best_cents) })),
+        series: withExactToday(
+          rows.map((d) => ({ day: d.day, bestCents: tax(d.best_cents) })),
+          today,
+          latest?.day === today && quote.length > 0 ? offers.map((o) => o.totalCents) : [],
+        ),
         providerByDay,
         offers: {
           day: latest?.day ?? null,

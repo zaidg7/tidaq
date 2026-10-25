@@ -339,3 +339,4 @@ export { DROP_ALERTS, dropAlertMail, dropsFor, type DropScope } from './dropAler
 export { CAPTION, cityTag, dropCaption, dropHashtags, topCaption } from './dropCaptions';
 export { NEWSLETTER, newsletterMail, type NewsletterDeal } from './newsletter';
 export { storyChart, type StoryPoint } from './storyChart';
+export { withExactToday } from './exactToday';
