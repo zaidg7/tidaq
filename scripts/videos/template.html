@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: 'Inst';
+        src: url('assets/instrument-sans-a.woff2') format('woff2');
+        font-weight: 400 700;
+      }
+      @font-face {
+        font-family: 'Inst';
+        src: url('assets/instrument-sans-b.woff2') format('woff2');
+        font-weight: 400 700;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      body {
+        font-family: 'Inst', system-ui, sans-serif;
+        color: #fff;
+        font-feature-settings: 'tnum' 1;
+        -webkit-font-smoothing: antialiased;
+      }
+      .abs {
+        position: absolute;
+      }
+      #photo {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 1920px;
+        width: auto;
+        min-width: 1080px;
+        object-fit: cover;
+        will-change: transform;
+      }
+      .shade-top {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 760px;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.62),
+          rgba(0, 0, 0, 0.28) 55%,
+          rgba(0, 0, 0, 0)
+        );
+      }
+      .shade-bottom {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 1000px;
+        background: linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.55),
+          rgba(0, 0, 0, 0.18) 60%,
+          rgba(0, 0, 0, 0)
+        );
+      }
+      .glass {
+        position: absolute;
+        border-radius: 44px;
+        overflow: hidden;
+        background: linear-gradient(
+          150deg,
+          rgba(255, 255, 255, 0.24) 0%,
+          rgba(40, 44, 56, 0.18) 50%,
+          rgba(20, 22, 30, 0.28) 100%
+        );
+        backdrop-filter: blur(34px) saturate(160%) brightness(0.74);
+        border: 1.5px solid rgba(255, 255, 255, 0.42);
+        box-shadow:
+          0 40px 90px rgba(0, 0, 0, 0.3),
+          inset 0 1.5px 0 rgba(255, 255, 255, 0.6);
+        text-shadow: 0 1px 12px rgba(0, 0, 0, 0.18);
+      }
+      .hook {
+        font-size: 86px;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        line-height: 1.04;
+        text-shadow:
+          0 3px 28px rgba(0, 0, 0, 0.45),
+          0 1px 3px rgba(0, 0, 0, 0.35);
+      }
+      .hook span {
+        display: block;
+        text-wrap: balance;
+      }
+      .hook em {
+        font-style: normal;
+        color: #7ee0ac;
+      }
+    </style>
+  </head>
+  <body>
+    <img id="photo" alt="" />
+    <div class="shade-top"></div>
+    <div class="shade-bottom"></div>
+
+    <div class="abs" style="left: 64px; right: 120px; top: 210px">
+      <div
+        id="chip"
+        class="glass"
+        style="
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          gap: 14px;
+          height: 64px;
+          padding: 0 26px 0 22px;
+          border-radius: 32px;
+          font-size: 28px;
+          font-weight: 650;
+          letter-spacing: 0.02em;
+        "
+      >
+        <span
+          id="dot"
+          style="width: 14px; height: 14px; border-radius: 7px; background: #ff6b5e"
+        ></span
+        ><span id="chipText"></span>
+      </div>
+      <div id="hook" class="hook" style="margin-top: 30px"></div>
+    </div>
+
+    <div
+      id="card"
+      class="glass"
+      style="left: 56px; right: 150px; top: 1040px; padding: 40px 44px 36px"
+    >
+      <div
+        id="name"
+        style="font-size: 44px; font-weight: 650; letter-spacing: -0.02em; line-height: 1.1"
+      ></div>
+      <div id="meta" style="margin-top: 8px; font-size: 28px; opacity: 0.86"></div>
+      <div
+        style="
+          margin-top: 26px;
+          position: relative;
+          display: inline-block;
+          font-size: 34px;
+          font-weight: 600;
+          opacity: 0.75;
+        "
+      >
+        <span id="was"></span
+        ><span
+          id="strike"
+          class="abs"
+          style="left: -4px; top: 52%; height: 4px; border-radius: 2px; background: #fff; width: 0"
+        ></span>
+      </div>
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+        <div
+          id="now"
+          style="font-size: 118px; font-weight: 700; letter-spacing: -0.05em; line-height: 0.98"
+        ></div>
+        <div
+          id="pill"
+          style="
+            height: 76px;
+            padding: 0 26px 0 20px;
+            border-radius: 38px;
+            background: #e1f2e9;
+            color: #0e6b47;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            transform-origin: 100% 50%;
+            text-shadow: none;
+          "
+        >
+          <svg
+            width="34"
+            height="34"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#0e6b47"
+            stroke-width="2.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 7l6 6 4-4 8 8" />
+            <path d="M21 11v6h-6" /></svg
+          ><span id="pct"></span>
+        </div>
+      </div>
+      <div id="foot" style="margin-top: 18px; font-size: 24px; opacity: 0.82"></div>
+    </div>
+
+    <div
+      id="end"
+      class="glass"
+      style="
+        left: 56px;
+        top: 1474px;
+        height: 84px;
+        border-radius: 42px;
+        padding: 0 30px 0 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 32px;
+        font-weight: 650;
+      "
+    >
+      <span
+        style="
+          width: 58px;
+          height: 58px;
+          border-radius: 16px;
+          background: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <svg width="34" height="34" viewBox="0 0 512 512">
+          <path
+            transform="translate(256.0 256.0) scale(0.62 -0.62) translate(-202.5 -334.5)"
+            fill="#15131c"
+            d="M302 -11Q204 -11 156.5 36.5Q109 84 109 181V624L259 680V176Q259 142 278.0 125.0Q297 108 337 108Q352 108 365.0 111.0Q378 114 391 118V4Q378 -3 354.5 -7.0Q331 -11 302 -11ZM14 396V510H391V396Z"
+          />
+        </svg>
+      </span>
+      <span>Tracked daily on tidaq.com · link in bio</span>
+    </div>
+
+    <div
+      id="credit"
+      class="abs"
+      style="
+        left: 56px;
+        right: 150px;
+        top: 1872px;
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.72);
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+      "
+    ></div>
+
+    <script>
+      const D = JSON.parse(decodeURIComponent(location.hash.slice(1)));
+      const $ = (id) => document.getElementById(id);
+      const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+      const prog = (t, a, b) => clamp((t - a) / (b - a));
+      const outExpo = (p) => (p >= 1 ? 1 : 1 - Math.pow(2, -10 * p));
+      const outCubic = (p) => 1 - Math.pow(1 - p, 3);
+      const spring = (p) => (p <= 0 ? 0 : p >= 1 ? 1 : 1 - Math.exp(-6 * p) * Math.cos(9.5 * p));
+      const st = (id, css) => Object.assign($(id).style, css);
+      const eur = (c) => '€' + Math.round(c / 100).toLocaleString('en-US');
+
+      $('photo').src = D.photo;
+      $('chipText').textContent = D.chip;
+      {
+        const sp = document.createElement('span');
+        sp.textContent = D.hook.join(' ');
+        $('hook').appendChild(sp);
+      }
+      $('name').textContent = D.name;
+      $('meta').textContent = D.meta;
+      $('was').textContent = `${eur(D.prevCents)} yesterday`;
+      $('pct').textContent = `${D.pct}%`;
+      $('foot').textContent = D.foot;
+      $('credit').textContent = D.credit || '';
+      window.DURATION = 9;
+
+      window.render = function (t) {
+        const push = 1.1 - 0.1 * outCubic(prog(t, 0, 9));
+        st('photo', {
+          transform: `translate(-50%, -50%) translateX(${-20 * prog(t, 0, 9)}px) scale(${push})`,
+        });
+        // Hook is readable from the first frame (that's what TikTok shows while scrolling).
+        const e = outExpo(prog(t, -0.25, 0.5));
+        st('hook', { opacity: String(0.4 + 0.6 * e), transform: `translateY(${(1 - e) * 24}px)` });
+        const c = spring(prog(t, -0.2, 0.6));
+        st('chip', { transform: `scale(${0.85 + 0.15 * c})`, transformOrigin: '0 50%' });
+        const pu = (t * 1.3) % 1;
+        st('dot', { boxShadow: `0 0 0 ${pu * 12}px rgba(255,107,94,${0.55 * (1 - pu)})` });
+        const ci = outExpo(prog(t, 0.9, 1.6)),
+          cs = spring(prog(t, 0.9, 1.8));
+        st('card', {
+          opacity: String(clamp(ci * 1.6)),
+          transform: `translateY(${(1 - ci) * 140}px) scale(${0.92 + 0.08 * cs})`,
+          filter: `blur(${(1 - ci) * 14}px)`,
+        });
+        st('strike', { width: `calc(${outCubic(prog(t, 1.5, 1.85)) * 100}% + 8px)` });
+        const roll = outCubic(prog(t, 1.6, 2.6));
+        $('now').textContent = eur(D.prevCents + (D.nowCents - D.prevCents) * roll);
+        const pl = spring(prog(t, 2.5, 3.3));
+        st('pill', { transform: `scale(${Math.max(0, pl)})`, opacity: String(clamp(pl * 3)) });
+        const en = outExpo(prog(t, 4.2, 5.0));
+        st('end', {
+          opacity: String(en),
+          transform: `translateY(${(1 - en) * 40}px)`,
+          filter: `blur(${(1 - en) * 10}px)`,
+        });
+      };
+      window.ready = (async () => {
+        await document.fonts.ready;
+        await $('photo').decode();
+      })();
+    </script>
+  </body>
+</html>

@@ -18,3 +18,4 @@ docs/.build-plan.html
 *.tsbuildinfo
 next-env.d.ts
 .vitest
+videos-out/
