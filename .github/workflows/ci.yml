@@ -4,10 +4,11 @@ name: CI
 # per merge to main, to deploy staging. Every check (lint, typecheck, unit, build, all e2e) runs
 # in the session before a merge instead; finished tasks are merged in batches. The full suite
 # can still be started by hand (Actions → CI → Run workflow) when it is worth the minutes.
+# Paused (Zaid, 30 Oct): manual runs only. To resume, add back under `on:`:
+#   push:
+#     branches: [main]
+#     paths-ignore: ['docs/**', '**/*.md']
 on:
-  push:
-    branches: [main]
-    paths-ignore: ['docs/**', '**/*.md']
   workflow_dispatch:
 
 concurrency:

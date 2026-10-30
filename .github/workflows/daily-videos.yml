@@ -3,9 +3,10 @@
 # anon key; no paid API calls.
 name: daily-videos
 
+# Paused (Zaid, 30 Oct): no schedule, manual runs only. To resume, add back:
+#   schedule:
+#     - cron: '23 5 * * *' # ~06:23 Berlin in winter, 07:23 in summer
 on:
-  schedule:
-    - cron: '23 5 * * *' # ~06:23 Berlin in winter, 07:23 in summer
   workflow_dispatch:
     inputs:
       email:
